@@ -15,12 +15,25 @@
 #
 # Usage: run_remaining3.sh <condition> [reps]      condition in T|M|TM|TM+|all
 # Resumable: a rep whose done.txt already lists the bug is skipped.
+#
+# BUGS_SUBSET restricts the queue, e.g. BUGS_SUBSET="JacksonCore-10 Math-66" to skip a bug
+# an earlier condition already solved. Default: all three.
 set -uo pipefail
 source "$(dirname "$0")/env.sh"
 
 COND="${1:-}"
 REPS="${2:-2}"
-BUGS=$'JacksonCore\t10\nMath\t66\nJsoup\t67'
+ALL_BUGS=$'JacksonCore\t10\nMath\t66\nJsoup\t67'
+if [ -n "${BUGS_SUBSET:-}" ]; then
+  BUGS=""
+  for want in $BUGS_SUBSET; do
+    line=$(printf '%s\n' "$ALL_BUGS" | awk -F'\t' -v w="$want" '$1"-"$2==w')
+    [ -n "$line" ] || { echo "unknown bug: $want" >&2; exit 2; }
+    BUGS="${BUGS:+$BUGS$'\n'}$line"
+  done
+else
+  BUGS="$ALL_BUGS"
+fi
 BASE="$D4J_CLAUDE_ROOT/runs/remaining3"
 
 usage() { echo "usage: $0 <T|M|TM|TM+|all> [reps]" >&2; exit 2; }
@@ -45,7 +58,8 @@ run_one() {
   cat > "$dir/condition.json" <<EOF
 {"condition": "$cond", "rep": $rep, "model": "$AGENT_MODEL",
  "agent_timeout_s": $AGENT_TIMEOUT, "effort": "${AGENT_EFFORT:-high}",
- "max_budget_usd": "${AGENT_MAX_BUDGET_USD:-none}"}
+ "max_budget_usd": "${AGENT_MAX_BUDGET_USD:-none}",
+ "bugs": "$(printf '%s\n' "$BUGS" | awk -F'\t' '{printf "%s%s-%s", (NR>1?",":""), $1, $2}')"}
 EOF
   echo "[remaining3] === $cond rep $rep: $AGENT_MODEL, cap ${AGENT_TIMEOUT}s, dir $dir"
   # One worker: these bugs include timing-sensitive numerical tests, and the

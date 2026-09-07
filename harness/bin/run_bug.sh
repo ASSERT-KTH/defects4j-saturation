@@ -13,6 +13,14 @@ WORK="$D4J_CLAUDE_ROOT/work/$P-$B.agent"
 VERIFY="$D4J_CLAUDE_ROOT/work/$P-$B.verify"
 GITORIG="$D4J_CLAUDE_ROOT/work/$P-$B.gitorig"
 
+# A campaign is a prompt variant. `perfect-fault-localization` names the classes the
+# developer changed; `no-fault-localization` withholds them. Everything else is identical,
+# so campaigns are directly comparable.
+CAMPAIGN="${CAMPAIGN:-perfect-fault-localization}"
+TASK_TMPL="$D4J_CLAUDE_ROOT/campaign/$CAMPAIGN/task.md.tmpl"
+[ -f "$TASK_TMPL" ] || { echo "no such campaign: $CAMPAIGN ($TASK_TMPL)" >&2; exit 2; }
+export CAMPAIGN
+
 AGENT_TIMEOUT="${AGENT_TIMEOUT:-1800}"
 TEST_TIMEOUT="${TEST_TIMEOUT:-2400}"
 case "$P" in
@@ -118,11 +126,10 @@ git -C "$WORK" -c user.email=harness@local -c user.name=harness commit -q -m bas
 if ! git -C "$WORK" rev-parse HEAD >/dev/null 2>&1; then finish ERROR "baseline commit failed"; fi
 
 # ------------------------------------------------------------- 5. build prompt
-python3 - "$OUT" "$P" "$B" "$SRC_DIR" "$TEST_DIR" "$TRIGGER" "$MODIFIED" <<'PY'
+python3 - "$OUT" "$P" "$B" "$SRC_DIR" "$TEST_DIR" "$TRIGGER" "$MODIFIED" "$TASK_TMPL" <<'PY'
 import sys, pathlib
-out, proj, bug, src, tst, trig, mod = sys.argv[1:8]
-root = pathlib.Path("/home/martin/defects4j-claude")
-tpl = (root/"prompts"/"task.md.tmpl").read_text()
+out, proj, bug, src, tst, trig, mod, tmpl = sys.argv[1:9]
+tpl = pathlib.Path(tmpl).read_text()
 fail = pathlib.Path(out, "test_before.txt").read_text()
 # keep the prompt bounded: the failure report can be huge for some bugs
 if len(fail) > 12000:

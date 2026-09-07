@@ -275,6 +275,11 @@ Two findings the design did not anticipate at all:
 
 ## Caveats
 
+- **These runs use the perfect-fault-localization prompt**, like the main sweep: the class
+  the defect is in is named for the agent. That is not incidental to the conclusions here —
+  both unsolved bugs were localized *to the right file from the start*, so what remained was
+  purely the repair, and "not budget-limited" means not budget-limited *given the location*.
+  See the [campaign README](../README.md#the-task-names-the-buggy-class).
 - Runs bill against an OAuth subscription rather than an API key, so a 4 h agent cap can
   collide with a 5 h usage window. The harness parks the batch at a window reset and
   requeues the bug, which means an interrupted run is discarded and repeated rather than

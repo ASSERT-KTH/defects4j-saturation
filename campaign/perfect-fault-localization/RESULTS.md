@@ -383,7 +383,7 @@ file(s) changed a different way, `different` means the defect was repaired elsew
 | [JacksonCore-7](data/JacksonCore-7) | PLAUSIBLE | identical | 1 | +3/-0 | 9 | $0.12 | 1.0 |
 | [JacksonCore-8](data/JacksonCore-8) | PLAUSIBLE | same-files | 1 | +1/-0 | 10 | $0.12 | 1.1 |
 | [JacksonCore-9](data/JacksonCore-9) | PLAUSIBLE | different | 1 | +3/-3 | 12 | $0.14 | 1.2 |
-| [JacksonCore-10](data/JacksonCore-10) | TEST_FAIL |  | 1 | +1/-1 | - | $0.00 | 30.5 |
+| [JacksonCore-10](data/JacksonCore-10) | TEST_FAIL |  | 1 | +1/-1 | 80 | ~$4.05 | 30.5 |
 | [JacksonCore-11](data/JacksonCore-11) | PLAUSIBLE | identical | 1 | +5/-0 | 34 | $0.64 | 6.4 |
 | [JacksonCore-12](data/JacksonCore-12) | PLAUSIBLE | different | 1 | +15/-3 | 23 | $0.47 | 2.9 |
 | [JacksonCore-13](data/JacksonCore-13) | PLAUSIBLE | identical | 1 | +8/-0 | 6 | $0.08 | 0.7 |
@@ -757,7 +757,7 @@ file(s) changed a different way, `different` means the defect was repaired elsew
 | [Math-63](data/Math-63) | PLAUSIBLE | same-files | 1 | +1/-1 | 11 | $0.14 | 3.0 |
 | [Math-64](data/Math-64) | PLAUSIBLE | same-files | 1 | +1/-1 | 42 | $1.17 | 8.1 |
 | [Math-65](data/Math-65) | PLAUSIBLE | same-files | 1 | +1/-1 | 9 | $0.14 | 1.5 |
-| [Math-66](data/Math-66) | TEST_FAIL |  | 1 | +15/-16 | - | $0.00 | 30.5 |
+| [Math-66](data/Math-66) | TEST_FAIL |  | 1 | +15/-16 | 88 | ~$4.56 | 30.5 |
 | [Math-67](data/Math-67) | PLAUSIBLE | same-files | 1 | +2/-2 | 58 | $1.41 | 11.5 |
 | [Math-68](data/Math-68) | PLAUSIBLE | same-files | 1 | +12/-10 | 93 | $4.84 | 26.4 |
 | [Math-69](data/Math-69) | PLAUSIBLE | same-files | 1 | +3/-5 | 11 | $0.19 | 1.4 |

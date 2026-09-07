@@ -119,4 +119,5 @@ def main():
             w.writerow(r)
     print(f"\nCSV: {csvpath}")
 
-main()
+if __name__ == "__main__":
+    main()

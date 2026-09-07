@@ -160,12 +160,12 @@ defects4j checkout -p JacksonCore -v 10b -w /tmp/jc10
 grep -rn "shuffle back a bit" /tmp/jc10                 # no output
 
 # 2. but the agent emitted them
-cat data-remaining3/M-r1/JacksonCore-10/patch.diff
-zcat data-remaining3/M-r1/JacksonCore-10/session.jsonl.gz | grep -c "shuffle back a bit"
+cat data-followup/M-r1/JacksonCore-10/patch.diff
+zcat data-followup/M-r1/JacksonCore-10/session.jsonl.gz | grep -c "shuffle back a bit"
 # 3   (the Edit call, plus the two stream events that echo it)
 
 # 3. and its only git command was the final diff
-zcat data-remaining3/M-r1/JacksonCore-10/session.jsonl.gz \
+zcat data-followup/M-r1/JacksonCore-10/session.jsonl.gz \
   | grep -o '"command":"[^"]*git [^"]*"' | sort -u
 # "command":"git diff"
 ```

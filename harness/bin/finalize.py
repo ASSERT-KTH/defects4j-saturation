@@ -108,6 +108,7 @@ rec = {
     "id": f"{proj}-{bug}",
     "verdict": txt("verdict", "ERROR"),
     "note": txt("note"),
+    "campaign": os.environ.get("CAMPAIGN", "perfect-fault-localization"),
     "model": stream_model or MODEL,
     "effort": os.environ.get("AGENT_EFFORT", "high"),
     "telemetry_source": telemetry_source,

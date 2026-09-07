@@ -117,4 +117,5 @@ def main():
         print(f"- **{b}**: solved in {n} of {len(got)} runs"
               + (" — " + ", ".join(sorted({g["verdict"] for g in got})) if got else ""))
 
-main()
+if __name__ == "__main__":
+    main()
