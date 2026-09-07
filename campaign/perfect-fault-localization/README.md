@@ -136,7 +136,17 @@ $319.13 at Sonnet 5 list prices ($2/$10 per MTok), mean $0.37 per bug. 7.9M outp
 (63% of them thinking tokens) against 662.3M cache-read and only 30.3K fresh input tokens —
 prompt caching carries essentially all of the context cost. 36.6 h of agent time and 55.5 h
 of total harness time (4 workers) over 26.7 h of wall clock, of which roughly 10 h were
-spent parked on subscription usage limits.
+spent idle waiting on the subscription's rate-limit windows.
+
+**That idle time was largely self-inflicted, and the harness has been fixed.** `worker.sh`
+treated any rate-limit status other than `allowed` as a block, but the API also reports
+`allowed_warning` — a heads-up that a window is filling, while requests are still being
+served. Twenty of the 854 sessions ended on `allowed_warning` with the 5-hour window at
+90–96% (below the 98.5% threshold the harness itself uses), and the batch parked on every
+one of them. It now parks only when a window is genuinely spent, and only until *that*
+window resets — the previous code took the top-level `resetsAt`, which tracks whichever
+window raised the notice and can therefore point up to a week ahead. No verdict is affected:
+parks delay work, they never change an outcome.
 
 The total was previously reported as $310.52. `JacksonCore-10` and `Math-66` were killed by
 `SIGTERM` at the wall-clock cap before the CLI could emit its final `result` event, so their

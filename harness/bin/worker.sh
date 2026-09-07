@@ -36,17 +36,37 @@ try:
             except Exception: pass
 except OSError:
     pass
+# Park only when a window is actually spent, and only until THAT window resets.
+#
+# Two traps here, both hit in practice:
+#   * `allowed_warning` still means allowed -- it is a heads-up that a window is
+#     filling, not a block. Treating it as one parked a whole campaign.
+#   * the top-level `resetsAt` tracks whichever window raised the notice, so on a
+#     seven-day warning it points up to a week out. Always take the reset from
+#     the specific window that is exhausted.
+ALLOWED = (None, "allowed", "allowed_warning")
+windows = (last.get("unifiedWindows") or {}) if last else {}
+
+def spent(name, thresh=0.985):
+    w = windows.get(name) or {}
+    return int(w.get("resetsAt") or 0) if (w.get("utilization") or 0) >= thresh else 0
+
 pause_until = 0
-if last:
-    if last.get("status") not in (None, "allowed"):
-        pause_until = int(last.get("resetsAt") or 0)
-    else:
-        w = (last.get("unifiedWindows") or {}).get("five_hour") or {}
-        if (w.get("utilization") or 0) >= 0.985:
-            pause_until = int(w.get("resetsAt") or 0)
+if last and last.get("status") not in ALLOWED:
+    # hard block: wait for the soonest window that could clear it
+    cands = [int((windows.get(n) or {}).get("resetsAt") or 0) for n in ("five_hour", "seven_day")]
+    cands = [c for c in cands if c > time.time()]
+    pause_until = min(cands) if cands else int(last.get("resetsAt") or 0)
+else:
+    pause_until = spent("five_hour") or spent("seven_day")
+
 if verdict == "USAGE_LIMIT" and not pause_until:
     pause_until = int(time.time()) + 900          # unknown reset: back off 15 min
+
 if pause_until > time.time():
     (rundir/"paused_until").write_text(str(pause_until + 60))
-    print(f"[worker] pausing batch until {time.strftime('%H:%M:%SZ', time.gmtime(pause_until))}", file=sys.stderr)
+    hrs = (pause_until - time.time()) / 3600
+    print(f"[worker] pausing batch until "
+          f"{time.strftime('%Y-%m-%d %H:%M:%SZ', time.gmtime(pause_until))} ({hrs:.1f} h)",
+          file=sys.stderr)
 PY
