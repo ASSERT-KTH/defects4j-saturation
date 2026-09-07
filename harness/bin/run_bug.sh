@@ -18,6 +18,13 @@ TEST_TIMEOUT="${TEST_TIMEOUT:-2400}"
 case "$P" in
   Closure|JacksonDatabind|Mockito) AGENT_TIMEOUT=$((AGENT_TIMEOUT*2)); TEST_TIMEOUT=$((TEST_TIMEOUT*2));;
 esac
+# Model, effort and a hard dollar stop are parameters so the same harness can run
+# the main sweep and the follow-up conditions. finalize.py reads the same two
+# environment variables when it records the run.
+export AGENT_MODEL="${AGENT_MODEL:-claude-sonnet-5}"
+export AGENT_EFFORT="${AGENT_EFFORT:-high}"
+BUDGET_ARG=()
+[ -n "${AGENT_MAX_BUDGET_USD:-}" ] && BUDGET_ARG=(--max-budget-usd "$AGENT_MAX_BUDGET_USD")
 
 mkdir -p "$OUT"
 FLAKY_NOTE=""
@@ -27,6 +34,10 @@ START=$(date +%s)
 log() { echo "[$P-$B] $*" >&2; }
 finish() {
   local verdict="$1"; local note="${2:-}"
+  # Developer patch kept alongside every result, whatever the verdict, for
+  # offline correctness comparison. Copied here rather than earlier so the
+  # ground truth is never on disk while the agent is running.
+  cp "$D4J_HOME/framework/projects/$P/patches/$B.src.patch" "$OUT/dev.patch" 2>/dev/null || true
   echo "$verdict" > "$OUT/verdict"
   echo "$note"    > "$OUT/note"
   echo "$(( $(date +%s) - START ))" > "$OUT/wallclock_s"
@@ -89,6 +100,16 @@ if [ "$BEFORE_FAIL" -eq 0 ]; then
   finish BASELINE_FAIL "no failing test in the buggy version"
 fi
 
+# The bar a patch has to clear, stated explicitly: fix every triggering test and
+# introduce no failure BEYOND the ones the buggy version already had. So the
+# allowed post-patch failure set is  baseline failures \ triggering tests  --
+# in practice empty for all but a handful of bugs, but asserted rather than
+# assumed.
+grep '^--- ' "$OUT/test_before.txt" | sed 's/^--- //' | sort -u > "$OUT/.before_names"
+grep -v '^$' "$OUT/trigger_tests" | sort -u > "$OUT/.trigger_names"
+comm -23 "$OUT/.before_names" "$OUT/.trigger_names" > "$OUT/allowed_failures.txt"
+rm -f "$OUT/.before_names" "$OUT/.trigger_names"
+
 # Snapshot AFTER the baseline build: several projects' builds mutate the tree
 # themselves (Mockito downloads jars into compileLib/ and drops a broken Groovy
 # test), and those side effects must not be attributed to the agent.
@@ -97,10 +118,10 @@ git -C "$WORK" -c user.email=harness@local -c user.name=harness commit -q -m bas
 if ! git -C "$WORK" rev-parse HEAD >/dev/null 2>&1; then finish ERROR "baseline commit failed"; fi
 
 # ------------------------------------------------------------- 5. build prompt
-python3 - "$OUT" "$P" "$B" "$SRC_DIR" "$TEST_DIR" "$TRIGGER" "$MODIFIED" "$D4J_CLAUDE_ROOT" <<'PY'
+python3 - "$OUT" "$P" "$B" "$SRC_DIR" "$TEST_DIR" "$TRIGGER" "$MODIFIED" <<'PY'
 import sys, pathlib
-out, proj, bug, src, tst, trig, mod, root = sys.argv[1:9]
-root = pathlib.Path(root)
+out, proj, bug, src, tst, trig, mod = sys.argv[1:8]
+root = pathlib.Path("/home/martin/defects4j-claude")
 tpl = (root/"prompts"/"task.md.tmpl").read_text()
 fail = pathlib.Path(out, "test_before.txt").read_text()
 # keep the prompt bounded: the failure report can be huge for some bugs
@@ -120,10 +141,13 @@ PY
 # ------------------------------------------------------------- 6. run the agent
 log "launching claude (timeout ${AGENT_TIMEOUT}s)"
 AGENT_START=$(date +%s)
-( cd "$WORK" && timeout -k 30 "$AGENT_TIMEOUT" \
+# SIGINT first, not SIGTERM: the CLI traps INT and flushes its final `result`
+# event (turns, cost, tokens). SIGKILL only after a 60 s grace period.
+( cd "$WORK" && timeout --signal=INT --kill-after=60 "$AGENT_TIMEOUT" \
     claude -p "$(cat "$OUT/task.md")" \
-      --model claude-sonnet-5 \
-      --effort high \
+      --model "$AGENT_MODEL" \
+      --effort "$AGENT_EFFORT" \
+      "${BUDGET_ARG[@]}" \
       --permission-mode bypassPermissions \
       --output-format stream-json --verbose \
       --append-system-prompt "$(cat "$D4J_CLAUDE_ROOT/prompts/rules.md")" \
@@ -139,6 +163,8 @@ AGENT_START=$(date +%s)
 AGENT_RC=$?
 echo $(( $(date +%s) - AGENT_START )) > "$OUT/agent_s"
 echo "$AGENT_RC" > "$OUT/agent_rc"
+printf '%s\n' "$AGENT_MODEL" > "$OUT/agent_model"
+printf '%s\n' "$AGENT_TIMEOUT" > "$OUT/agent_timeout_s"
 
 if grep -qiE "usage limit|rate.?limit(ed)? |too many requests|overloaded_error" "$OUT/claude.err" "$OUT/claude.jsonl" 2>/dev/null; then
   if ! grep -q '"subtype":"success"' "$OUT/claude.jsonl" 2>/dev/null; then
@@ -197,14 +223,19 @@ if [ "$REL_FAIL" -ne 0 ]; then
   # reproduce on a second run count.
   timeout "$TEST_TIMEOUT" defects4j test -r -w "$VERIFY" > "$OUT/test_rel2.log" 2>&1
   cp "$VERIFY/failing_tests" "$OUT/test_rel2.txt" 2>/dev/null || : > "$OUT/test_rel2.txt"
-  grep '^--- ' "$OUT/test_rel.txt"  2>/dev/null | sort -u > "$OUT/.r1"
-  grep '^--- ' "$OUT/test_rel2.txt" 2>/dev/null | sort -u > "$OUT/.r2"
-  comm -12 "$OUT/.r1" "$OUT/.r2" > "$OUT/failing_stable.txt"; rm -f "$OUT/.r1" "$OUT/.r2"
+  grep '^--- ' "$OUT/test_rel.txt"  2>/dev/null | sed 's/^--- //' | sort -u > "$OUT/.r1"
+  grep '^--- ' "$OUT/test_rel2.txt" 2>/dev/null | sed 's/^--- //' | sort -u > "$OUT/.r2"
+  comm -12 "$OUT/.r1" "$OUT/.r2" > "$OUT/failing_stable_raw.txt"; rm -f "$OUT/.r1" "$OUT/.r2"
+  comm -23 "$OUT/failing_stable_raw.txt" "$OUT/allowed_failures.txt" > "$OUT/failing_stable.txt"
   STABLE=$(wc -l < "$OUT/failing_stable.txt")
   if [ "$STABLE" -ne 0 ]; then
     finish TEST_FAIL "$STABLE relevant test(s) still failing"
   fi
-  FLAKY_NOTE=" (a flaky relevant test failed on the first run only)"
+  if [ -s "$OUT/failing_stable_raw.txt" ]; then
+    FLAKY_NOTE=" ($(wc -l < "$OUT/failing_stable_raw.txt") pre-existing baseline failure(s) unchanged)"
+  else
+    FLAKY_NOTE=" (a flaky relevant test failed on the first run only)"
+  fi
 fi
 timeout "$TEST_TIMEOUT" defects4j test -w "$VERIFY" > "$OUT/test_full.log" 2>&1
 cp "$VERIFY/failing_tests" "$OUT/test_after.txt" 2>/dev/null || : > "$OUT/test_after.txt"
@@ -220,16 +251,22 @@ if [ "$FULL_FAIL" -ne 0 ]; then
   if ! grep -q "run.dev.tests).*OK" "$OUT/test_full2.log"; then
     finish ERROR "full test suite did not run to completion on the confirmation run"
   fi
-  grep '^--- ' "$OUT/test_after.txt"  2>/dev/null | sort -u > "$OUT/.f1"
-  grep '^--- ' "$OUT/test_after2.txt" 2>/dev/null | sort -u > "$OUT/.f2"
-  comm -12 "$OUT/.f1" "$OUT/.f2" > "$OUT/regressions.txt"; rm -f "$OUT/.f1" "$OUT/.f2"
+  grep '^--- ' "$OUT/test_after.txt"  2>/dev/null | sed 's/^--- //' | sort -u > "$OUT/.f1"
+  grep '^--- ' "$OUT/test_after2.txt" 2>/dev/null | sed 's/^--- //' | sort -u > "$OUT/.f2"
+  comm -12 "$OUT/.f1" "$OUT/.f2" > "$OUT/regressions_raw.txt"; rm -f "$OUT/.f1" "$OUT/.f2"
+  # Same baseline-relative rule. The baseline was measured with `test -r`, so
+  # the allowed set only covers relevant tests; a pre-existing failure outside
+  # the relevant set would still be counted, as it was before this change.
+  comm -23 "$OUT/regressions_raw.txt" "$OUT/allowed_failures.txt" > "$OUT/regressions.txt"
   STABLE=$(wc -l < "$OUT/regressions.txt")
   if [ "$STABLE" -ne 0 ]; then
     finish REGRESSION "$STABLE test(s) broken elsewhere in the suite"
   fi
-  FLAKY_NOTE="$FLAKY_NOTE (a flaky test failed on the first full run only)"
+  if [ -s "$OUT/regressions_raw.txt" ]; then
+    FLAKY_NOTE="$FLAKY_NOTE ($(wc -l < "$OUT/regressions_raw.txt") pre-existing baseline failure(s) unchanged in the full suite)"
+  else
+    FLAKY_NOTE="$FLAKY_NOTE (a flaky test failed on the first full run only)"
+  fi
 fi
 
-# developer patch kept alongside for offline correctness comparison
-cp "$D4J_HOME/framework/projects/$P/patches/$B.src.patch" "$OUT/dev.patch" 2>/dev/null || true
 finish PLAUSIBLE "all developer tests pass$FLAKY_NOTE"

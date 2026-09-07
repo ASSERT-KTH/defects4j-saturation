@@ -6,6 +6,8 @@
   "note": "all developer tests pass",
   "model": "claude-sonnet-5",
   "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6439,
   "finished_at": "2026-09-06T18:33:37Z",
   "wallclock_s": 267,
   "agent_s": 167,

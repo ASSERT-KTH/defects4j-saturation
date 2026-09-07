@@ -374,7 +374,7 @@ JacksonCore-6,JacksonCore,6,PLAUSIBLE,all developer tests pass,identical,9,0.085
 JacksonCore-7,JacksonCore,7,PLAUSIBLE,all developer tests pass,identical,9,0.122239,58,29,3,0,18,1770,189700
 JacksonCore-8,JacksonCore,8,PLAUSIBLE,all developer tests pass,same-files,10,0.11993800000000002,66,36,1,0,20,2155,196670
 JacksonCore-9,JacksonCore,9,PLAUSIBLE,all developer tests pass,different,12,0.13796780000000003,73,41,3,3,24,2498,248914
-JacksonCore-10,JacksonCore,10,TEST_FAIL,3 relevant test(s) still failing,,,,1831,1800,1,1,,,
+JacksonCore-10,JacksonCore,10,TEST_FAIL,3 relevant test(s) still failing,,80,4.054381,1831,1800,1,1,160,143615,9098396
 JacksonCore-11,JacksonCore,11,PLAUSIBLE,all developer tests pass,identical,34,0.6405696,385,351,5,0,68,15907,1393553
 JacksonCore-12,JacksonCore,12,PLAUSIBLE,all developer tests pass,different,23,0.4667598000000001,171,142,15,3,46,13106,811594
 JacksonCore-13,JacksonCore,13,PLAUSIBLE,all developer tests pass,identical,6,0.08176560000000001,44,22,8,0,12,1530,102623
@@ -748,7 +748,7 @@ Math-62,Math,62,PLAUSIBLE,all developer tests pass,same-files,32,0.6536837999999
 Math-63,Math,63,PLAUSIBLE,all developer tests pass,same-files,11,0.14153800000000002,178,75,1,1,22,2400,238940
 Math-64,Math,64,PLAUSIBLE,all developer tests pass,same-files,42,1.1677626,486,450,1,1,84,22858,2894063
 Math-65,Math,65,PLAUSIBLE,all developer tests pass,same-files,9,0.1397648,89,41,1,1,18,2252,202789
-Math-66,Math,66,TEST_FAIL,3 relevant test(s) still failing,,,,1832,1800,15,16,,,
+Math-66,Math,66,TEST_FAIL,3 relevant test(s) still failing,,88,4.563186,1832,1800,15,16,176,138810,11367550
 Math-67,Math,67,PLAUSIBLE,all developer tests pass,same-files,58,1.4056289999999998,692,649,2,2,116,42340,3194355
 Math-68,Math,68,PLAUSIBLE,all developer tests pass,same-files,93,4.840963600000001,1583,1543,12,10,186,126958,13237678
 Math-69,Math,69,PLAUSIBLE,all developer tests pass,same-files,11,0.18948399999999999,86,52,3,5,22,3698,287910

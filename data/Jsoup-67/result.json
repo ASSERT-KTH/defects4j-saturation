@@ -6,7 +6,9 @@
   "note": "3 relevant test(s) still failing",
   "model": "claude-sonnet-5",
   "effort": "high",
-  "finished_at": "2026-09-06T14:29:18Z",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 54072,
+  "finished_at": "2026-09-07T05:38:35Z",
   "wallclock_s": 952,
   "agent_s": 915,
   "agent_rc": 0,
@@ -33,5 +35,5 @@
   ],
   "patch_added_lines": 28,
   "patch_removed_lines": 0,
-  "has_dev_patch": false
+  "has_dev_patch": true
 }

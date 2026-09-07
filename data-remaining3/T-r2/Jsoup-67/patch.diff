@@ -1,0 +1,122 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index b07e47f..2975277 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -14,7 +14,9 @@ import org.jsoup.select.Elements;
+ import java.io.Reader;
+ import java.io.StringReader;
+ import java.util.ArrayList;
++import java.util.HashMap;
+ import java.util.List;
++import java.util.Map;
+ 
+ import static org.jsoup.helper.StringUtil.inSorted;
+ import static org.jsoup.helper.StringUtil.sort;
+@@ -64,6 +66,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     @Override
+     protected void initialiseParse(Reader input, String baseUri, ParseErrorList errors, ParseSettings settings) {
+         super.initialiseParse(input, baseUri, errors, settings);
++        stack = new TagCountingStack(); // tracks tag name counts, so scope searches can bail out early
+ 
+         // this is a bit mucky. todo - probably just create new parser objects to ensure all reset.
+         state = HtmlTreeBuilderState.Initial;
+@@ -80,6 +83,74 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         fragmentParsing = false;
+     }
+ 
++    /**
++     A stack of open elements that also tracks, per tag name, how many elements with that name are currently on the
++     stack. Scope searches (e.g. {@link #inSpecificScope}) walk the stack from the top down until they find their
++     target or a scope boundary; on deeply nested documents with no matching target (e.g. thousands of nested
++     {@code <dl><dd>} with no open {@code <p>}), that walk is O(stack size) per call. Keeping a running count lets
++     those searches return immediately when the target tag isn't open anywhere on the stack.
++     */
++    private static class TagCountingStack extends ArrayList<Element> {
++        private final Map<String, Integer> tagCounts = new HashMap<>();
++
++        boolean hasTag(String tagName) {
++            Integer count = tagCounts.get(tagName);
++            return count != null && count > 0;
++        }
++
++        private void trackAdd(Element element) {
++            String name = element.nodeName();
++            Integer count = tagCounts.get(name);
++            tagCounts.put(name, count == null ? 1 : count + 1);
++        }
++
++        private void trackRemove(Element element) {
++            String name = element.nodeName();
++            Integer count = tagCounts.get(name);
++            if (count == null)
++                return;
++            if (count > 1)
++                tagCounts.put(name, count - 1);
++            else
++                tagCounts.remove(name);
++        }
++
++        @Override
++        public boolean add(Element element) {
++            trackAdd(element);
++            return super.add(element);
++        }
++
++        @Override
++        public void add(int index, Element element) {
++            trackAdd(element);
++            super.add(index, element);
++        }
++
++        @Override
++        public Element remove(int index) {
++            Element removed = super.remove(index);
++            trackRemove(removed);
++            return removed;
++        }
++
++        @Override
++        public boolean remove(Object o) {
++            boolean removed = super.remove(o);
++            if (removed && o instanceof Element)
++                trackRemove((Element) o);
++            return removed;
++        }
++
++        @Override
++        public Element set(int index, Element element) {
++            Element previous = super.set(index, element);
++            trackRemove(previous);
++            trackAdd(element);
++            return previous;
++        }
++    }
++
+     List<Node> parseFragment(String inputFragment, Element context, String baseUri, ParseErrorList errors, ParseSettings settings) {
+         // context may be null
+         state = HtmlTreeBuilderState.Initial;
+@@ -459,11 +530,24 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     private String[] specificScopeTarget = {null};
+ 
+     private boolean inSpecificScope(String targetName, String[] baseTypes, String[] extraTypes) {
++        if (!((TagCountingStack) stack).hasTag(targetName)) // can't be in scope if it isn't open at all
++            return false;
+         specificScopeTarget[0] = targetName;
+         return inSpecificScope(specificScopeTarget, baseTypes, extraTypes);
+     }
+ 
+     private boolean inSpecificScope(String[] targetNames, String[] baseTypes, String[] extraTypes) {
++        TagCountingStack tagCounts = (TagCountingStack) stack;
++        boolean anyTargetOpen = false;
++        for (String targetName : targetNames) {
++            if (tagCounts.hasTag(targetName)) {
++                anyTargetOpen = true;
++                break;
++            }
++        }
++        if (!anyTargetOpen) // none of the targets are open anywhere, so can't be in scope
++            return false;
++
+         int depth = stack.size() -1;
+         for (int pos = depth; pos >= 0; pos--) {
+             Element el = stack.get(pos);

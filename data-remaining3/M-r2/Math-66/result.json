@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 66,
+  "id": "Math-66",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-opus-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6511,
+  "finished_at": "2026-09-07T11:09:38Z",
+  "wallclock_s": 208,
+  "agent_s": 177,
+  "agent_rc": 0,
+  "num_turns": 23,
+  "api_duration_ms": 163857,
+  "total_cost_usd": 1.1100355000000002,
+  "session_id": "88d42bc0-e89a-4e1d-89b1-4165ef59ed32",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 11039,
+  "cache_read_input_tokens": 750367,
+  "cache_creation_input_tokens": 45301,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizerTest::testQuinticMin",
+    "org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizerTest::testSinMin",
+    "org.apache.commons.math.optimization.univariate.BrentOptimizerTest::testQuinticMinStatistics",
+    "org.apache.commons.math.optimization.univariate.BrentOptimizerTest::testSinMin"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/univariate/BrentOptimizer.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 23,
+  "has_dev_patch": true
+}
