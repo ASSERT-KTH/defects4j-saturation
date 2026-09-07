@@ -1,0 +1,75 @@
+diff --git a/src/main/java/org/jsoup/parser/CharacterReader.java b/src/main/java/org/jsoup/parser/CharacterReader.java
+index 80dffcd..42c69e6 100644
+--- a/src/main/java/org/jsoup/parser/CharacterReader.java
++++ b/src/main/java/org/jsoup/parser/CharacterReader.java
+@@ -251,7 +251,7 @@ public final class CharacterReader {
+ 
+         while (bufPos < remaining) {
+             final char c = val[bufPos];
+-            if (c == '\t'|| c ==  '\n'|| c ==  '\r'|| c ==  '\f'|| c ==  ' '|| c ==  '/'|| c ==  '>'|| c ==  TokeniserState.nullChar)
++            if (c == '\t'|| c ==  '\n'|| c ==  '\r'|| c ==  '\f'|| c ==  ' '|| c ==  '/'|| c ==  '>'|| c ==  '<'|| c ==  TokeniserState.nullChar)
+                 break;
+             bufPos++;
+         }
+diff --git a/src/main/java/org/jsoup/parser/TokeniserState.java b/src/main/java/org/jsoup/parser/TokeniserState.java
+index 4980f15..dfdc57e 100644
+--- a/src/main/java/org/jsoup/parser/TokeniserState.java
++++ b/src/main/java/org/jsoup/parser/TokeniserState.java
+@@ -170,6 +170,13 @@ enum TokeniserState {
+                     t.eofError(this);
+                     t.transition(Data);
+                     break;
++                case '<': // NOTE: out of spec, but clear author intent -- close pending tag and reparse as new tag
++                    r.unconsume();
++                    t.error(this);
++                    // intended fall through as if >
++                    t.emitTagPending();
++                    t.transition(Data);
++                    break;
+                 default: // buffer underrun
+                     t.tagPending.appendTagName(c);
+             }
+@@ -576,9 +583,21 @@ enum TokeniserState {
+                     t.eofError(this);
+                     t.transition(Data);
+                     break;
++                case '<': // NOTE: out of spec, but clear author intent -- close pending tag and reparse as new tag
++                    if (r.matchesLetter()) {
++                        r.unconsume();
++                        t.error(this);
++                        t.emitTagPending();
++                        t.transition(Data);
++                        break;
++                    }
++                    t.error(this);
++                    t.tagPending.newAttribute();
++                    t.tagPending.appendAttributeName(c);
++                    t.transition(AttributeName);
++                    break;
+                 case '"':
+                 case '\'':
+-                case '<':
+                 case '=':
+                     t.error(this);
+                     t.tagPending.newAttribute();
+@@ -625,9 +644,19 @@ enum TokeniserState {
+                     t.eofError(this);
+                     t.transition(Data);
+                     break;
++                case '<': // NOTE: out of spec, but clear author intent -- close pending tag and reparse as new tag
++                    if (r.matchesLetter()) {
++                        r.unconsume();
++                        t.error(this);
++                        t.emitTagPending();
++                        t.transition(Data);
++                        break;
++                    }
++                    t.error(this);
++                    t.tagPending.appendAttributeName(c);
++                    break;
+                 case '"':
+                 case '\'':
+-                case '<':
+                     t.error(this);
+                     t.tagPending.appendAttributeName(c);
+                     break;

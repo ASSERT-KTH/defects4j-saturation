@@ -1,0 +1,43 @@
+{
+  "project": "Gson",
+  "bug": 14,
+  "id": "Gson-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:00:58Z",
+  "wallclock_s": 72,
+  "agent_s": 44,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 38003,
+  "total_cost_usd": 0.20198320000000003,
+  "session_id": "96a5a402-c3ad-42ab-b291-2c53e756b706",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 3455,
+  "cache_read_input_tokens": 262266,
+  "cache_creation_input_tokens": 27268,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testDoubleSupertype",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testIssue440WeakReference",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testSubSupertype",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testDoubleSubtype",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testIssue603PrintStream",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testSuperSubtype",
+    "com.google.gson.internal.bind.RecursiveTypesResolveTest::testRecursiveResolveSimple"
+  ],
+  "failing_before": 7,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/$Gson$Types.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

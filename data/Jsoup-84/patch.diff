@@ -1,0 +1,16 @@
+diff --git a/src/main/java/org/jsoup/helper/W3CDom.java b/src/main/java/org/jsoup/helper/W3CDom.java
+index 7b309a3..d746693 100644
+--- a/src/main/java/org/jsoup/helper/W3CDom.java
++++ b/src/main/java/org/jsoup/helper/W3CDom.java
+@@ -88,7 +88,10 @@ public class W3CDom {
+                 String namespace = namespacesStack.peek().get(prefix);
+                 String tagName = sourceEl.tagName();
+ 
+-                Element el = 
++                // for undeclared prefixes, createElementNS requires a non-null namespace; use "" so
++                // the resulting node still reports the correct local name and a null namespace URI
++                Element el = namespace == null && !prefix.isEmpty() ?
++                    doc.createElementNS("", tagName) :
+                     doc.createElementNS(namespace, tagName);
+                 copyAttributes(sourceEl, el);
+                 if (dest == null) { // sets up the root

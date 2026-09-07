@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 67,
+  "id": "JacksonDatabind-67",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:46:43Z",
+  "wallclock_s": 217,
+  "agent_s": 73,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 35831,
+  "total_cost_usd": 0.1914052,
+  "session_id": "910e7c29-2e41-4a1f-b67d-170e0da1b938",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2672,
+  "cache_read_input_tokens": 318911,
+  "cache_creation_input_tokens": 24529,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.module.TestCustomEnumKeyDeserializer::testCustomEnumValueAndKeyViaModifier"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

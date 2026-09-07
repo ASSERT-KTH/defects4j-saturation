@@ -1,0 +1,38 @@
+{
+  "project": "Jsoup",
+  "bug": 69,
+  "id": "Jsoup-69",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:17:46Z",
+  "wallclock_s": 118,
+  "agent_s": 100,
+  "agent_rc": 0,
+  "num_turns": 25,
+  "api_duration_ms": 94176,
+  "total_cost_usd": 0.3022782,
+  "session_id": "386223b3-439e-4e57-a771-d0d69b20a7c6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 48,
+  "output_tokens": 7526,
+  "cache_read_input_tokens": 624031,
+  "cache_creation_input_tokens": 24917,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.FormElementTest::removeFormElement"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java",
+    "src/main/java/org/jsoup/nodes/FormElement.java"
+  ],
+  "patch_added_lines": 35,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

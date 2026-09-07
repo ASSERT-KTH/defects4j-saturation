@@ -1,0 +1,15 @@
+diff --git a/src/main/java/org/jsoup/nodes/Element.java b/src/main/java/org/jsoup/nodes/Element.java
+index 461a922..854c857 100644
+--- a/src/main/java/org/jsoup/nodes/Element.java
++++ b/src/main/java/org/jsoup/nodes/Element.java
+@@ -1399,8 +1399,9 @@ public class Element extends Node {
+         Element clone = (Element) super.doClone(parent);
+         clone.attributes = attributes != null ? attributes.clone() : null;
+         clone.baseUri = baseUri;
+-        clone.childNodes = new NodeList(childNodes.size());
++        clone.childNodes = clone.new NodeList(childNodes.size());
+         clone.childNodes.addAll(childNodes);
++        clone.shadowChildrenRef = null; // invalidate any cached child elements list, which is not shared by the clone.
+ 
+         return clone;
+     }

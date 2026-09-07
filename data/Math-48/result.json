@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 48,
+  "id": "Math-48",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:34:07Z",
+  "wallclock_s": 211,
+  "agent_s": 111,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 51219,
+  "total_cost_usd": 0.14892,
+  "session_id": "efa39c98-331c-4965-88b8-9310adb8cfaa",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 4298,
+  "cache_read_input_tokens": 150895,
+  "cache_creation_input_tokens": 18212,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.analysis.solvers.RegulaFalsiSolverTest::testIssue631"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

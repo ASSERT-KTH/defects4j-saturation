@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 29,
+  "id": "Closure-29",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:24:41Z",
+  "wallclock_s": 456,
+  "agent_s": 348,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 277835,
+  "total_cost_usd": 0.6846476,
+  "session_id": "5b0fac00-e4bd-4a8e-9faa-19e5fd8a1373",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 23796,
+  "cache_read_input_tokens": 999858,
+  "cache_creation_input_tokens": 60346,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineObjectLiteralsTest::testObject10",
+    "com.google.javascript.jscomp.InlineObjectLiteralsTest::testObject12",
+    "com.google.javascript.jscomp.InlineObjectLiteralsTest::testObject22",
+    "com.google.javascript.jscomp.InlineObjectLiteralsTest::testIssue724",
+    "com.google.javascript.jscomp.IntegrationTest::testIssue724"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/InlineObjectLiterals.java"
+  ],
+  "patch_added_lines": 48,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

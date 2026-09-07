@@ -1,0 +1,39 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+index c27ea72..65d6d77 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+@@ -228,13 +228,13 @@ public abstract class FromStringDeserializer<T> extends StdScalarDeserializer<T>
+                 return Pattern.compile(value);
+             case STD_LOCALE:
+                 {
+-                    int ix = value.indexOf('_');
++                    int ix = _firstLocaleSeparator(value);
+                     if (ix < 0) { // single argument
+                         return new Locale(value);
+                     }
+                     String first = value.substring(0, ix);
+                     value = value.substring(ix+1);
+-                    ix = value.indexOf('_');
++                    ix = _firstLocaleSeparator(value);
+                     if (ix < 0) { // two pieces
+                         return new Locale(first, value);
+                     }
+@@ -275,6 +275,18 @@ public abstract class FromStringDeserializer<T> extends StdScalarDeserializer<T>
+             throw new IllegalArgumentException();
+         }
+ 
++        private static int _firstLocaleSeparator(String value) {
++            int ixUnderscore = value.indexOf('_');
++            int ixDash = value.indexOf('-');
++            if (ixUnderscore < 0) {
++                return ixDash;
++            }
++            if (ixDash < 0) {
++                return ixUnderscore;
++            }
++            return Math.min(ixUnderscore, ixDash);
++        }
++
+         @Override
+         protected Object _deserializeFromEmptyString() throws IOException {
+             // As per [databind#398], URI requires special handling

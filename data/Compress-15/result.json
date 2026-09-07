@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 15,
+  "id": "Compress-15",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:37:00Z",
+  "wallclock_s": 57,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 25434,
+  "total_cost_usd": 0.10006620000000001,
+  "session_id": "b40f4847-8a9a-485b-bb92-91fe45d06096",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1991,
+  "cache_read_input_tokens": 160791,
+  "cache_creation_input_tokens": 11411,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.zip.ZipArchiveEntryTest::testNullCommentEqualsEmptyComment"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveEntry.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

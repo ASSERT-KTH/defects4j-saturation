@@ -1,0 +1,149 @@
+diff --git a/source/org/jfree/chart/renderer/category/StatisticalBarRenderer.java b/source/org/jfree/chart/renderer/category/StatisticalBarRenderer.java
+index ab65ba3..768e46e 100644
+--- a/source/org/jfree/chart/renderer/category/StatisticalBarRenderer.java
++++ b/source/org/jfree/chart/renderer/category/StatisticalBarRenderer.java
+@@ -256,6 +256,9 @@ public class StatisticalBarRenderer extends BarRenderer
+ 
+         // BAR X
+         Number meanValue = dataset.getMeanValue(row, column);
++        if (meanValue == null) {
++            return;
++        }
+ 
+         double value = meanValue.doubleValue();
+         double base = 0.0;
+@@ -293,14 +296,14 @@ public class StatisticalBarRenderer extends BarRenderer
+ 
+         RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
+         double transY1 = rangeAxis.valueToJava2D(base, dataArea, yAxisLocation);
+-        double transY2 = rangeAxis.valueToJava2D(value, dataArea, 
++        double transY2 = rangeAxis.valueToJava2D(value, dataArea,
+                 yAxisLocation);
+         double rectX = Math.min(transY2, transY1);
+ 
+         double rectHeight = state.getBarWidth();
+         double rectWidth = Math.abs(transY2 - transY1);
+ 
+-        Rectangle2D bar = new Rectangle2D.Double(rectX, rectY, rectWidth, 
++        Rectangle2D bar = new Rectangle2D.Double(rectX, rectY, rectWidth,
+                 rectHeight);
+         Paint seriesPaint = getItemPaint(row, column);
+         g2.setPaint(seriesPaint);
+@@ -312,10 +315,12 @@ public class StatisticalBarRenderer extends BarRenderer
+         }
+ 
+         // standard deviation lines
+-            double valueDelta = dataset.getStdDevValue(row, column).doubleValue();
+-            double highVal = rangeAxis.valueToJava2D(meanValue.doubleValue() 
++        Number n = dataset.getStdDevValue(row, column);
++        if (n != null) {
++            double valueDelta = n.doubleValue();
++            double highVal = rangeAxis.valueToJava2D(meanValue.doubleValue()
+                     + valueDelta, dataArea, yAxisLocation);
+-            double lowVal = rangeAxis.valueToJava2D(meanValue.doubleValue() 
++            double lowVal = rangeAxis.valueToJava2D(meanValue.doubleValue()
+                     - valueDelta, dataArea, yAxisLocation);
+ 
+             if (this.errorIndicatorStroke != null) {
+@@ -325,24 +330,25 @@ public class StatisticalBarRenderer extends BarRenderer
+                 g2.setStroke(getItemOutlineStroke(row, column));
+             }
+             if (this.errorIndicatorPaint != null) {
+-                g2.setPaint(this.errorIndicatorPaint);  
++                g2.setPaint(this.errorIndicatorPaint);
+             }
+             else {
+-                g2.setPaint(getItemOutlinePaint(row, column));   
++                g2.setPaint(getItemOutlinePaint(row, column));
+             }
+-        
++
+             Line2D line = null;
+-            line = new Line2D.Double(lowVal, rectY + rectHeight / 2.0d, 
++            line = new Line2D.Double(lowVal, rectY + rectHeight / 2.0d,
+                                      highVal, rectY + rectHeight / 2.0d);
+             g2.draw(line);
+-            line = new Line2D.Double(highVal, rectY + rectHeight * 0.25, 
++            line = new Line2D.Double(highVal, rectY + rectHeight * 0.25,
+                                      highVal, rectY + rectHeight * 0.75);
+             g2.draw(line);
+-            line = new Line2D.Double(lowVal, rectY + rectHeight * 0.25, 
++            line = new Line2D.Double(lowVal, rectY + rectHeight * 0.25,
+                                      lowVal, rectY + rectHeight * 0.75);
+             g2.draw(line);
+-        
+-        CategoryItemLabelGenerator generator = getItemLabelGenerator(row, 
++        }
++
++        CategoryItemLabelGenerator generator = getItemLabelGenerator(row,
+                 column);
+         if (generator != null && isItemLabelVisible(row, column)) {
+             drawItemLabel(g2, dataset, row, column, plot, generator, bar, 
+@@ -400,6 +406,9 @@ public class StatisticalBarRenderer extends BarRenderer
+ 
+         // BAR Y
+         Number meanValue = dataset.getMeanValue(row, column);
++        if (meanValue == null) {
++            return;
++        }
+ 
+         double value = meanValue.doubleValue();
+         double base = 0.0;
+@@ -437,14 +446,14 @@ public class StatisticalBarRenderer extends BarRenderer
+ 
+         RectangleEdge yAxisLocation = plot.getRangeAxisEdge();
+         double transY1 = rangeAxis.valueToJava2D(base, dataArea, yAxisLocation);
+-        double transY2 = rangeAxis.valueToJava2D(value, dataArea, 
++        double transY2 = rangeAxis.valueToJava2D(value, dataArea,
+                 yAxisLocation);
+         double rectY = Math.min(transY2, transY1);
+ 
+         double rectWidth = state.getBarWidth();
+         double rectHeight = Math.abs(transY2 - transY1);
+ 
+-        Rectangle2D bar = new Rectangle2D.Double(rectX, rectY, rectWidth, 
++        Rectangle2D bar = new Rectangle2D.Double(rectX, rectY, rectWidth,
+                 rectHeight);
+         Paint seriesPaint = getItemPaint(row, column);
+         g2.setPaint(seriesPaint);
+@@ -456,10 +465,12 @@ public class StatisticalBarRenderer extends BarRenderer
+         }
+ 
+         // standard deviation lines
+-            double valueDelta = dataset.getStdDevValue(row, column).doubleValue();
+-            double highVal = rangeAxis.valueToJava2D(meanValue.doubleValue() 
++        Number n = dataset.getStdDevValue(row, column);
++        if (n != null) {
++            double valueDelta = n.doubleValue();
++            double highVal = rangeAxis.valueToJava2D(meanValue.doubleValue()
+                     + valueDelta, dataArea, yAxisLocation);
+-            double lowVal = rangeAxis.valueToJava2D(meanValue.doubleValue() 
++            double lowVal = rangeAxis.valueToJava2D(meanValue.doubleValue()
+                     - valueDelta, dataArea, yAxisLocation);
+ 
+             if (this.errorIndicatorStroke != null) {
+@@ -469,10 +480,10 @@ public class StatisticalBarRenderer extends BarRenderer
+                 g2.setStroke(getItemOutlineStroke(row, column));
+             }
+             if (this.errorIndicatorPaint != null) {
+-                g2.setPaint(this.errorIndicatorPaint);  
++                g2.setPaint(this.errorIndicatorPaint);
+             }
+             else {
+-                g2.setPaint(getItemOutlinePaint(row, column));   
++                g2.setPaint(getItemOutlinePaint(row, column));
+             }
+             Line2D line = null;
+             line = new Line2D.Double(rectX + rectWidth / 2.0d, lowVal,
+@@ -484,8 +495,9 @@ public class StatisticalBarRenderer extends BarRenderer
+             line = new Line2D.Double(rectX + rectWidth / 2.0d - 5.0d, lowVal,
+                                      rectX + rectWidth / 2.0d + 5.0d, lowVal);
+             g2.draw(line);
+-        
+-        CategoryItemLabelGenerator generator = getItemLabelGenerator(row, 
++        }
++
++        CategoryItemLabelGenerator generator = getItemLabelGenerator(row,
+                 column);
+         if (generator != null && isItemLabelVisible(row, column)) {
+             drawItemLabel(g2, dataset, row, column, plot, generator, bar, 

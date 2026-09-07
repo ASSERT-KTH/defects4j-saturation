@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 161,
+  "id": "Closure-161",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T04:00:07Z",
+  "wallclock_s": 195,
+  "agent_s": 85,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 23723,
+  "total_cost_usd": 0.1071628,
+  "session_id": "f28c8b57-3001-4a2b-900e-790726294955",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1872,
+  "cache_read_input_tokens": 171414,
+  "cache_creation_input_tokens": 12904,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeFoldConstantsTest::testIssue522"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/PeepholeFoldConstants.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

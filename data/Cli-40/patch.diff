@@ -1,0 +1,36 @@
+diff --git a/src/main/java/org/apache/commons/cli/TypeHandler.java b/src/main/java/org/apache/commons/cli/TypeHandler.java
+index 6bd84b0..ae1938f 100644
+--- a/src/main/java/org/apache/commons/cli/TypeHandler.java
++++ b/src/main/java/org/apache/commons/cli/TypeHandler.java
+@@ -100,7 +100,30 @@ public class TypeHandler
+         }
+         else
+         {
+-            return null;
++            return createValueFromString(str, clazz);
++        }
++    }
++
++    /**
++     * Creates an instance of <code>clazz</code> from <code>str</code> using
++     * a public constructor that accepts a single <code>String</code>
++     * argument, such as <code>Integer(String)</code>.
++     *
++     * @param str the command line value
++     * @param clazz the type of argument
++     * @return The instance of <code>clazz</code> initialised with
++     * the value of <code>str</code>.
++     * @throws ParseException if the value creation for the given class failed
++     */
++    private static <T> T createValueFromString(final String str, final Class<T> clazz) throws ParseException
++    {
++        try
++        {
++            return clazz.getConstructor(String.class).newInstance(str);
++        }
++        catch (final Exception e)
++        {
++            throw new ParseException("Unable to create an instance of: " + clazz.getName() + " from: " + str);
+         }
+     }
+ 

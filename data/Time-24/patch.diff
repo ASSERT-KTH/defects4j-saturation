@@ -1,0 +1,35 @@
+diff --git a/src/main/java/org/joda/time/format/DateTimeParserBucket.java b/src/main/java/org/joda/time/format/DateTimeParserBucket.java
+index b985cef..a92e164 100644
+--- a/src/main/java/org/joda/time/format/DateTimeParserBucket.java
++++ b/src/main/java/org/joda/time/format/DateTimeParserBucket.java
+@@ -345,12 +345,29 @@ public class DateTimeParserBucket {
+                 saveField(DateTimeFieldType.year(), iDefaultYear);
+                 return computeMillis(resetFields, text);
+             }
++            // if a weekyear-based field (such as weekOfWeekyear) is being parsed
++            // alongside a plain calendar year field, the year must be treated as
++            // a weekyear, otherwise the two fields can refer to inconsistent years
++            for (int i = 0; i < count; i++) {
++                DurationField range = savedFields[i].iField.getRangeDurationField();
++                if (range != null && DurationFieldType.weekyears().equals(range.getType())) {
++                    for (int j = 0; j < count; j++) {
++                        if (savedFields[j].iField.getType() == DateTimeFieldType.year()) {
++                            savedFields[j] = new SavedField(
++                                DateTimeFieldType.weekyear().getField(iChrono), savedFields[j].iValue);
++                            sort(savedFields, count);
++                            break;
++                        }
++                    }
++                    break;
++                }
++            }
+         }
+ 
+         long millis = iMillis;
+         try {
+             for (int i = 0; i < count; i++) {
+-                millis = savedFields[i].set(millis, resetFields);
++                millis = savedFields[i].set(millis, i == count - 1 && resetFields);
+             }
+         } catch (IllegalFieldValueException e) {
+             if (text != null) {

@@ -1,0 +1,39 @@
+{
+  "project": "Closure",
+  "bug": 165,
+  "id": "Closure-165",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T04:12:20Z",
+  "wallclock_s": 565,
+  "agent_s": 375,
+  "agent_rc": 0,
+  "num_turns": 32,
+  "api_duration_ms": 301928,
+  "total_cost_usd": 0.7746513999999999,
+  "session_id": "df628a4e-ac0c-42b2-b376-852b7c13a316",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 64,
+  "output_tokens": 27144,
+  "cache_read_input_tokens": 1387342,
+  "cache_creation_input_tokens": 55819,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue725"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/JSTypeRegistry.java",
+    "src/com/google/javascript/rhino/jstype/RecordType.java",
+    "src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java"
+  ],
+  "patch_added_lines": 23,
+  "patch_removed_lines": 6,
+  "has_dev_patch": true
+}

@@ -1,0 +1,21 @@
+diff --git a/src/main/java/org/apache/commons/csv/CSVRecord.java b/src/main/java/org/apache/commons/csv/CSVRecord.java
+index dc52017..7ec9d33 100644
+--- a/src/main/java/org/apache/commons/csv/CSVRecord.java
++++ b/src/main/java/org/apache/commons/csv/CSVRecord.java
+@@ -82,7 +82,15 @@ public class CSVRecord implements Serializable, Iterable<String> {
+                     "No header mapping was specified, the record values can't be accessed by name");
+         }
+         final Integer index = mapping.get(name);
+-            return index != null ? values[index.intValue()] : null;
++        if (index == null) {
++            return null;
++        }
++        try {
++            return values[index.intValue()];
++        } catch (final ArrayIndexOutOfBoundsException e) {
++            throw new IllegalArgumentException(String.format(
++                    "Index for header '%s' is %d but CSVRecord only has %d values!", name, index, values.length));
++        }
+     }
+ 
+     /**

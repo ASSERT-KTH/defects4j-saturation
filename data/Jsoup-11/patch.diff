@@ -1,0 +1,40 @@
+diff --git a/src/main/java/org/jsoup/select/Selector.java b/src/main/java/org/jsoup/select/Selector.java
+index 13341ce..668f127 100644
+--- a/src/main/java/org/jsoup/select/Selector.java
++++ b/src/main/java/org/jsoup/select/Selector.java
+@@ -178,6 +178,8 @@ public class Selector {
+             return matches(false);
+         } else if (tq.matches(":matchesOwn(")) {
+             return matches(true);
++        } else if (tq.matches(":not(")) {
++            return not();
+         } else { // unhandled
+             throw new SelectorParseException("Could not parse query '%s': unexpected token at '%s'", query, tq.remainder());
+         }
+@@ -280,7 +282,7 @@ public class Selector {
+         String subQuery = tq.chompBalanced('(',')');
+         Validate.notEmpty(subQuery, ":has(el) subselect must not be empty");
+ 
+-        return filterForParentsOfDescendants(elements, select(subQuery, elements));
++        return filterForParentsOfDescendants(root.getAllElements(), select(subQuery, root));
+     }
+     
+     // pseudo selector :contains(text), containsOwn(text)
+@@ -302,7 +304,16 @@ public class Selector {
+     }
+ 
+     // :not(selector)
+-
++    private Elements not() {
++        tq.consume(":not");
++        String subQuery = tq.chompBalanced('(', ')');
++        Validate.notEmpty(subQuery, ":not(selector) subselect must not be empty");
++
++        Elements excluded = select(subQuery, root);
++        Elements output = root.getAllElements();
++        output.removeAll(excluded);
++        return output;
++    }
+ 
+     // direct child descendants
+     private static Elements filterForChildren(Collection<Element> parents, Collection<Element> candidates) {

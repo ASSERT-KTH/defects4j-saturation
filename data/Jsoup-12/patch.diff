@@ -1,0 +1,28 @@
+diff --git a/src/main/java/org/jsoup/parser/TokenQueue.java b/src/main/java/org/jsoup/parser/TokenQueue.java
+index c43e78f..9b53edc 100644
+--- a/src/main/java/org/jsoup/parser/TokenQueue.java
++++ b/src/main/java/org/jsoup/parser/TokenQueue.java
+@@ -228,12 +228,20 @@ public class TokenQueue {
+     // is is a case sensitive time...
+     public String consumeToAny(String... seq) {
+         int start = pos;
+-        while (!isEmpty() && !matchesAny(seq)) {
++        int bracketDepth = 0;
++        while (!isEmpty()) {
++            if (bracketDepth == 0 && matchesAny(seq))
++                break;
++            char c = queue.charAt(pos);
++            if (c == '[')
++                bracketDepth++;
++            else if (c == ']' && bracketDepth > 0)
++                bracketDepth--;
+             pos++;
+         }
+ 
+-        String data = queue.substring(start, pos); 
+-        return data; 
++        String data = queue.substring(start, pos);
++        return data;
+     }
+ 
+     /**

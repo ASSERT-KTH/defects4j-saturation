@@ -1,0 +1,38 @@
+{
+  "project": "Mockito",
+  "bug": 36,
+  "id": "Mockito-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:27:24Z",
+  "wallclock_s": 184,
+  "agent_s": 101,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 51145,
+  "total_cost_usd": 0.2381638,
+  "session_id": "f7d08e7e-36cd-4ab1-9a12-f3c079b10f00",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 3778,
+  "cache_read_input_tokens": 546074,
+  "cache_creation_input_tokens": 21700,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.invocation.InvocationTest::shouldScreamWhenCallingRealMethodOnInterface",
+    "org.mockitousage.spies.SpyingOnInterfacesTest::shouldFailInRuntimeWhenCallingRealMethodOnInterface"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/invocation/Invocation.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

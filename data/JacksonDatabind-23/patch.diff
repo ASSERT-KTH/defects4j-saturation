@@ -1,0 +1,16 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializers.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializers.java
+index c11155e..8868125 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializers.java
+@@ -71,6 +71,11 @@ public class NumberSerializers
+             return createSchemaNode(_schemaType, true);
+         }
+ 
++        @Override
++        public boolean isEmpty(SerializerProvider provider, T value) {
++            return ((Number) value).doubleValue() == 0.0;
++        }
++
+         @Override
+         public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
+         {

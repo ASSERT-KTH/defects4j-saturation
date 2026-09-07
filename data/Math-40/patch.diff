@@ -1,0 +1,97 @@
+diff --git a/src/main/java/org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java b/src/main/java/org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java
+index 93dd3bb..970dcf9 100644
+--- a/src/main/java/org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java
++++ b/src/main/java/org/apache/commons/math/analysis/solvers/BracketingNthOrderBrentSolver.java
+@@ -56,6 +56,14 @@ public class BracketingNthOrderBrentSolver
+     /** Reduction factor for attempts to balance the bracketing interval. */
+     private static final double REDUCTION_FACTOR = 1.0 / 16.0;
+ 
++    /**
++     * Aging threshold above which the balancing correction is considered to
++     * have stalled (typically because the two ends of the bracketing interval
++     * have wildly different orders of magnitude), triggering a plain
++     * bisection step instead of an interpolation attempt.
++     */
++    private static final int STALLED_AGING = 5 * MAXIMAL_AGING;
++
+     /** Maximal order. */
+     private final int maximalOrder;
+ 
+@@ -245,38 +253,49 @@ public class BracketingNthOrderBrentSolver
+             double nextX;
+             int start = 0;
+             int end   = nbPoints;
+-            do {
+-
+-                // guess a value for current target, using inverse polynomial interpolation
+-                System.arraycopy(x, start, tmpX, start, end - start);
+-                nextX = guessX(targetY, tmpX, y, start, end);
+-
+-                if (!((nextX > xA) && (nextX < xB))) {
+-                    // the guessed root is not strictly inside of the tightest bracketing interval
+-
+-                    // the guessed root is either not strictly inside the interval or it
+-                    // is a NaN (which occurs when some sampling points share the same y)
+-                    // we try again with a lower interpolation order
+-                    if (signChangeIndex - start >= end - signChangeIndex) {
+-                        // we have more points before the sign change, drop the lowest point
+-                        ++start;
+-                    } else {
+-                        // we have more points after sign change, drop the highest point
+-                        --end;
+-                    }
++            if ((agingA > STALLED_AGING) || (agingB > STALLED_AGING)) {
++                // the balancing correction has been attempted for a long time
++                // without success, the bracketing interval is most likely
++                // extremely unbalanced (very different orders of magnitude at
++                // the two ends), fall back to plain bisection to guarantee
++                // steady progress towards the root
++                nextX = xA + 0.5 * (xB - xA);
++                start = signChangeIndex - 1;
++                end   = signChangeIndex;
++            } else {
++                do {
+ 
+-                    // we need to do one more attempt
+-                    nextX = Double.NaN;
++                    // guess a value for current target, using inverse polynomial interpolation
++                    System.arraycopy(x, start, tmpX, start, end - start);
++                    nextX = guessX(targetY, tmpX, y, start, end);
+ 
+-                }
++                    if (!((nextX > xA) && (nextX < xB))) {
++                        // the guessed root is not strictly inside of the tightest bracketing interval
+ 
+-            } while (Double.isNaN(nextX) && (end - start > 1));
++                        // the guessed root is either not strictly inside the interval or it
++                        // is a NaN (which occurs when some sampling points share the same y)
++                        // we try again with a lower interpolation order
++                        if (signChangeIndex - start >= end - signChangeIndex) {
++                            // we have more points before the sign change, drop the lowest point
++                            ++start;
++                        } else {
++                            // we have more points after sign change, drop the highest point
++                            --end;
++                        }
+ 
+-            if (Double.isNaN(nextX)) {
+-                // fall back to bisection
+-                nextX = xA + 0.5 * (xB - xA);
+-                start = signChangeIndex - 1;
+-                end   = signChangeIndex;
++                        // we need to do one more attempt
++                        nextX = Double.NaN;
++
++                    }
++
++                } while (Double.isNaN(nextX) && (end - start > 1));
++
++                if (Double.isNaN(nextX)) {
++                    // fall back to bisection
++                    nextX = xA + 0.5 * (xB - xA);
++                    start = signChangeIndex - 1;
++                    end   = signChangeIndex;
++                }
+             }
+ 
+             // evaluate the function at the guessed root

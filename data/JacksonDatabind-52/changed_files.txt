@@ -1,0 +1,2 @@
+M	src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java

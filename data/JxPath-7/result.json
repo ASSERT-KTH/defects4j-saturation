@@ -1,0 +1,41 @@
+{
+  "project": "JxPath",
+  "bug": 7,
+  "id": "JxPath-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:37:04Z",
+  "wallclock_s": 171,
+  "agent_s": 147,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 129204,
+  "total_cost_usd": 0.4860258,
+  "session_id": "63722e4e-edd0-418d-9b0a-1f51d53cf62d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 54,
+  "output_tokens": 12172,
+  "cache_read_input_tokens": 993824,
+  "cache_creation_input_tokens": 40758,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.CoreOperationTest::testNodeSetOperations"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java",
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java",
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java",
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java",
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java"
+  ],
+  "patch_added_lines": 92,
+  "patch_removed_lines": 22,
+  "has_dev_patch": true
+}

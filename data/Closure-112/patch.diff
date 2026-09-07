@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index 4c24e2f..b783a2c 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -1051,6 +1051,16 @@ class TypeInference
+           call.getChildAtIndex(1).siblings(),
+           resolvedTypes);
+     }
++
++    // Template types belonging to the type of "this" (e.g. inherited from a
++    // generic constructor) are not filled in by the arguments of a method
++    // call; they must already be resolved on the receiver. Trying to
++    // re-infer them from unrelated call arguments produces bogus bindings.
++    if (!fnType.isConstructor()) {
++      resolvedTypes.keySet().removeAll(
++          fnType.getTypeOfThis().getTemplateTypeMap().getTemplateKeys());
++    }
++
+     return resolvedTypes;
+   }
+ 

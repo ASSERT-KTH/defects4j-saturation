@@ -1,0 +1,26 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+index ae568e8..f644158 100644
+--- a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
++++ b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+@@ -779,7 +779,20 @@ class PeepholeSubstituteAlternateSyntax
+               // evaluates LHS before cond]
+               // NOTE - there are some circumstances where we can
+               // proceed even if there are side effects...
+-              !mayEffectMutableState(lhs)) {
++              !mayEffectMutableState(lhs) &&
++              // If cond has side effects, don't proceed when reordering
++              // could change behavior: this happens when LHS is a
++              // property/element access (e.g. a[b]), since resolving such a
++              // reference requires evaluating sub-expressions (e.g. "b")
++              // that could be affected by cond's side effects, or when the
++              // assignment is a compound op (e.g. +=), since it reads LHS's
++              // current value, which could also be affected by cond's side
++              // effects. The optimization evaluates LHS before cond, whereas
++              // the original code evaluates cond first.
++              !(mayHaveSideEffects(cond) &&
++                  (lhs.isGetProp() || lhs.isGetElem() ||
++                      (thenOp.getType() != Token.ASSIGN &&
++                          NodeUtil.canBeSideEffected(lhs))))) {
+ 
+             n.removeChild(cond);
+             Node assignName = thenOp.removeFirstChild();

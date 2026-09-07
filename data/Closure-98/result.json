@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 98,
+  "id": "Closure-98",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T00:05:20Z",
+  "wallclock_s": 321,
+  "agent_s": 273,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 243700,
+  "total_cost_usd": 0.6827393999999999,
+  "session_id": "afc490be-bd41-4c65-8bf9-82921f0d9cb1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 21730,
+  "cache_read_input_tokens": 1209652,
+  "cache_creation_input_tokens": 54960,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineVariablesTest::testNoInlineAliasesInLoop"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ReferenceCollectingCallback.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

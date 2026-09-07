@@ -1,0 +1,51 @@
+diff --git a/src/com/google/javascript/jscomp/CheckGlobalThis.java b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+index 6390687..cda51a4 100644
+--- a/src/com/google/javascript/jscomp/CheckGlobalThis.java
++++ b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+@@ -96,6 +96,9 @@ final class CheckGlobalThis implements Callback {
+       // var a = function() { }; // or
+       // function a() {} // or
+       // a.x = function() {};
++      if (!isFunctionEligibleForThisAnnotation(n)) {
++        return false;
++      }
+     }
+ 
+     if (parent != null && parent.getType() == Token.ASSIGN) {
+@@ -138,12 +141,33 @@ final class CheckGlobalThis implements Callback {
+ 
+   private boolean shouldReportThis(Node n, Node parent) {
+     if (assignLhsChild != null) {
+-      // Always report a THIS on the left side of an assign.
++      // Always report a THIS on the left side of an assign, unless it is
++      // itself the direct target of the assignment (e.g. "this = 5;"),
++      // which does not access a property of the global this object.
++      return n != assignLhsChild;
++    }
++
++    // Also report a THIS with a property access, e.g. "this.foo" or
++    // "this[foo]".
++    int parentType = parent.getType();
++    return parentType == Token.GETPROP || parentType == Token.GETELEM;
++  }
++
++  /**
++   * Determines whether a function would normally be able to have a
++   * {@code @this} annotation associated with it, i.e., it is a function
++   * declaration, or a function expression assigned to a variable or
++   * property. Anonymous functions used as arguments or return values are
++   * not eligible.
++   */
++  private boolean isFunctionEligibleForThisAnnotation(Node n) {
++    if (!n.getFirstChild().getString().isEmpty()) {
++      // A named function, e.g. "function a() {}".
+       return true;
+     }
+ 
+-    // Also report a THIS with a property access.
+-    return false;
++    int parentType = n.getParent().getType();
++    return parentType == Token.NAME || parentType == Token.ASSIGN;
+   }
+ 
+   /**

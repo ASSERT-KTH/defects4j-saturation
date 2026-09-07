@@ -1,0 +1,12 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java b/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
+index e6f1cbc..7a6b3f7 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java
+@@ -165,6 +165,7 @@ public final class TextBuffer
+         if (_hasSegments) {
+             clearSegments();
+         }
++        _currentSegment = NO_CHARS;
+     }
+ 
+     /**

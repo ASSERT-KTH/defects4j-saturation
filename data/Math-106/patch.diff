@@ -1,0 +1,53 @@
+diff --git a/src/java/org/apache/commons/math/fraction/ProperFractionFormat.java b/src/java/org/apache/commons/math/fraction/ProperFractionFormat.java
+index df2713d..17c4db8 100644
+--- a/src/java/org/apache/commons/math/fraction/ProperFractionFormat.java
++++ b/src/java/org/apache/commons/math/fraction/ProperFractionFormat.java
+@@ -151,8 +151,9 @@ public class ProperFractionFormat extends FractionFormat {
+ 
+         // parse whitespace
+         parseAndIgnoreWhitespace(source, pos);
+-        
++
+         // parse numerator
++        int numeratorStartIndex = pos.getIndex();
+         Number num = getNumeratorFormat().parse(source, pos);
+         if (num == null) {
+             // invalid integer number
+@@ -161,8 +162,13 @@ public class ProperFractionFormat extends FractionFormat {
+             pos.setIndex(initialIndex);
+             return null;
+         }
+-        
++
++        if (num.intValue() < 0) {
+             // minus signs should be leading, invalid expression
++            pos.setIndex(initialIndex);
++            pos.setErrorIndex(numeratorStartIndex);
++            return null;
++        }
+ 
+         // parse '/'
+         int startIndex = pos.getIndex();
+@@ -188,6 +194,7 @@ public class ProperFractionFormat extends FractionFormat {
+         parseAndIgnoreWhitespace(source, pos);
+ 
+         // parse denominator
++        int denominatorStartIndex = pos.getIndex();
+         Number den = getDenominatorFormat().parse(source, pos);
+         if (den == null) {
+             // invalid integer number
+@@ -196,8 +203,13 @@ public class ProperFractionFormat extends FractionFormat {
+             pos.setIndex(initialIndex);
+             return null;
+         }
+-        
++
++        if (den.intValue() < 0) {
+             // minus signs must be leading, invalid
++            pos.setIndex(initialIndex);
++            pos.setErrorIndex(denominatorStartIndex);
++            return null;
++        }
+ 
+         int w = whole.intValue();
+         int n = num.intValue();

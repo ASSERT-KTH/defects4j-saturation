@@ -1,0 +1,108 @@
+diff --git a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+index 627271f..cf705f4 100644
+--- a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
++++ b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+@@ -60,6 +60,20 @@ class MakeDeclaredNamesUnique
+   private Deque<Renamer> nameStack = new ArrayDeque<Renamer>();
+   private final Renamer rootRenamer;
+ 
++  // The root node of the very first scope entered. When a FUNCTION node is
++  // used directly as the root of a traversal (as done when inlining a single
++  // function), NodeTraversal enters that scope twice: once explicitly before
++  // the traversal starts, and again from within traverseFunction. This is
++  // used to detect and ignore the redundant second entry so declared names
++  // (and their unique ids) are not processed more than once.
++  private Node firstScopeRoot = null;
++
++  // Maps a named function expression's own NAME node to the renamer that
++  // declared it, so its replacement name can be looked up correctly even
++  // though it is visited after the function's inner (parameter/body) scope
++  // has already been pushed onto the stack.
++  private final Map<Node, Renamer> functionNameRenamer = Maps.newHashMap();
++
+   MakeDeclaredNamesUnique() {
+     this(new ContextualRenamer());
+   }
+@@ -75,6 +89,14 @@ class MakeDeclaredNamesUnique
+   @Override
+   public void enterScope(NodeTraversal t) {
+     Node declarationRoot = t.getScopeRoot();
++
++    // When a FUNCTION node is used directly as the root of a traversal,
++    // NodeTraversal enters that same scope a second time (from within
++    // traverseFunction), after the first entry has already declared its
++    // parameters and local variables. Ignore this redundant re-entry rather
++    // than re-declaring (and re-uniquifying) the same names again.
++    boolean reentrant = !nameStack.isEmpty() && declarationRoot == firstScopeRoot;
++
+     Renamer renamer;
+     if (nameStack.isEmpty()) {
+       // If the contextual renamer is being used the starting context can not
+@@ -84,21 +106,26 @@ class MakeDeclaredNamesUnique
+           !(rootRenamer instanceof ContextualRenamer));
+       Preconditions.checkState(t.inGlobalScope());
+       renamer = rootRenamer;
++      firstScopeRoot = declarationRoot;
++    } else if (reentrant) {
++      renamer = nameStack.peek();
+     } else {
+       renamer = nameStack.peek().forChildScope();
+     }
+ 
+-    if (declarationRoot.getType() == Token.FUNCTION) {
+-      for (Node c = declarationRoot.getFirstChild().getNext().getFirstChild(); c != null; c = c.getNext()) {
+-        String name = c.getString();
+-        renamer.addDeclaredName(name);
++    if (!reentrant) {
++      if (declarationRoot.getType() == Token.FUNCTION) {
++        for (Node c = declarationRoot.getFirstChild().getNext().getFirstChild(); c != null; c = c.getNext()) {
++          String name = c.getString();
++          renamer.addDeclaredName(name);
++        }
++        Node functionBody = declarationRoot.getLastChild();
++        findDeclaredNames(functionBody, null, renamer);
++      }  else
++      if (declarationRoot.getType() != Token.FUNCTION) {
++        // Add the block declarations
++        findDeclaredNames(declarationRoot, null, renamer);
+       }
+-      Node functionBody = declarationRoot.getLastChild();
+-      findDeclaredNames(functionBody, null, renamer);
+-    }  else 
+-    if (declarationRoot.getType() != Token.FUNCTION) {
+-      // Add the block declarations
+-      findDeclaredNames(declarationRoot, null, renamer);
+     }
+     nameStack.push(renamer);
+   }
+@@ -121,10 +148,17 @@ class MakeDeclaredNamesUnique
+           Renamer renamer = nameStack.peek().forChildScope();
+ 
+           // If needed, add the function recursive name.
+-          String name = n.getFirstChild().getString();
++          Node nameNode = n.getFirstChild();
++          String name = nameNode.getString();
+           if (name != null && !name.isEmpty() && parent != null
+               && !NodeUtil.isFunctionDeclaration(n)) {
+             renamer.addDeclaredName(name);
++            // The name node is visited after the function's own scope (the
++            // scope for its parameters and body) has been entered, so the
++            // generic top-of-stack lookup in visit() would incorrectly
++            // resolve it against that inner scope instead of this one.
++            // Remember the correct renamer for this specific node.
++            functionNameRenamer.put(nameNode, renamer);
+           }
+ 
+ 
+@@ -156,7 +190,10 @@ class MakeDeclaredNamesUnique
+   public void visit(NodeTraversal t, Node n, Node parent) {
+     switch (n.getType()) {
+       case Token.NAME:
+-        String newName = getReplacementName(n.getString());
++        Renamer nameNodeRenamer = functionNameRenamer.remove(n);
++        String newName = (nameNodeRenamer != null)
++            ? nameNodeRenamer.getReplacementName(n.getString())
++            : getReplacementName(n.getString());
+         if (newName != null) {
+           Renamer renamer = nameStack.peek();
+           if (renamer.stripConstIfReplaced()) {

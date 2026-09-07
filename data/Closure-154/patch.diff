@@ -1,0 +1,88 @@
+diff --git a/src/com/google/javascript/jscomp/TypeCheck.java b/src/com/google/javascript/jscomp/TypeCheck.java
+index a752e76..13b2f60 100644
+--- a/src/com/google/javascript/jscomp/TypeCheck.java
++++ b/src/com/google/javascript/jscomp/TypeCheck.java
+@@ -848,9 +848,25 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+ 
+       // /** @type ... */object.name = ...;
+       if (info != null && info.hasType()) {
+-        visitAnnotatedAssignGetprop(t, assign,
+-            info.getType().evaluate(t.getScope(), typeRegistry), object,
+-            property, rvalue);
++        JSType declaredType =
++            info.getType().evaluate(t.getScope(), typeRegistry);
++        visitAnnotatedAssignGetprop(
++            t, assign, declaredType, object, property, rvalue);
++
++        // /** @type ... */this.name = ...;
++        // Check that a property declared on an instance is compatible
++        // with the same-named property declared on any interface that
++        // the enclosing constructor implements.
++        if (object.getType() == Token.THIS) {
++          ObjectType thisType = ObjectType.cast(
++              objectJsType.restrictByNotNullOrUndefined());
++          FunctionType ctorType =
++              thisType == null ? null : thisType.getConstructor();
++          if (ctorType != null && ctorType.isConstructor()) {
++            checkInterfacePropertyTypeMismatch(
++                t, assign, ctorType, property, declaredType);
++          }
++        }
+         return;
+       }
+ 
+@@ -1046,17 +1062,8 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+               HIDDEN_INTERFACE_PROPERTY, propertyName,
+               interfaceType.getTopMostDefiningType(propertyName).toString()));
+         }
+-        if (interfaceHasProperty) {
+-          JSType interfacePropType =
+-              interfaceType.getPrototype().getPropertyType(propertyName);
+-          if (!propertyType.canAssignTo(interfacePropType)) {
+-            compiler.report(t.makeError(n,
+-                HIDDEN_INTERFACE_PROPERTY_MISMATCH, propertyName,
+-                interfaceType.getTopMostDefiningType(propertyName).toString(),
+-                interfacePropType.toString(), propertyType.toString()));
+-          }
+-        }
+       }
++      checkInterfacePropertyTypeMismatch(t, n, ctorType, propertyName, propertyType);
+     }
+ 
+     if (!declaredOverride && !superClassHasProperty) {
+@@ -1097,6 +1104,35 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+     }
+   }
+ 
++  /**
++   * Checks that a property declared with a given type is compatible with the
++   * type of the same-named property declared on any interface that the given
++   * constructor implements.
++   */
++  private void checkInterfacePropertyTypeMismatch(
++      NodeTraversal t, Node n, FunctionType ctorType, String propertyName,
++      JSType propertyType) {
++    for (JSType implementedInterface : ctorType.getImplementedInterfaces()) {
++      if (implementedInterface.isUnknownType() ||
++          implementedInterface.isEmptyType()) {
++        continue;
++      }
++      FunctionType interfaceType =
++          implementedInterface.toObjectType().getConstructor();
++      Preconditions.checkNotNull(interfaceType);
++      if (interfaceType.getPrototype().hasProperty(propertyName)) {
++        JSType interfacePropType =
++            interfaceType.getPrototype().getPropertyType(propertyName);
++        if (!propertyType.canAssignTo(interfacePropType)) {
++          compiler.report(t.makeError(n,
++              HIDDEN_INTERFACE_PROPERTY_MISMATCH, propertyName,
++              interfaceType.getTopMostDefiningType(propertyName).toString(),
++              interfacePropType.toString(), propertyType.toString()));
++        }
++      }
++    }
++  }
++
+   /**
+    * Given a constructor or an interface type, find out whether the unknown
+    * type is a supertype of the current type.

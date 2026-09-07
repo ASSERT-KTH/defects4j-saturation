@@ -1,0 +1,20 @@
+diff --git a/src/main/java/org/apache/commons/collections/list/TreeList.java b/src/main/java/org/apache/commons/collections/list/TreeList.java
+index 50c20a5..0c7e84e 100644
+--- a/src/main/java/org/apache/commons/collections/list/TreeList.java
++++ b/src/main/java/org/apache/commons/collections/list/TreeList.java
+@@ -901,7 +901,6 @@ public class TreeList<E> extends AbstractList<E> {
+                 throw new IllegalStateException();
+             }
+             if (nextIndex == currentIndex) {
+-                next = next.next();
+                 parent.remove(currentIndex);
+             } else {
+                 // remove() following next()
+@@ -912,6 +911,7 @@ public class TreeList<E> extends AbstractList<E> {
+             // reset it now: will be retrieved by next call to next()/previous() via nextIndex
+             current = null;
+             currentIndex = -1;
++            next = null;
+             expectedModCount++;
+         }
+ 

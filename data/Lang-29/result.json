@@ -1,0 +1,37 @@
+{
+  "project": "Lang",
+  "bug": 29,
+  "id": "Lang-29",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:29:41Z",
+  "wallclock_s": 102,
+  "agent_s": 50,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 21675,
+  "total_cost_usd": 0.0963812,
+  "session_id": "1860f9a0-8be0-4dd4-a7c3-e871afc46303",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1181,
+  "cache_read_input_tokens": 165761,
+  "cache_creation_input_tokens": 12277,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.SystemUtilsTest::testJavaVersionAsInt"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/SystemUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

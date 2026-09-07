@@ -1,0 +1,23 @@
+diff --git a/src/main/java/org/apache/commons/math3/optimization/fitting/HarmonicFitter.java b/src/main/java/org/apache/commons/math3/optimization/fitting/HarmonicFitter.java
+index 1da2c45..871557a 100644
+--- a/src/main/java/org/apache/commons/math3/optimization/fitting/HarmonicFitter.java
++++ b/src/main/java/org/apache/commons/math3/optimization/fitting/HarmonicFitter.java
+@@ -320,11 +320,15 @@ public class HarmonicFitter extends CurveFitter<HarmonicOscillator.Parametric> {
+                 }
+                 a = 0.5 * (yMax - yMin);
+             } else {
+-                    // In some ill-conditioned cases (cf. MATH-844), the guesser
+-                    // procedure cannot produce sensible results.
+-
++                // In some ill-conditioned cases (cf. MATH-844), the guesser
++                // procedure cannot produce sensible results.
+                 a = FastMath.sqrt(c1 / c2);
+                 omega = FastMath.sqrt(c2 / c3);
++
++                if (Double.isNaN(a) || Double.isInfinite(a) ||
++                    Double.isNaN(omega) || Double.isInfinite(omega)) {
++                    throw new MathIllegalStateException(LocalizedFormats.UNABLE_TO_FIRST_GUESS_HARMONIC_COEFFICIENTS);
++                }
+             }
+         }
+ 

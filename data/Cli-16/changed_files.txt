@@ -1,0 +1,4 @@
+M	src/java/org/apache/commons/cli2/Option.java
+M	src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+M	src/java/org/apache/commons/cli2/option/GroupImpl.java
+M	src/java/org/apache/commons/cli2/option/OptionImpl.java

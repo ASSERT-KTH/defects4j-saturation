@@ -1,0 +1,40 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index 8484caa..8d4d1b8 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -609,7 +609,7 @@ public abstract class BeanDeserializerBase
+         if (extTypes != null) {
+             // 21-Jun-2016, tatu: related to [databind#999], may need to link type ids too,
+             //    so need to pass collected properties
+-            _externalTypeIdHandler = extTypes.build();
++            _externalTypeIdHandler = extTypes.build(creatorProps);
+             // we consider this non-standard, to offline handling
+             _nonStandardCreation = true;
+         }
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
+index e273c3b..8041dbb 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
+@@ -307,10 +307,19 @@ public class ExternalTypeHandler
+          *
+          * @since 2.8
+          */
++        public ExternalTypeHandler build(SettableBeanProperty[] creatorProps) {
+             // 21-Jun-2016, tatu: as per [databind#999], may need to link type id property also
+-
+-        @Deprecated // since 2.8; may be removed as early as 2.9
+-        public ExternalTypeHandler build() {
++            if (creatorProps != null) {
++                for (ExtTypedProperty prop : _properties) {
++                    String typePropName = prop.getTypePropertyName();
++                    for (SettableBeanProperty creatorProp : creatorProps) {
++                        if (creatorProp.getName().equals(typePropName)) {
++                            prop.linkTypeProperty(creatorProp);
++                            break;
++                        }
++                    }
++                }
++            }
+             return new ExternalTypeHandler(_properties.toArray(new ExtTypedProperty[_properties.size()]),
+                     _nameToPropertyIndex, null, null);
+         }

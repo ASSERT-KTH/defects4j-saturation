@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 91,
+  "id": "Jsoup-91",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:31:40Z",
+  "wallclock_s": 332,
+  "agent_s": 307,
+  "agent_rc": 0,
+  "num_turns": 54,
+  "api_duration_ms": 282841,
+  "total_cost_usd": 1.0564834,
+  "session_id": "9e58ffe9-4b04-46d3-b00c-b297e8243e9c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 98,
+  "output_tokens": 24748,
+  "cache_read_input_tokens": 2674252,
+  "cache_creation_input_tokens": 67220,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.integration.ConnectTest::testBinaryThrowsExceptionWhenTypeIgnored",
+    "org.jsoup.integration.ConnectTest::testBinaryResultThrows",
+    "org.jsoup.integration.ParseTest::testBinaryThrowsException"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/DataUtil.java",
+    "src/main/java/org/jsoup/parser/CharacterReader.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

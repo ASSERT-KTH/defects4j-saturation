@@ -1,0 +1,5 @@
+M	src/main/java/org/jsoup/nodes/DocumentType.java
+M	src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+M	src/main/java/org/jsoup/parser/Token.java
+M	src/main/java/org/jsoup/parser/TokeniserState.java
+M	src/main/java/org/jsoup/parser/XmlTreeBuilder.java

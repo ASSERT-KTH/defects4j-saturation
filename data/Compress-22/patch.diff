@@ -1,0 +1,80 @@
+diff --git a/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java b/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
+index 4f89e0e..8c9ffef 100644
+--- a/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
++++ b/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
+@@ -76,6 +76,16 @@ public class BZip2CompressorInputStream extends CompressorInputStream implements
+ 
+     private int currentState = START_BLOCK_STATE;
+ 
++    /**
++     * An IOException that was thrown while looking ahead for the next
++     * block or the end-of-stream marker after the last decoded
++     * character of the current block had already been made available
++     * as {@link #currentChar}. It is deferred until the next call to
++     * {@link #read0()} so a truncated trailer doesn't hide the last
++     * valid character that was already decoded.
++     */
++    private IOException lookAheadException;
++
+     private int storedBlockCRC, storedCombinedCRC;
+     private int computedBlockCRC, computedCombinedCRC;
+ 
+@@ -199,6 +209,11 @@ public class BZip2CompressorInputStream extends CompressorInputStream implements
+         final int retChar = this.currentChar;
+         switch (currentState) {
+         case EOF:
++            if (this.lookAheadException != null) {
++                final IOException e = this.lookAheadException;
++                this.lookAheadException = null;
++                throw e;
++            }
+             return -1;
+ 
+         case START_BLOCK_STATE:
+@@ -208,22 +223,42 @@ public class BZip2CompressorInputStream extends CompressorInputStream implements
+             throw new IllegalStateException();
+ 
+         case RAND_PART_B_STATE:
+-            setupRandPartB();
++            try {
++                setupRandPartB();
++            } catch (IOException e) {
++                this.currentState = EOF;
++                this.lookAheadException = e;
++            }
+             break;
+ 
+         case RAND_PART_C_STATE:
+-            setupRandPartC();
++            try {
++                setupRandPartC();
++            } catch (IOException e) {
++                this.currentState = EOF;
++                this.lookAheadException = e;
++            }
+             break;
+ 
+         case NO_RAND_PART_A_STATE:
+             throw new IllegalStateException();
+ 
+         case NO_RAND_PART_B_STATE:
+-            setupNoRandPartB();
++            try {
++                setupNoRandPartB();
++            } catch (IOException e) {
++                this.currentState = EOF;
++                this.lookAheadException = e;
++            }
+             break;
+ 
+         case NO_RAND_PART_C_STATE:
+-            setupNoRandPartC();
++            try {
++                setupNoRandPartC();
++            } catch (IOException e) {
++                this.currentState = EOF;
++                this.lookAheadException = e;
++            }
+             break;
+ 
+         default:

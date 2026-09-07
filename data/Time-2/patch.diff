@@ -1,0 +1,27 @@
+diff --git a/src/main/java/org/joda/time/field/UnsupportedDurationField.java b/src/main/java/org/joda/time/field/UnsupportedDurationField.java
+index bf44e01..4920809 100644
+--- a/src/main/java/org/joda/time/field/UnsupportedDurationField.java
++++ b/src/main/java/org/joda/time/field/UnsupportedDurationField.java
+@@ -219,12 +219,19 @@ public final class UnsupportedDurationField extends DurationField implements Ser
+     }
+ 
+     /**
+-     * Always returns zero, indicating that sort order is not relevent.
++     * Compares this duration field to another.
++     * Two unsupported fields of the same type are considered equal.
++     * An unsupported field is treated as larger than any supported field,
++     * since it typically represents a field, such as eras, that is larger
++     * than any field that can be measured.
+      *
+-     * @return zero always
++     * @return zero if equal, negative if less, positive if greater
+      */
+     public int compareTo(DurationField durationField) {
+-        return 0;
++        if (durationField instanceof UnsupportedDurationField) {
++            return 0;
++        }
++        return 1;
+     }
+ 
+     //------------------------------------------------------------------------

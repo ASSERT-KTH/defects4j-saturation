@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 79,
+  "id": "JacksonDatabind-79",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:06:07Z",
+  "wallclock_s": 585,
+  "agent_s": 440,
+  "agent_rc": 0,
+  "num_turns": 49,
+  "api_duration_ms": 305387,
+  "total_cost_usd": 1.0393013999999998,
+  "session_id": "5afff940-3c16-4004-a875-301374ab0d10",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 98,
+  "output_tokens": 25982,
+  "cache_read_input_tokens": 2352907,
+  "cache_creation_input_tokens": 76577,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.objectid.AlwaysAsReferenceFirstTest::testIssue1607"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/BeanSerializerBase.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

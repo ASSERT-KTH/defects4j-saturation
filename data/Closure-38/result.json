@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 38,
+  "id": "Closure-38",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:37:05Z",
+  "wallclock_s": 291,
+  "agent_s": 97,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 32811,
+  "total_cost_usd": 0.0804216,
+  "session_id": "96cf90e4-3583-40fa-913a-32c2b891513f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1241,
+  "cache_read_input_tokens": 119778,
+  "cache_creation_input_tokens": 10436,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CodePrinterTest::testMinusNegativeZero"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CodeConsumer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,38 @@
+{
+  "project": "Math",
+  "bug": 69,
+  "id": "Math-69",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:59:44Z",
+  "wallclock_s": 86,
+  "agent_s": 52,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 42823,
+  "total_cost_usd": 0.18948399999999999,
+  "session_id": "a198117c-1067-4fac-a873-3c976dbe40a0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3698,
+  "cache_read_input_tokens": 287910,
+  "cache_creation_input_tokens": 22880,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.correlation.PearsonsCorrelationTest::testPValueNearZero",
+    "org.apache.commons.math.stat.correlation.SpearmansRankCorrelationTest::testPValueNearZero"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

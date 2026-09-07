@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 137,
+  "id": "Closure-137",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:23:41Z",
+  "wallclock_s": 795,
+  "agent_s": 704,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 677910,
+  "total_cost_usd": 1.5440342000000002,
+  "session_id": "50793b0f-491f-4a33-9598-8afd871c8540",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 62953,
+  "cache_read_input_tokens": 2415136,
+  "cache_creation_input_tokens": 106471,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.MakeDeclaredNamesUniqueTest::testOnlyInversion3",
+    "com.google.javascript.jscomp.MakeDeclaredNamesUniqueTest::testOnlyInversion4",
+    "com.google.javascript.jscomp.MakeDeclaredNamesUniqueTest::testArguments",
+    "com.google.javascript.jscomp.MakeDeclaredNamesUniqueTest::testMakeLocalNamesUniqueWithContext1",
+    "com.google.javascript.jscomp.NormalizeTest::testRemoveDuplicateVarDeclarations2"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java",
+    "src/com/google/javascript/jscomp/Normalize.java"
+  ],
+  "patch_added_lines": 120,
+  "patch_removed_lines": 67,
+  "has_dev_patch": true
+}

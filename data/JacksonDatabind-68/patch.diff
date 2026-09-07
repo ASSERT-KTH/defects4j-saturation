@@ -1,0 +1,34 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index ac95adc..e10cc82 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -1196,6 +1196,13 @@ public abstract class BeanDeserializerBase
+         if (_propertyBasedCreator != null) {
+             return _deserializeUsingPropertyBased(p, ctxt);
+         }
++        // 24-Oct-2016: as per [databind#1421] may also have array-delegate
++        // creator that can accept a single value as a one-element array
++        if (_arrayDelegateDeserializer != null
++                && ctxt.isEnabled(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)) {
++            return _valueInstantiator.createUsingArrayDelegate(ctxt,
++                    _arrayDelegateDeserializer.deserialize(p, ctxt));
++        }
+         // should only occur for abstract types...
+         if (_beanType.isAbstract()) {
+             return ctxt.handleMissingInstantiator(handledType(), p,
+@@ -1275,6 +1282,15 @@ public abstract class BeanDeserializerBase
+                 }
+                 return bean;
+             }
++        } else if (_arrayDelegateDeserializer != null
++                && !_valueInstantiator.canCreateFromString()
++                && ctxt.isEnabled(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)) {
++            Object bean = _valueInstantiator.createUsingArrayDelegate(ctxt,
++                    _arrayDelegateDeserializer.deserialize(p, ctxt));
++            if (_injectables != null) {
++                injectValues(ctxt, bean);
++            }
++            return bean;
+         }
+         return _valueInstantiator.createFromString(ctxt, p.getText());
+     }

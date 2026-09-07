@@ -1,0 +1,38 @@
+{
+  "project": "Math",
+  "bug": 101,
+  "id": "Math-101",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:22:44Z",
+  "wallclock_s": 69,
+  "agent_s": 25,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 15029,
+  "total_cost_usd": 0.08074160000000001,
+  "session_id": "9980b159-252c-4708-b0dc-ae7b4d83822f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1102,
+  "cache_read_input_tokens": 90658,
+  "cache_creation_input_tokens": 12040,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.complex.ComplexFormatTest::testForgottenImaginaryCharacter",
+    "org.apache.commons.math.complex.FrenchComplexFormatTest::testForgottenImaginaryCharacter"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/complex/ComplexFormat.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

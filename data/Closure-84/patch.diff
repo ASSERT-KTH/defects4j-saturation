@@ -1,0 +1,29 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index cca8d9b..91112c4 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -338,9 +338,24 @@ public class IRFactory {
+     @Override
+     Node processAssignment(Assignment assignmentNode) {
+       Node assign = processInfixExpression(assignmentNode);
++      validateAssignmentTarget(assign.getFirstChild());
+       return assign;
+     }
+ 
++    void validateAssignmentTarget(Node target) {
++      switch (target.getType()) {
++        case Token.NAME:
++        case Token.GETPROP:
++        case Token.GETELEM:
++          break;
++        default:
++          errorReporter.error(
++              "invalid assignment target",
++              sourceName,
++              target.getLineno(), "", 0);
++      }
++    }
++
+     @Override
+     Node processAstRoot(AstRoot rootNode) {
+       Node node = newNode(Token.SCRIPT);

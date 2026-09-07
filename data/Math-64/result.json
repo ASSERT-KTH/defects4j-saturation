@@ -1,0 +1,38 @@
+{
+  "project": "Math",
+  "bug": 64,
+  "id": "Math-64",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:58:17Z",
+  "wallclock_s": 486,
+  "agent_s": 450,
+  "agent_rc": 0,
+  "num_turns": 42,
+  "api_duration_ms": 286079,
+  "total_cost_usd": 1.1677626,
+  "session_id": "b313f342-95d0-4510-b2b8-388235162829",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 22858,
+  "cache_read_input_tokens": 2894063,
+  "cache_creation_input_tokens": 89156,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.general.MinpackTest::testMinpackJennrichSampson",
+    "org.apache.commons.math.optimization.general.MinpackTest::testMinpackFreudensteinRoth"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,19 @@
+diff --git a/src/java/org/apache/commons/collections/list/SetUniqueList.java b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+index 1ee8138..9e31136 100644
+--- a/src/java/org/apache/commons/collections/list/SetUniqueList.java
++++ b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+@@ -192,8 +192,12 @@ public class SetUniqueList extends AbstractSerializableListDecorator {
+ 
+         // adds all elements
+         for (final Iterator it = coll.iterator(); it.hasNext();) {
+-            add(it.next());
+-            // if it was inserted, then increase the target index
++            final Object object = it.next();
++            final int sizeBeforeItem = size();
++            add(index, object);
++            if (size() != sizeBeforeItem) {
++                index++;
++            }
+         }
+ 
+         // compares sizes to detect if collection changed

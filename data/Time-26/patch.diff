@@ -1,0 +1,48 @@
+diff --git a/src/main/java/org/joda/time/DateTimeZone.java b/src/main/java/org/joda/time/DateTimeZone.java
+index 9edb188..2bdf91c 100644
+--- a/src/main/java/org/joda/time/DateTimeZone.java
++++ b/src/main/java/org/joda/time/DateTimeZone.java
+@@ -928,11 +928,20 @@ public abstract class DateTimeZone implements Serializable {
+      * @param instantLocal  the local instant to convert to UTC
+      * @param strict  whether the conversion should reject non-existent local times
+      * @param originalInstantUTC  the original instant that the calculation is based on
+-     * @return the UTC instant with the same local time, 
++     * @return the UTC instant with the same local time,
+      * @throws ArithmeticException if the result overflows a long
+      * @throws IllegalArgumentException if the zone has no equivalent local time
+      * @since 2.0
+      */
++    public long convertLocalToUTC(long instantLocal, boolean strict, long originalInstantUTC) {
++        int offsetOriginal = getOffset(originalInstantUTC);
++        long instantUTC = instantLocal - offsetOriginal;
++        int offsetLocalFromOriginal = getOffset(instantUTC);
++        if (offsetLocalFromOriginal == offsetOriginal) {
++            return instantUTC;
++        }
++        return convertLocalToUTC(instantLocal, strict);
++    }
+ 
+     /**
+      * Converts a local instant to a standard UTC instant with the same
+@@ -941,7 +950,7 @@ public abstract class DateTimeZone implements Serializable {
+      *
+      * @param instantLocal  the local instant to convert to UTC
+      * @param strict  whether the conversion should reject non-existent local times
+-     * @return the UTC instant with the same local time, 
++     * @return the UTC instant with the same local time,
+      * @throws ArithmeticException if the result overflows a long
+      * @throws IllegalArgumentException if the zone has no equivalent local time
+      * @since 1.5
+diff --git a/src/main/java/org/joda/time/chrono/ZonedChronology.java b/src/main/java/org/joda/time/chrono/ZonedChronology.java
+index f165f3d..3de48de 100644
+--- a/src/main/java/org/joda/time/chrono/ZonedChronology.java
++++ b/src/main/java/org/joda/time/chrono/ZonedChronology.java
+@@ -464,7 +464,7 @@ public final class ZonedChronology extends AssembledChronology {
+         public long set(long instant, int value) {
+             long localInstant = iZone.convertUTCToLocal(instant);
+             localInstant = iField.set(localInstant, value);
+-            long result = iZone.convertLocalToUTC(localInstant, false);
++            long result = iZone.convertLocalToUTC(localInstant, false, instant);
+             if (get(result) != value) {
+                 throw new IllegalFieldValueException(iField.getType(), new Integer(value),
+                     "Illegal instant due to time zone offset transition: " +

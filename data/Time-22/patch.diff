@@ -1,0 +1,29 @@
+diff --git a/src/main/java/org/joda/time/chrono/BaseChronology.java b/src/main/java/org/joda/time/chrono/BaseChronology.java
+index ac43706..cdacf5c 100644
+--- a/src/main/java/org/joda/time/chrono/BaseChronology.java
++++ b/src/main/java/org/joda/time/chrono/BaseChronology.java
+@@ -18,6 +18,7 @@ package org.joda.time.chrono;
+ import java.io.Serializable;
+ 
+ import org.joda.time.Chronology;
++import org.joda.time.DateTimeConstants;
+ import org.joda.time.DateTimeField;
+ import org.joda.time.DateTimeFieldType;
+ import org.joda.time.DateTimeZone;
+@@ -277,9 +278,15 @@ public abstract class BaseChronology
+         int[] values = new int[size];
+         if (duration != 0) {
+             long current = 0;
++            // This method is called with a plain duration, unrelated to any actual
++            // instant. Date fields (unlike time fields) can only be trusted as precise
++            // when the chronology has no time zone offset at all, since a wrapped zone
++            // (even a fixed-offset one) has no real meaning without an anchor instant.
++            DateTimeZone zone = getZone();
++            boolean useDateFields = zone == null || DateTimeZone.UTC.equals(zone);
+             for (int i = 0; i < size; i++) {
+                 DurationField field = period.getFieldType(i).getField(this);
+-                if (field.isPrecise()) {
++                if (field.isPrecise() && (useDateFields || field.getUnitMillis() < DateTimeConstants.MILLIS_PER_HOUR * 12)) {
+                     int value = field.getDifference(duration, current);
+                     current = field.add(current, value);
+                     values[i] = value;

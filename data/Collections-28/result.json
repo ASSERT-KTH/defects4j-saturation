@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 28,
+  "id": "Collections-28",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:31:51Z",
+  "wallclock_s": 103,
+  "agent_s": 53,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 34433,
+  "total_cost_usd": 0.1442672,
+  "session_id": "081b6b33-188d-4945-9a4c-be96e04aaf4e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2468,
+  "cache_read_input_tokens": 234026,
+  "cache_creation_input_tokens": 17610,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.trie.PatriciaTrieTest::testPrefixMapClear"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

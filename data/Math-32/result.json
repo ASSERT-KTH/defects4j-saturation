@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 32,
+  "id": "Math-32",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:20:53Z",
+  "wallclock_s": 154,
+  "agent_s": 81,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 47037,
+  "total_cost_usd": 0.23051820000000003,
+  "session_id": "dfebbc3a-5fc3-4514-bc88-bce376ebf0f1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3735,
+  "cache_read_input_tokens": 328296,
+  "cache_creation_input_tokens": 31132,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.geometry.euclidean.threed.PolyhedronsSetTest::testIssue780"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/geometry/euclidean/twod/PolygonsSet.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,24 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+index df86121..d3b8a8b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+@@ -708,11 +708,15 @@ public class BeanDeserializerFactory
+         // need to ensure method is callable (for non-public)
+         AnnotatedMember mutator = propDef.getNonConstructorMutator();
+ 
+-        if (ctxt.canOverrideAccessModifiers()) {
+-            // [databind#877]: explicitly prevent forced access to `cause` of `Throwable`;
+-            // never needed and attempts may cause problems on some platforms.
+-            // !!! NOTE: should be handled better for 2.8 and later
++        // [databind#877]: explicitly prevent forced access to `cause` field of `Throwable`;
++        // it is never actually used since `initCause()` is always used instead, and
++        // forcing access can fail with a `SecurityException` on some platforms.
++        if (!(mutator instanceof AnnotatedField
++                && "cause".equals(mutator.getName())
++                && Throwable.class.isAssignableFrom(mutator.getDeclaringClass()))) {
++            if (ctxt.canOverrideAccessModifiers()) {
+                 mutator.fixAccess(ctxt.isEnabled(MapperFeature.OVERRIDE_PUBLIC_ACCESS_MODIFIERS));
++            }
+         }
+         // note: this works since we know there's exactly one argument for methods
+         BeanProperty.Std property = new BeanProperty.Std(propDef.getFullName(),

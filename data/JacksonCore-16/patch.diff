@@ -1,0 +1,53 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java b/src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java
+index 9dadc51..e947987 100644
+--- a/src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java
++++ b/src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java
+@@ -32,7 +32,8 @@ public class JsonParserSequence extends JsonParserDelegate
+      *
+      * @since 2.8
+      */
+-    
++    protected boolean _hasCurrentToken;
++
+     /*
+      *******************************************************
+      * Construction
+@@ -44,6 +45,7 @@ public class JsonParserSequence extends JsonParserDelegate
+         super(parsers[0]);
+         _parsers = parsers;
+         _nextParser = 1;
++        _hasCurrentToken = delegate.getCurrentToken() != null;
+     }
+ 
+     /**
+@@ -103,10 +105,21 @@ public class JsonParserSequence extends JsonParserDelegate
+     @Override
+     public JsonToken nextToken() throws IOException, JsonParseException
+     {
++        // 08-Jan-2016: If not yet consumed, we might already have current token
++        if (_hasCurrentToken) {
++            _hasCurrentToken = false;
++            return delegate.getCurrentToken();
++        }
+         JsonToken t = delegate.nextToken();
+         if (t != null) return t;
+         while (switchToNext()) {
+-            t = delegate.nextToken();
++            // 08-Jan-2016: If not yet consumed, we might already have current token
++            if (_hasCurrentToken) {
++                _hasCurrentToken = false;
++                t = delegate.getCurrentToken();
++            } else {
++                t = delegate.nextToken();
++            }
+             if (t != null) return t;
+         }
+         return null;
+@@ -147,6 +160,7 @@ public class JsonParserSequence extends JsonParserDelegate
+             return false;
+         }
+         delegate = _parsers[_nextParser++];
++        _hasCurrentToken = delegate.getCurrentToken() != null;
+         return true;
+     }
+ }

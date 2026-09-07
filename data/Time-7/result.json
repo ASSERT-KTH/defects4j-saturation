@@ -1,0 +1,38 @@
+{
+  "project": "Time",
+  "bug": 7,
+  "id": "Time-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:31:12Z",
+  "wallclock_s": 97,
+  "agent_s": 57,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 45486,
+  "total_cost_usd": 0.180477,
+  "session_id": "3f8d92da-fcc7-4af3-9257-fc34ab8454a0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3752,
+  "cache_read_input_tokens": 270195,
+  "cache_creation_input_tokens": 21298,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_feb29_newYork_startOfYear",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_feb29_tokyo_endOfYear"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/format/DateTimeFormatter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

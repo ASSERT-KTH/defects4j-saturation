@@ -1,0 +1,61 @@
+diff --git a/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java b/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
+index a42dc34..c1d7524 100644
+--- a/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
++++ b/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
+@@ -307,11 +307,15 @@ class DevirtualizePrototypeMethods implements CompilerPass {
+     // add extra argument
+     String self = newMethodName + "$self";
+     Node argList = functionNode.getFirstChild().getNext();
+-    argList.addChildToFront(Node.newString(Token.NAME, self));
++    FunctionType functionType = (FunctionType) functionNode.getJSType();
++    JSType typeOfThis = functionType == null ? null : functionType.getTypeOfThis();
++    Node selfNode = Node.newString(Token.NAME, self);
++    selfNode.setJSType(typeOfThis);
++    argList.addChildToFront(selfNode);
+ 
+     // rewrite body
+     Node body = functionNode.getLastChild();
+-    replaceReferencesToThis(body, self);
++    replaceReferencesToThis(body, self, typeOfThis);
+ 
+     // fix type
+     fixFunctionType(functionNode);
+@@ -351,7 +355,7 @@ class DevirtualizePrototypeMethods implements CompilerPass {
+    * Replaces references to "this" with references to name.  Do not
+    * traverse function boundaries.
+    */
+-  private void replaceReferencesToThis(Node node, String name) {
++  private void replaceReferencesToThis(Node node, String name, JSType type) {
+     if (NodeUtil.isFunction(node)) {
+       return;
+     }
+@@ -359,9 +363,10 @@ class DevirtualizePrototypeMethods implements CompilerPass {
+     for (Node child : node.children()) {
+       if (NodeUtil.isThis(child)) {
+         Node newName = Node.newString(Token.NAME, name);
++        newName.setJSType(type);
+         node.replaceChild(child, newName);
+       } else {
+-        replaceReferencesToThis(child, name);
++        replaceReferencesToThis(child, name, type);
+       }
+     }
+   }
+diff --git a/src/com/google/javascript/rhino/jstype/FunctionType.java b/src/com/google/javascript/rhino/jstype/FunctionType.java
+index 3e8ab07..7db9b59 100644
+--- a/src/com/google/javascript/rhino/jstype/FunctionType.java
++++ b/src/com/google/javascript/rhino/jstype/FunctionType.java
+@@ -469,6 +469,13 @@ public class FunctionType extends PrototypeObjectType {
+     if ("prototype".equals(name)) {
+       ObjectType objType = type.toObjectType();
+       if (objType != null) {
++        if (objType == this.prototype) {
++          // Re-declaring the existing prototype object is a no-op. Wrapping
++          // it as its own implicit prototype would corrupt the superclass
++          // chain (e.g. when a "Foo.prototype = new Bar()" assignment is
++          // revisited after the prototype was already set up via @extends).
++          return true;
++        }
+         return setPrototype(
+             new FunctionPrototypeType(
+                 registry, this, objType, isNativeObjectType()));

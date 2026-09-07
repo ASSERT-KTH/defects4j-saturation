@@ -1,0 +1,67 @@
+diff --git a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+index ecba09b..0f783d8 100644
+--- a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
++++ b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+@@ -315,6 +315,16 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+         return false;
+       }
+ 
++      // Make sure that the variable is not redefined in a sub-expression
++      // that is evaluated before the use, e.g. within the same statement:
++      // var i = 0; return 1 ? (i = 5) : 0, i;
++      // Even though "i = 5" is conditional, the reaching definition of "i"
++      // used at the def site (the "var i = 0" statement) cannot be assumed to
++      // still reach the use once such a redefinition may have occurred first.
++      if (checkLeftOf(use, useCfgNode, redefinesVariablePredicate(varName))) {
++        return false;
++      }
++
+       // TODO(user): Side-effect is OK sometimes. As long as there are no
+       // side-effect function down all paths to the use. Once we have all the
+       // side-effect analysis tool.
+@@ -411,6 +421,45 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+       return true;
+     }
+ 
++    /**
++     * Builds a predicate that is true for a node that (re)defines the given
++     * variable name, e.g. an assignment, increment/decrement or "var"
++     * declaration with an initializer. Used to detect definitions that occur
++     * within a sub-expression evaluated before a use, which invalidate
++     * whatever definition was thought to reach that use.
++     */
++    private Predicate<Node> redefinesVariablePredicate(final String name) {
++      return new Predicate<Node>() {
++        @Override
++        public boolean apply(Node n) {
++          if (n == null) {
++            return false;
++          }
++
++          if ((NodeUtil.isAssignmentOp(n) || n.isInc() || n.isDec())
++              && n.getFirstChild().isName()
++              && n.getFirstChild().getString().equals(name)) {
++            return true;
++          }
++
++          if (n.isVar()) {
++            for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++              if (c.getString().equals(name) && c.hasChildren()) {
++                return true;
++              }
++            }
++          }
++
++          for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++            if (!ControlFlowGraph.isEnteringNewCfgNode(c) && apply(c)) {
++              return true;
++            }
++          }
++          return false;
++        }
++      };
++    }
++
+     /**
+      * Actual transformation.
+      */

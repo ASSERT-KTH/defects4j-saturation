@@ -1,0 +1,37 @@
+{
+  "project": "Cli",
+  "bug": 7,
+  "id": "Cli-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:21:12Z",
+  "wallclock_s": 33,
+  "agent_s": 24,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 21832,
+  "total_cost_usd": 0.09954400000000001,
+  "session_id": "14415c71-c9b0-4b20-a56e-c2eaa42c5607",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1799,
+  "cache_read_input_tokens": 131015,
+  "cache_creation_input_tokens": 13276,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli2.bug.Bug27575Test::testRequiredOptions"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli2/builder/PatternBuilder.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

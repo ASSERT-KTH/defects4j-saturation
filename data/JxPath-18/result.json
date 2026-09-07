@@ -1,0 +1,38 @@
+{
+  "project": "JxPath",
+  "bug": 18,
+  "id": "JxPath-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:42:46Z",
+  "wallclock_s": 78,
+  "agent_s": 53,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 40044,
+  "total_cost_usd": 0.1989628,
+  "session_id": "33a7121b-fc57-4aa4-898e-63fcb333a7bc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 3615,
+  "cache_read_input_tokens": 368734,
+  "cache_creation_input_tokens": 21383,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testAxisAttribute",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testAxisAttribute"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

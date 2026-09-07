@@ -1,0 +1,171 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index 142e820..24cbc1c 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -340,14 +340,15 @@ class CodeGenerator {
+         Node body = fn.getLastChild();
+ 
+         // Add the property name.
+-        if (TokenStream.isJSIdentifier(name) &&
++        if (!n.isQuotedString() &&
++            TokenStream.isJSIdentifier(name) &&
+             // do not encode literally any non-literal characters that were
+             // unicode escaped.
+             NodeUtil.isLatin(name)) {
+           add(name);
+         } else {
+           // Determine if the string is a simple number.
+-          add(jsString(n.getString(), outputCharsetEncoder));
++          addPropertyKeyAsNumberOrString(n);
+         }
+ 
+         add(parameters);
+@@ -663,7 +664,7 @@ class CodeGenerator {
+               add(c.getString());
+             } else {
+               // Determine if the string is a simple number.
+-              addExpr(c, 1);
++              addPropertyKeyAsNumberOrString(c);
+             }
+             add(":");
+             addExpr(c.getFirstChild(), 1);
+@@ -907,6 +908,33 @@ class CodeGenerator {
+     }
+   }
+ 
++  /**
++   * Prints an object literal property name (or getter/setter name) node
++   * whose text looks like a number, choosing between an unquoted numeric
++   * literal and a quoted string depending on whether the value can be
++   * reproduced exactly and without ambiguity as a plain number.
++   */
++  private void addPropertyKeyAsNumberOrString(Node key) {
++    cc.startSourceMapping(key);
++    String s = key.getString();
++    boolean printed = false;
++    if (NodeUtil.isSimpleNumber(s)) {
++      try {
++        long longValue = Long.parseLong(s);
++        if ((long) (double) longValue == longValue) {
++          cc.addNumber(longValue);
++          printed = true;
++        }
++      } catch (NumberFormatException e) {
++        // Falls through to the quoted string case below.
++      }
++    }
++    if (!printed) {
++      add(jsString(s, outputCharsetEncoder));
++    }
++    cc.endSourceMapping(key);
++  }
++
+   /** Outputs a js string, using the optimal (single/double) quote character */
+   static String jsString(String s, CharsetEncoder outputCharsetEncoder) {
+     int singleq = 0, doubleq = 0;
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index 28222de..c7eed6c 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -2433,6 +2433,24 @@ public final class NodeUtil {
+     return true;
+   }
+ 
++  /**
++   * Determines whether a string is a "simple number": a sequence of digits
++   * that does not start with a leading zero (unless the value is exactly
++   * "0"). Such strings can be used, without loss of information, as the
++   * textual form of an object literal property name that is a non-negative
++   * integer.
++   */
++  static boolean isSimpleNumber(String s) {
++    int len = s.length();
++    for (int index = 0; index < len; index++) {
++      char c = s.charAt(index);
++      if (c < '0' || c > '9') {
++        return false;
++      }
++    }
++    return len > 0 && (len == 1 || s.charAt(0) != '0');
++  }
++
+   /**
+    * Determines whether the given name can appear on the right side of
+    * the dot operator. Many properties (like reserved words) cannot.
+diff --git a/src/com/google/javascript/jscomp/RenamePrototypes.java b/src/com/google/javascript/jscomp/RenamePrototypes.java
+index 304c0e1..4c88e07 100644
+--- a/src/com/google/javascript/jscomp/RenamePrototypes.java
++++ b/src/com/google/javascript/jscomp/RenamePrototypes.java
+@@ -333,7 +333,7 @@ class RenamePrototypes implements CompilerPass {
+                  child != null;
+                  child = child.getNext()) {
+ 
+-              if (child.getType() != Token.NUMBER) {
++              if (!isNumericObjLitKey(child)) {
+                 markObjLitPropertyCandidate(child, t.getInput());
+               }
+             }
+@@ -374,7 +374,7 @@ class RenamePrototypes implements CompilerPass {
+ 
+             for (Node key = map.getFirstChild();
+                  key != null; key = key.getNext()) {
+-              if (key.getType() != Token.NUMBER) {
++              if (!isNumericObjLitKey(key)) {
+                // May be STRING, GET, or SET
+                 markPrototypePropertyCandidate(key, input);
+               }
+@@ -384,6 +384,16 @@ class RenamePrototypes implements CompilerPass {
+       }
+     }
+ 
++    /**
++     * Determines whether the given object literal key (which may be a
++     * STRING, GET, or SET node) is really a numeric property name. Such
++     * names are never renamed.
++     */
++    private boolean isNumericObjLitKey(Node key) {
++      return key.getType() == Token.NUMBER ||
++          NodeUtil.isSimpleNumber(key.getString());
++    }
++
+     /**
+      * Remembers the given String node and increments the property name's
+      * access count.
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index dcc3def..a0a5abe 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -253,9 +253,6 @@ public class IRFactory {
+   }
+ 
+ 
+-
+-    // Return "1" instead of "1.0"
+-
+   private void setSourceInfo(Node irNode, AstNode node) {
+     // If we have a named function, set the position to that of the name.
+     if (irNode.getType() == Token.FUNCTION &&
+@@ -348,9 +345,21 @@ public class IRFactory {
+         ret = transform(n);
+         Preconditions.checkState(ret.getType() == Token.NUMBER
+             || ret.getType() == Token.STRING);
+-        if (ret.getType() == Token.STRING) {
+-        ret.putBooleanProp(Node.QUOTED_PROP, true);
++        if (ret.getType() == Token.NUMBER) {
++          // Object literal property names (including getter/setter names)
++          // are represented as strings, even when written as numbers in the
++          // source, so that later passes can always treat them uniformly.
++          double value = ret.getDouble();
++          long longValue = (long) value;
++          String numberAsString = (longValue == value)
++              ? Long.toString(longValue) : String.valueOf(value);
++          Node stringNode = newStringNode(numberAsString);
++          stringNode.setLineno(ret.getLineno());
++          stringNode.setCharno(ret.getCharno());
++          stringNode.setJSDocInfo(ret.getJSDocInfo());
++          ret = stringNode;
+         }
++        ret.putBooleanProp(Node.QUOTED_PROP, true);
+       }
+       return ret;
+     }

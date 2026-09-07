@@ -1,0 +1,36 @@
+diff --git a/src/main/java/org/joda/time/field/BaseDurationField.java b/src/main/java/org/joda/time/field/BaseDurationField.java
+index 310d354..4e9ddc2 100644
+--- a/src/main/java/org/joda/time/field/BaseDurationField.java
++++ b/src/main/java/org/joda/time/field/BaseDurationField.java
+@@ -143,9 +143,14 @@ public abstract class BaseDurationField extends DurationField implements Seriali
+ 
+     //------------------------------------------------------------------------
+     public int compareTo(DurationField otherField) {
++        // an unsupported field has no fixed unit size, so treat it as being
++        // larger than any supported field for ordering purposes
++        if (!otherField.isSupported()) {
++            return -1;
++        }
++        // cannot do (thisMillis - otherMillis) as can overflow
+         long otherMillis = otherField.getUnitMillis();
+         long thisMillis = getUnitMillis();
+-        // cannot do (thisMillis - otherMillis) as can overflow
+         if (thisMillis == otherMillis) {
+             return 0;
+         }
+diff --git a/src/main/java/org/joda/time/field/MillisDurationField.java b/src/main/java/org/joda/time/field/MillisDurationField.java
+index f77fb4b..a36273d 100644
+--- a/src/main/java/org/joda/time/field/MillisDurationField.java
++++ b/src/main/java/org/joda/time/field/MillisDurationField.java
+@@ -131,6 +131,11 @@ public final class MillisDurationField extends DurationField implements Serializ
+ 
+     //------------------------------------------------------------------------
+     public int compareTo(DurationField otherField) {
++        // an unsupported field has no fixed unit size, so treat it as being
++        // larger than any supported field for ordering purposes
++        if (!otherField.isSupported()) {
++            return -1;
++        }
+         long otherMillis = otherField.getUnitMillis();
+         long thisMillis = getUnitMillis();
+         // cannot do (thisMillis - otherMillis) as can overflow

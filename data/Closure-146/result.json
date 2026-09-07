@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 146,
+  "id": "Closure-146",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:31:08Z",
+  "wallclock_s": 232,
+  "agent_s": 131,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 83767,
+  "total_cost_usd": 0.33131620000000006,
+  "session_id": "e0d8fc3c-33f5-4a39-bd55-27c31b3c8fef",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 6925,
+  "cache_read_input_tokens": 624721,
+  "cache_creation_input_tokens": 33667,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.SemanticReverseAbstractInterpreterTest::testEqCondition4"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

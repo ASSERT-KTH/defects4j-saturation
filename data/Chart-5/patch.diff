@@ -1,0 +1,33 @@
+diff --git a/source/org/jfree/data/xy/XYSeries.java b/source/org/jfree/data/xy/XYSeries.java
+index 0b37e6e..8f24d3b 100644
+--- a/source/org/jfree/data/xy/XYSeries.java
++++ b/source/org/jfree/data/xy/XYSeries.java
+@@ -561,7 +561,27 @@ public class XYSeries extends Series implements Cloneable, Serializable {
+             // new item...otherwise it will be just -1 and we should just
+             // append the value to the list...
+             if (this.autoSort) {
+-                this.data.add(-index - 1, new XYDataItem(x, y));
++                if (index < 0) {
++                    this.data.add(-index - 1, new XYDataItem(x, y));
++                }
++                else {
++                    // index >= 0 means we have a duplicate x-value that is
++                    // permitted, so we need to make sure we insert *after*
++                    // any duplicates
++                    int size = this.data.size();
++                    while (index < size
++                           && x.doubleValue()
++                           == ((XYDataItem) this.data.get(index)).getX()
++                              .doubleValue()) {
++                        index++;
++                    }
++                    if (index < size) {
++                        this.data.add(index, new XYDataItem(x, y));
++                    }
++                    else {
++                        this.data.add(new XYDataItem(x, y));
++                    }
++                }
+             }
+             else {
+                 this.data.add(new XYDataItem(x, y));

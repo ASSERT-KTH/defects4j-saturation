@@ -1,0 +1,41 @@
+{
+  "project": "JacksonXml",
+  "bug": 6,
+  "id": "JacksonXml-6",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:47:00Z",
+  "wallclock_s": 329,
+  "agent_s": 286,
+  "agent_rc": 0,
+  "num_turns": 33,
+  "api_duration_ms": 130673,
+  "total_cost_usd": 0.4945362,
+  "session_id": "f0560143-0015-4c87-b8b3-9e4e4b3ec4dc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 66,
+  "output_tokens": 10721,
+  "cache_read_input_tokens": 1136001,
+  "cache_creation_input_tokens": 38593,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.dataformat.xml.ser.TestBinaryStreamToXMLSerialization::testWith0Bytes",
+    "com.fasterxml.jackson.dataformat.xml.ser.TestBinaryStreamToXMLSerialization::testWith2Bytes",
+    "com.fasterxml.jackson.dataformat.xml.ser.TestBinaryStreamToXMLSerialization::testWith3Bytes",
+    "com.fasterxml.jackson.dataformat.xml.ser.TestBinaryStreamToXMLSerialization::testWith4Bytes",
+    "com.fasterxml.jackson.dataformat.xml.ser.TestBinaryStreamToXMLSerialization::testWith1Byte"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java"
+  ],
+  "patch_added_lines": 36,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

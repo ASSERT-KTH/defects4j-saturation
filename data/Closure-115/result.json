@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 115,
+  "id": "Closure-115",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T02:34:34Z",
+  "wallclock_s": 748,
+  "agent_s": 606,
+  "agent_rc": 0,
+  "num_turns": 50,
+  "api_duration_ms": 496875,
+  "total_cost_usd": 1.742436,
+  "session_id": "d912f060-0e2c-47cd-99b0-63c286334c26",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 100,
+  "output_tokens": 47738,
+  "cache_read_input_tokens": 4027820,
+  "cache_creation_input_tokens": 113708,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineFunctionsTest::testBug4944818",
+    "com.google.javascript.jscomp.InlineFunctionsTest::testDoubleInlining1",
+    "com.google.javascript.jscomp.InlineFunctionsTest::testNoInlineIfParametersModified8",
+    "com.google.javascript.jscomp.InlineFunctionsTest::testNoInlineIfParametersModified9",
+    "com.google.javascript.jscomp.InlineFunctionsTest::testInlineFunctions6"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FunctionArgumentInjector.java",
+    "src/com/google/javascript/jscomp/FunctionInjector.java"
+  ],
+  "patch_added_lines": 21,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

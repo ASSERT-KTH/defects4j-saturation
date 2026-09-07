@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 11,
+  "id": "Math-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:58:53Z",
+  "wallclock_s": 194,
+  "agent_s": 79,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 16803,
+  "total_cost_usd": 0.08901700000000001,
+  "session_id": "30cbc03c-c93b-4809-8946-647bc3266226",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1142,
+  "cache_read_input_tokens": 110900,
+  "cache_creation_input_tokens": 13212,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.distribution.MultivariateNormalDistributionTest::testUnivariateDistribution"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/distribution/MultivariateNormalDistribution.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

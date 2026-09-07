@@ -1,0 +1,38 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java b/src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java
+index 4198333..b1b19ca 100644
+--- a/src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java
++++ b/src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java
+@@ -16,10 +16,12 @@
+  */
+ package org.apache.commons.jxpath.ri.axes;
+ 
++import org.apache.commons.jxpath.ri.Compiler;
+ import org.apache.commons.jxpath.ri.EvalContext;
+ import org.apache.commons.jxpath.ri.QName;
+ import org.apache.commons.jxpath.ri.compiler.NodeNameTest;
+ import org.apache.commons.jxpath.ri.compiler.NodeTest;
++import org.apache.commons.jxpath.ri.compiler.NodeTypeTest;
+ import org.apache.commons.jxpath.ri.model.NodeIterator;
+ import org.apache.commons.jxpath.ri.model.NodePointer;
+ 
+@@ -72,10 +74,18 @@ public class AttributeContext extends EvalContext {
+         super.setPosition(getCurrentPosition() + 1);
+         if (!setStarted) {
+             setStarted = true;
+-            if (!(nodeTest instanceof NodeNameTest)) {
++            QName name;
++            if (nodeTest instanceof NodeNameTest) {
++                name = ((NodeNameTest) nodeTest).getNodeName();
++            }
++            else if (nodeTest instanceof NodeTypeTest
++                    && ((NodeTypeTest) nodeTest).getNodeType()
++                        == Compiler.NODE_TYPE_NODE) {
++                name = new QName(null, "*");
++            }
++            else {
+                 return false;
+             }
+-            QName name = ((NodeNameTest) nodeTest).getNodeName();
+             iterator =
+                 parentContext.getCurrentNodePointer().attributeIterator(name);
+         }

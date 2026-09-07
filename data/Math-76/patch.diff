@@ -1,0 +1,72 @@
+diff --git a/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java b/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
+index 1436881..6c75c5a 100644
+--- a/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
++++ b/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
+@@ -158,8 +158,9 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+             final int p = singularValues.length;
+             if (m >= n) {
+                 // the tridiagonal matrix is Bt.B, where B is upper bidiagonal
++                final int lastRow = Math.min(p, n - 1);
+                 final RealMatrix e =
+-                    eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
++                    eigenDecomposition.getV().getSubMatrix(0, lastRow, 0, p - 1);
+                 final double[][] eData = e.getData();
+                 final double[][] wData = new double[m][p];
+                 double[] ei1 = eData[0];
+@@ -174,9 +175,19 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+                             wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                         }
+                 }
+-                        for (int j = 0; j < p; ++j) {
+-                            wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
+-                        }
++                if (p < n) {
++                    // the last row also has a contribution from the next eigenvector row
++                    final double[] eiNext = eData[lastRow];
++                    for (int j = 0; j < p; ++j) {
++                        wData[p - 1][j] = (mainBidiagonal[p - 1] * ei1[j] +
++                                            secondaryBidiagonal[p - 1] * eiNext[j]) /
++                                           singularValues[j];
++                    }
++                } else {
++                    for (int j = 0; j < p; ++j) {
++                        wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
++                    }
++                }
+ 
+                 for (int i = p; i < m; ++i) {
+                     wData[i] = new double[p];
+@@ -244,8 +255,9 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+             } else {
+                 // the tridiagonal matrix is B.Bt, where B is lower bidiagonal
+                 // compute W = Bt.E.S^(-1) where E is the eigenvectors matrix
++                final int lastRow = Math.min(p, m - 1);
+                 final RealMatrix e =
+-                    eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
++                    eigenDecomposition.getV().getSubMatrix(0, lastRow, 0, p - 1);
+                 final double[][] eData = e.getData();
+                 final double[][] wData = new double[n][p];
+                 double[] ei1 = eData[0];
+@@ -259,9 +271,19 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+                             wi[j] = (mi * ei0[j] + si * ei1[j]) / singularValues[j];
+                         }
+                 }
+-                        for (int j = 0; j < p; ++j) {
+-                            wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
+-                        }
++                if (p < m) {
++                    // the last row also has a contribution from the next eigenvector row
++                    final double[] eiNext = eData[lastRow];
++                    for (int j = 0; j < p; ++j) {
++                        wData[p - 1][j] = (mainBidiagonal[p - 1] * ei1[j] +
++                                            secondaryBidiagonal[p - 1] * eiNext[j]) /
++                                           singularValues[j];
++                    }
++                } else {
++                    for (int j = 0; j < p; ++j) {
++                        wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
++                    }
++                }
+                 for (int i = p; i < n; ++i) {
+                     wData[i] = new double[p];
+                 }

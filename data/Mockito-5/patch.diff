@@ -1,0 +1,24 @@
+diff --git a/src/org/mockito/internal/verification/VerificationOverTimeImpl.java b/src/org/mockito/internal/verification/VerificationOverTimeImpl.java
+index c5a66c5..a84b7f0 100644
+--- a/src/org/mockito/internal/verification/VerificationOverTimeImpl.java
++++ b/src/org/mockito/internal/verification/VerificationOverTimeImpl.java
+@@ -4,7 +4,6 @@
+  */
+ package org.mockito.internal.verification;
+ 
+-import org.mockito.exceptions.base.MockitoAssertionError;
+ import org.mockito.internal.util.Timer;
+ import org.mockito.internal.verification.api.VerificationData;
+ import org.mockito.verification.VerificationMode;
+@@ -85,10 +84,7 @@ public class VerificationOverTimeImpl implements VerificationMode {
+                 } else {
+                     error = null;
+                 }
+-            } catch (MockitoAssertionError e) {
+-                error = handleVerifyException(e);
+-            }
+-            catch (org.mockito.exceptions.verification.junit.ArgumentsAreDifferent e) {
++            } catch (AssertionError e) {
+                 error = handleVerifyException(e);
+             }
+         }

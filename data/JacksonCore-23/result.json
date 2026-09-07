@@ -1,0 +1,37 @@
+{
+  "project": "JacksonCore",
+  "bug": 23,
+  "id": "JacksonCore-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:16:31Z",
+  "wallclock_s": 79,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 17148,
+  "total_cost_usd": 0.075919,
+  "session_id": "893b85c8-8239-48a8-b653-b772b44dd5b5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1112,
+  "cache_read_input_tokens": 118330,
+  "cache_creation_input_tokens": 9706,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.util.TestDefaultPrettyPrinter::testInvalidSubClass"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/util/DefaultPrettyPrinter.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

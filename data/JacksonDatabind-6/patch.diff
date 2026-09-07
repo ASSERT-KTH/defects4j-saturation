@@ -1,0 +1,45 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+index e04380c..2f045f7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+@@ -402,13 +402,34 @@ public class StdDateFormat
+                 }
+                 // Milliseconds partial or missing; and even seconds are optional
+                 len = dateStr.length();
+-                // remove 'T', '+'/'-' and 4-digit timezone-offset
+-                c = dateStr.charAt(len-9);
+-                if (Character.isDigit(c)) {
+-                    StringBuilder sb = new StringBuilder(dateStr);
+-                    sb.insert(len-5, ".000");
+-                    dateStr = sb.toString();
++                // Timezone offset is now normalized to exactly 5 characters
++                // (sign followed by 4 digits); time part in between 'T' and
++                // offset may be missing seconds and/or milliseconds, or have
++                // a fractional-seconds part of length other than 3 digits.
++                int tIndex = dateStr.indexOf('T');
++                String timePart = dateStr.substring(tIndex + 1, len - 5);
++                int dotIndex = timePart.indexOf('.');
++                if (dotIndex < 0) { // missing milliseconds, possibly seconds too
++                    int colons = 0;
++                    for (int ix = 0, end = timePart.length(); ix < end; ++ix) {
++                        if (timePart.charAt(ix) == ':') {
++                            ++colons;
++                        }
++                    }
++                    timePart += (colons < 2) ? ":00.000" : ".000";
++                } else { // fractional seconds present but not exactly 3 digits
++                    int fractionLen = timePart.length() - dotIndex - 1;
++                    if (fractionLen < 3) {
++                        StringBuilder sb = new StringBuilder(timePart);
++                        while (fractionLen++ < 3) {
++                            sb.append('0');
++                        }
++                        timePart = sb.toString();
++                    } else if (fractionLen > 3) {
++                        timePart = timePart.substring(0, dotIndex + 4);
++                    }
+                 }
++                dateStr = dateStr.substring(0, tIndex + 1) + timePart + dateStr.substring(len - 5);
+                 df = _formatISO8601;
+                 if (_formatISO8601 == null) {
+                     df = _formatISO8601 = _cloneFormat(DATE_FORMAT_ISO8601, DATE_FORMAT_STR_ISO8601, _timezone, _locale);

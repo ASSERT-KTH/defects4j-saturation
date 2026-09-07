@@ -1,0 +1,38 @@
+diff --git a/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java b/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java
+index b8225ad..56aac35 100644
+--- a/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java
++++ b/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java
+@@ -39,11 +39,7 @@ public class Weight implements OptimizationData {
+      * @param weight List of the values of the diagonal.
+      */
+     public Weight(double[] weight) {
+-        final int dim = weight.length;
+-        weightMatrix = org.apache.commons.math3.linear.MatrixUtils.createRealMatrix(dim, dim);
+-        for (int i = 0; i < dim; i++) {
+-            weightMatrix.setEntry(i, i, weight[i]);
+-        }
++        weightMatrix = new DiagonalMatrix(weight);
+     }
+ 
+     /**
+diff --git a/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java b/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java
+index d12ebea..ef52943 100644
+--- a/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java
++++ b/src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java
+@@ -264,7 +264,16 @@ public abstract class AbstractLeastSquaresOptimizer
+      * @return the square-root of the weight matrix.
+      */
+     private RealMatrix squareRoot(RealMatrix m) {
++        if (m instanceof DiagonalMatrix) {
++            final int dim = m.getRowDimension();
++            final RealMatrix sqrtM = new DiagonalMatrix(dim);
++            for (int i = 0; i < dim; i++) {
++                sqrtM.setEntry(i, i, FastMath.sqrt(m.getEntry(i, i)));
++            }
++            return sqrtM;
++        } else {
+             final EigenDecomposition dec = new EigenDecomposition(m);
+             return dec.getSquareRoot();
++        }
+     }
+ }

@@ -1,0 +1,64 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
+index dc4906e..db089e7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
+@@ -55,6 +55,9 @@ public class NumberSerializer
+             switch (format.getShape()) {
+             case STRING:
+                 // [databind#2264]: Need special handling for `BigDecimal`
++                if (((Class<?>) handledType()) == BigDecimal.class) {
++                    return new NumberSerializer.BigDecimalAsStringSerializer();
++                }
+                 return ToStringSerializer.instance;
+             default:
+             }
+@@ -62,6 +65,30 @@ public class NumberSerializer
+         return this;
+     }
+ 
++    /**
++     * Specialized serializer used for {@link BigDecimal} when it is to be
++     * written as a JSON String (see {@link JsonFormat.Shape#STRING}), taking
++     * into account {@link JsonGenerator.Feature#WRITE_BIGDECIMAL_AS_PLAIN}
++     * so that the resulting String representation matches what would have
++     * been written had the value been output as a native JSON number.
++     *
++     * @since 2.9.9 (part of fix for [databind#2230])
++     */
++    static class BigDecimalAsStringSerializer extends ToStringSerializer {
++        private static final long serialVersionUID = 1L;
++
++        public BigDecimalAsStringSerializer() {
++            super(BigDecimal.class);
++        }
++
++        @Override
++        public void serialize(Object value, JsonGenerator g, SerializerProvider provider) throws IOException {
++            BigDecimal v = (BigDecimal) value;
++            g.writeString(g.isEnabled(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)
++                    ? v.toPlainString() : v.toString());
++        }
++    }
++
+     @Override
+     public void serialize(Number value, JsonGenerator g, SerializerProvider provider) throws IOException
+     {
+@@ -106,18 +133,4 @@ public class NumberSerializer
+             }
+         }
+     }
+-
+-    /**
+-     * @since 2.10
+-     */
+-    
+-
+-
+-                // 24-Aug-2016, tatu: [core#315] prevent possible DoS vector, so we need this
+-                    // ... but wouldn't it be nice to trigger error via generator? Alas,
+-                    // no method to do that. So we'll do...
+-
+-            // should never be called
+-
+-        // 24-Aug-2016, tatu: [core#315] prevent possible DoS vector, so we need this
+ }

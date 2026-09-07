@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 87,
+  "id": "Jsoup-87",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:28:35Z",
+  "wallclock_s": 226,
+  "agent_s": 200,
+  "agent_rc": 0,
+  "num_turns": 42,
+  "api_duration_ms": 186301,
+  "total_cost_usd": 0.690056,
+  "session_id": "34d38583-33c6-4898-a565-eaa78e41a6cb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 15006,
+  "cache_read_input_tokens": 1645045,
+  "cache_creation_input_tokens": 52077,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::preservedCaseLinksCantNest"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java",
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilder.java",
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java",
+    "src/main/java/org/jsoup/parser/Tag.java"
+  ],
+  "patch_added_lines": 65,
+  "patch_removed_lines": 55,
+  "has_dev_patch": true
+}

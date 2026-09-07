@@ -1,0 +1,15 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+index de50adf..a7a11da 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+@@ -104,6 +104,10 @@ public class DOMNodePointer extends NodePointer {
+             if (wildcard
+                 || testName.getName()
+                         .equals(DOMNodePointer.getLocalName(node))) {
++                String nodePrefix = DOMNodePointer.getPrefix(node);
++                if (equalStrings(testPrefix, nodePrefix)) {
++                    return true;
++                }
+                 String nodeNS = DOMNodePointer.getNamespaceURI(node);
+                 return equalStrings(namespaceURI, nodeNS);
+             }

@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 53,
+  "id": "Math-53",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:41:33Z",
+  "wallclock_s": 147,
+  "agent_s": 63,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 14067,
+  "total_cost_usd": 0.0752896,
+  "session_id": "5452657b-85e5-48e4-b0fe-8781716642da",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1041,
+  "cache_read_input_tokens": 86588,
+  "cache_creation_input_tokens": 11282,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.complex.ComplexTest::testAddNaN"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/complex/Complex.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

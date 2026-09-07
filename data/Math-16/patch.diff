@@ -1,0 +1,49 @@
+diff --git a/src/main/java/org/apache/commons/math3/util/FastMath.java b/src/main/java/org/apache/commons/math3/util/FastMath.java
+index 3778120..e1737df 100644
+--- a/src/main/java/org/apache/commons/math3/util/FastMath.java
++++ b/src/main/java/org/apache/commons/math3/util/FastMath.java
+@@ -110,6 +110,12 @@ public class FastMath {
+     /** log(2) (low bits). */
+     private static final double LN_2_B = 1.17304635250823482e-7;
+ 
++    /** exp(-LN_2_B) - 1, used as an exact multiplicative correction for the
++     * low bits of log(2) when reducing an argument by log(2) through the
++     * "extra" parameter of {@link #exp(double, double, double[])}.
++     */
++    private static final double LN_2_B_EXPM1 = Math.expm1(-LN_2_B);
++
+     /** Coefficients for log, when input 0.99 < x < 1.01. */
+     private static final double LN_QUICK_COEF[][] = {
+         {1.0, 5.669184079525E-24},
+@@ -392,11 +398,13 @@ public class FastMath {
+ 
+       if (x > 20) {
+               // Avoid overflow (MATH-905).
+-              return 0.5 * exp(x);
++              // exp(x) / 2, computed without overflow when exp(x) alone would
++              // exceed Double.MAX_VALUE.
++              return exp(x - LN_2_A, LN_2_B_EXPM1, null);
+           }
+       if (x < -20) {
+               // Avoid overflow (MATH-905).
+-              return 0.5 * exp(-x);
++              return exp(-x - LN_2_A, LN_2_B_EXPM1, null);
+       }
+ 
+       final double hiPrec[] = new double[2];
+@@ -453,11 +461,13 @@ public class FastMath {
+ 
+       if (x > 20) {
+               // Avoid overflow (MATH-905).
+-              return 0.5 * exp(x);
++              // exp(x) / 2, computed without overflow when exp(x) alone would
++              // exceed Double.MAX_VALUE.
++              return exp(x - LN_2_A, LN_2_B_EXPM1, null);
+           }
+       if (x < -20) {
+               // Avoid overflow (MATH-905).
+-              return -0.5 * exp(-x);
++              return -exp(-x - LN_2_A, LN_2_B_EXPM1, null);
+       }
+ 
+       if (x == 0) {

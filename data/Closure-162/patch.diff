@@ -1,0 +1,40 @@
+diff --git a/src/com/google/javascript/jscomp/ScopedAliases.java b/src/com/google/javascript/jscomp/ScopedAliases.java
+index 5acf25a..1fb08d4 100644
+--- a/src/com/google/javascript/jscomp/ScopedAliases.java
++++ b/src/com/google/javascript/jscomp/ScopedAliases.java
+@@ -27,6 +27,7 @@ import com.google.javascript.rhino.SourcePosition;
+ import com.google.javascript.rhino.Token;
+ 
+ import java.util.Collection;
++import java.util.Iterator;
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -223,6 +224,27 @@ class ScopedAliases implements HotSwapCompilerPass {
+       if (n != null && isCallToScopeMethod(n)) {
+         transformation = transformationHandler.logAliasTransformation(
+             n.getSourceFileName(), getSourceRegion(n));
++        findAliases(t);
++      }
++    }
++
++    /**
++     * Find aliases in a goog.scope block before the block is traversed, so
++     * that JSDoc comments referencing an alias defined later in the block
++     * (forward references) can still be resolved.
++     */
++    private void findAliases(NodeTraversal t) {
++      Scope scope = t.getScope();
++      for (Iterator<Var> it = scope.getVars(); it.hasNext(); ) {
++        Var v = it.next();
++        Node n = v.getNode();
++        Node parent = n.getParent();
++        if (parent.getType() == Token.VAR) {
++          if (n.hasChildren() && n.getFirstChild().isQualifiedName()) {
++            String name = n.getString();
++            aliases.put(name, v);
++          }
++        }
+       }
+     }
+ 

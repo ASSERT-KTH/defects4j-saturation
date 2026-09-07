@@ -1,0 +1,39 @@
+{
+  "project": "Math",
+  "bug": 98,
+  "id": "Math-98",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:21:35Z",
+  "wallclock_s": 94,
+  "agent_s": 46,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 18980,
+  "total_cost_usd": 0.0940996,
+  "session_id": "4c0aa54f-4ae5-4b95-9e72-4e96f010e357",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1499,
+  "cache_read_input_tokens": 130863,
+  "cache_creation_input_tokens": 12403,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.BigMatrixImplTest::testMath209",
+    "org.apache.commons.math.linear.RealMatrixImplTest::testMath209"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/linear/BigMatrixImpl.java",
+    "src/java/org/apache/commons/math/linear/RealMatrixImpl.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

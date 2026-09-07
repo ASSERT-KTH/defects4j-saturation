@@ -1,0 +1,25 @@
+diff --git a/src/com/google/javascript/jscomp/ScopedAliases.java b/src/com/google/javascript/jscomp/ScopedAliases.java
+index 1e22c9e..d25a344 100644
+--- a/src/com/google/javascript/jscomp/ScopedAliases.java
++++ b/src/com/google/javascript/jscomp/ScopedAliases.java
+@@ -270,6 +270,11 @@ class ScopedAliases implements HotSwapCompilerPass {
+     private final Set<String> forbiddenLocals = Sets.newHashSet("$jscomp");
+     private boolean hasNamespaceShadows = false;
+ 
++    // Also used to ensure that we don't process the same JSDocInfo twice,
++    // since the same JSDocInfo instance may be attached to more than one
++    // node (e.g. both a VAR node and its NAME child).
++    private final Set<JSDocInfo> processedJsDocInfos = Sets.newHashSet();
++
+     private boolean hasErrors = false;
+ 
+     private AliasTransformation transformation = null;
+@@ -578,7 +583,7 @@ class ScopedAliases implements HotSwapCompilerPass {
+         // When we inject declarations, we duplicate jsdoc. Make sure
+         // we only process that jsdoc once.
+         JSDocInfo info = n.getJSDocInfo();
+-        if (info != null) {
++        if (info != null && processedJsDocInfos.add(info)) {
+           for (Node node : info.getTypeNodes()) {
+             fixTypeNode(node);
+           }

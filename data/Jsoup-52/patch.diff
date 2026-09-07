@@ -1,0 +1,75 @@
+diff --git a/src/main/java/org/jsoup/nodes/XmlDeclaration.java b/src/main/java/org/jsoup/nodes/XmlDeclaration.java
+index 24a9f16..2e3effc 100644
+--- a/src/main/java/org/jsoup/nodes/XmlDeclaration.java
++++ b/src/main/java/org/jsoup/nodes/XmlDeclaration.java
+@@ -43,29 +43,20 @@ public class XmlDeclaration extends Node {
+      @return XML declaration
+      */
+     public String getWholeDeclaration() {
+-        final String decl = this.name;
+-        if(decl.equals("xml") && attributes.size() > 1 ) {
+-            StringBuilder sb = new StringBuilder(decl);
+-            final String version = attributes.get("version");
+-            if( version != null ) {
+-                sb.append(" version=\"").append(version).append("\"");
+-            }
+-            final String encoding = attributes.get("encoding");
+-            if( encoding != null ) {
+-                sb.append(" encoding=\"").append(encoding).append("\"");
+-            }
+-            return sb.toString();
+-        }
+-        else {
+-            return this.name;
+-        }
++        return attributes.html().trim();
+     }
+ 
+ 	void outerHtmlHead(Appendable accum, int depth, Document.OutputSettings out) throws IOException {
+         accum
+             .append("<")
+             .append(isProcessingInstruction ? "!" : "?")
+-                .append(getWholeDeclaration())
++            .append(name);
++        String decl = getWholeDeclaration();
++        if (decl.length() > 0) {
++            accum.append(" ").append(decl);
++        }
++        accum
++            .append(isProcessingInstruction ? "" : "?")
+             .append(">");
+     }
+ 
+diff --git a/src/main/java/org/jsoup/parser/XmlTreeBuilder.java b/src/main/java/org/jsoup/parser/XmlTreeBuilder.java
+index 99807fc..42d3083 100644
+--- a/src/main/java/org/jsoup/parser/XmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/XmlTreeBuilder.java
+@@ -70,11 +70,25 @@ public class XmlTreeBuilder extends TreeBuilder {
+         Comment comment = new Comment(commentToken.getData(), baseUri);
+         Node insert = comment;
+         if (commentToken.bogus) { // xml declarations are emitted as bogus comments (which is right for html, but not xml)
+-            // so we do a bit of a hack and parse the data as an element to pull the attributes out
++            // so we do a bit of a hack and parse the data as a tag to pull the name and attributes out
+             String data = comment.getData();
+             if (data.length() > 1 && (data.startsWith("!") || data.startsWith("?"))) {
+-                String declaration = data.substring(1);
+-                insert = new XmlDeclaration(declaration, comment.baseUri(), data.startsWith("!"));
++                boolean isProcessingInstruction = data.startsWith("!");
++                String declarationData = data.substring(1);
++                if (!isProcessingInstruction && declarationData.endsWith("?"))
++                    declarationData = declarationData.substring(0, declarationData.length() - 1);
++
++                Tokeniser tokeniser = new Tokeniser(new CharacterReader("<" + declarationData + ">"), ParseErrorList.noTracking());
++                Token token = tokeniser.read();
++                if (token instanceof Token.Tag) {
++                    Token.Tag tag = (Token.Tag) token;
++                    XmlDeclaration decl = new XmlDeclaration(tag.name(), comment.baseUri(), isProcessingInstruction);
++                    if (tag.getAttributes() != null)
++                        decl.attributes().addAll(tag.getAttributes());
++                    insert = decl;
++                } else {
++                    insert = new XmlDeclaration(declarationData, comment.baseUri(), isProcessingInstruction);
++                }
+             }
+         }
+         insertNode(insert);

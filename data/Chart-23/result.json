@@ -1,0 +1,37 @@
+{
+  "project": "Chart",
+  "bug": 23,
+  "id": "Chart-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:19:16Z",
+  "wallclock_s": 66,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 26106,
+  "total_cost_usd": 0.1559308,
+  "session_id": "a8dd3cc0-e6b3-4430-a8fc-f30850edf0ab",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1907,
+  "cache_read_input_tokens": 227529,
+  "cache_creation_input_tokens": 22260,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.renderer.category.junit.MinMaxCategoryRendererTests::testEquals"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/renderer/category/MinMaxCategoryRenderer.java"
+  ],
+  "patch_added_lines": 21,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

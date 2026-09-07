@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 3,
+  "id": "Jsoup-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:55:40Z",
+  "wallclock_s": 776,
+  "agent_s": 755,
+  "agent_rc": 0,
+  "num_turns": 29,
+  "api_duration_ms": 744122,
+  "total_cost_usd": 1.518204,
+  "session_id": "befbff07-d1a9-4070-8840-bcb7937c58db",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 58,
+  "output_tokens": 68599,
+  "cache_read_input_tokens": 2070215,
+  "cache_creation_input_tokens": 103230,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::testAppendRowToTable",
+    "org.jsoup.nodes.ElementTest::testPrependRowToTable",
+    "org.jsoup.parser.ParserTest::handlesNestedImplicitTable"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java",
+    "src/main/java/org/jsoup/parser/Parser.java",
+    "src/main/java/org/jsoup/parser/Tag.java"
+  ],
+  "patch_added_lines": 73,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

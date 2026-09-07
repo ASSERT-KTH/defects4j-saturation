@@ -1,0 +1,18 @@
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index 13e1092..a8a2671 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -1116,6 +1116,13 @@ class TypeInference
+       return;
+     }
+ 
++    if (type.isUnionType()) {
++      for (JSType alt : type.toMaybeUnionType().getAlternates()) {
++        inferPropertyTypesToMatchConstraint(alt, constraint);
++      }
++      return;
++    }
++
+     ObjectType constraintObj =
+         ObjectType.cast(constraint.restrictByNotNullOrUndefined());
+     if (constraintObj != null && constraintObj.isRecordType()) {

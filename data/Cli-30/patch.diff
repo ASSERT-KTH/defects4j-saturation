@@ -1,0 +1,98 @@
+diff --git a/src/main/java/org/apache/commons/cli/DefaultParser.java b/src/main/java/org/apache/commons/cli/DefaultParser.java
+index bfea0e4..298ae8a 100644
+--- a/src/main/java/org/apache/commons/cli/DefaultParser.java
++++ b/src/main/java/org/apache/commons/cli/DefaultParser.java
+@@ -150,28 +150,38 @@ public class DefaultParser implements CommandLineParser
+             if (!cmd.hasOption(option))
+             {
+                 Option opt = options.getOption(option);
+-            
+-            // if the option is part of a group, check if another option of the group has been selected
+-            
+-                // get the value from the properties
+-                String value = properties.getProperty(option);
+-                
+-                if (opt.hasArg())
++                if (opt == null)
+                 {
+-                    if (opt.getValues() == null || opt.getValues().length == 0)
+-                    {
+-                        opt.addValueForProcessing(value);
+-                    }
++                    throw new UnrecognizedOptionException("Default properties file contains an option that is not recognized in the CLI: " + option, option);
+                 }
+-                else if (!("yes".equalsIgnoreCase(value)
+-                        || "true".equalsIgnoreCase(value)
+-                        || "1".equalsIgnoreCase(value)))
++
++                // if the option is part of a group, check if another option of the group has been selected
++                OptionGroup group = options.getOptionGroup(opt);
++                boolean selected = group != null && group.getSelected() != null;
++
++                if (!selected)
+                 {
+-                    // if the value is not yes, true or 1 then don't add the option to the CommandLine
+-                    continue;
++                    // get the value from the properties
++                    String value = properties.getProperty(option);
++
++                    if (opt.hasArg())
++                    {
++                        if (opt.getValues() == null || opt.getValues().length == 0)
++                        {
++                            opt.addValueForProcessing(value);
++                        }
++                    }
++                    else if (!("yes".equalsIgnoreCase(value)
++                            || "true".equalsIgnoreCase(value)
++                            || "1".equalsIgnoreCase(value)))
++                    {
++                        // if the value is not yes, true or 1 then don't add the option to the CommandLine
++                        continue;
++                    }
++
++                    handleOption(opt);
+                 }
+-                
+-                handleOption(opt);
++
+                 currentOption = null;
+             }
+         }
+diff --git a/src/main/java/org/apache/commons/cli/Parser.java b/src/main/java/org/apache/commons/cli/Parser.java
+index 913922d..947bc09 100644
+--- a/src/main/java/org/apache/commons/cli/Parser.java
++++ b/src/main/java/org/apache/commons/cli/Parser.java
+@@ -263,9 +263,15 @@ public abstract class Parser implements CommandLineParser
+             if (!cmd.hasOption(option))
+             {
+                 Option opt = getOptions().getOption(option);
+-            
+-            // if the option is part of a group, check if another option of the group has been selected
+-            
++                if (opt == null)
++                {
++                    throw new UnrecognizedOptionException("Default properties file contains an option that is not recognized in the CLI: " + option, option);
++                }
++
++                // if the option is part of a group, check if another option of the group has been selected
++                OptionGroup group = getOptions().getOptionGroup(opt);
++                boolean selected = group != null && group.getSelected() != null;
++
+                 // get the value from the properties instance
+                 String value = properties.getProperty(option);
+ 
+@@ -292,8 +298,11 @@ public abstract class Parser implements CommandLineParser
+                     continue;
+                 }
+ 
+-                cmd.addOption(opt);
+-                updateRequiredOptions(opt);
++                if (!selected)
++                {
++                    cmd.addOption(opt);
++                    updateRequiredOptions(opt);
++                }
+             }
+         }
+     }

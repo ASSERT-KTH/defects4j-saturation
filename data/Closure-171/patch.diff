@@ -1,0 +1,75 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index e9e8486..9d5fd02 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -699,6 +699,39 @@ final class TypedScopeCreator implements ScopeCreator {
+       }
+     }
+ 
++    /**
++     * Eagerly infers property types for any key of {@code objLit} that
++     * doesn't already have a declared type.
++     *
++     * This is used when an object literal is assigned wholesale to the
++     * .prototype of an already-declared constructor or interface (see
++     * #maybeDeclareQualifiedName): once that happens, the object literal
++     * becomes that function's real, reference-named prototype object, and
++     * TypeInference's generic object-literal property inference skips
++     * reference-named objects. So we replicate that inference here,
++     * eagerly, while the object literal still has an (empty) reference
++     * name -- but only after its implicit prototype has already been
++     * hooked up (see the caller), so that any "unknown superclass" taint
++     * is correctly reflected in the inferred property types.
++     */
++    void inferObjectLitPropertiesEagerly(Node objLit, ObjectType objLitType) {
++      for (Node keyNode = objLit.getFirstChild(); keyNode != null;
++           keyNode = keyNode.getNext()) {
++        String memberName = NodeUtil.getObjectLitKeyName(keyNode);
++        if (objLitType.hasOwnProperty(memberName)) {
++          continue;
++        }
++        Node value = keyNode.getFirstChild();
++        JSType rawValueType = value == null ? null : value.getJSType();
++        JSType inferredKeyType =
++            NodeUtil.getObjectLitKeyTypeFromValueType(keyNode, rawValueType);
++        objLitType.defineInferredProperty(
++            memberName,
++            inferredKeyType == null ? unknownType : inferredKeyType,
++            keyNode);
++      }
++    }
++
+     /**
+      * Returns the type specified in a JSDoc annotation near a GETPROP or NAME.
+      *
+@@ -1581,6 +1614,13 @@ final class TypedScopeCreator implements ScopeCreator {
+ 
+           qVar.getScope().undeclare(qVar);
+         }
++
++        if (rhsValue != null && rhsValue.isObjectLit()) {
++          ObjectType rhsType = ObjectType.cast(rhsValue.getJSType());
++          if (rhsType != null) {
++            inferObjectLitPropertiesEagerly(rhsValue, rhsType);
++          }
++        }
+       }
+ 
+       if (valueType == null) {
+@@ -1596,6 +1636,16 @@ final class TypedScopeCreator implements ScopeCreator {
+ 
+       boolean inferred = isQualifiedNameInferred(
+           qName, n, info, rhsValue, valueType);
++
++      // Prototypes assigned wholesale to an object literal are always
++      // declared, so that "F.prototype" continues to resolve to the
++      // prototype object (rather than staying permanently undeclared)
++      // after such a reassignment.
++      if (inferred && "prototype".equals(propName) &&
++          rhsValue != null && rhsValue.isObjectLit()) {
++        inferred = false;
++      }
++
+       if (!inferred) {
+         ObjectType ownerType = getObjectSlot(ownerName);
+         if (ownerType != null) {

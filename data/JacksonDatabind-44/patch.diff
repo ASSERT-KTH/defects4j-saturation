@@ -1,0 +1,36 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java b/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
+index 09fae77..b696bc4 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
+@@ -133,12 +133,30 @@ public class SimpleType // note: until 2.6 was final
+             throw new IllegalArgumentException("Class "+subclass.getName()+" not sub-type of "
+                     +_class.getName());
+                     */
+-            return new SimpleType(subclass, _bindings, this, _superInterfaces,
++            return new SimpleType(subclass, _bindings, _superForSubclass(subclass), _superInterfaces,
+                     _valueHandler, _typeHandler, _asStatic);
+         // Otherwise, stitch together the hierarchy. First, super-class
+         // if not found, try a super-interface
+         // should not get here but...
+     }
++
++    /**
++     * Helper method that builds the (skeletal) super-type chain between
++     * given {@code subclass} and this type's raw class, so that classes
++     * in between (which may declare additional properties) are not lost.
++     */
++    private JavaType _superForSubclass(Class<?> subclass)
++    {
++        Class<?> superC = subclass.getSuperclass();
++        if (superC == null) {
++            return null;
++        }
++        if (superC == _class) {
++            return this;
++        }
++        JavaType superType = _superForSubclass(superC);
++        return new SimpleType(superC, _bindings, superType, null, null, null, false);
++    }
+     
+     @Override
+     public JavaType withContentType(JavaType contentType) {

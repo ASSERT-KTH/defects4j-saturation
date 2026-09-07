@@ -1,0 +1,84 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java b/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
+index b4ce3e9..63c1c4a 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
++++ b/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
+@@ -72,7 +72,8 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+      * Context to resynchronize to, in case an exception is encountered
+      * but caller wants to try to read more elements.
+      */
+-    
++    protected JsonStreamContext _streamContextToRestore;
++
+     /**
+      * If not null, "value to update" instead of creating a new instance
+      * for each call.
+@@ -215,6 +216,10 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+             JsonToken t = _parser.getCurrentToken();
+             _hasNextChecked = true;
+             if (t == null) { // un-initialized or cleared; find next
++                // I.e. if this is beginning of a new element (rather than resync after
++                // an error), remember current context, to be able to sync back to it
++                // in case there's a problem
++                _streamContextToRestore = _parser.getParsingContext();
+                 t = _parser.nextToken();
+                 // If EOF, no more, or if we hit END_ARRAY (although we don't clear the token).
+                 if (t == null || t == JsonToken.END_ARRAY) {
+@@ -251,13 +256,54 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+                 _deserializer.deserialize(_parser, _context, _updatedValue);
+                 value = _updatedValue;
+             }
++            _parser.clearCurrentToken();
+             return value;
+-        } finally {
++        } catch (Exception e) {
+             /* 24-Mar-2015, tatu: As per [#733], need to mark token consumed no
+-             *   matter what, to avoid infinite loop for certain failure cases.
+-             *   For 2.6 need to improve further.
++             *   matter what, to avoid infinite loop for certain failure cases;
++             *   however, we do that by resynchronizing stream position to where
++             *   it was before this element started, allowing next value to be
++             *   correctly read.
+              */
+-            _parser.clearCurrentToken();
++            _handleExceptionRecovery();
++            if (e instanceof IOException) {
++                throw (IOException) e;
++            }
++            if (e instanceof RuntimeException) {
++                throw (RuntimeException) e;
++            }
++            throw new RuntimeException(e.getMessage(), e);
++        }
++    }
++
++    /**
++     * Helper method called when an exception was thrown while trying to read and
++     * bind next entry: will try to skip stream position forward to the point
++     * from which further calls to {@link #nextValue} may be able to continue.
++     */
++    protected void _handleExceptionRecovery() throws IOException
++    {
++        JsonStreamContext ctxt = _streamContextToRestore;
++        if (ctxt == null) {
++            return;
++        }
++        JsonToken t = _parser.getCurrentToken();
++        while (true) {
++            if (t == null) {
++                t = _parser.nextToken();
++                if (t == null) { // no more content, nothing to resync to
++                    return;
++                }
++            }
++            if (t.isStructStart()) {
++                _parser.skipChildren();
++                t = _parser.getCurrentToken();
++            }
++            if (_parser.getParsingContext() == ctxt) {
++                _parser.clearCurrentToken();
++                return;
++            }
++            t = null;
+         }
+     }
+ 

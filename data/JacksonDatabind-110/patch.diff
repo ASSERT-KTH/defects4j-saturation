@@ -1,0 +1,40 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/JavaUtilCollectionsDeserializers.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/JavaUtilCollectionsDeserializers.java
+index 3228bac..bf79c45 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/JavaUtilCollectionsDeserializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/JavaUtilCollectionsDeserializers.java
+@@ -40,6 +40,10 @@ public abstract class JavaUtilCollectionsDeserializers
+ 
+     private final static Class<?> CLASS_UNMODIFIABLE_SET;
+     private final static Class<?> CLASS_UNMODIFIABLE_LIST;
++    // 06-Sep-2026: `Collections.unmodifiableList()` returns a `RandomAccess`-aware
++    // subtype for `RandomAccess` inputs (like `ArrayList`) and a plain type
++    // otherwise (like `LinkedList`); need to recognize both.
++    private final static Class<?> CLASS_UNMODIFIABLE_RANDOM_ACCESS_LIST;
+ 
+     /* 02-Mar-2019, tatu: for [databind#2265], need to consider possible alternate type...
+      *    which we essentially coerce into the other one
+@@ -53,9 +57,12 @@ public abstract class JavaUtilCollectionsDeserializers
+ 
+         List<?> list = Collections.singletonList(Boolean.TRUE);
+         CLASS_SINGLETON_LIST = list.getClass();
+-        CLASS_UNMODIFIABLE_LIST = Collections.unmodifiableList(list).getClass();
++        // singleton list implements `RandomAccess`, so use a `LinkedList` (which does not)
++        // to get the "plain" unmodifiable List type, and a `RandomAccess` one for the other
++        CLASS_UNMODIFIABLE_LIST = Collections.unmodifiableList(new LinkedList<Boolean>()).getClass();
++        CLASS_UNMODIFIABLE_RANDOM_ACCESS_LIST = Collections.unmodifiableList(list).getClass();
+         // for [databind#2265]
+-        
++
+         Map<?,?> map = Collections.singletonMap("a", "b");
+         CLASS_SINGLETON_MAP = map.getClass();
+         CLASS_UNMODIFIABLE_MAP = Collections.unmodifiableMap(map).getClass();
+@@ -75,7 +82,8 @@ public abstract class JavaUtilCollectionsDeserializers
+         } else if (type.hasRawClass(CLASS_SINGLETON_SET)) {
+             conv = converter(TYPE_SINGLETON_SET, type, Set.class);
+         // [databind#2265]: we may have another impl type for unmodifiable Lists, check both
+-        } else if (type.hasRawClass(CLASS_UNMODIFIABLE_LIST)) {
++        } else if (type.hasRawClass(CLASS_UNMODIFIABLE_LIST)
++                || type.hasRawClass(CLASS_UNMODIFIABLE_RANDOM_ACCESS_LIST)) {
+             conv = converter(TYPE_UNMODIFIABLE_LIST, type, List.class);
+         } else if (type.hasRawClass(CLASS_UNMODIFIABLE_SET)) {
+             conv = converter(TYPE_UNMODIFIABLE_SET, type, Set.class);

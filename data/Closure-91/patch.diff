@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/CheckGlobalThis.java b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+index fa598d2..e8f3a5d 100644
+--- a/src/com/google/javascript/jscomp/CheckGlobalThis.java
++++ b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+@@ -112,6 +112,16 @@ final class CheckGlobalThis implements Callback {
+       }
+ 
+       // Don't traverse functions that are getting lent to a prototype.
++      if (pType == Token.STRING && parent.getParent().getType() ==
++          Token.OBJECTLIT) {
++        JSDocInfo objLitJsDoc = parent.getParent().getJSDocInfo();
++        if (objLitJsDoc != null) {
++          String lendsName = objLitJsDoc.getLendsName();
++          if (lendsName != null && lendsName.endsWith(".prototype")) {
++            return false;
++          }
++        }
++      }
+     }
+ 
+     if (parent != null && parent.getType() == Token.ASSIGN) {

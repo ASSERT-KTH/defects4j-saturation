@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 18,
+  "id": "Collections-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:26:20Z",
+  "wallclock_s": 124,
+  "agent_s": 51,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 30723,
+  "total_cost_usd": 0.10752899999999999,
+  "session_id": "8dc1b986-da0d-42a6-8095-0cdc7751f051",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 2600,
+  "cache_read_input_tokens": 148925,
+  "cache_creation_input_tokens": 12366,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections.set.ListOrderedSetTest::testRetainAllCollections426"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections/set/ListOrderedSet.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

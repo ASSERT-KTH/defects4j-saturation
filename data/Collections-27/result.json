@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 27,
+  "id": "Collections-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:31:29Z",
+  "wallclock_s": 95,
+  "agent_s": 53,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 32056,
+  "total_cost_usd": 0.13198080000000004,
+  "session_id": "83db99b4-0577-4b38-9ec9-3b9abb971820",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2403,
+  "cache_read_input_tokens": 241209,
+  "cache_creation_input_tokens": 14359,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.map.MultiValueMapTest::testUnsafeDeSerialization"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/map/MultiValueMap.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

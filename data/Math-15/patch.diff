@@ -1,0 +1,25 @@
+diff --git a/src/main/java/org/apache/commons/math3/util/FastMath.java b/src/main/java/org/apache/commons/math3/util/FastMath.java
+index d571325..aa56b3b 100644
+--- a/src/main/java/org/apache/commons/math3/util/FastMath.java
++++ b/src/main/java/org/apache/commons/math3/util/FastMath.java
+@@ -309,6 +309,9 @@ public class FastMath {
+ 
+     /** 2^52 - double numbers this large must be integral (no fraction) or NaN or Infinite */
+     private static final double TWO_POWER_52 = 4503599627370496.0;
++
++    /** 2^53. */
++    private static final double TWO_POWER_53 = 9007199254740992.0;
+     /** 2^53 - double numbers this large must be even. */
+ 
+     /** Constant: {@value}. */
+@@ -1537,8 +1540,8 @@ public class FastMath {
+ 
+         /* Handle special case x<0 */
+         if (x < 0) {
+-            // y is an even integer in this case
+-            if (y >= TWO_POWER_52 || y <= -TWO_POWER_52) {
++            // y is always an even integer in this case
++            if (y >= TWO_POWER_53 || y <= -TWO_POWER_53) {
+                 return pow(-x, y);
+             }
+ 

@@ -1,0 +1,2 @@
+M	src/main/java/org/jsoup/select/CombiningEvaluator.java
+M	src/main/java/org/jsoup/select/QueryParser.java

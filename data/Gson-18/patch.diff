@@ -1,0 +1,22 @@
+diff --git a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+index f86ad36..cab48f1 100644
+--- a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
++++ b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+@@ -322,10 +322,15 @@ public final class $Gson$Types {
+     }
+ 
+     Type mapType = getSupertype(context, contextRawType, Map.class);
+-    // TODO: strip wildcards?
+     if (mapType instanceof ParameterizedType) {
+       ParameterizedType mapParameterizedType = (ParameterizedType) mapType;
+-      return mapParameterizedType.getActualTypeArguments();
++      Type[] keyAndValueTypes = mapParameterizedType.getActualTypeArguments();
++      for (int i = 0; i < keyAndValueTypes.length; i++) {
++        if (keyAndValueTypes[i] instanceof WildcardType) {
++          keyAndValueTypes[i] = ((WildcardType) keyAndValueTypes[i]).getUpperBounds()[0];
++        }
++      }
++      return keyAndValueTypes;
+     }
+     return new Type[] { Object.class, Object.class };
+   }

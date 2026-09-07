@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 159,
+  "id": "Closure-159",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:56:51Z",
+  "wallclock_s": 382,
+  "agent_s": 307,
+  "agent_rc": 0,
+  "num_turns": 35,
+  "api_duration_ms": 236176,
+  "total_cost_usd": 0.8542643999999999,
+  "session_id": "fabf2da3-e32a-48c4-b888-36025dfa8f97",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 70,
+  "output_tokens": 21387,
+  "cache_read_input_tokens": 1886072,
+  "cache_creation_input_tokens": 64707,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineFunctionsTest::testIssue423"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/InlineFunctions.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

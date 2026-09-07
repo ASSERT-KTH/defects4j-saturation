@@ -1,0 +1,38 @@
+{
+  "project": "Lang",
+  "bug": 19,
+  "id": "Lang-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:24:52Z",
+  "wallclock_s": 119,
+  "agent_s": 78,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 58529,
+  "total_cost_usd": 0.1936574,
+  "session_id": "b1b7097e-fd1b-4b50-8d3c-326e30941906",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 4921,
+  "cache_read_input_tokens": 298677,
+  "cache_creation_input_tokens": 20275,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.text.translate.NumericEntityUnescaperTest::testUnfinishedEntity",
+    "org.apache.commons.lang3.text.translate.NumericEntityUnescaperTest::testOutOfBounds"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

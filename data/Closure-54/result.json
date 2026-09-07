@@ -1,0 +1,39 @@
+{
+  "project": "Closure",
+  "bug": 54,
+  "id": "Closure-54",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:38:41Z",
+  "wallclock_s": 2082,
+  "agent_s": 1881,
+  "agent_rc": 0,
+  "num_turns": 162,
+  "api_duration_ms": 1543599,
+  "total_cost_usd": 8.258512999999997,
+  "session_id": "500a47fb-b4d8-4e04-ad3b-48430e5190fc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 324,
+  "output_tokens": 141526,
+  "cache_read_input_tokens": 28192100,
+  "cache_creation_input_tokens": 299885,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue537a",
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue537b",
+    "com.google.javascript.jscomp.TypedScopeCreatorTest::testPropertyOnUnknownSuperClass2"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypedScopeCreator.java"
+  ],
+  "patch_added_lines": 53,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

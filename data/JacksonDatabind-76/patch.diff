@@ -1,0 +1,30 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java
+index 1629a42..6ca0b62 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java
+@@ -590,8 +590,24 @@ public class BuilderBasedDeserializer
+                         continue;
+                     }
+                     while (t == JsonToken.FIELD_NAME) {
++                        String pn = p.getCurrentName();
+                         p.nextToken();
+-                        tokens.copyCurrentStructure(p);
++                        SettableBeanProperty regularProp = _beanProperties.find(pn);
++                        if (regularProp != null) {
++                            try {
++                                bean = regularProp.deserializeSetAndReturn(p, ctxt, bean);
++                            } catch (Exception e) {
++                                wrapAndThrow(e, bean, pn, ctxt);
++                            }
++                        } else if (_ignorableProps != null && _ignorableProps.contains(pn)) {
++                            handleIgnoredProperty(p, ctxt, bean, pn);
++                        } else {
++                            tokens.writeFieldName(pn);
++                            tokens.copyCurrentStructure(p);
++                            if (_anySetter != null) {
++                                _anySetter.deserializeAndSet(p, ctxt, bean, pn);
++                            }
++                        }
+                         t = p.nextToken();
+                     }
+                     tokens.writeEndObject();

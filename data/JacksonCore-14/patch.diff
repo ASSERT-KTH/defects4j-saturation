@@ -1,0 +1,12 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/io/IOContext.java b/src/main/java/com/fasterxml/jackson/core/io/IOContext.java
+index 94797ee..7e8868f 100644
+--- a/src/main/java/com/fasterxml/jackson/core/io/IOContext.java
++++ b/src/main/java/com/fasterxml/jackson/core/io/IOContext.java
+@@ -281,6 +281,6 @@ public class IOContext
+ 
+     private IllegalArgumentException wrongBuf() {
+         // sanity check failed; trying to return different, smaller buffer.
+-return new IllegalArgumentException("Trying to release buffer not owned by the context"); 
++        return new IllegalArgumentException("Trying to release buffer smaller than original");
+     }
+ }

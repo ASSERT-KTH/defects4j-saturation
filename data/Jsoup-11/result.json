@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 11,
+  "id": "Jsoup-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:49:10Z",
+  "wallclock_s": 122,
+  "agent_s": 103,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 94994,
+  "total_cost_usd": 0.28066139999999995,
+  "session_id": "d5cf05f1-d749-48dd-8cee-1305429bc209",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 8267,
+  "cache_read_input_tokens": 360277,
+  "cache_creation_input_tokens": 30063,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.select.SelectorTest::notAll",
+    "org.jsoup.select.SelectorTest::testPseudoHas",
+    "org.jsoup.select.SelectorTest::notClass",
+    "org.jsoup.select.SelectorTest::notParas"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/select/Selector.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,244 @@
+diff --git a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+index 3a7f427..313e823 100644
+--- a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+@@ -195,11 +195,7 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+     DiagnosticGroups diagnosticGroups = getDiagnosticGroups();
+ 
+     diagnosticGroups.setWarningLevels(
+-        options, config.jscompError, CheckLevel.ERROR);
+-    diagnosticGroups.setWarningLevels(
+-        options, config.jscompWarning, CheckLevel.WARNING);
+-    diagnosticGroups.setWarningLevels(
+-        options, config.jscompOff, CheckLevel.OFF);
++        options, config.warningGuardSpec.entries);
+ 
+     createDefineOrTweakReplacements(config.define, options, false);
+ 
+@@ -1224,6 +1220,31 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+     }
+   }
+ 
++  /**
++   * A little helper class to make it easier to collect warning types
++   * from --jscomp_error/warning/off flags, while preserving the order
++   * in which they were specified on the command-line.
++   */
++  public static class WarningGuardSpec {
++    static class Entry {
++      final CheckLevel level;
++      final String groupName;
++
++      Entry(CheckLevel level, String groupName) {
++        this.level = level;
++        this.groupName = groupName;
++      }
++    }
++
++    // The guards, in the order that they appeared on the command-line.
++    final List<Entry> entries = Lists.newArrayList();
++
++    /** Add a guard for the given diagnostic group, at the given level. */
++    public void add(CheckLevel level, String groupName) {
++      entries.add(new Entry(level, groupName));
++    }
++  }
++
+   /**
+    * Configurations for the command line configs. Designed for easy
+    * building, so that we can decouple the flags-parsing library from
+@@ -1494,26 +1515,13 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+       return this;
+     }
+ 
+-    private final List<String> jscompError = Lists.newArrayList();
++    private WarningGuardSpec warningGuardSpec = new WarningGuardSpec();
+ 
+     /**
+-     * Add warning guards.
++     * Add warning guards, in the order that they should be applied.
+      */
+-    CommandLineConfig setJscompError(List<String> jscompError) {
+-      this.jscompError.clear();
+-      this.jscompError.addAll(jscompError);
+-      return this;
+-    }
+-    private final List<String> jscompWarning = Lists.newArrayList();
+-    CommandLineConfig setJscompWarning(List<String> jscompWarning) {
+-      this.jscompWarning.clear();
+-      this.jscompWarning.addAll(jscompWarning);
+-      return this;
+-    }
+-    private final List<String> jscompOff = Lists.newArrayList();
+-    CommandLineConfig setJscompOff(List<String> jscompOff) {
+-      this.jscompOff.clear();
+-      this.jscompOff.addAll(jscompOff);
++    CommandLineConfig setWarningGuardSpec(WarningGuardSpec warningGuardSpec) {
++      this.warningGuardSpec = warningGuardSpec;
+       return this;
+     }
+ 
+diff --git a/src/com/google/javascript/jscomp/CommandLineRunner.java b/src/com/google/javascript/jscomp/CommandLineRunner.java
+index d9a381b..5a54f3e 100644
+--- a/src/com/google/javascript/jscomp/CommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/CommandLineRunner.java
+@@ -227,20 +227,29 @@ public class CommandLineRunner extends
+         "corresponds to.")
+     private String create_source_map = "";
+ 
++    // All three of the flags below are backed by the same list, so that
++    // the relative order in which they were specified on the command-line
++    // is preserved.
++    private final List<WarningGuardSpec.Entry> warningGuardEntries =
++        Lists.newArrayList();
++
+     @Option(name = "--jscomp_error",
++        handler = WarningGuardErrorOptionHandler.class,
+         usage = "Make the named class of warnings an error. Options:" +
+         DiagnosticGroups.DIAGNOSTIC_GROUP_NAMES)
+-    private List<String> jscomp_error = Lists.newArrayList();
++    private List<WarningGuardSpec.Entry> jscomp_error = warningGuardEntries;
+ 
+     @Option(name = "--jscomp_warning",
++        handler = WarningGuardWarningOptionHandler.class,
+         usage = "Make the named class of warnings a normal warning. " +
+         "Options:" + DiagnosticGroups.DIAGNOSTIC_GROUP_NAMES)
+-    private List<String> jscomp_warning = Lists.newArrayList();
++    private List<WarningGuardSpec.Entry> jscomp_warning = warningGuardEntries;
+ 
+     @Option(name = "--jscomp_off",
++        handler = WarningGuardOffOptionHandler.class,
+         usage = "Turn off the named class of warnings. Options:" +
+         DiagnosticGroups.DIAGNOSTIC_GROUP_NAMES)
+-    private List<String> jscomp_off = Lists.newArrayList();
++    private List<WarningGuardSpec.Entry> jscomp_off = warningGuardEntries;
+ 
+     @Option(name = "--define",
+         aliases = {"--D", "-D"},
+@@ -386,13 +395,70 @@ public class CommandLineRunner extends
+ 
+     // Our own parser for warning guards that preserves the original order
+     // of the flags.
++    private abstract static class WarningGuardOptionHandler
++        extends OptionHandler<WarningGuardSpec.Entry> {
++      WarningGuardOptionHandler(
++          CmdLineParser parser, OptionDef option,
++          Setter<? super WarningGuardSpec.Entry> setter) {
++        super(parser, option, setter);
++      }
++
++      abstract CheckLevel getLevel();
++
++      @Override
++      public int parseArguments(Parameters params) throws CmdLineException {
++        String groupName = params.getParameter(0);
++        setter.addValue(new WarningGuardSpec.Entry(getLevel(), groupName));
++        return 1;
++      }
+ 
++      @Override
++      public String getDefaultMetaVariable() {
++        return "group";
++      }
++    }
+ 
++    public static class WarningGuardErrorOptionHandler
++        extends WarningGuardOptionHandler {
++      public WarningGuardErrorOptionHandler(
++          CmdLineParser parser, OptionDef option,
++          Setter<? super WarningGuardSpec.Entry> setter) {
++        super(parser, option, setter);
++      }
+ 
++      @Override
++      CheckLevel getLevel() {
++        return CheckLevel.ERROR;
++      }
++    }
+ 
++    public static class WarningGuardWarningOptionHandler
++        extends WarningGuardOptionHandler {
++      public WarningGuardWarningOptionHandler(
++          CmdLineParser parser, OptionDef option,
++          Setter<? super WarningGuardSpec.Entry> setter) {
++        super(parser, option, setter);
++      }
+ 
++      @Override
++      CheckLevel getLevel() {
++        return CheckLevel.WARNING;
++      }
++    }
+ 
++    public static class WarningGuardOffOptionHandler
++        extends WarningGuardOptionHandler {
++      public WarningGuardOffOptionHandler(
++          CmdLineParser parser, OptionDef option,
++          Setter<? super WarningGuardSpec.Entry> setter) {
++        super(parser, option, setter);
++      }
+ 
++      @Override
++      CheckLevel getLevel() {
++        return CheckLevel.OFF;
++      }
++    }
+   }
+ 
+   /**
+@@ -549,9 +615,7 @@ public class CommandLineRunner extends
+           .setModuleWrapper(flags.module_wrapper)
+           .setModuleOutputPathPrefix(flags.module_output_path_prefix)
+           .setCreateSourceMap(flags.create_source_map)
+-          .setJscompError(flags.jscomp_error)
+-          .setJscompWarning(flags.jscomp_warning)
+-          .setJscompOff(flags.jscomp_off)
++          .setWarningGuardSpec(createWarningGuardSpec(flags))
+           .setDefine(flags.define)
+           .setCharset(flags.charset)
+           .setManageClosureDependencies(flags.manage_closure_dependencies)
+@@ -562,6 +626,18 @@ public class CommandLineRunner extends
+     }
+   }
+ 
++  /**
++   * Builds a {@link WarningGuardSpec} from the --jscomp_error/warning/off
++   * flags, preserving the order in which they appeared on the command-line.
++   */
++  private static WarningGuardSpec createWarningGuardSpec(Flags flags) {
++    WarningGuardSpec spec = new WarningGuardSpec();
++    for (WarningGuardSpec.Entry entry : flags.warningGuardEntries) {
++      spec.add(entry.level, entry.groupName);
++    }
++    return spec;
++  }
++
+   @Override
+   protected CompilerOptions createOptions() {
+     CompilerOptions options = new CompilerOptions();
+diff --git a/src/com/google/javascript/jscomp/DiagnosticGroups.java b/src/com/google/javascript/jscomp/DiagnosticGroups.java
+index d2d38c5..a9fd592 100644
+--- a/src/com/google/javascript/jscomp/DiagnosticGroups.java
++++ b/src/com/google/javascript/jscomp/DiagnosticGroups.java
+@@ -180,14 +180,15 @@ public class DiagnosticGroups {
+         DisambiguateProperties.Warnings.INVALIDATION);
+ 
+   /**
+-   * Adds warning levels by name.
++   * Adds warning levels by name, in the order that they were specified.
+    */
+   void setWarningLevels(CompilerOptions options,
+-      java.util.List<String> diagnosticGroups, CheckLevel level) {
+-    for (String name : diagnosticGroups) {
+-    DiagnosticGroup group = forName(name);
+-    Preconditions.checkNotNull(group, "No warning class for name: " + name);
+-    options.setWarningLevel(group, level);
++      java.util.List<AbstractCommandLineRunner.WarningGuardSpec.Entry> entries) {
++    for (AbstractCommandLineRunner.WarningGuardSpec.Entry entry : entries) {
++      DiagnosticGroup group = forName(entry.groupName);
++      Preconditions.checkNotNull(
++          group, "No warning class for name: " + entry.groupName);
++      options.setWarningLevel(group, entry.level);
+     }
+   }
+ }

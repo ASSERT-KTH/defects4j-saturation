@@ -1,0 +1,18 @@
+diff --git a/src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java b/src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+index 415cefa..d1489e9 100644
+--- a/src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
++++ b/src/main/java/org/apache/commons/lang3/reflect/TypeUtils.java
+@@ -672,7 +672,12 @@ public class TypeUtils {
+                 : new HashMap<TypeVariable<?>, Type>(subtypeVarAssigns);
+ 
+         // has target class been reached?
+-        if (cls.getTypeParameters().length > 0 || toClass.equals(cls)) {
++        // Note: when this class is reached by walking up from a raw supertype
++        // reference (subtypeVarAssigns != null) and it still has its own,
++        // unresolvable type parameters, further mapping cannot be determined,
++        // so stop here rather than fabricating incorrect assignments.
++        if (toClass.equals(cls)
++                || (subtypeVarAssigns != null && cls.getTypeParameters().length > 0)) {
+             return typeVarAssigns;
+         }
+ 

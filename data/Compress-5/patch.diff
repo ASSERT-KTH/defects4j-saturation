@@ -1,0 +1,22 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveInputStream.java b/src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveInputStream.java
+index befee54..f5f276f 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveInputStream.java
++++ b/src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveInputStream.java
+@@ -207,7 +207,7 @@ public class ZipArchiveInputStream extends ArchiveInputStream {
+                 if (offsetInBuffer >= lengthOfLastRead) {
+                     offsetInBuffer = 0;
+                     if ((lengthOfLastRead = in.read(buf)) == -1) {
+-                        return -1;
++                        throw new IOException("Truncated ZIP file");
+                     }
+                     count(lengthOfLastRead);
+                     bytesReadFromStream += lengthOfLastRead;
+@@ -331,6 +331,8 @@ public class ZipArchiveInputStream extends ArchiveInputStream {
+         }
+         if ((lengthOfLastRead = in.read(buf)) > 0) {
+             inf.setInput(buf, 0, lengthOfLastRead);
++        } else if (lengthOfLastRead == -1) {
++            throw new IOException("Truncated ZIP file");
+         }
+     }
+ 

@@ -1,0 +1,41 @@
+diff --git a/src/java/org/apache/commons/cli/HelpFormatter.java b/src/java/org/apache/commons/cli/HelpFormatter.java
+index 9fa8ebf..1e5feec 100644
+--- a/src/java/org/apache/commons/cli/HelpFormatter.java
++++ b/src/java/org/apache/commons/cli/HelpFormatter.java
+@@ -815,25 +815,20 @@ public class HelpFormatter
+         }
+         sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+ 
+-        // all following lines must be padded with nextLineTabStop space 
++        // all following lines must be padded with nextLineTabStop space
+         // characters
+         final String padding = createPadding(nextLineTabStop);
+ 
+         while (true)
+         {
+-            int lastPos = pos;
+             text = padding + text.substring(pos).trim();
+-            pos = findWrapPos(text, width, 0);
++            pos = findWrapPos(text, width - nextLineTabStop, nextLineTabStop);
+ 
+             if (pos == -1)
+             {
+                 sb.append(text);
+ 
+                 return sb;
+-            } else
+-            if (pos == lastPos)
+-            {
+-                throw new RuntimeException("Text too long for line - throwing exception to avoid infinite loop [CLI-162]: " + text);
+             }
+ 
+             sb.append(rtrim(text.substring(0, pos))).append(defaultNewLine);
+@@ -890,7 +885,7 @@ public class HelpFormatter
+         // + width
+         pos = startPos + width;
+ 
+-        while ((pos <= text.length()) && ((c = text.charAt(pos)) != ' ')
++        while ((pos < text.length()) && ((c = text.charAt(pos)) != ' ')
+                && (c != '\n') && (c != '\r'))
+         {
+             ++pos;

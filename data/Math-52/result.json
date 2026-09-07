@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 52,
+  "id": "Math-52",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:47:37Z",
+  "wallclock_s": 650,
+  "agent_s": 558,
+  "agent_rc": 0,
+  "num_turns": 33,
+  "api_duration_ms": 362462,
+  "total_cost_usd": 0.8108266,
+  "session_id": "83a97e4e-6048-4d9b-9bf6-e7be073c95ee",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 66,
+  "output_tokens": 34141,
+  "cache_read_input_tokens": 1268603,
+  "cache_creation_input_tokens": 53268,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.geometry.euclidean.threed.RotationTest::testIssue639"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/geometry/euclidean/threed/Rotation.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,31 @@
+diff --git a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+index a77221a..432ed9c 100644
+--- a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
++++ b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+@@ -82,6 +82,7 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+   private List<Candidate> candidates;
+   private MustBeReachingVariableDef reachingDef;
+   private MaybeReachingVariableUse reachingUses;
++  private Scope scope;
+ 
+   private static final Predicate<Node> SIDE_EFFECT_PREDICATE =
+     new Predicate<Node>() {
+@@ -139,6 +140,7 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+     Preconditions.checkState(t.getScopeRoot().isFunction());
+     cfa.process(null, t.getScopeRoot().getLastChild());
+     cfg = cfa.getCfg();
++    scope = t.getScope();
+     reachingDef = new MustBeReachingVariableDef(cfg, t.getScope(), compiler);
+     reachingDef.analyze();
+     candidates = Lists.newLinkedList();
+@@ -372,6 +374,10 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+                   case Token.REGEXP:
+                   case Token.NEW:
+                     return true;
++                  case Token.NAME:
++                    Var var = scope.getVar(input.getString());
++                    return var != null && var.getParentNode() != null
++                        && var.getParentNode().isCatch();
+                 }
+                 return false;
+               }

@@ -1,0 +1,47 @@
+diff --git a/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java b/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
+index 6c8e9c6..372e512 100644
+--- a/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
++++ b/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
+@@ -1103,7 +1103,11 @@ public class PeriodFormatterBuilder {
+                     sum -= 4; // remove three digits and decimal point
+                 }
+                 // reset valueLong to refer to the seconds part for the prefic/suffix calculation
+-                valueLong = valueLong / DateTimeConstants.MILLIS_PER_SECOND;
++                long secondsValue = valueLong / DateTimeConstants.MILLIS_PER_SECOND;
++                if (secondsValue == 0 && valueLong < 0) {
++                    sum++; // additional character for negative zero seconds
++                }
++                valueLong = secondsValue;
+             }
+             int value = (int) valueLong;
+ 
+@@ -1132,8 +1136,14 @@ public class PeriodFormatterBuilder {
+             }
+             int minDigits = iMinPrintedDigits;
+             if (minDigits <= 1) {
++                if (value == 0 && valueLong < 0) {
++                    buf.append('-');
++                }
+                 FormatUtils.appendUnpaddedInteger(buf, value);
+             } else {
++                if (value == 0 && valueLong < 0) {
++                    buf.append('-');
++                }
+                 FormatUtils.appendPaddedInteger(buf, value, minDigits);
+             }
+             if (iFieldType >= SECONDS_MILLIS) {
+@@ -1163,8 +1173,14 @@ public class PeriodFormatterBuilder {
+             }
+             int minDigits = iMinPrintedDigits;
+             if (minDigits <= 1) {
++                if (value == 0 && valueLong < 0) {
++                    out.write('-');
++                }
+                 FormatUtils.writeUnpaddedInteger(out, value);
+             } else {
++                if (value == 0 && valueLong < 0) {
++                    out.write('-');
++                }
+                 FormatUtils.writePaddedInteger(out, value, minDigits);
+             }
+             if (iFieldType >= SECONDS_MILLIS) {

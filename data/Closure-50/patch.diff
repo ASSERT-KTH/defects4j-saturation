@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java b/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
+index ffe47d3..4180715 100644
+--- a/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
++++ b/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
+@@ -373,6 +373,11 @@ class PeepholeReplaceKnownMethods extends AbstractPeepholeOptimization{
+ 
+     Node right = callTarget.getNext();
+     if (right != null) {
++      // We only handle a single separator argument. A call with additional
++      // arguments (e.g. [].join(",", 2)) is not a join we can reason about.
++      if (right.getNext() != null) {
++        return n;
++      }
+       if (!NodeUtil.isImmutableValue(right)) {
+         return n;
+       }
+@@ -456,6 +461,11 @@ class PeepholeReplaceKnownMethods extends AbstractPeepholeOptimization{
+       default:
+         // No folding could actually be performed.
+         if (arrayFoldedChildren.size() == arrayNode.getChildCount()) {
++          if (right != null && joinString.equals(",")) {
++            // "," is the default, so an explicit "," separator is redundant.
++            n.removeChild(right);
++            reportCodeChange();
++          }
+           return n;
+         }
+         int kJoinOverhead = "[].join()".length();

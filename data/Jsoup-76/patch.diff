@@ -1,0 +1,13 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+index 20820ee..eb55de4 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+@@ -379,6 +379,8 @@ enum HtmlTreeBuilderState {
+                             tb.processEndTag("p");
+                         }
+                         tb.insert(startTag);
++                        // If the next token is a U+000A LINE FEED (LF) character token, then ignore that token and move on to the next one.
++                        tb.reader.matchConsume("\n");
+                         tb.framesetOk(false);
+                     } else if (name.equals("form")) {
+                         if (tb.getFormElement() != null) {

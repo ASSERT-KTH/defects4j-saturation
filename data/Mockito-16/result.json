@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 16,
+  "id": "Mockito-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:54:23Z",
+  "wallclock_s": 170,
+  "agent_s": 80,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 46789,
+  "total_cost_usd": 0.16258299999999998,
+  "session_id": "754c4606-546e-4930-a332-00e4b7c20622",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3122,
+  "cache_read_input_tokens": 301995,
+  "cache_creation_input_tokens": 17040,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.StubbingMocksThatAreConfiguredToReturnMocksTest::shouldAllowStubbingMocksConfiguredWithRETURNS_MOCKS"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/MockitoCore.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+{
+  "project": "Jsoup",
+  "bug": 57,
+  "id": "Jsoup-57",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:09:04Z",
+  "wallclock_s": 38,
+  "agent_s": 17,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 13254,
+  "total_cost_usd": 0.06724899999999999,
+  "session_id": "f431ed20-0c5b-4963-8624-433dfafd9e4b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 949,
+  "cache_read_input_tokens": 82510,
+  "cache_creation_input_tokens": 9687,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::testChainedRemoveAttributes"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Attributes.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

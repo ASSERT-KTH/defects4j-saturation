@@ -1,0 +1,74 @@
+diff --git a/src/java/org/apache/commons/collections/ExtendedProperties.java b/src/java/org/apache/commons/collections/ExtendedProperties.java
+index dba80b8..3adf0b9 100644
+--- a/src/java/org/apache/commons/collections/ExtendedProperties.java
++++ b/src/java/org/apache/commons/collections/ExtendedProperties.java
+@@ -702,10 +702,6 @@ public class ExtendedProperties extends Hashtable {
+      * @param value  the decoded object to store
+      */
+     private void addPropertyDirect(String key, Object value) {
+-        // safety check
+-        if (!containsKey(key)) {
+-            keysAsListed.add(key);
+-        }
+         put(key, value);
+     }
+ 
+@@ -733,12 +729,9 @@ public class ExtendedProperties extends Hashtable {
+         } else if (current instanceof List) {
+             // already a list - just add the new token
+             ((List) current).add(value);
+-            
++
+         } else {
+             // brand new key - store in keysAsListed to retain order
+-            if (!containsKey(key)) {
+-                keysAsListed.add(key);
+-            }
+             put(key, value);
+         }
+     }
+@@ -824,14 +817,6 @@ public class ExtendedProperties extends Hashtable {
+      */
+     public void clearProperty(String key) {
+         if (containsKey(key)) {
+-            // we also need to rebuild the keysAsListed or else
+-            // things get *very* confusing
+-            for (int i = 0; i < keysAsListed.size(); i++) {
+-                if (( keysAsListed.get(i)).equals(key)) {
+-                    keysAsListed.remove(i);
+-                    break;
+-                }
+-            }
+             remove(key);
+         }
+     }
+@@ -1723,9 +1708,17 @@ public class ExtendedProperties extends Hashtable {
+      * @param value for the property
+      * @return old value of the property
+      */
++    public synchronized Object put(Object key, Object value) {
++        boolean isNewKey = !containsKey(key);
++        Object obj = super.put(key, value);
++        if (isNewKey) {
++            keysAsListed.add(key);
++        }
++        return obj;
++    }
+ 
+     /**
+-     * Add a map full of key/value pairs to the ExtendedProperties. 
++     * Add a map full of key/value pairs to the ExtendedProperties.
+      * If the added map is an ExtendedProperties class, then the 
+      * order of the added properties is maintained. 
+      *
+@@ -1753,5 +1746,10 @@ public class ExtendedProperties extends Hashtable {
+      * @param key specifying the property
+      * @return old value of the property
+      */
++    public synchronized Object remove(Object key) {
++        Object obj = super.remove(key);
++        keysAsListed.remove(key);
++        return obj;
++    }
+ 
+ }

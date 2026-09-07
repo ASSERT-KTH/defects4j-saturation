@@ -1,0 +1,55 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 3d36b0f..b97e19a 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -4,6 +4,7 @@ import java.lang.reflect.Modifier;
+ import java.util.*;
+ 
+ import com.fasterxml.jackson.annotation.JsonAnySetter;
++import com.fasterxml.jackson.annotation.JsonProperty;
+ import com.fasterxml.jackson.databind.*;
+ import com.fasterxml.jackson.databind.cfg.HandlerInstantiator;
+ import com.fasterxml.jackson.databind.cfg.MapperConfig;
+@@ -728,7 +729,13 @@ public class POJOPropertiesCollector
+         while (it.hasNext()) {
+             POJOPropertyBuilder prop = it.next();
+             // 26-Jan-2017, tatu: [databind#935]: need to denote removal of
+-            prop.removeNonVisible(inferMutators);
++            //   accessors, but also need to track explicit read-only markers
++            //   so that "known" properties are not reported as unrecognized
++            JsonProperty.Access access = prop.removeNonVisible(inferMutators);
++            if (!_forSerialization && (access == JsonProperty.Access.READ_ONLY)
++                    && !prop.couldDeserialize()) {
++                _collectIgnorals(prop.getName());
++            }
+         }
+     }
+ 
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+index 954f5dd..612024f 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+@@ -641,7 +641,7 @@ public class POJOPropertyBuilder
+      * @param inferMutators Whether mutators can be "pulled in" by visible
+      *    accessors or not. 
+      */
+-    public void removeNonVisible(boolean inferMutators)
++    public JsonProperty.Access removeNonVisible(boolean inferMutators)
+     {
+         /* 07-Jun-2015, tatu: With 2.6, we will allow optional definition
+          *  of explicit access type for property; if not "AUTO", it will
+@@ -674,12 +674,13 @@ public class POJOPropertyBuilder
+         case AUTO: // the default case: base it on visibility
+             _getters = _removeNonVisible(_getters);
+             _ctorParameters = _removeNonVisible(_ctorParameters);
+-    
++
+             if (!inferMutators || (_getters == null)) {
+                 _fields = _removeNonVisible(_fields);
+                 _setters = _removeNonVisible(_setters);
+             }
+         }
++        return acc;
+     }
+ 
+     /**

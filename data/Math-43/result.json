@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 43,
+  "id": "Math-43",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:27:40Z",
+  "wallclock_s": 105,
+  "agent_s": 44,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 22913,
+  "total_cost_usd": 0.1657946,
+  "session_id": "66628fd8-3077-4662-9f11-ef4b827917ce",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1702,
+  "cache_read_input_tokens": 191888,
+  "cache_creation_input_tokens": 26155,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.descriptive.SummaryStatisticsTest::testOverrideMeanWithMathClass",
+    "org.apache.commons.math.stat.descriptive.SummaryStatisticsTest::testOverrideGeoMeanWithMathClass",
+    "org.apache.commons.math.stat.descriptive.SummaryStatisticsTest::testOverrideVarianceWithMathClass",
+    "org.apache.commons.math.stat.descriptive.SynchronizedSummaryStatisticsTest::testOverrideMeanWithMathClass",
+    "org.apache.commons.math.stat.descriptive.SynchronizedSummaryStatisticsTest::testOverrideGeoMeanWithMathClass",
+    "org.apache.commons.math.stat.descriptive.SynchronizedSummaryStatisticsTest::testOverrideVarianceWithMathClass"
+  ],
+  "failing_before": 6,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/stat/descriptive/SummaryStatistics.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

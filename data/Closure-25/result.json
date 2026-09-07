@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 25,
+  "id": "Closure-25",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:14:18Z",
+  "wallclock_s": 324,
+  "agent_s": 130,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 39708,
+  "total_cost_usd": 0.15716599999999997,
+  "session_id": "9b8f833a-0fcb-4c1c-83c5-0adb1f360e78",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3514,
+  "cache_read_input_tokens": 269420,
+  "cache_creation_input_tokens": 16462,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeInferenceTest::testBackwardsInferenceNew"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypeInference.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

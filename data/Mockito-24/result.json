@@ -1,0 +1,38 @@
+{
+  "project": "Mockito",
+  "bug": 24,
+  "id": "Mockito-24",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:12:23Z",
+  "wallclock_s": 303,
+  "agent_s": 113,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 17688,
+  "total_cost_usd": 0.108404,
+  "session_id": "b1624374-e2c2-4037-a5c8-cdf64c643dc9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1341,
+  "cache_read_input_tokens": 149100,
+  "cache_creation_input_tokens": 14898,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValuesTest::should_return_zero_if_mock_is_compared_to_itself",
+    "org.mockitousage.bugs.ShouldMocksCompareToBeConsistentWithEqualsTest::should_compare_to_be_consistent_with_equals_when_comparing_the_same_reference"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

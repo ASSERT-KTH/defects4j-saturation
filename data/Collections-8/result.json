@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 8,
+  "id": "Collections-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:20:11Z",
+  "wallclock_s": 84,
+  "agent_s": 47,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 35849,
+  "total_cost_usd": 0.11521599999999999,
+  "session_id": "697f101f-7908-4694-94fe-64ba2995b531",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 2952,
+  "cache_read_input_tokens": 111870,
+  "cache_creation_input_tokens": 15246,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.buffer.TestUnboundedFifoBuffer::testCollections220"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/buffer/UnboundedFifoBuffer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

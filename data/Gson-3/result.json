@@ -1,0 +1,38 @@
+{
+  "project": "Gson",
+  "bug": 3,
+  "id": "Gson-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:57:28Z",
+  "wallclock_s": 60,
+  "agent_s": 36,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 26873,
+  "total_cost_usd": 0.12048060000000002,
+  "session_id": "4ea4ae83-ae2c-42d1-aede-11c34c5dacb7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2310,
+  "cache_read_input_tokens": 197838,
+  "cache_creation_input_tokens": 13628,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.functional.MapTest::testConcurrentMap",
+    "com.google.gson.functional.MapTest::testConcurrentNavigableMap"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

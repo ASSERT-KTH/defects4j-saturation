@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 111,
+  "id": "Closure-111",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T02:20:59Z",
+  "wallclock_s": 293,
+  "agent_s": 141,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 49865,
+  "total_cost_usd": 0.22655560000000002,
+  "session_id": "b32fc436-02bc-4217-822c-0eee39550e02",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 4293,
+  "cache_read_input_tokens": 396453,
+  "cache_creation_input_tokens": 25479,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ClosureReverseAbstractInterpreterTest::testGoogIsArray2"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/type/ClosureReverseAbstractInterpreter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

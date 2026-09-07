@@ -1,0 +1,45 @@
+diff --git a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+index d819874..1055006 100644
+--- a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
++++ b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+@@ -155,6 +155,18 @@ class UnreachableCodeElimination implements CompilerPass {
+           }
+         case Token.BREAK:
+         case Token.CONTINUE:
++          // A jump that is inside a FINALLY block cannot be removed even if
++          // it appears to branch to the same place as falling off the end of
++          // the FINALLY block. The control flow graph does not model
++          // exceptional completions of the associated TRY block: if the TRY
++          // throws, falling off the end of the FINALLY re-throws that
++          // exception, whereas an explicit break/continue/return inside the
++          // FINALLY overrides (swallows) it. Removing the jump would change
++          // that behavior.
++          if (isWithinFinallyBlock(n)) {
++            return;
++          }
++
+           // We are looking for a control flow changing statement that always
+           // branches to the same node. If after removing it control still
+           // branches to the same node, it is safe to remove.
+@@ -175,6 +187,21 @@ class UnreachableCodeElimination implements CompilerPass {
+     }
+ 
+ 
++    /**
++     * @return Whether n is (transitively) contained in the FINALLY block of
++     *     some enclosing TRY node, without crossing a function boundary.
++     */
++    private boolean isWithinFinallyBlock(Node n) {
++      for (Node cur = n; cur != null && !cur.isFunction(); cur = cur.getParent()) {
++        Node parent = cur.getParent();
++        if (parent != null && parent.isTry() && NodeUtil.hasFinally(parent)
++            && parent.getLastChild() == cur) {
++          return true;
++        }
++      }
++      return false;
++    }
++
+     private Node computeFollowing(Node n) {
+       Node next = ControlFlowAnalysis.computeFollowNode(n);
+       while (next != null && next.isBlock()) {

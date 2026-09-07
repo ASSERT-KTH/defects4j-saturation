@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 79,
+  "id": "Closure-79",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:44:22Z",
+  "wallclock_s": 341,
+  "agent_s": 177,
+  "agent_rc": 0,
+  "num_turns": 27,
+  "api_duration_ms": 84444,
+  "total_cost_usd": 0.44562879999999994,
+  "session_id": "badf7c46-88ad-4f19-aa1a-e06ee8232993",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 54,
+  "output_tokens": 6484,
+  "cache_read_input_tokens": 1035599,
+  "cache_creation_input_tokens": 41981,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.NormalizeTest::testIssue",
+    "com.google.javascript.jscomp.VarCheckTest::testPropReferenceInExterns1",
+    "com.google.javascript.jscomp.VarCheckTest::testPropReferenceInExterns3",
+    "com.google.javascript.jscomp.VarCheckTest::testVarReferenceInExterns",
+    "com.google.javascript.jscomp.VarCheckTest::testCallInExterns"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Normalize.java",
+    "src/com/google/javascript/jscomp/VarCheck.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

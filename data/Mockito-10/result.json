@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 10,
+  "id": "Mockito-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:51:30Z",
+  "wallclock_s": 541,
+  "agent_s": 188,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 36907,
+  "total_cost_usd": 0.15245260000000002,
+  "session_id": "bfc2bc75-27fb-4365-b047-ee205e373226",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 3277,
+  "cache_read_input_tokens": 222753,
+  "cache_creation_input_tokens": 17998,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.DeepStubsWronglyReportsSerializationProblemsTest::should_not_raise_a_mockito_exception_about_serialization_when_accessing_deep_stub"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

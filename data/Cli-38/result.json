@@ -1,0 +1,37 @@
+{
+  "project": "Cli",
+  "bug": 38,
+  "id": "Cli-38",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:34:04Z",
+  "wallclock_s": 54,
+  "agent_s": 45,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 43802,
+  "total_cost_usd": 0.1731142,
+  "session_id": "b6982c13-e75e-483a-a446-81c2cdfc39bf",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 3973,
+  "cache_read_input_tokens": 182626,
+  "cache_creation_input_tokens": 23577,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.cli.bug.BugCLI265Test::shouldParseConcatenatedShortOptions"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/cli/DefaultParser.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

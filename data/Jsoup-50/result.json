@@ -1,0 +1,37 @@
+{
+  "project": "Jsoup",
+  "bug": 50,
+  "id": "Jsoup-50",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:05:08Z",
+  "wallclock_s": 88,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 61525,
+  "total_cost_usd": 0.1954144,
+  "session_id": "c4b7452f-2876-4ad4-8d7e-51289e1f30a4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 6290,
+  "cache_read_input_tokens": 256497,
+  "cache_creation_input_tokens": 19688,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.helper.DataUtilTest::supportsBOMinFiles"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/DataUtil.java"
+  ],
+  "patch_added_lines": 40,
+  "patch_removed_lines": 9,
+  "has_dev_patch": true
+}

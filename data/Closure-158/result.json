@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 158,
+  "id": "Closure-158",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:57:55Z",
+  "wallclock_s": 589,
+  "agent_s": 441,
+  "agent_rc": 0,
+  "num_turns": 51,
+  "api_duration_ms": 295409,
+  "total_cost_usd": 1.0972304000000002,
+  "session_id": "04b2300a-62f5-4293-9baf-101e45dddb0a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 102,
+  "output_tokens": 27445,
+  "cache_read_input_tokens": 2684927,
+  "cache_creation_input_tokens": 70509,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testWarningGuardOrdering2",
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testWarningGuardOrdering4"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/AbstractCommandLineRunner.java",
+    "src/com/google/javascript/jscomp/CommandLineRunner.java",
+    "src/com/google/javascript/jscomp/DiagnosticGroups.java"
+  ],
+  "patch_added_lines": 119,
+  "patch_removed_lines": 34,
+  "has_dev_patch": true
+}

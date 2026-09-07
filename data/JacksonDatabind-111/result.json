@@ -1,0 +1,43 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 111,
+  "id": "JacksonDatabind-111",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:40:12Z",
+  "wallclock_s": 399,
+  "agent_s": 204,
+  "agent_rc": 0,
+  "num_turns": 33,
+  "api_duration_ms": 138137,
+  "total_cost_usd": 0.5671214,
+  "session_id": "01613059-caa6-4767-964a-feec85dcd4df",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 66,
+  "output_tokens": 12587,
+  "cache_read_input_tokens": 1277962,
+  "cache_creation_input_tokens": 45761,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.jdk.JDKAtomicTypesDeserTest::testNullWithinNested"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/FieldProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/MethodProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdReferenceProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/SetterlessProperty.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/AtomicReferenceDeserializer.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

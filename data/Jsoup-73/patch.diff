@@ -1,0 +1,63 @@
+diff --git a/src/main/java/org/jsoup/helper/W3CDom.java b/src/main/java/org/jsoup/helper/W3CDom.java
+index f58a925..ace32a3 100644
+--- a/src/main/java/org/jsoup/helper/W3CDom.java
++++ b/src/main/java/org/jsoup/helper/W3CDom.java
+@@ -18,7 +18,10 @@ import javax.xml.transform.TransformerFactory;
+ import javax.xml.transform.dom.DOMSource;
+ import javax.xml.transform.stream.StreamResult;
+ import java.io.StringWriter;
++import java.util.ArrayDeque;
++import java.util.Deque;
+ import java.util.HashMap;
++import java.util.Map;
+ 
+ /**
+  * Helper class to transform a {@link org.jsoup.nodes.Document} to a {@link org.w3c.dom.Document org.w3c.dom.Document},
+@@ -71,6 +74,7 @@ public class W3CDom {
+ 
+         private final Document doc;
+         private final HashMap<String, String> namespaces = new HashMap<>();
++        private final Deque<Map<String, String>> namespaceScopes = new ArrayDeque<>();
+         private Element dest;
+ 
+         public W3CBuilder(Document doc) {
+@@ -110,8 +114,17 @@ public class W3CDom {
+         }
+ 
+         public void tail(org.jsoup.nodes.Node source, int depth) {
+-            if (source instanceof org.jsoup.nodes.Element && dest.getParentNode() instanceof Element) {
+-                dest = (Element) dest.getParentNode(); // undescend. cromulent.
++            if (source instanceof org.jsoup.nodes.Element) {
++                // restore the namespace declarations that were in scope before this element
++                Map<String, String> priorScope = namespaceScopes.pop();
++                for (Map.Entry<String, String> entry : priorScope.entrySet()) {
++                    if (entry.getValue() == null)
++                        namespaces.remove(entry.getKey());
++                    else
++                        namespaces.put(entry.getKey(), entry.getValue());
++                }
++                if (dest.getParentNode() instanceof Element)
++                    dest = (Element) dest.getParentNode(); // undescend. cromulent.
+             }
+         }
+ 
+@@ -130,6 +143,7 @@ public class W3CDom {
+         private String updateNamespaces(org.jsoup.nodes.Element el) {
+             // scan the element for namespace declarations
+             // like: xmlns="blah" or xmlns:prefix="blah"
++            Map<String, String> priorScope = new HashMap<>();
+             Attributes attributes = el.attributes();
+             for (Attribute attr : attributes) {
+                 String key = attr.getKey();
+@@ -141,8 +155,11 @@ public class W3CDom {
+                 } else {
+                     continue;
+                 }
++                if (!priorScope.containsKey(prefix))
++                    priorScope.put(prefix, namespaces.get(prefix)); // remember for when we leave this element's scope
+                 namespaces.put(prefix, attr.getValue());
+             }
++            namespaceScopes.push(priorScope);
+ 
+             // get the element prefix if any
+             int pos = el.tagName().indexOf(":");

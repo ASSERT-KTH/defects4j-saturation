@@ -1,0 +1,57 @@
+diff --git a/src/main/java/org/joda/time/chrono/GJChronology.java b/src/main/java/org/joda/time/chrono/GJChronology.java
+index b970403..68dff62 100644
+--- a/src/main/java/org/joda/time/chrono/GJChronology.java
++++ b/src/main/java/org/joda/time/chrono/GJChronology.java
+@@ -105,6 +105,16 @@ public final class GJChronology extends AssembledChronology {
+      */
+     static final Instant DEFAULT_CUTOVER = new Instant(-12219292800000L);
+ 
++    /**
++     * The earliest supported cutover, chosen so that the Gregorian year of
++     * the cutover instant is never zero or negative. This ensures that the
++     * combined Julian/Gregorian year numbering used by this class never
++     * needs to represent a year zero, matching the Julian calendar's lack
++     * of a year zero.
++     */
++    private static final Instant MIN_CUTOVER =
++        new Instant(GregorianChronology.getInstanceUTC().getDateTimeMillis(1, 1, 1, 0));
++
+     /** Cache of zone to chronology list */
+     private static final Map<DateTimeZone, ArrayList<GJChronology>> cCache = new HashMap<DateTimeZone, ArrayList<GJChronology>>();
+ 
+@@ -194,6 +204,9 @@ public final class GJChronology extends AssembledChronology {
+         } else {
+             cutoverInstant = gregorianCutover.toInstant();
+         }
++        if (cutoverInstant.isBefore(MIN_CUTOVER)) {
++            throw new IllegalArgumentException("Cutover too early. Must be on or after 0001-01-01.");
++        }
+ 
+         GJChronology chrono;
+         synchronized (cCache) {
+@@ -974,6 +987,12 @@ public final class GJChronology extends AssembledChronology {
+             if (instant >= iCutover) {
+                 instant = iGregorianField.add(instant, value);
+                 if (instant < iCutover) {
++                    // The Gregorian field just used has a year zero, but the
++                    // combined Julian/Gregorian year numbering does not, so
++                    // skip over it when the addition crosses that boundary.
++                    if (iGregorianField.get(instant) <= 0) {
++                        instant = iGregorianField.add(instant, -1);
++                    }
+                     // Only adjust if gap fully crossed.
+                     if (instant + iGapDuration < iCutover) {
+                         instant = gregorianToJulian(instant);
+@@ -996,6 +1015,12 @@ public final class GJChronology extends AssembledChronology {
+             if (instant >= iCutover) {
+                 instant = iGregorianField.add(instant, value);
+                 if (instant < iCutover) {
++                    // The Gregorian field just used has a year zero, but the
++                    // combined Julian/Gregorian year numbering does not, so
++                    // skip over it when the addition crosses that boundary.
++                    if (iGregorianField.get(instant) <= 0) {
++                        instant = iGregorianField.add(instant, -1);
++                    }
+                     // Only adjust if gap fully crossed.
+                     if (instant + iGapDuration < iCutover) {
+                         instant = gregorianToJulian(instant);

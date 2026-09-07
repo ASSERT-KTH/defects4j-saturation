@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 8,
+  "id": "Math-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:55:16Z",
+  "wallclock_s": 205,
+  "agent_s": 88,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 23298,
+  "total_cost_usd": 0.10526020000000001,
+  "session_id": "5205a76a-ac51-4266-b592-245d15f51733",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1645,
+  "cache_read_input_tokens": 189061,
+  "cache_creation_input_tokens": 12123,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.distribution.DiscreteRealDistributionTest::testIssue942"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/distribution/DiscreteDistribution.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

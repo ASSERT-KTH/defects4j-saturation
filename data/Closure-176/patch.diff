@@ -1,0 +1,18 @@
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index c43a7d1..4006c26 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -545,7 +545,12 @@ class TypeInference
+         // sure we back-infer the <string> element constraint on
+         // the left hand side, so we use the left hand side.
+ 
+-        boolean isVarTypeBetter = !isVarDeclaration || var == null || var.isTypeInferred();
++        boolean isVarTypeBetter = !isVarDeclaration || var == null || var.isTypeInferred() ||
++            // A var declared with a null or undefined initializer is
++            // definitely null or undefined at this point in the flow,
++            // regardless of its declared type, so use the more precise
++            // result type.
++            resultType.isNullType() || resultType.isVoidType();
+             // Makes it easier to check for NPEs.
+ 
+         // TODO(nicksantos): This might be a better check once we have

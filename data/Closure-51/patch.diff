@@ -1,0 +1,13 @@
+diff --git a/src/com/google/javascript/jscomp/CodeConsumer.java b/src/com/google/javascript/jscomp/CodeConsumer.java
+index 146d2f8..07433f3 100644
+--- a/src/com/google/javascript/jscomp/CodeConsumer.java
++++ b/src/com/google/javascript/jscomp/CodeConsumer.java
+@@ -238,7 +238,7 @@ abstract class CodeConsumer {
+       add(" ");
+     }
+ 
+-    if ((long) x == x) {
++    if ((long) x == x && !(x == 0 && 1 / x < 0)) {
+       long value = (long) x;
+       long mantissa = value;
+       int exp = 0;

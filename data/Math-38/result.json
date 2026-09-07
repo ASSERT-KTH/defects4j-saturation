@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 38,
+  "id": "Math-38",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:26:27Z",
+  "wallclock_s": 283,
+  "agent_s": 192,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 153696,
+  "total_cost_usd": 0.3774872000000001,
+  "session_id": "c41fd4d1-d78f-4023-ad93-edda69cf24dd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 15149,
+  "cache_read_input_tokens": 500036,
+  "cache_creation_input_tokens": 30776,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.direct.BOBYQAOptimizerTest::testConstrainedRosenWithMoreInterpolationPoints"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/direct/BOBYQAOptimizer.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

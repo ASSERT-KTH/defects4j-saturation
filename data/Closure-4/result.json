@@ -1,0 +1,39 @@
+{
+  "project": "Closure",
+  "bug": 4,
+  "id": "Closure-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:40:35Z",
+  "wallclock_s": 361,
+  "agent_s": 133,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 30348,
+  "total_cost_usd": 0.18196759999999998,
+  "session_id": "5ac63144-fabe-4404-8a51-872f4fd63e26",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2378,
+  "cache_read_input_tokens": 297723,
+  "cache_creation_input_tokens": 23251,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testImplementsExtendsLoop",
+    "com.google.javascript.jscomp.TypeCheckTest::testImplementsLoop",
+    "com.google.javascript.jscomp.TypeCheckTest::testConversionFromInterfaceToRecursiveConstructor"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/NamedType.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

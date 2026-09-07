@@ -1,0 +1,86 @@
+diff --git a/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
+index 720b60b..6340e17 100644
+--- a/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
+@@ -204,8 +204,7 @@ class ClosureReverseAbstractInterpreter
+       Node callee = condition.getFirstChild();
+       Node param = condition.getLastChild();
+       if (callee.getType() == GETPROP && param.isQualifiedName()) {
+-        JSType paramType =  getTypeIfRefinable(param, blindScope);
+-        if (paramType != null) {
++        JSType paramType = getTypeIfRefinable(param, blindScope);
+         Node left = callee.getFirstChild();
+         Node right = callee.getLastChild();
+         if (left.getType() == NAME && "goog".equals(left.getString()) &&
+@@ -215,7 +214,6 @@ class ClosureReverseAbstractInterpreter
+           if (restricter != null) {
+             return restrictParameter(param, paramType, blindScope, restricter,
+                 outcome);
+-            }
+           }
+         }
+       }
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index 1b3755d..23247bb 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -82,7 +82,7 @@ class TypeInference
+   private final FlowScope bottomScope;
+ 
+   /**
+-   * Local variables that do not belong to this scope, but are assigned
++   * Variables that do not belong to this scope, but are assigned
+    * in this scope.
+    */
+   private final Multimap<Scope, Var> assignedOuterLocalVars =
+@@ -154,7 +154,7 @@ class TypeInference
+   }
+ 
+   /**
+-   * @return Local variables assigned in this scope, but which are declared in
++   * @return Variables assigned in this scope, but which are declared in
+    *     a scope outside of it. Hashed by the scope they're declared in.
+    */
+   Multimap<Scope, Var> getAssignedOuterLocalVars() {
+@@ -493,7 +493,7 @@ class TypeInference
+       case Token.NAME:
+         String varName = left.getString();
+         Var var = syntacticScope.getVar(varName);
+-        if (var != null && var.isLocal() && var.getScope() != syntacticScope) {
++        if (var != null && var.getScope() != syntacticScope) {
+           assignedOuterLocalVars.put(var.getScope(), var);
+         }
+ 
+diff --git a/src/com/google/javascript/jscomp/TypeInferencePass.java b/src/com/google/javascript/jscomp/TypeInferencePass.java
+index 3f6e17d..b5ba5bd 100644
+--- a/src/com/google/javascript/jscomp/TypeInferencePass.java
++++ b/src/com/google/javascript/jscomp/TypeInferencePass.java
+@@ -90,12 +90,27 @@ class TypeInferencePass implements CompilerPass {
+   }
+ 
+   void inferTypes(NodeTraversal t, Node n, Scope scope) {
++    Collection<Var> unflowableVars = getUnflowableVars(scope);
+     TypeInference typeInference =
+         new TypeInference(
+             compiler, computeCfg(n), reverseInterpreter, scope,
+-            getUnflowableVars(scope));
++            unflowableVars);
+     try {
+       typeInference.analyze();
++
++      // Variables declared outside this scope may have had their inferred
++      // type refined as a side effect of assignments made within this
++      // scope's own flow. Re-run the analysis so that those refinements are
++      // visible from the very start of this scope, instead of only after the
++      // assignment that produced them.
++      if (!typeInference.getAssignedOuterLocalVars().isEmpty()) {
++        typeInference =
++            new TypeInference(
++                compiler, computeCfg(n), reverseInterpreter, scope,
++                unflowableVars);
++        typeInference.analyze();
++      }
++
+       escapedLocalVars.putAll(typeInference.getAssignedOuterLocalVars());
+ 
+       // Resolve any new type names found during the inference.

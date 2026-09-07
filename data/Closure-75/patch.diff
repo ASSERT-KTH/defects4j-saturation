@@ -1,0 +1,15 @@
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index 7a882de..90fcba9 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -310,7 +310,10 @@ public final class NodeUtil {
+   }
+ 
+   static Double getStringNumberValue(String rawJsString) {
++    if (rawJsString.indexOf('\u000B') != -1) {
+       // vertical tab is not always whitespace
++      return null;
++    }
+ 
+     String s = trimJsWhiteSpace(rawJsString);
+     // return ScriptRuntime.toNumber(s);

@@ -1,0 +1,38 @@
+{
+  "project": "Chart",
+  "bug": 2,
+  "id": "Chart-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:13:40Z",
+  "wallclock_s": 143,
+  "agent_s": 90,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 80045,
+  "total_cost_usd": 0.2844250000000001,
+  "session_id": "c6ee5ae2-e56a-473f-9186-6822a32c3937",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 7919,
+  "cache_read_input_tokens": 436015,
+  "cache_creation_input_tokens": 28695,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.data.general.junit.DatasetUtilitiesTests::testBug2849731_2",
+    "org.jfree.data.general.junit.DatasetUtilitiesTests::testBug2849731_3"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/data/general/DatasetUtilities.java"
+  ],
+  "patch_added_lines": 20,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

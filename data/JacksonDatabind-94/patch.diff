@@ -1,0 +1,31 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java
+index 9865b1a..f59a057 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java
+@@ -20,6 +20,8 @@ public class SubTypeValidator
+ {
+     protected final static String PREFIX_SPRING = "org.springframework.";
+ 
++    protected final static String PREFIX_C3P0 = "com.mchange.v2.c3p0.";
++
+ 
+     /**
+      * Set of well-known "nasty classes", deserialization of which is considered dangerous
+@@ -95,13 +97,11 @@ public class SubTypeValidator
+                             || "AbstractApplicationContext".equals(name)) {
+                         break main_check;
+                     }
+-                // [databind#1737]; more 3rd party
+-                // s.add("com.mchange.v2.c3p0.JndiRefForwardingDataSource");
+-                // s.add("com.mchange.v2.c3p0.WrapperConnectionPoolDataSource");
+-                // [databind#1931]; more 3rd party
+-                // com.mchange.v2.c3p0.ComboPooledDataSource
+-                // com.mchange.v2.c3p0.debug.AfterCloseLoggingComboPooledDataSource 
+                 }
++            } else if (full.startsWith(PREFIX_C3P0)) {
++                // [databind#1737]/[databind#1931]: block all types (and subtypes) from
++                // "com.mchange.v2.c3p0" package, used for JNDI/DataSource exploits
++                break main_check;
+             }
+             return;
+         } while (false);

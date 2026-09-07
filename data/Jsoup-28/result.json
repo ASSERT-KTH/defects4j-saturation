@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 28,
+  "id": "Jsoup-28",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:57:26Z",
+  "wallclock_s": 106,
+  "agent_s": 87,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 80146,
+  "total_cost_usd": 0.2696184,
+  "session_id": "1c5c4765-8558-4b00-8368-2c7e4565524a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 6867,
+  "cache_read_input_tokens": 441097,
+  "cache_creation_input_tokens": 26726,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.EntitiesTest::unescape",
+    "org.jsoup.nodes.EntitiesTest::noSpuriousDecodes",
+    "org.jsoup.parser.AttributeParseTest::moreAttributeUnescapes",
+    "org.jsoup.parser.AttributeParseTest::strictAttributeUnescapes",
+    "org.jsoup.parser.HtmlParserTest::doesNotFindShortestMatchingEntity",
+    "org.jsoup.parser.HtmlParserTest::relaxedBaseEntityMatchAndStrictExtendedMatch"
+  ],
+  "failing_before": 6,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Entities.java",
+    "src/main/java/org/jsoup/parser/Tokeniser.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

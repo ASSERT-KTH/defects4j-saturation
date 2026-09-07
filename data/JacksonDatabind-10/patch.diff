@@ -1,0 +1,72 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/AnyGetterWriter.java b/src/main/java/com/fasterxml/jackson/databind/ser/AnyGetterWriter.java
+index 2cd7bb7..93a794c 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/AnyGetterWriter.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/AnyGetterWriter.java
+@@ -22,17 +22,29 @@ public class AnyGetterWriter
+     protected final AnnotatedMember _accessor;
+ 
+ 
++    /**
++     * Underlying serializer used for the Map values; either a custom
++     * one (from annotations) or a standard {@link MapSerializer} if
++     * none was specified.
++     */
++    @SuppressWarnings("rawtypes")
++    protected JsonSerializer _serializer;
++
+     protected MapSerializer _mapSerializer;
+-    
++
+     @SuppressWarnings("unchecked")
+     public AnyGetterWriter(BeanProperty property,
+-            AnnotatedMember accessor, MapSerializer serializer)
++            AnnotatedMember accessor, JsonSerializer<?> serializer)
+     {
+         _accessor = accessor;
+         _property = property;
++        _serializer = serializer;
++        if (serializer instanceof MapSerializer) {
+             _mapSerializer = (MapSerializer) serializer;
++        }
+     }
+ 
++    @SuppressWarnings("unchecked")
+     public void getAndSerialize(Object bean, JsonGenerator gen, SerializerProvider provider)
+         throws Exception
+     {
+@@ -49,6 +61,7 @@ public class AnyGetterWriter
+             _mapSerializer.serializeFields((Map<?,?>) value, gen, provider);
+             return;
+         }
++        _serializer.serialize(value, gen, provider);
+     }
+ 
+     /**
+@@ -79,6 +92,9 @@ public class AnyGetterWriter
+     public void resolve(SerializerProvider provider) throws JsonMappingException
+     {
+         // 05-Sep-2013, tatu: I _think_ this can be considered a primary property...
+-        _mapSerializer = (MapSerializer) provider.handlePrimaryContextualization(_mapSerializer, _property);
++        _serializer = provider.handlePrimaryContextualization(_serializer, _property);
++        if (_serializer instanceof MapSerializer) {
++            _mapSerializer = (MapSerializer) _serializer;
++        }
+     }
+ }
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java
+index 25e7e3f..77aaed2 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java
+@@ -392,8 +392,11 @@ public class BeanSerializerFactory
+             TypeSerializer typeSer = createTypeSerializer(config, valueType);
+             // last 2 nulls; don't know key, value serializers (yet)
+             // 23-Feb-2015, tatu: As per [#705], need to support custom serializers
+-            MapSerializer anySer = MapSerializer.construct(null, type, staticTyping, typeSer, null, null, null);
++            JsonSerializer<?> anySer = findSerializerFromAnnotation(prov, anyGetter);
++            if (anySer == null) {
+                 // TODO: support '@JsonIgnoreProperties' with any setter?
++                anySer = MapSerializer.construct(null, type, staticTyping, typeSer, null, null, null);
++            }
+             // TODO: can we find full PropertyName?
+             PropertyName name = new PropertyName(anyGetter.getName());
+             BeanProperty.Std anyProp = new BeanProperty.Std(name, valueType, null,

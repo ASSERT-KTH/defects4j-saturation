@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 110,
+  "id": "JacksonDatabind-110",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:33:32Z",
+  "wallclock_s": 207,
+  "agent_s": 103,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 43022,
+  "total_cost_usd": 0.1651822,
+  "session_id": "e5af08ed-d9e9-4807-90fc-20f6a9765ec4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3795,
+  "cache_read_input_tokens": 287771,
+  "cache_creation_input_tokens": 16669,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.jdk.UtilCollectionsTypesTest::testUnmodifiableListFromLinkedList"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/JavaUtilCollectionsDeserializers.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

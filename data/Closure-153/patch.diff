@@ -1,0 +1,38 @@
+diff --git a/src/com/google/javascript/jscomp/Normalize.java b/src/com/google/javascript/jscomp/Normalize.java
+index 4c99858..84e810d 100644
+--- a/src/com/google/javascript/jscomp/Normalize.java
++++ b/src/com/google/javascript/jscomp/Normalize.java
+@@ -668,6 +668,18 @@ class Normalize implements CompilerPass {
+             JSError.make(
+                 NodeUtil.getSourceName(nodeWithLineNumber), nodeWithLineNumber,
+                 CATCH_BLOCK_VAR_ERROR, name));
++      } else if (v != null && s.isGlobal() && v.isExtern()
++          && !isExternDecl(n)) {
++        // This is the first declaration in the source for a name that is
++        // already declared in the externs. Keep this declaration as-is (it
++        // becomes the "master" declaration) rather than treating it as a
++        // duplicate to be removed; only later source redeclarations of the
++        // same name should be removed.
++        if (parent.getType() == Token.VAR) {
++          s.undeclare(v);
++          s.declare(name, n, n.getJSType(),
++              compiler.getInput(NodeUtil.getSourceName(n)));
++        }
+       } else if (v != null && parent.getType() == Token.FUNCTION) {
+         if (v.getParentNode().getType() == Token.VAR) {
+           s.undeclare(v);
+@@ -682,6 +694,14 @@ class Normalize implements CompilerPass {
+       }
+     }
+ 
++    /**
++     * @return Whether the given name node is declared in an externs file.
++     */
++    private boolean isExternDecl(Node n) {
++      CompilerInput input = compiler.getInput(NodeUtil.getSourceName(n));
++      return input != null && input.isExtern();
++    }
++
+     /**
+      * Remove the parent VAR. There are three cases that need to be handled:
+      *   1) "var a = b;" which is replaced with "a = b"

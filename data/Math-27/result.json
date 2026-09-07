@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 27,
+  "id": "Math-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:17:11Z",
+  "wallclock_s": 155,
+  "agent_s": 76,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 30968,
+  "total_cost_usd": 0.1282782,
+  "session_id": "9a21e5ca-19b8-4330-a5f2-6940cf930c83",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2353,
+  "cache_read_input_tokens": 233326,
+  "cache_creation_input_tokens": 13890,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.fraction.FractionTest::testMath835"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/fraction/Fraction.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

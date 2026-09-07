@@ -1,0 +1,33 @@
+diff --git a/src/com/google/javascript/jscomp/CollapseVariableDeclarations.java b/src/com/google/javascript/jscomp/CollapseVariableDeclarations.java
+index f2d36f5..781513e 100644
+--- a/src/com/google/javascript/jscomp/CollapseVariableDeclarations.java
++++ b/src/com/google/javascript/jscomp/CollapseVariableDeclarations.java
+@@ -201,7 +201,8 @@ class CollapseVariableDeclarations implements CompilerPass {
+       Var var = s.getVar(lhs.getString());
+       return var != null
+           && var.getScope() == s
+-          && !blacklistedVars.contains(var);
++          && !blacklistedVars.contains(var)
++          && !var.isParam();
+     }
+   }
+ 
+diff --git a/src/com/google/javascript/jscomp/Scope.java b/src/com/google/javascript/jscomp/Scope.java
+index 933d114..b4c9329 100644
+--- a/src/com/google/javascript/jscomp/Scope.java
++++ b/src/com/google/javascript/jscomp/Scope.java
+@@ -183,6 +183,14 @@ public class Scope
+       return NodeUtil.isFunctionExpression(getParentNode());
+     }
+ 
++    /**
++     * Whether this is a function parameter.
++     */
++    public boolean isParam() {
++      Node parent = getParentNode();
++      return parent != null && parent.isParamList();
++    }
++
+     /**
+      * Gets the scope where this variable is declared.
+      */

@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 169,
+  "id": "Closure-169",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T04:21:49Z",
+  "wallclock_s": 575,
+  "agent_s": 344,
+  "agent_rc": 0,
+  "num_turns": 48,
+  "api_duration_ms": 267958,
+  "total_cost_usd": 1.0038246000000002,
+  "session_id": "8ed64997-8f50-4789-9d40-91fcb05bcaa7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 96,
+  "output_tokens": 26441,
+  "cache_read_input_tokens": 2414163,
+  "cache_creation_input_tokens": 63211,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue791",
+    "com.google.javascript.rhino.jstype.RecordTypeTest::testSubtypeWithUnknowns2"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/ArrowType.java",
+    "src/com/google/javascript/rhino/jstype/EquivalenceMethod.java",
+    "src/com/google/javascript/rhino/jstype/FunctionType.java",
+    "src/com/google/javascript/rhino/jstype/JSType.java",
+    "src/com/google/javascript/rhino/jstype/RecordType.java",
+    "src/com/google/javascript/rhino/jstype/UnionType.java"
+  ],
+  "patch_added_lines": 101,
+  "patch_removed_lines": 30,
+  "has_dev_patch": true
+}

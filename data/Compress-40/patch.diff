@@ -1,0 +1,76 @@
+diff --git a/src/main/java/org/apache/commons/compress/utils/BitInputStream.java b/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
+index 86dda14..5a8ab41 100644
+--- a/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
++++ b/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
+@@ -82,7 +82,9 @@ public class BitInputStream implements Closeable {
+         if (count < 0 || count > MAXIMUM_CACHE_SIZE) {
+             throw new IllegalArgumentException("count must not be negative or greater than " + MAXIMUM_CACHE_SIZE);
+         }
+-        while (bitsCachedSize < count) {
++        while (bitsCachedSize < count && bitsCachedSize < 57) {
++            // bitsCachedSize < 57 as otherwise adding a further byte
++            // could overflow the 64 bits of bitsCached
+             final long nextByte = in.read();
+             if (nextByte < 0) {
+                 return nextByte;
+@@ -95,16 +97,51 @@ public class BitInputStream implements Closeable {
+             }
+             bitsCachedSize += 8;
+         }
+-            // bitsCachedSize >= 57 and left-shifting it 8 bits would cause an overflow
+-        
++
++        if (bitsCachedSize < count) {
++            return processBitsGreaterThan57(count);
++        }
++
+         final long bitsOut;
+-            if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+-                bitsOut = (bitsCached & MASKS[count]);
+-                bitsCached >>>= count;
+-            } else {
+-                bitsOut = (bitsCached >> (bitsCachedSize - count)) & MASKS[count];
+-            }
+-            bitsCachedSize -= count;
++        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
++            bitsOut = (bitsCached & MASKS[count]);
++            bitsCached >>>= count;
++        } else {
++            bitsOut = (bitsCached >> (bitsCachedSize - count)) & MASKS[count];
++        }
++        bitsCachedSize -= count;
++        return bitsOut;
++    }
++
++    /**
++     * Handles the case where the requested number of bits still can't
++     * be satisfied from the cache without risking an overflow of the
++     * 64-bit cache: reads exactly one more byte, splitting it between
++     * the bits needed to complete this request and the bits that
++     * become the leftover cache for the next call.
++     */
++    private long processBitsGreaterThan57(final int count) throws IOException {
++        final long nextByte = in.read();
++        if (nextByte < 0) {
++            return nextByte;
++        }
++
++        final int bitsToAddCount = count - bitsCachedSize;
++        final int overflowBits = 8 - bitsToAddCount;
++        final long bitsOut;
++        final long overflow;
++        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
++            bitsCached |= (nextByte & MASKS[bitsToAddCount]) << bitsCachedSize;
++            bitsOut = bitsCached & MASKS[count];
++            overflow = (nextByte >>> bitsToAddCount) & MASKS[overflowBits];
++        } else {
++            bitsCached <<= bitsToAddCount;
++            bitsCached |= (nextByte >>> overflowBits) & MASKS[bitsToAddCount];
++            bitsOut = bitsCached & MASKS[count];
++            overflow = nextByte & MASKS[overflowBits];
++        }
++        bitsCached = overflow;
++        bitsCachedSize = overflowBits;
+         return bitsOut;
+     }
+ }

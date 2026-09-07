@@ -1,0 +1,24 @@
+Repair a real defect in the Java project __PROJECT__ (Defects4J bug __PROJECT__-__BUG__).
+
+The working directory is a checkout of the buggy version. Layout:
+  - production sources : __SRC_DIR__
+  - test sources       : __TEST_DIR__   (read-only for you)
+
+The sources currently compile. The following developer test(s) fail because of
+the defect:
+
+__TRIGGER_TESTS__
+
+Failure output from the initial test run:
+
+```
+__FAILURE_OUTPUT__
+```
+
+Classes the defect is known to be located in:
+
+__MODIFIED_CLASSES__
+
+Your task: find the root cause and fix it in __SRC_DIR__, then verify with
+`defects4j compile` and `defects4j test` that the failing test(s) pass and that
+no other developer test broke.

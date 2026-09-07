@@ -1,0 +1,49 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index b07e47f..2e8cac3 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -78,6 +78,8 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         framesetOk = true;
+         fosterInserts = false;
+         fragmentParsing = false;
++        pScopeCheckedTo = 0;
++        pScopeCached = false;
+     }
+ 
+     List<Node> parseFragment(String inputFragment, Element context, String baseUri, ParseErrorList errors, ParseSettings settings) {
+@@ -498,9 +500,35 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     }
+ 
+     boolean inButtonScope(String targetName) {
++        if (targetName.equals("p"))
++            return isPInButtonScope(); // avoid O(depth) rescans; "p" is checked on almost every block-level start tag
+         return inScope(targetName, TagSearchButton);
+     }
+ 
++    // incremental cache for inButtonScope("p"): stack.get(i) for i < pScopeCheckedTo has already been folded into
++    // pScopeCached, so a monotonically growing stack of open elements is only ever scanned once in total, rather
++    // than being rescanned from the top on every single call (which is O(depth) per call, and O(depth^2) overall
++    // for deeply nested documents, e.g. many levels of <dl><dd>).
++    private int pScopeCheckedTo = 0;
++    private boolean pScopeCached = false;
++
++    private boolean isPInButtonScope() {
++        if (stack.size() < pScopeCheckedTo) {
++            // the stack shrank below our last checkpoint (elements were popped); the cache no longer reflects
++            // what remains, so start over
++            pScopeCheckedTo = 0;
++            pScopeCached = false;
++        }
++        for (; pScopeCheckedTo < stack.size(); pScopeCheckedTo++) {
++            String name = stack.get(pScopeCheckedTo).nodeName();
++            if (name.equals("p"))
++                pScopeCached = true;
++            else if (inSorted(name, TagsSearchInScope) || name.equals("button"))
++                pScopeCached = false;
++        }
++        return pScopeCached;
++    }
++
+     boolean inTableScope(String targetName) {
+         return inSpecificScope(targetName, TagSearchTableScope, null);
+     }

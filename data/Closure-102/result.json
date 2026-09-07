@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 102,
+  "id": "Closure-102",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T00:15:09Z",
+  "wallclock_s": 589,
+  "agent_s": 535,
+  "agent_rc": 0,
+  "num_turns": 68,
+  "api_duration_ms": 489160,
+  "total_cost_usd": 1.6211818,
+  "session_id": "d0ae4cd8-9b3e-40bc-95f2-6f2202e87a10",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 136,
+  "output_tokens": 44552,
+  "cache_read_input_tokens": 3985984,
+  "cache_creation_input_tokens": 93835,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CompilerRunnerTest::testIssue115"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

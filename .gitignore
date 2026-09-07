@@ -1,0 +1,7 @@
+# harness runtime state, not published
+runs/
+work/
+d4j/
+logs/
+*.pyc
+__pycache__/

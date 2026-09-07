@@ -1,0 +1,19 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index 41ffafb..04d212f 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -1212,9 +1212,13 @@ public final class TypeFactory
+         if (result != null) {
+             return result;
+         }
++        // Some callers pass `null` for "no bindings"; treat same as empty bindings
++        if (bindings == null) {
++            bindings = EMPTY_BINDINGS;
++        }
+         // Barring that, we may have recently constructed an instance
+         final Object key;
+-        if ((bindings == null) || bindings.isEmpty()) {
++        if (bindings.isEmpty()) {
+             key = rawType;
+         } else {
+             key = bindings.asKey(rawType);

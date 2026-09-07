@@ -1,0 +1,5 @@
+M	src/main/java/com/fasterxml/jackson/databind/JavaType.java
+M	src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java
+M	src/main/java/com/fasterxml/jackson/databind/ser/std/BeanSerializerBase.java
+M	src/main/java/com/fasterxml/jackson/databind/ser/std/StdDelegatingSerializer.java
+M	src/main/java/com/fasterxml/jackson/databind/ser/std/StdSerializer.java

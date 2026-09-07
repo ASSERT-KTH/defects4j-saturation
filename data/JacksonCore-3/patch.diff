@@ -1,0 +1,34 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.java b/src/main/java/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.java
+index 730afbf..1ab8603 100644
+--- a/src/main/java/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.java
++++ b/src/main/java/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.java
+@@ -229,7 +229,7 @@ public final class ByteSourceJsonBootstrapper
+              */
+             if (canonicalize) {
+                 BytesToNameCanonicalizer can = rootByteSymbols.makeChild(canonicalize, intern);
+-                return new UTF8StreamJsonParser(_context, parserFeatures, _in, codec, can, _inputBuffer, _inputPtr, _inputEnd, _bufferRecyclable);
++                return new UTF8StreamJsonParser(_context, parserFeatures, _in, codec, can, _inputBuffer, _inputPtr, _inputEnd, _inputProcessed, _bufferRecyclable);
+             }
+         }
+         return new ReaderBasedJsonParser(_context, parserFeatures, constructReader(), codec,
+diff --git a/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java b/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java
+index f89e661..e8fe220 100644
+--- a/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java
++++ b/src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java
+@@ -113,6 +113,7 @@ public class UTF8StreamJsonParser
+     public UTF8StreamJsonParser(IOContext ctxt, int features, InputStream in,
+             ObjectCodec codec, BytesToNameCanonicalizer sym,
+             byte[] inputBuffer, int start, int end,
++            int bytesPreProcessed,
+             boolean bufferRecyclable)
+     {
+         super(ctxt, features);
+@@ -123,6 +124,8 @@ public class UTF8StreamJsonParser
+         _inputPtr = start;
+         _inputEnd = end;
+         // If we have offset, need to omit that from byte offset, so:
++        _currInputProcessed = bytesPreProcessed;
++        _currInputRowStart = start;
+         _bufferRecyclable = bufferRecyclable;
+     }
+ 

@@ -1,0 +1,37 @@
+{
+  "project": "Chart",
+  "bug": 8,
+  "id": "Chart-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:14:37Z",
+  "wallclock_s": 61,
+  "agent_s": 25,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 14338,
+  "total_cost_usd": 0.0794426,
+  "session_id": "f0e97bd2-06d5-4c1c-ade1-35afc928ec60",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 968,
+  "cache_read_input_tokens": 106268,
+  "cache_creation_input_tokens": 11555,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.data.time.junit.WeekTests::testConstructor"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/data/time/Week.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

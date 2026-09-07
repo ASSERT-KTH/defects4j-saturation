@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 18,
+  "id": "Closure-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:00:59Z",
+  "wallclock_s": 356,
+  "agent_s": 189,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 115167,
+  "total_cost_usd": 0.407322,
+  "session_id": "fe72573e-9af6-4712-a052-5dc9f50e4652",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 9116,
+  "cache_read_input_tokens": 849445,
+  "cache_creation_input_tokens": 35681,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testDependencySorting"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Compiler.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

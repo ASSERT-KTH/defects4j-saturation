@@ -1,0 +1,2 @@
+M	src/main/java/com/fasterxml/jackson/core/json/ByteSourceJsonBootstrapper.java
+M	src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java

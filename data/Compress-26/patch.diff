@@ -1,0 +1,21 @@
+diff --git a/src/main/java/org/apache/commons/compress/utils/IOUtils.java b/src/main/java/org/apache/commons/compress/utils/IOUtils.java
+index 686d75a..f777334 100644
+--- a/src/main/java/org/apache/commons/compress/utils/IOUtils.java
++++ b/src/main/java/org/apache/commons/compress/utils/IOUtils.java
+@@ -100,7 +100,15 @@ public final class IOUtils {
+             }
+             numToSkip -= skipped;
+         }
+-            
++
++        while (numToSkip > 0) {
++            int read = readFully(input, new byte[(int) Math.min(numToSkip, SKIP_BUF_SIZE)]);
++            if (read < 1) {
++                break;
++            }
++            numToSkip -= read;
++        }
++
+         return available - numToSkip;
+     }
+ 

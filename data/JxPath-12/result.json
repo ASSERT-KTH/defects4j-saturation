@@ -1,0 +1,37 @@
+{
+  "project": "JxPath",
+  "bug": 12,
+  "id": "JxPath-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:40:11Z",
+  "wallclock_s": 105,
+  "agent_s": 74,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 63799,
+  "total_cost_usd": 0.2472726,
+  "session_id": "44422f4d-6cc1-4109-84fa-76dd8a6f334d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 5257,
+  "cache_read_input_tokens": 378313,
+  "cache_creation_input_tokens": 29147,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.ExternalXMLNamespaceTest::testElementDOM"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

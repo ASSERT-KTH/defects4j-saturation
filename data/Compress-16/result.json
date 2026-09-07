@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 16,
+  "id": "Compress-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:38:04Z",
+  "wallclock_s": 64,
+  "agent_s": 37,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 30432,
+  "total_cost_usd": 0.15519199999999997,
+  "session_id": "068a2614-511f-4bba-812c-679ad338c719",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2341,
+  "cache_read_input_tokens": 277090,
+  "cache_creation_input_tokens": 18467,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.ArchiveStreamFactoryTest::aiffFilesAreNoTARs"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

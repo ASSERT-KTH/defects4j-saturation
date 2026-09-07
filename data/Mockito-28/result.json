@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 28,
+  "id": "Mockito-28",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:19:36Z",
+  "wallclock_s": 159,
+  "agent_s": 78,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 34383,
+  "total_cost_usd": 0.1340976,
+  "session_id": "793f2d52-6ebd-4689-82d0-cc1c6a088838",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 3079,
+  "cache_read_input_tokens": 167698,
+  "cache_creation_input_tokens": 16770,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.InjectionByTypeShouldFirstLookForExactTypeThenAncestorTest::mock_should_be_injected_once_and_in_the_best_matching_type"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/configuration/DefaultInjectionEngine.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

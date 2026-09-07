@@ -1,0 +1,37 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+index 3300d03..903cc77 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+@@ -558,9 +558,9 @@ public class DOMNodePointer extends NodePointer {
+         Node n = node.getPreviousSibling();
+         while (n != null) {
+             if (n.getNodeType() == Node.ELEMENT_NODE) {
+-                String nm = n.getNodeName();
+-                if (nm.equals(node.getNodeName())) {
+-                count++;
++                if (getLocalName(n).equals(getLocalName(node))
++                        && equalStrings(getNamespaceURI(n), getNamespaceURI(node))) {
++                    count++;
+                 }
+             }
+             n = n.getPreviousSibling();
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
+index 7df3ace..5408835 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
+@@ -690,11 +690,13 @@ public class JDOMNodePointer extends NodePointer {
+ 
+             List children = ((Element) parent).getContent();
+             int count = 0;
+-            String name = ((Element) node).getQualifiedName();
++            String ln = getLocalName(node);
++            String nsURI = getNamespaceURI(node);
+             for (int i = 0; i < children.size(); i++) {
+                 Object child = children.get(i);
+                 if ((child instanceof Element)
+-                    && ((Element) child).getQualifiedName().equals(name)) {
++                    && getLocalName(child).equals(ln)
++                    && equalStrings(getNamespaceURI(child), nsURI)) {
+                     count++;
+                 }
+                 if (child == node) {

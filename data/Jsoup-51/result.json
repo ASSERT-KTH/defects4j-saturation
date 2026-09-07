@@ -1,0 +1,37 @@
+{
+  "project": "Jsoup",
+  "bug": 51,
+  "id": "Jsoup-51",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:05:55Z",
+  "wallclock_s": 46,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 24608,
+  "total_cost_usd": 0.12996400000000002,
+  "session_id": "d113d25f-4a07-49ab-8471-317619e0cc6e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1626,
+  "cache_read_input_tokens": 220340,
+  "cache_creation_input_tokens": 16788,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::testSupportsNonAsciiTags"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

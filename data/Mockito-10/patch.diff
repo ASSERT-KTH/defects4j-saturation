@@ -1,0 +1,48 @@
+diff --git a/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java b/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+index e2ded55..871ee11 100644
+--- a/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
++++ b/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+@@ -67,8 +67,9 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+         }
+ 
+         // record deep stub answer
++        boolean parentMockIsSerializable = ((CreationSettings) new MockUtil().getMockHandler(invocation.getMock()).getMockSettings()).isSerializable();
+         return recordDeepStubAnswer(
+-                newDeepStubMock(returnTypeGenericMetadata),
++                newDeepStubMock(returnTypeGenericMetadata, parentMockIsSerializable),
+                 container
+         );
+     }
+@@ -81,23 +82,26 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+      * {@link ReturnsDeepStubs} answer in which we will store the returned type generic metadata.
+      *
+      * @param returnTypeGenericMetadata The metadata to use to create the new mock.
+-     * @param parentMock The parent of the current deep stub mock.
++     * @param parentMockIsSerializable Whether the parent of the current deep stub mock is serializable.
+      * @return The mock
+      */
+-    private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata) {
++    private Object newDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata, boolean parentMockIsSerializable) {
+         return mockitoCore().mock(
+                 returnTypeGenericMetadata.rawType(),
+-                withSettingsUsing(returnTypeGenericMetadata)
++                withSettingsUsing(returnTypeGenericMetadata, parentMockIsSerializable)
+         );
+     }
+ 
+-    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata) {
++    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata, boolean parentMockIsSerializable) {
+         MockSettings mockSettings = returnTypeGenericMetadata.hasRawExtraInterfaces() ?
+                 withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())
+                 : withSettings();
+ 
+-        return mockSettings.serializable()
+-                .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
++        if (parentMockIsSerializable) {
++            mockSettings.serializable();
++        }
++
++        return mockSettings.defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+     }
+ 
+ 

@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 85,
+  "id": "Math-85",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:14:59Z",
+  "wallclock_s": 108,
+  "agent_s": 48,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 59385,
+  "total_cost_usd": 0.096944,
+  "session_id": "55653688-569a-44ff-b7b4-feab549a63ec",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1836,
+  "cache_read_input_tokens": 95560,
+  "cache_creation_input_tokens": 14124,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.distribution.NormalDistributionTest::testMath280"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/analysis/solvers/UnivariateRealSolverUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

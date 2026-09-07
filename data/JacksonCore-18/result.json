@@ -1,0 +1,39 @@
+{
+  "project": "JacksonCore",
+  "bug": 18,
+  "id": "JacksonCore-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:14:32Z",
+  "wallclock_s": 125,
+  "agent_s": 94,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 80100,
+  "total_cost_usd": 0.2593104,
+  "session_id": "806f3717-3f67-41e1-a6ea-cc9ff22b2be4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 7833,
+  "cache_read_input_tokens": 470557,
+  "cache_creation_input_tokens": 21124,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.TestJsonGeneratorFeatures::testTooBigBigDecimal"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/base/GeneratorBase.java",
+    "src/main/java/com/fasterxml/jackson/core/json/UTF8JsonGenerator.java",
+    "src/main/java/com/fasterxml/jackson/core/json/WriterBasedJsonGenerator.java"
+  ],
+  "patch_added_lines": 35,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

@@ -1,0 +1,43 @@
+{
+  "project": "Mockito",
+  "bug": 6,
+  "id": "Mockito-6",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:45:52Z",
+  "wallclock_s": 737,
+  "agent_s": 361,
+  "agent_rc": 0,
+  "num_turns": 41,
+  "api_duration_ms": 147527,
+  "total_cost_usd": 0.6629108000000001,
+  "session_id": "8a917d63-9337-4ac9-840c-06fc1bf96ee3",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 82,
+  "output_tokens": 12621,
+  "cache_read_input_tokens": 1738289,
+  "cache_creation_input_tokens": 45791,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.matchers.AnyXMatchersAcceptNullsTest::shouldNotAcceptNullInAllAnyPrimitiveWrapperMatchers",
+    "org.mockitousage.matchers.AnyXMatchersAcceptNullsTest::shouldNotAcceptNullInAnyXMatchers",
+    "org.mockitousage.matchers.MatchersTest::anyStringMatcher",
+    "org.mockitousage.matchers.NewMatchersTest::shouldAllowAnyCollection",
+    "org.mockitousage.matchers.NewMatchersTest::shouldAllowAnyList",
+    "org.mockitousage.matchers.NewMatchersTest::shouldAllowAnyMap",
+    "org.mockitousage.matchers.NewMatchersTest::shouldAllowAnySet"
+  ],
+  "failing_before": 7,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/Matchers.java"
+  ],
+  "patch_added_lines": 23,
+  "patch_removed_lines": 23,
+  "has_dev_patch": true
+}

@@ -1,0 +1,2 @@
+M	src/main/java/com/fasterxml/jackson/core/base/ParserBase.java
+M	src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java

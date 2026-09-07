@@ -1,0 +1,2 @@
+M	src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+M	src/org/mockito/internal/util/reflection/GenericMetadataSupport.java

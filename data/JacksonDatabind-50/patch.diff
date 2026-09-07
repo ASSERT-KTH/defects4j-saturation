@@ -1,0 +1,141 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+index 21bd128..e63a653 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+@@ -426,10 +426,15 @@ public class BeanDeserializer
+             // regular property? needs buffering
+             SettableBeanProperty prop = _beanProperties.find(propName);
+             if (prop != null) {
+-                    buffer.bufferProperty(prop, _deserializeWithErrorWrapping(p, ctxt, prop));
+-                    // 14-Jun-2016, tatu: As per [databind#1261], looks like we need additional
+-                    //    handling of forward references here. Not exactly sure why existing
+-                    //    facilities did not cover, but this does appear to solve the problem
++                    // 14-Jun-2016, tatu: As per [databind#1261], we need additional
++                    //    handling of forward references here: bean doesn't exist yet
++                    //    to attach the (still unresolved) referenced value to, so
++                    //    defer registration until bean has actually been built.
++                    try {
++                        buffer.bufferProperty(prop, _deserializeWithErrorWrapping(p, ctxt, prop));
++                    } catch (UnresolvedForwardReference reference) {
++                        buffer.bufferUnresolvedReference(prop, reference);
++                    }
+                 continue;
+             }
+             // Things marked as ignorable should not be passed to any setter
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyBasedCreator.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyBasedCreator.java
+index c9b89fa..7855c17 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyBasedCreator.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyBasedCreator.java
+@@ -143,6 +143,8 @@ public final class PropertyBasedCreator
+             for (PropertyValue pv = buffer.buffered(); pv != null; pv = pv.next) {
+                 pv.assign(bean);
+             }
++            // Or any pending forward references?
++            buffer.resolveForwardReferences(bean);
+         }
+         return bean;
+     }
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValueBuffer.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValueBuffer.java
+index 42d33ca..e0f80b1 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValueBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValueBuffer.java
+@@ -1,7 +1,9 @@
+ package com.fasterxml.jackson.databind.deser.impl;
+ 
+ import java.io.IOException;
++import java.util.ArrayList;
+ import java.util.BitSet;
++import java.util.List;
+ 
+ import com.fasterxml.jackson.core.JsonParser;
+ import com.fasterxml.jackson.databind.DeserializationContext;
+@@ -10,6 +12,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
+ import com.fasterxml.jackson.databind.JsonMappingException;
+ import com.fasterxml.jackson.databind.deser.SettableAnyProperty;
+ import com.fasterxml.jackson.databind.deser.SettableBeanProperty;
++import com.fasterxml.jackson.databind.deser.UnresolvedForwardReference;
+ 
+ /**
+  * Simple container used for temporarily buffering a set of
+@@ -76,6 +79,19 @@ public class PropertyValueBuffer
+      */
+     protected Object _idValue;
+ 
++    /**
++     * Buffered set of non-creator properties for which the value could not
++     * be resolved yet because it refers (directly or indirectly) to another
++     * Object Id-bearing value that has not yet been seen. Since the bean is
++     * not yet constructed at the point these are detected, actual
++     * registration of the pending reference (see
++     * {@link com.fasterxml.jackson.databind.deser.impl.ObjectIdReferenceProperty})
++     * has to be deferred until the bean instance becomes available.
++     *
++     * @since 2.8.9
++     */
++    protected List<UnresolvedReference> _unresolvedReferences;
++
+     /*
+     /**********************************************************
+     /* Life-cycle
+@@ -282,7 +298,60 @@ public class PropertyValueBuffer
+     public void bufferProperty(SettableBeanProperty prop, Object value) {
+         _buffered = new PropertyValue.Regular(_buffered, value, prop);
+     }
+-    
++
++    /**
++     * Method called instead of {@link #bufferProperty} when the value for
++     * a non-creator property could not be resolved due to an unresolved
++     * (forward) Object Id reference. Actual registration of the deferred
++     * reference is completed once the enclosing bean has been constructed;
++     * see {@link #resolveForwardReferences(Object)}.
++     *
++     * @since 2.8.9
++     */
++    public void bufferUnresolvedReference(SettableBeanProperty prop, UnresolvedForwardReference reference) {
++        if (_unresolvedReferences == null) {
++            _unresolvedReferences = new ArrayList<UnresolvedReference>();
++        }
++        _unresolvedReferences.add(new UnresolvedReference(prop, reference));
++    }
++
++    /**
++     * Method called once the bean instance has been constructed, to register
++     * any pending forward references (see {@link #bufferUnresolvedReference})
++     * so that they get resolved (and the corresponding property set on
++     * {@code bean}) once the referenced Object Id becomes available.
++     *
++     * @since 2.8.9
++     */
++    public void resolveForwardReferences(Object bean) throws IOException
++    {
++        if (_unresolvedReferences != null) {
++            for (UnresolvedReference ref : _unresolvedReferences) {
++                SettableBeanProperty prop = ref.property;
++                if (!(prop instanceof ObjectIdReferenceProperty)) {
++                    throw JsonMappingException.from(_parser,
++                            "Unresolved forward reference but no identity info.", ref.reference);
++                }
++                ref.reference.getRoid().appendReferring(
++                        new ObjectIdReferenceProperty.PropertyReferring(
++                                (ObjectIdReferenceProperty) prop, ref.reference,
++                                prop.getType().getRawClass(), bean));
++            }
++            _unresolvedReferences = null;
++        }
++    }
++
++    private final static class UnresolvedReference
++    {
++        public final SettableBeanProperty property;
++        public final UnresolvedForwardReference reference;
++
++        public UnresolvedReference(SettableBeanProperty property, UnresolvedForwardReference reference) {
++            this.property = property;
++            this.reference = reference;
++        }
++    }
++
+     public void bufferAnyProperty(SettableAnyProperty prop, String propName, Object value) {
+         _buffered = new PropertyValue.Any(_buffered, value, prop, propName);
+     }

@@ -1,0 +1,38 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionInjector.java b/src/com/google/javascript/jscomp/FunctionInjector.java
+index c3fc14b..f8ff8ce 100644
+--- a/src/com/google/javascript/jscomp/FunctionInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionInjector.java
+@@ -694,6 +694,19 @@ class FunctionInjector {
+ 
+     Node block = fnNode.getLastChild();
+ 
++    // If the body of the function being inlined has a side-effect (a call,
++    // an assignment, etc.) then any parameter whose value could itself be
++    // changed by a side-effect (a mutable global, a property access, etc.)
++    // can no longer be safely evaluated in-place: at the call site the
++    // argument is always evaluated before the function body runs, but once
++    // inlined it would be evaluated interleaved with the function's own
++    // side-effects, potentially changing its value or the order in which
++    // side-effects are observed.
++    Node returnValue = block.hasOneChild()
++        ? block.getFirstChild().getFirstChild() : null;
++    boolean returnValueMayHaveSideEffects =
++        returnValue != null && NodeUtil.mayHaveSideEffects(
++            returnValue, compiler);
+ 
+     // CALL NODE: [ NAME, ARG1, ARG2, ... ]
+     Node cArg = callNode.getFirstChild().getNext();
+@@ -729,6 +742,13 @@ class FunctionInjector {
+                   block, fnParam.getString()) > 1) {
+             return CanInlineResult.NO;
+           }
++
++          // Check that substituting the argument in place doesn't move its
++          // evaluation across a side-effect in the inlined function body.
++          if (returnValueMayHaveSideEffects
++              && NodeUtil.canBeSideEffected(cArg)) {
++            return CanInlineResult.NO;
++          }
+         }
+ 
+         // Move to the next name.

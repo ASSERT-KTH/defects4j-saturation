@@ -1,0 +1,20 @@
+diff --git a/src/main/java/org/apache/commons/math/ode/AbstractIntegrator.java b/src/main/java/org/apache/commons/math/ode/AbstractIntegrator.java
+index 544124f..0fa6cbe 100644
+--- a/src/main/java/org/apache/commons/math/ode/AbstractIntegrator.java
++++ b/src/main/java/org/apache/commons/math/ode/AbstractIntegrator.java
+@@ -340,6 +340,15 @@ public abstract class AbstractIntegrator implements FirstOrderIntegrator {
+                     System.arraycopy(eventY, 0, y, 0, y.length);
+                     computeDerivatives(eventT, y, yDot);
+                     resetOccurred = true;
++                    // the reset ends the step here, so the other event states
++                    // must be resynchronized on the same time/state, otherwise
++                    // they would still refer to the state at the beginning of
++                    // the step during the next call to evaluateStep
++                    for (final EventState state : eventsStates) {
++                        if (state != currentEvent) {
++                            state.stepAccepted(eventT, y);
++                        }
++                    }
+                     return eventT;
+                 }
+ 

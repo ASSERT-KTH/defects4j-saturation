@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 90,
+  "id": "Math-90",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:18:43Z",
+  "wallclock_s": 93,
+  "agent_s": 55,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 45551,
+  "total_cost_usd": 0.14868740000000003,
+  "session_id": "f9d399b0-ae62-4995-a466-6a771d227aa7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 4222,
+  "cache_read_input_tokens": 204662,
+  "cache_creation_input_tokens": 15827,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.FrequencyTest::testAddNonComparable"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/stat/Frequency.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

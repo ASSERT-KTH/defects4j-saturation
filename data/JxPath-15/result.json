@@ -1,0 +1,38 @@
+{
+  "project": "JxPath",
+  "bug": 15,
+  "id": "JxPath-15",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:41:28Z",
+  "wallclock_s": 77,
+  "agent_s": 44,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 30021,
+  "total_cost_usd": 0.1362694,
+  "session_id": "ab314525-f097-4456-99d9-62ea2415a928",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2202,
+  "cache_read_input_tokens": 250482,
+  "cache_creation_input_tokens": 15163,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testUnion",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testUnion"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/axes/UnionContext.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

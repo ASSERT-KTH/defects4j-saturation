@@ -1,0 +1,41 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
+index 005e3e7..2d60b75 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
+@@ -52,7 +52,8 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+     private boolean closed = false;
+ 
+     /* Indicates if putArchiveEntry has been called without closeArchiveEntry */
+-    
++    private boolean      haveUnclosedEntry = false;
++
+     private final OutputStream out;
+ 
+     /**
+@@ -109,6 +110,9 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+      * @throws IOException on error
+      */
+     public void finish() throws IOException {
++        if (haveUnclosedEntry) {
++            throw new IOException("This archive contains unclosed entries.");
++        }
+         writeEOFRecord();
+         writeEOFRecord();
+     }
+@@ -184,6 +188,7 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+             currSize = entry.getSize();
+         }
+         currName = entry.getName();
++        haveUnclosedEntry = true;
+     }
+ 
+     /**
+@@ -197,6 +202,8 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+      * @throws IOException on error
+      */
+     public void closeArchiveEntry() throws IOException {
++        haveUnclosedEntry = false;
++
+         if (assemLen > 0) {
+             for (int i = assemLen; i < assemBuf.length; ++i) {
+                 assemBuf[i] = 0;

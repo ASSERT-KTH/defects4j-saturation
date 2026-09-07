@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 17,
+  "id": "Math-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:05:12Z",
+  "wallclock_s": 156,
+  "agent_s": 79,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 39565,
+  "total_cost_usd": 0.16217680000000004,
+  "session_id": "01155186-76fc-40c2-b7ca-0e7154ed63a4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3007,
+  "cache_read_input_tokens": 306229,
+  "cache_creation_input_tokens": 17070,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.dfp.DfpTest::testMultiply"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/dfp/Dfp.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

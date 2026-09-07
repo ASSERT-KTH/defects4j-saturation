@@ -1,0 +1,15 @@
+diff --git a/src/java/org/apache/commons/collections/ExtendedProperties.java b/src/java/org/apache/commons/collections/ExtendedProperties.java
+index 402724e..a8fc0f7 100644
+--- a/src/java/org/apache/commons/collections/ExtendedProperties.java
++++ b/src/java/org/apache/commons/collections/ExtendedProperties.java
+@@ -680,6 +680,10 @@ public class ExtendedProperties extends Hashtable {
+      * @param value  the value to add
+      */
+     public void addProperty(String key, Object value) {
++        if (value == null) {
++            // Hashtable does not permit null values, so there is nothing to add
++            return;
++        }
+         if (value instanceof String) {
+             String str = (String) value;
+             if (str.indexOf(PropertiesTokenizer.DELIMITER) > 0) {

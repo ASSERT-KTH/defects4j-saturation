@@ -1,0 +1,44 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+index 9498fa6..45bf0b4 100644
+--- a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
++++ b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+@@ -520,6 +520,7 @@ public class PeepholeSubstituteAlternateSyntax
+     if (n.getType() == Token.BLOCK) {
+       if (n.hasOneChild()) {
+         Node maybeExpr = n.getFirstChild();
++        if (NodeUtil.isExpressionNode(maybeExpr)) {
+           // IE has a bug where event handlers behave differently when
+           // their return value is used vs. when their return value is in
+           // an EXPR_RESULT. It's pretty freaking weird. See:
+@@ -527,10 +528,28 @@ public class PeepholeSubstituteAlternateSyntax
+           // We try to detect this case, and not fold EXPR_RESULTs
+           // into other expressions.
+ 
+-            // We only have to worry about methods with an implicit 'this'
+-            // param, or this doesn't happen.
++          // We only have to worry about methods with an implicit 'this'
++          // param, or this doesn't happen.
++          Node call = maybeExpr.getFirstChild();
++          if (call.getType() == Token.CALL) {
++            Node target = call.getFirstChild();
++            if (NodeUtil.isGet(target)) {
++              if (target.getType() == Token.GETPROP) {
++                String propName = target.getLastChild().getString();
++                if (propName.startsWith("on")) {
++                  return false;
++                }
++              } else {
++                // GETELEM - we can't statically determine the property
++                // name, so conservatively assume it might be an event
++                // handler.
++                return false;
++              }
++            }
++          }
+ 
+-          return NodeUtil.isExpressionNode(maybeExpr);
++          return true;
++        }
+       }
+     }
+ 

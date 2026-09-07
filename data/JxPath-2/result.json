@@ -1,0 +1,37 @@
+{
+  "project": "JxPath",
+  "bug": 2,
+  "id": "JxPath-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:30:41Z",
+  "wallclock_s": 74,
+  "agent_s": 53,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 40301,
+  "total_cost_usd": 0.16624919999999996,
+  "session_id": "9c19aebb-aff0-4c04-ae99-475dc3fd5865",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3229,
+  "cache_read_input_tokens": 291801,
+  "cache_creation_input_tokens": 18302,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.ExtensionFunctionTest::testNodeSetReturn"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/Expression.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

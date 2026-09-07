@@ -1,0 +1,72 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionToBlockMutator.java b/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
+index 64764c0..4741a8d 100644
+--- a/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
++++ b/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
+@@ -26,6 +26,7 @@ import com.google.javascript.rhino.Token;
+ import java.util.LinkedHashMap;
+ import java.util.List;
+ import java.util.Map;
++import java.util.HashMap;
+ import java.util.Set;
+ import java.util.Map.Entry;
+ 
+@@ -149,6 +150,8 @@ class FunctionToBlockMutator {
+                 "inline_",
+                 isCallInLoop)));
+     // Make label names unique to this instance.
++    NodeTraversal.traverse(
++        compiler, fnNode, new RenameLabels(new LabelNameSupplier(idSupplier)));
+   }
+ 
+   static class LabelNameSupplier implements Supplier<String> {
+@@ -164,6 +167,50 @@ class FunctionToBlockMutator {
+     }
+   }
+ 
++  /**
++   * Rename the labels declared in the function body being inlined so that
++   * they can not collide with labels already in scope at the call site.
++   */
++  private static class RenameLabels implements NodeTraversal.Callback {
++    private final Supplier<String> labelNameSupplier;
++    private final Map<String, String> renameMap = new HashMap<String, String>();
++
++    RenameLabels(Supplier<String> labelNameSupplier) {
++      this.labelNameSupplier = labelNameSupplier;
++    }
++
++    @Override
++    public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
++      // Labels do not cross function boundaries.
++      return n.getType() != Token.FUNCTION || parent == null;
++    }
++
++    @Override
++    public void visit(NodeTraversal t, Node n, Node parent) {
++      switch (n.getType()) {
++        case Token.LABEL: {
++          Node labelNameNode = n.getFirstChild();
++          String name = labelNameNode.getString();
++          String newName = labelNameSupplier.get();
++          renameMap.put(name, newName);
++          labelNameNode.setString(newName);
++          break;
++        }
++        case Token.BREAK:
++        case Token.CONTINUE: {
++          Node labelNameNode = n.getFirstChild();
++          if (labelNameNode != null) {
++            String newName = renameMap.get(labelNameNode.getString());
++            if (newName != null) {
++              labelNameNode.setString(newName);
++            }
++          }
++          break;
++        }
++      }
++    }
++  }
++
+   /**
+    * Create a unique label name.
+    */

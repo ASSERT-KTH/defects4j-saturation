@@ -1,0 +1,69 @@
+diff --git a/src/main/java/org/jsoup/nodes/Element.java b/src/main/java/org/jsoup/nodes/Element.java
+index fd2b542..f24e0ac 100644
+--- a/src/main/java/org/jsoup/nodes/Element.java
++++ b/src/main/java/org/jsoup/nodes/Element.java
+@@ -431,8 +431,15 @@ public class Element extends Node {
+      * @return sibling elements
+      */
+     public Elements siblingElements() {
++        if (parent() == null)
++            return new Elements();
+ 
+-        return parent().children();
++        List<Element> elements = parent().children();
++        Elements siblings = new Elements();
++        for (Element el : elements)
++            if (el != this)
++                siblings.add(el);
++        return siblings;
+     }
+ 
+     /**
+@@ -444,6 +451,8 @@ public class Element extends Node {
+      * @see #previousElementSibling()
+      */
+     public Element nextElementSibling() {
++        if (parent() == null)
++            return null;
+         List<Element> siblings = parent().children();
+         Integer index = indexInList(this, siblings);
+         Validate.notNull(index);
+@@ -459,6 +468,8 @@ public class Element extends Node {
+      * @see #nextElementSibling()
+      */
+     public Element previousElementSibling() {
++        if (parent() == null)
++            return null;
+         List<Element> siblings = parent().children();
+         Integer index = indexInList(this, siblings);
+         Validate.notNull(index);
+diff --git a/src/main/java/org/jsoup/nodes/Node.java b/src/main/java/org/jsoup/nodes/Node.java
+index 92a2f8f..3e1babd 100644
+--- a/src/main/java/org/jsoup/nodes/Node.java
++++ b/src/main/java/org/jsoup/nodes/Node.java
+@@ -441,8 +441,15 @@ public abstract class Node implements Cloneable {
+      @return node siblings. If the node has no parent, returns an empty list.
+      */
+     public List<Node> siblingNodes() {
++        if (parentNode == null)
++            return Collections.emptyList();
+ 
+-        return parent().childNodes();
++        List<Node> nodes = parentNode.childNodes;
++        List<Node> siblings = new ArrayList<Node>(nodes.size() - 1);
++        for (Node node : nodes)
++            if (node != this)
++                siblings.add(node);
++        return siblings;
+     }
+ 
+     /**
+@@ -467,6 +474,8 @@ public abstract class Node implements Cloneable {
+      @return the previous sibling, or null if this is the first sibling
+      */
+     public Node previousSibling() {
++        if (parentNode == null)
++            return null; // root
+ 
+         List<Node> siblings = parentNode.childNodes;
+         Integer index = siblingIndex();

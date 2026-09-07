@@ -1,0 +1,55 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/beans/NullPointer.java b/src/java/org/apache/commons/jxpath/ri/model/beans/NullPointer.java
+index c8efd2e..2b0869a 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/beans/NullPointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/beans/NullPointer.java
+@@ -18,6 +18,7 @@ package org.apache.commons.jxpath.ri.model.beans;
+ 
+ import java.util.Locale;
+ 
++import org.apache.commons.jxpath.JXPathAbstractFactoryException;
+ import org.apache.commons.jxpath.JXPathContext;
+ import org.apache.commons.jxpath.ri.QName;
+ import org.apache.commons.jxpath.ri.model.NodePointer;
+@@ -74,7 +75,9 @@ public class NullPointer extends PropertyOwnerPointer {
+ 
+     public NodePointer createPath(JXPathContext context, Object value) {
+         if (parent != null) {
+-            return parent.createPath(context, value).getValuePointer();
++            NodePointer newPointer = parent.createPath(context, value).getValuePointer();
++            checkCreated(newPointer);
++            return newPointer;
+         }
+         else {
+             throw new UnsupportedOperationException(
+@@ -84,7 +87,9 @@ public class NullPointer extends PropertyOwnerPointer {
+ 
+     public NodePointer createPath(JXPathContext context) {
+         if (parent != null) {
+-            return parent.createPath(context).getValuePointer();
++            NodePointer newPointer = parent.createPath(context).getValuePointer();
++            checkCreated(newPointer);
++            return newPointer;
+         }
+         else {
+             throw new UnsupportedOperationException(
+@@ -92,6 +97,20 @@ public class NullPointer extends PropertyOwnerPointer {
+         }
+     }
+ 
++    /**
++     * A factory is expected to actually instantiate the missing object
++     * it was asked to create. If, after asking the parent to create its
++     * path, we still end up with a null value, the factory did not do
++     * its job and we must fail loudly rather than recurse forever trying
++     * to resolve the still-missing value.
++     */
++    private void checkCreated(NodePointer newPointer) {
++        if (newPointer.getImmediateNode() == null) {
++            throw new JXPathAbstractFactoryException(
++                "Factory did not create an object for path: " + asPath());
++        }
++    }
++
+     public NodePointer createChild(
+         JXPathContext context,
+         QName name,

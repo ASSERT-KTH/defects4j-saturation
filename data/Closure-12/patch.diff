@@ -1,0 +1,17 @@
+diff --git a/src/com/google/javascript/jscomp/MaybeReachingVariableUse.java b/src/com/google/javascript/jscomp/MaybeReachingVariableUse.java
+index add5c66..63a3828 100644
+--- a/src/com/google/javascript/jscomp/MaybeReachingVariableUse.java
++++ b/src/com/google/javascript/jscomp/MaybeReachingVariableUse.java
+@@ -157,6 +157,12 @@ class MaybeReachingVariableUse extends
+   }
+ 
+   private boolean hasExceptionHandler(Node cfgNode) {
++    List<DiGraphEdge<Node, Branch>> edgeList = getCfg().getOutEdges(cfgNode);
++    for (DiGraphEdge<Node, Branch> edge : edgeList) {
++      if (Branch.ON_EX.equals(edge.getValue())) {
++        return true;
++      }
++    }
+     return false;
+   }
+ 

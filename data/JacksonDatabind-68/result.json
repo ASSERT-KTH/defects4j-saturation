@@ -1,0 +1,38 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 68,
+  "id": "JacksonDatabind-68",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:50:15Z",
+  "wallclock_s": 388,
+  "agent_s": 232,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 186288,
+  "total_cost_usd": 0.6022174,
+  "session_id": "5919a779-8361-4a0e-b425-eebe2bbc038f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 17685,
+  "cache_read_input_tokens": 1095522,
+  "cache_creation_input_tokens": 50455,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.struct.SingleValueAsArrayTest::testSuccessfulDeserializationOfObjectWithChainedArrayCreators",
+    "com.fasterxml.jackson.databind.struct.SingleValueAsArrayTest::testWithSingleString"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

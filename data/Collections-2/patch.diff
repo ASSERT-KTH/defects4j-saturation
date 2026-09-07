@@ -1,0 +1,49 @@
+diff --git a/src/java/org/apache/commons/collections/ExtendedProperties.java b/src/java/org/apache/commons/collections/ExtendedProperties.java
+index bdfd0ad..55062eb 100644
+--- a/src/java/org/apache/commons/collections/ExtendedProperties.java
++++ b/src/java/org/apache/commons/collections/ExtendedProperties.java
+@@ -185,6 +185,19 @@ public class ExtendedProperties extends Hashtable {
+      */
+     protected static String include = "include";
+ 
++    /**
++     * The property name for including other properties files, as an
++     * instance variable. See {@link #getInclude()} and {@link #setInclude(String)}.
++     */
++    private String includeProperty = null;
++
++    /**
++     * Whether {@link #setInclude(String)} has been called on this instance,
++     * used to distinguish "never set" (fall back to the static default)
++     * from "explicitly set to null".
++     */
++    private boolean isIncludeSet = false;
++
+     /**
+      * These are the keys in the order they listed
+      * in the configuration file. This is useful when
+@@ -510,7 +523,10 @@ public class ExtendedProperties extends Hashtable {
+      * @return the property name which includes another property
+      */
+     public String getInclude() {
+-            return include;  // backwards compatability
++        if (isIncludeSet) {
++            return includeProperty;
++        }
++        return include;  // backwards compatability
+     }
+ 
+     /**
+@@ -525,7 +541,11 @@ public class ExtendedProperties extends Hashtable {
+      * @param inc  the property name which includes another property, empty converted to null
+      */
+     public void setInclude(String inc) {
+-        include = inc;
++        if ("".equals(inc)) {
++            inc = null;
++        }
++        includeProperty = inc;
++        isIncludeSet = true;
+     }
+ 
+     /**

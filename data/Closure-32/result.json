@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 32,
+  "id": "Closure-32",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:32:14Z",
+  "wallclock_s": 657,
+  "agent_s": 508,
+  "agent_rc": 0,
+  "num_turns": 27,
+  "api_duration_ms": 399527,
+  "total_cost_usd": 0.8858611999999999,
+  "session_id": "2f1102e9-5d30-4d82-bbac-6c3cfee70eb5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 54,
+  "output_tokens": 36420,
+  "cache_read_input_tokens": 1220371,
+  "cache_creation_input_tokens": 67978,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testIssue701",
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testParseLicense",
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testParsePreserve",
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testParseLicenseAscii"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

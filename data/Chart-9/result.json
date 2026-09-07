@@ -1,0 +1,37 @@
+{
+  "project": "Chart",
+  "bug": 9,
+  "id": "Chart-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:14:53Z",
+  "wallclock_s": 73,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 21463,
+  "total_cost_usd": 0.09271839999999999,
+  "session_id": "5a99ab7f-9f3c-4228-a599-c4ab5d2a9bea",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1604,
+  "cache_read_input_tokens": 127762,
+  "cache_creation_input_tokens": 12213,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.data.time.junit.TimeSeriesTests::testBug1864222"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/data/time/TimeSeries.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

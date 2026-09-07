@@ -1,0 +1,24 @@
+diff --git a/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java b/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
+index e258c68..8ab854c 100644
+--- a/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
++++ b/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
+@@ -157,7 +157,18 @@ public abstract class BaseSecantSolver
+         // Keep finding better approximations.
+         while (true) {
+             // Calculate the next approximation.
+-            final double x = x1 - ((f1 * (x1 - x0)) / (f1 - f0));
++            double x = x1 - ((f1 * (x1 - x0)) / (f1 - f0));
++            if (x == x1) {
++                // If the new approximation coincides with the previous one,
++                // the interpolation formula cannot make any further progress
++                // due to loss of precision (this happens when one of the
++                // bounds stays fixed for a long time while the other one
++                // gets close to the root, so its function value becomes
++                // negligible with respect to the other bound's). Force the
++                // smallest possible step towards the other bound so that the
++                // iteration keeps progressing instead of stalling forever.
++                x = FastMath.nextAfter(x1, x0);
++            }
+             final double fx = computeObjectiveValue(x);
+ 
+             // If the new approximation is the exact root, return it. Since

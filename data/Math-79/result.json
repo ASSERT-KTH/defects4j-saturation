@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 79,
+  "id": "Math-79",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T19:18:40Z",
+  "wallclock_s": 83,
+  "agent_s": 45,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 36520,
+  "total_cost_usd": 0.1498896,
+  "session_id": "1f59c901-3da6-438c-ae15-c5ffeeb88f9f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2661,
+  "cache_read_input_tokens": 261713,
+  "cache_creation_input_tokens": 17080,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.clustering.KMeansPlusPlusClustererTest::testPerformClusterAnalysisDegenerate"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/util/MathUtils.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

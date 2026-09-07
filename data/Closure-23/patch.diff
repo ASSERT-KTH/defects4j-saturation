@@ -1,0 +1,33 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+index f777b1c..0d30881 100644
+--- a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
++++ b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+@@ -1447,18 +1447,25 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+     }
+ 
+     Node current = left.getFirstChild();
+-    Node elem = null;
+     for (int i = 0; current != null && i < intIndex; i++) {
+-        elem = current;
+-
+       current = current.getNext();
+     }
++    Node elem = current;
+ 
+     if (elem == null) {
+       error(INDEX_OUT_OF_BOUNDS_ERROR, right);
+       return n;
+     }
+ 
++    // Check for side-effects in the other array elements. If they exist we
++    // can't fold the array access without changing which side-effects occur.
++    for (Node child = left.getFirstChild(); child != null;
++        child = child.getNext()) {
++      if (child != elem && mayHaveSideEffects(child)) {
++        return n;
++      }
++    }
++
+     if (elem.isEmpty()) {
+       elem = NodeUtil.newUndefinedNode(elem);
+     } else {

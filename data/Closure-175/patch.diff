@@ -1,0 +1,64 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionInjector.java b/src/com/google/javascript/jscomp/FunctionInjector.java
+index 9d3fdd3..ee44257 100644
+--- a/src/com/google/javascript/jscomp/FunctionInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionInjector.java
+@@ -692,7 +692,6 @@ class FunctionInjector {
+       return CanInlineResult.NO;
+     }
+ 
+-    Node block = fnNode.getLastChild();
+     // CALL NODE: [ NAME, ARG1, ARG2, ... ]
+     Node cArg = callNode.getFirstChild().getNext();
+ 
+@@ -705,32 +704,32 @@ class FunctionInjector {
+         if (cArg == null || !cArg.isThis()) {
+           return CanInlineResult.NO;
+         }
+-        cArg = cArg.getNext();
+       } else {
+         // ".apply" call should be filtered before this.
+         Preconditions.checkState(!NodeUtil.isFunctionObjectApply(callNode));
+       }
+     }
+ 
+-    Node fnParam = NodeUtil.getFunctionParameters(fnNode).getFirstChild();
+-    while (cArg != null || fnParam != null) {
+-      if (fnParam != null) {
+-        if (cArg != null) {
+-          if (NodeUtil.mayEffectMutableState(cArg, compiler)
+-              && NodeUtil.getNameReferenceCount(
+-                  block, fnParam.getString()) > 1) {
+-            return CanInlineResult.NO;
++    // Direct replacement is only possible if none of the arguments would
++    // need to be assigned to a temporary variable to preserve the original
++    // evaluation order and avoid duplicated side effects. Reuse the same
++    // logic used to determine when arguments need temps for block-based
++    // inlining, since direct inlining has no way to introduce a temp.
++    // A throwaway name supplier is used, as the names generated here are
++    // never used and must not consume ids from the real name supplier.
++    Map<String, Node> args = FunctionArgumentInjector.getFunctionCallParameterMap(
++        fnNode, callNode, new Supplier<String>() {
++          private int id = 0;
++          @Override
++          public String get() {
++            return "$$placeholder$$" + id++;
+           }
+-        }
+-        fnParam = fnParam.getNext();
+-      }
+-      // Limit the inlining
+-      if (cArg != null) {
+-        if (NodeUtil.mayHaveSideEffects(cArg, compiler)) {
+-        return CanInlineResult.NO;
+-        }
+-        cArg = cArg.getNext();
+-      }
++        });
++    Set<String> namesNeedingTemps = Sets.newHashSet();
++    FunctionArgumentInjector.maybeAddTempsForCallArguments(
++        fnNode, args, namesNeedingTemps, compiler.getCodingConvention());
++    if (!namesNeedingTemps.isEmpty()) {
++      return CanInlineResult.NO;
+     }
+ 
+     return CanInlineResult.YES;

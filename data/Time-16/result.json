@@ -1,0 +1,43 @@
+{
+  "project": "Time",
+  "bug": 16,
+  "id": "Time-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:39:22Z",
+  "wallclock_s": 253,
+  "agent_s": 211,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 190468,
+  "total_cost_usd": 0.5331464000000001,
+  "session_id": "951d4c31-f7b7-4f5e-ad0e-31ae7c192292",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 17290,
+  "cache_read_input_tokens": 853447,
+  "cache_creation_input_tokens": 45933,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthOnly_baseStartYear",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthOnly_parseStartYear",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthOnly_baseEndYear",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthOnly",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_withDefaultYear_feb29",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_feb29",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthOnly_parseEndYear"
+  ],
+  "failing_before": 7,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/format/DateTimeFormatter.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

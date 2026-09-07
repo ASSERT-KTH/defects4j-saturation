@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 26,
+  "id": "Closure-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:17:05Z",
+  "wallclock_s": 465,
+  "agent_s": 194,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 32028,
+  "total_cost_usd": 0.1754708,
+  "session_id": "af5d6f2f-5194-4311-9bd5-ec5901b8dbde",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2448,
+  "cache_read_input_tokens": 288169,
+  "cache_creation_input_tokens": 21886,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testTransformAMDAndProcessCJS",
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testProcessCJS",
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testExports",
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testModuleName",
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testDash",
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testVarRenaming",
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testWithoutExports"
+  ],
+  "failing_before": 7,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ProcessCommonJSModules.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

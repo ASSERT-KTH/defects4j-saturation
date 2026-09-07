@@ -1,0 +1,38 @@
+{
+  "project": "Jsoup",
+  "bug": 59,
+  "id": "Jsoup-59",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:10:11Z",
+  "wallclock_s": 51,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 25665,
+  "total_cost_usd": 0.13460740000000002,
+  "session_id": "ad1737a2-3a33-4412-93bf-64628ba22c61",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1913,
+  "cache_read_input_tokens": 208817,
+  "cache_creation_input_tokens": 17356,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::handlesControlCodeInAttributeName",
+    "org.jsoup.safety.CleanerTest::handlesControlCharactersAfterTagName"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/Token.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

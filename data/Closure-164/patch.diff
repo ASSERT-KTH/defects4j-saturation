@@ -1,0 +1,16 @@
+diff --git a/src/com/google/javascript/rhino/jstype/ArrowType.java b/src/com/google/javascript/rhino/jstype/ArrowType.java
+index 1c900ac..38bfed8 100644
+--- a/src/com/google/javascript/rhino/jstype/ArrowType.java
++++ b/src/com/google/javascript/rhino/jstype/ArrowType.java
+@@ -148,7 +148,10 @@ final class ArrowType extends JSType {
+       }
+     }
+ 
+-    // "that" can't be a supertype, because it's missing a required arguement.
++    // "that" can't be a supertype, because it's missing a required argument.
++    if (thisParam != null && !thisParam.isOptionalArg() && !thisParam.isVarArgs()) {
++      return false;
++    }
+ 
+     return true;
+   }

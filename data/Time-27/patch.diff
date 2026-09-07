@@ -1,0 +1,103 @@
+diff --git a/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java b/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
+index 1533228..7587950 100644
+--- a/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
++++ b/src/main/java/org/joda/time/format/PeriodFormatterBuilder.java
+@@ -796,7 +796,8 @@ public class PeriodFormatterBuilder {
+             throw new IllegalStateException("Builder has created neither a printer nor a parser");
+         }
+         int size = elementPairs.size();
+-        if (size >= 2 && elementPairs.get(0) instanceof Separator) {
++        if (size >= 2 && elementPairs.get(0) instanceof Separator
++                && !((Separator) elementPairs.get(0)).isFinished()) {
+             Separator sep = (Separator) elementPairs.get(0);
+                 PeriodFormatter f = toFormatter(elementPairs.subList(2, size), notPrinter, notParser);
+                 sep = sep.finish(f.getPrinter(), f.getParser());
+@@ -1584,39 +1585,50 @@ public class PeriodFormatterBuilder {
+         private final boolean iUseAfter;
+ 
+         private final PeriodPrinter iBeforePrinter;
+-        private volatile PeriodPrinter iAfterPrinter;
++        private final PeriodPrinter iAfterPrinter;
+         private final PeriodParser iBeforeParser;
+-        private volatile PeriodParser iAfterParser;
++        private final PeriodParser iAfterParser;
+ 
+         Separator(String text, String finalText, String[] variants,
+                 PeriodPrinter beforePrinter, PeriodParser beforeParser,
+                 boolean useBefore, boolean useAfter) {
++            this(text, finalText, computeParsedForms(text, finalText, variants),
++                    beforePrinter, null, beforeParser, null, useBefore, useAfter);
++        }
++
++        private Separator(String text, String finalText, String[] parsedForms,
++                PeriodPrinter beforePrinter, PeriodPrinter afterPrinter,
++                PeriodParser beforeParser, PeriodParser afterParser,
++                boolean useBefore, boolean useAfter) {
+             iText = text;
+             iFinalText = finalText;
++            iParsedForms = parsedForms;
++            iBeforePrinter = beforePrinter;
++            iAfterPrinter = afterPrinter;
++            iBeforeParser = beforeParser;
++            iAfterParser = afterParser;
++            iUseBefore = useBefore;
++            iUseAfter = useAfter;
++        }
+ 
++        private static String[] computeParsedForms(String text, String finalText, String[] variants) {
+             if ((finalText == null || text.equals(finalText)) &&
+                 (variants == null || variants.length == 0)) {
+ 
+-                iParsedForms = new String[] {text};
+-            } else {
+-                // Filter and reverse sort the parsed forms.
+-                TreeSet<String> parsedSet = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+-                parsedSet.add(text);
+-                parsedSet.add(finalText);
+-                if (variants != null) {
+-                    for (int i=variants.length; --i>=0; ) {
+-                        parsedSet.add(variants[i]);
+-                    }
++                return new String[] {text};
++            }
++            // Filter and reverse sort the parsed forms.
++            TreeSet<String> parsedSet = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
++            parsedSet.add(text);
++            parsedSet.add(finalText);
++            if (variants != null) {
++                for (int i=variants.length; --i>=0; ) {
++                    parsedSet.add(variants[i]);
+                 }
+-                ArrayList<String> parsedList = new ArrayList<String>(parsedSet);
+-                Collections.reverse(parsedList);
+-                iParsedForms = parsedList.toArray(new String[parsedList.size()]);
+             }
+-
+-            iBeforePrinter = beforePrinter;
+-            iBeforeParser = beforeParser;
+-            iUseBefore = useBefore;
+-            iUseAfter = useAfter;
++            ArrayList<String> parsedList = new ArrayList<String>(parsedSet);
++            Collections.reverse(parsedList);
++            return parsedList.toArray(new String[parsedList.size()]);
+         }
+ 
+         public int countFieldsToPrint(ReadablePeriod period, int stopAt, Locale locale) {
+@@ -1744,10 +1756,14 @@ public class PeriodFormatterBuilder {
+             return position;
+         }
+ 
++        boolean isFinished() {
++            return iAfterPrinter != null || iAfterParser != null;
++        }
++
+         Separator finish(PeriodPrinter afterPrinter, PeriodParser afterParser) {
+-            iAfterPrinter = afterPrinter;
+-            iAfterParser = afterParser;
+-            return this;
++            return new Separator(iText, iFinalText, iParsedForms,
++                    iBeforePrinter, afterPrinter, iBeforeParser, afterParser,
++                    iUseBefore, iUseAfter);
+         }
+     }
+ 

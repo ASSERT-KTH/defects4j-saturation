@@ -1,0 +1,47 @@
+diff --git a/src/com/google/javascript/rhino/jstype/FunctionType.java b/src/com/google/javascript/rhino/jstype/FunctionType.java
+index 0b9b19f..31e700f 100644
+--- a/src/com/google/javascript/rhino/jstype/FunctionType.java
++++ b/src/com/google/javascript/rhino/jstype/FunctionType.java
+@@ -192,6 +192,13 @@ public class FunctionType extends PrototypeObjectType {
+     return true;
+   }
+ 
++  @Override
++  public boolean isEmptyType() {
++    // A function type is only inhabited if its return type is, since a
++    // function is required to (potentially) produce a value of that type.
++    return call.returnType.isEmptyType();
++  }
++
+   public Iterable<Node> getParameters() {
+     Node n = getParametersNode();
+     if (n != null) {
+diff --git a/src/com/google/javascript/rhino/jstype/JSType.java b/src/com/google/javascript/rhino/jstype/JSType.java
+index 32a0b25..4456da6 100644
+--- a/src/com/google/javascript/rhino/jstype/JSType.java
++++ b/src/com/google/javascript/rhino/jstype/JSType.java
+@@ -159,7 +159,7 @@ public abstract class JSType implements Serializable {
+     return false;
+   }
+ 
+-  public final boolean isEmptyType() {
++  public boolean isEmptyType() {
+     return isNoType() || isNoObjectType() || isNoResolvedType();
+   }
+ 
+diff --git a/src/com/google/javascript/rhino/jstype/NoObjectType.java b/src/com/google/javascript/rhino/jstype/NoObjectType.java
+index c3818ac..fe124e2 100644
+--- a/src/com/google/javascript/rhino/jstype/NoObjectType.java
++++ b/src/com/google/javascript/rhino/jstype/NoObjectType.java
+@@ -90,6 +90,11 @@ public class NoObjectType extends FunctionType {
+     return true;
+   }
+ 
++  @Override
++  public boolean isEmptyType() {
++    return true;
++  }
++
+   @Override
+   public ObjectType getImplicitPrototype() {
+     return null;

@@ -1,0 +1,115 @@
+diff --git a/src/com/google/javascript/jscomp/MethodCompilerPass.java b/src/com/google/javascript/jscomp/MethodCompilerPass.java
+index cd39b6e..1a3478e 100644
+--- a/src/com/google/javascript/jscomp/MethodCompilerPass.java
++++ b/src/com/google/javascript/jscomp/MethodCompilerPass.java
+@@ -18,6 +18,7 @@ package com.google.javascript.jscomp;
+ 
+ import com.google.common.collect.HashMultimap;
+ import com.google.common.collect.Lists;
++import com.google.common.collect.Maps;
+ import com.google.common.collect.Multimap;
+ import com.google.common.collect.Sets;
+ import com.google.javascript.jscomp.NodeTraversal.AbstractPostOrderCallback;
+@@ -26,6 +27,7 @@ import com.google.javascript.rhino.Node;
+ import com.google.javascript.rhino.Token;
+ 
+ import java.util.List;
++import java.util.Map;
+ import java.util.Set;
+ 
+ /**
+@@ -48,6 +50,13 @@ abstract class MethodCompilerPass implements CompilerPass {
+   final Multimap<String, Node> methodDefinitions =
+       HashMultimap.create();
+ 
++  /**
++   * Maps a function that was resolved indirectly (assigned to a property
++   * via a reference to a separately declared function, rather than a
++   * function literal) to the first property name it was found under.
++   */
++  private final Map<Node, String> indirectFunctionNames = Maps.newHashMap();
++
+   final AbstractCompiler compiler;
+ 
+   /**
+@@ -69,6 +78,7 @@ abstract class MethodCompilerPass implements CompilerPass {
+     externMethodsWithoutSignatures.clear();
+     getSignatureStore().reset();
+     methodDefinitions.clear();
++    indirectFunctionNames.clear();
+ 
+     if (externs != null) {
+       NodeTraversal.traverse(compiler, externs, new GetExternMethods());
+@@ -107,20 +117,40 @@ abstract class MethodCompilerPass implements CompilerPass {
+     } else if (node.getType() == Token.NAME) {
+       String functionName = node.getString();
+       Scope.Var v = t.getScope().getVar(functionName);
+-      if (v == null) {
+-        if (compiler.isIdeMode()) {
+-          return;
+-        } else {
+-          throw new IllegalStateException(
+-              "VarCheck should have caught this undefined function");
++      // If the variable is undeclared, we can't determine whether it's a
++      // function, so just treat this as an unknown, non-method property.
++      // (Normally VarCheck would have caught an undefined variable, but we
++      // can't rely on that here, as this pass may run on its own.)
++      if (v != null) {
++        Node function = v.getInitialValue();
++        if (function != null &&
++            function.getType() == Token.FUNCTION) {
++          // The function may have been assigned to more than one property
++          // name (e.g. it was declared once and reused as several different
++          // "methods"). In that case we can't reliably attribute its arity
++          // to any single one of those names, so don't treat it as a
++          // trustworthy signature for any of them.
++          String firstName = indirectFunctionNames.get(function);
++          if (firstName == null) {
++            indirectFunctionNames.put(function, name);
++          } else if (!firstName.equals(name)) {
++            getSignatureStore().removeSignature(firstName);
++            getSignatureStore().removeSignature(name);
++            nonMethodProperties.add(firstName);
++            nonMethodProperties.add(name);
++            return;
++          }
++
++          if (v.isExtern()) {
++            // The function is defined in externs, so it should be treated
++            // like any other extern method (e.g. left alone by passes that
++            // assume they know everything about a method's behavior).
++            externMethods.add(name);
++          }
++          addSignature(name, function, v.getInputName());
++          signatureAdded = true;
+         }
+       }
+-      Node function = v.getInitialValue();
+-      if (function != null &&
+-          function.getType() == Token.FUNCTION) {
+-        addSignature(name, function, v.getInputName());
+-        signatureAdded = true;
+-      }
+     }
+     if (!signatureAdded) {
+       nonMethodProperties.add(name);
+diff --git a/src/com/google/javascript/jscomp/RenameVars.java b/src/com/google/javascript/jscomp/RenameVars.java
+index 29f4d7a..dcf2a55 100644
+--- a/src/com/google/javascript/jscomp/RenameVars.java
++++ b/src/com/google/javascript/jscomp/RenameVars.java
+@@ -200,7 +200,14 @@ final class RenameVars implements CompilerPass {
+ 
+       // Check if we can rename this.
+       if (!okToRenameVar(name, local)) {
+-          // Blindly de-uniquify for the Prototype library for issue 103.
++        // Blindly de-uniquify for the Prototype library for issue 103.
++        String newName =
++            MakeDeclaredNamesUnique.ContextualRenameInverter.getOrginalName(
++                name);
++        if (!newName.equals(name)) {
++          n.setString(newName);
++          compiler.reportCodeChange();
++        }
+         return;
+       }
+ 

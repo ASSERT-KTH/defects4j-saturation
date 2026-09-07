@@ -1,0 +1,39 @@
+{
+  "project": "Jsoup",
+  "bug": 31,
+  "id": "Jsoup-31",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:58:24Z",
+  "wallclock_s": 98,
+  "agent_s": 80,
+  "agent_rc": 0,
+  "num_turns": 19,
+  "api_duration_ms": 73264,
+  "total_cost_usd": 0.2476958,
+  "session_id": "767d492c-0082-4bc3-ae20-8016871e9657",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 6187,
+  "cache_read_input_tokens": 471674,
+  "cache_creation_input_tokens": 22227,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.XmlTreeBuilderTest::handlesXmlDeclarationAsDeclaration"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/Token.java",
+    "src/main/java/org/jsoup/parser/TokeniserState.java",
+    "src/main/java/org/jsoup/parser/XmlTreeBuilder.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

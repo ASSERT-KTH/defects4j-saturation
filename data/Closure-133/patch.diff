@@ -1,0 +1,32 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+index 6e3294b..c8c6fe0 100644
+--- a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
++++ b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+@@ -873,10 +873,12 @@ public final class JsDocInfoParser {
+                       (isAlternateTypeAnnotation ||
+                        annotation == Annotation.RETURN);
+                   type = null;
++                  boolean typeParseFailed = false;
+                   if (hasType || !canSkipTypeAnnotation) {
+                     skipEOLs();
+                     token = next();
+                     typeNode = parseAndRecordTypeNode(token);
++                    typeParseFailed = typeNode == null;
+ 
+                     if (annotation == Annotation.THIS) {
+                       typeNode = wrapNode(Token.BANG, typeNode);
+@@ -953,6 +955,14 @@ public final class JsDocInfoParser {
+                           break;
+                         }
+ 
++                        if (typeParseFailed) {
++                          // The type expression's error recovery may have
++                          // pushed a token back onto the stream without
++                          // updating our local copy, since it doesn't know
++                          // about the description text that follows.
++                          token = next();
++                        }
++
+                         // Find the return's description (if applicable).
+                         if (jsdocBuilder.shouldParseDocumentation()) {
+                           ExtractionInfo returnDescriptionInfo =

@@ -1,0 +1,41 @@
+{
+  "project": "Chart",
+  "bug": 18,
+  "id": "Chart-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:18:19Z",
+  "wallclock_s": 110,
+  "agent_s": 72,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 50104,
+  "total_cost_usd": 0.2857444,
+  "session_id": "bade85d8-7665-4ad5-9079-e20b1ad3f333",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4349,
+  "cache_read_input_tokens": 457222,
+  "cache_creation_input_tokens": 36278,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.data.category.junit.DefaultCategoryDatasetTests::testBug1835955",
+    "org.jfree.data.junit.DefaultKeyedValues2DTests::testRemoveColumnByKey",
+    "org.jfree.data.junit.DefaultKeyedValuesTests::testRemoveValue",
+    "org.jfree.data.junit.DefaultKeyedValuesTests::testGetIndex2"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/data/DefaultKeyedValues.java",
+    "source/org/jfree/data/DefaultKeyedValues2D.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 167,
+  "id": "Closure-167",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T04:22:35Z",
+  "wallclock_s": 916,
+  "agent_s": 700,
+  "agent_rc": 0,
+  "num_turns": 77,
+  "api_duration_ms": 295379,
+  "total_cost_usd": 1.4837318,
+  "session_id": "8640716d-485b-4590-8ac5-ae1abb965a27",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 154,
+  "output_tokens": 25798,
+  "cache_read_input_tokens": 4471744,
+  "cache_creation_input_tokens": 81621,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue783",
+    "com.google.javascript.jscomp.TypeCheckTest::testMissingProperty20",
+    "com.google.javascript.rhino.jstype.JSTypeTest::testRestrictedTypeGivenToBoolean"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/type/SemanticReverseAbstractInterpreter.java",
+    "src/com/google/javascript/rhino/jstype/JSType.java"
+  ],
+  "patch_added_lines": 20,
+  "patch_removed_lines": 11,
+  "has_dev_patch": true
+}

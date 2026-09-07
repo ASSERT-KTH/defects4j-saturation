@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 17,
+  "id": "Closure-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T22:04:38Z",
+  "wallclock_s": 654,
+  "agent_s": 484,
+  "agent_rc": 0,
+  "num_turns": 47,
+  "api_duration_ms": 320766,
+  "total_cost_usd": 1.0166656000000003,
+  "session_id": "6e577155-4e51-4db6-b1f0-d9e54463fdbf",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 94,
+  "output_tokens": 29031,
+  "cache_read_input_tokens": 2271223,
+  "cache_creation_input_tokens": 67393,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue688"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypedScopeCreator.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

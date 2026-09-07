@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 74,
+  "id": "Math-74",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T19:13:04Z",
+  "wallclock_s": 424,
+  "agent_s": 383,
+  "agent_rc": 0,
+  "num_turns": 40,
+  "api_duration_ms": 235706,
+  "total_cost_usd": 0.9293295999999999,
+  "session_id": "820195ca-b137-4a11-bebd-b4ae63475541",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 80,
+  "output_tokens": 19433,
+  "cache_read_input_tokens": 2160428,
+  "cache_creation_input_tokens": 75066,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.ode.nonstiff.AdamsMoultonIntegratorTest::polynomial"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

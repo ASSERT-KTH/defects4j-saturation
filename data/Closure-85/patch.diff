@@ -1,0 +1,89 @@
+diff --git a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+index c2150b1..4dec9cd 100644
+--- a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
++++ b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+@@ -110,22 +110,24 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+   }
+ 
+   /**
+-   * Tries to remove n if an unconditional branch node (break, continue or
+-   * return) if the target of n is the same as the the follow of n. That is, if
+-   * we remove n, the control flow remains the same. Also if n targets to
+-   * another unconditional branch, this function will recursively try to remove
+-   * the target branch as well. The reason why we want to cascade this removal
+-   * is because we only run this pass once. If we have code such as
++   * Tries to remove n if it is an unconditional branch node (break, continue
++   * or return) whose target is the same as the follow of n. That is, if we
++   * remove n, the control flow remains the same.
++   *
++   * If n's follow is itself another unconditional branch, n is not removed:
++   * that other branch is left for its own, independent visit to decide
++   * whether it is removable. If we have code such as
+    *
+    * break -> break -> break
+    *
+-   * where all 3 break's are useless. The order of removal matters. When we
+-   * first look at the first break, we see that it branches to the 2nd break.
+-   * However, if we remove the last break, the 2nd break becomes useless and
+-   * finally the first break becomes useless as well.
++   * removing all 3 breaks at once (as a side effect of visiting the first
++   * one) would mutate nodes that NodeTraversal has not visited yet, and it
++   * would later try to revisit them after they had already been detached.
++   * Instead each break is only removed once NodeTraversal actually visits it,
++   * which for a chain like this takes multiple traversals to complete (the
++   * pass is run more than once by the compiler for this reason).
+    *
+-   * @return The target of this jump. If the target is also useless jump,
+-   *     the target of that useless jump recursively.
++   * @return The target of this jump if it got removed, or n otherwise.
+    */
+   @SuppressWarnings("fallthrough")
+   private Node tryRemoveUnconditionalBranching(Node n) {
+@@ -157,13 +159,6 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+       }
+     }
+     switch (n.getType()) {
+-      case Token.BLOCK:
+-        if (n.hasChildren()) {
+-          Node first = n.getFirstChild();
+-          return tryRemoveUnconditionalBranching(first);
+-        } else {
+-          return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));
+-        }
+       case Token.RETURN:
+         if (n.hasChildren()) {
+           break;
+@@ -180,7 +175,7 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+             (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+ 
+           Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+-          Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));
++          Node fallThrough = skipThroughEmptyBlocks(computeFollowing(n));
+           Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+           if (nextCfgNode == fallThrough) {
+             removeDeadExprStatementSafely(n);
+@@ -196,6 +191,24 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+     return next;
+   }
+ 
++  /**
++   * Follows the control flow starting at {@code n} through any number of
++   * empty blocks, without mutating anything. Any other kind of node
++   * (including another BREAK/CONTINUE/RETURN) is left untouched and returned
++   * as-is: whether that node is itself removable is decided independently,
++   * when it is visited on its own, rather than as a side effect of resolving
++   * a different, unrelated node. Otherwise a single traversal could end up
++   * eliminating a whole chain of unconditional jumps at once, some of which
++   * NodeTraversal had not visited yet (and would then try to revisit after
++   * they had already been detached).
++   */
++  private static Node skipThroughEmptyBlocks(Node n) {
++    while (n != null && n.getType() == Token.BLOCK && !n.hasChildren()) {
++      n = ControlFlowAnalysis.computeFollowNode(n);
++    }
++    return n;
++  }
++
+   private void removeDeadExprStatementSafely(Node n) {
+     Node parent = n.getParent();
+     if (n.getType() == Token.EMPTY ||

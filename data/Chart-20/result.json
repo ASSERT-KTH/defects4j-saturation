@@ -1,0 +1,37 @@
+{
+  "project": "Chart",
+  "bug": 20,
+  "id": "Chart-20",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:17:55Z",
+  "wallclock_s": 57,
+  "agent_s": 20,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 12752,
+  "total_cost_usd": 0.07596960000000001,
+  "session_id": "b0e15afc-ee10-46ce-88c6-5d2eb618b5e1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 854,
+  "cache_read_input_tokens": 86108,
+  "cache_creation_input_tokens": 11978,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.plot.junit.ValueMarkerTests::test1808376"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/plot/ValueMarker.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

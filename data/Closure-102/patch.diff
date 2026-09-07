@@ -1,0 +1,17 @@
+diff --git a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+index 1a5937f..132579e 100644
+--- a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
++++ b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+@@ -183,7 +183,11 @@ class MakeDeclaredNamesUnique
+     if (parent == null
+         || parent.getType() != Token.FUNCTION
+         || n == parent.getFirstChild()) {
+-      if (NodeUtil.isVarDeclaration(n)) {
++      // "arguments" is implicitly declared in every local scope, whether or
++      // not it appears in an explicit "var" declaration, so it must never be
++      // renamed: doing so would give it a name other than the one the
++      // arguments object is bound to at runtime.
++      if (NodeUtil.isVarDeclaration(n) && !n.getString().equals("arguments")) {
+         renamer.addDeclaredName(n.getString());
+       } else if (NodeUtil.isFunctionDeclaration(n)) {
+         Node nameNode = n.getFirstChild();

@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 95,
+  "id": "JacksonDatabind-95",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:17:50Z",
+  "wallclock_s": 264,
+  "agent_s": 101,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 57304,
+  "total_cost_usd": 0.20691500000000002,
+  "session_id": "94cf4569-7793-4be1-960f-9eaa5decb03f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 4293,
+  "cache_read_input_tokens": 386720,
+  "cache_creation_input_tokens": 21021,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.type.TestTypeFactory::testCanonicalNames"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

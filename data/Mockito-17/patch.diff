@@ -1,0 +1,29 @@
+diff --git a/src/org/mockito/internal/creation/MockSettingsImpl.java b/src/org/mockito/internal/creation/MockSettingsImpl.java
+index bf2cf3b..24cd433 100644
+--- a/src/org/mockito/internal/creation/MockSettingsImpl.java
++++ b/src/org/mockito/internal/creation/MockSettingsImpl.java
+@@ -26,7 +26,7 @@ public class MockSettingsImpl implements MockSettings {
+         if (extraInterfaces == null || extraInterfaces.length == 0) {
+             new Reporter().extraInterfacesRequiresAtLeastOneInterface();
+         }
+-            
++
+         for (Class<?> i : extraInterfaces) {
+             if (i == null) {
+                 new Reporter().extraInterfacesDoesNotAcceptNullParameters();
+@@ -34,7 +34,14 @@ public class MockSettingsImpl implements MockSettings {
+                 new Reporter().extraInterfacesAcceptsOnlyInterfaces(i);
+             }
+         }
+-        this.extraInterfaces = extraInterfaces;
++
++        if (this.extraInterfaces == null) {
++            this.extraInterfaces = extraInterfaces;
++        } else {
++            java.util.LinkedHashSet<Class<?>> combined = new java.util.LinkedHashSet<Class<?>>(java.util.Arrays.asList(this.extraInterfaces));
++            combined.addAll(java.util.Arrays.asList(extraInterfaces));
++            this.extraInterfaces = combined.toArray(new Class<?>[combined.size()]);
++        }
+         return this;
+     }
+ 

@@ -1,0 +1,82 @@
+diff --git a/src/main/java/org/apache/commons/cli/HelpFormatter.java b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+index 3322f76..bc84679 100644
+--- a/src/main/java/org/apache/commons/cli/HelpFormatter.java
++++ b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+@@ -519,14 +519,14 @@ public class HelpFormatter
+ 
+         if ((header != null) && (header.trim().length() > 0))
+         {
+-            printWrapped(pw, width, header);
++            renderWrappedTextBlock(pw, width, header);
+         }
+ 
+         printOptions(pw, width, options, leftPad, descPad);
+ 
+         if ((footer != null) && (footer.trim().length() > 0))
+         {
+-            printWrapped(pw, width, footer);
++            renderWrappedTextBlock(pw, width, footer);
+         }
+     }
+ 
+@@ -731,6 +731,22 @@ public class HelpFormatter
+         pw.println(sb.toString());
+     }
+ 
++    /**
++     * Print the specified text to the specified PrintWriter, preserving
++     * leading whitespace at the start of each line.
++     *
++     * @param pw The printWriter to write the help to
++     * @param width The number of characters to display per line
++     * @param text The text to be written to the PrintWriter
++     */
++    private void renderWrappedTextBlock(PrintWriter pw, int width, String text)
++    {
++        StringBuffer sb = new StringBuffer(text.length());
++
++        renderWrappedTextBlock(sb, width, 0, text);
++        pw.println(sb.toString());
++    }
++
+     // --------------------------------------------------------------- Protected
+ 
+     /**
+@@ -896,9 +912,37 @@ public class HelpFormatter
+      * @param width The number of characters to display per line
+      * @param nextLineTabStop The position on the next line for the first tab.
+      * @param text The text to be rendered.
++     *
++     * @return the StringBuffer with the rendered Options contents.
+      */
++    protected StringBuffer renderWrappedTextBlock(StringBuffer sb, int width,
++                                             int nextLineTabStop, String text)
++    {
++        try
++        {
++            BufferedReader in = new BufferedReader(new StringReader(text));
++            String line;
++            boolean firstLine = true;
++            while ((line = in.readLine()) != null)
++            {
++                if (!firstLine)
++                {
++                    sb.append(defaultNewLine);
++                }
++                else
++                {
++                    firstLine = false;
++                }
++                renderWrappedText(sb, width, nextLineTabStop, line);
++            }
++        }
++        catch (IOException e) //NOPMD
++        {
+             // cannot happen
++        }
+ 
++        return sb;
++    }
+ 
+     /**
+      * Finds the next text wrap position after <code>startPos</code> for the

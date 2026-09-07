@@ -1,0 +1,27 @@
+diff --git a/src/main/java/org/jsoup/parser/Parser.java b/src/main/java/org/jsoup/parser/Parser.java
+index e6ea833..b1d4918 100644
+--- a/src/main/java/org/jsoup/parser/Parser.java
++++ b/src/main/java/org/jsoup/parser/Parser.java
+@@ -183,7 +183,8 @@ public class Parser {
+         String key = tq.consumeAttributeKey();
+         String value = "";
+         tq.consumeWhitespace();
+-        if (tq.matchChomp("=")) {
++        boolean sawEquals = tq.matchChomp("=");
++        if (sawEquals) {
+             tq.consumeWhitespace();
+ 
+             if (tq.matchChomp(SQ)) {
+@@ -203,8 +204,10 @@ public class Parser {
+         if (key.length() != 0)
+             return Attribute.createFromEncoded(key, value);
+         else {
+-            tq.consume();
+-                
++            // no key and no "=value" was consumed, so force progress to avoid an infinite loop
++            if (!sawEquals && !tq.isEmpty())
++                tq.consume();
++
+             return null;
+         }
+     }

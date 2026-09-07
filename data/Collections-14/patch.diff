@@ -1,0 +1,26 @@
+diff --git a/src/java/org/apache/commons/collections/map/CaseInsensitiveMap.java b/src/java/org/apache/commons/collections/map/CaseInsensitiveMap.java
+index d0ebdb6..21fecb9 100644
+--- a/src/java/org/apache/commons/collections/map/CaseInsensitiveMap.java
++++ b/src/java/org/apache/commons/collections/map/CaseInsensitiveMap.java
+@@ -20,6 +20,7 @@ import java.io.IOException;
+ import java.io.ObjectInputStream;
+ import java.io.ObjectOutputStream;
+ import java.io.Serializable;
++import java.util.Locale;
+ import java.util.Map;
+ 
+ /**
+@@ -118,11 +119,11 @@ public class CaseInsensitiveMap extends AbstractHashedMap implements Serializabl
+      */
+     protected Object convertKey(Object key) {
+         if (key != null) {
+-            return key.toString().toLowerCase();
++            return key.toString().toUpperCase(Locale.ENGLISH).toLowerCase(Locale.ENGLISH);
+         } else {
+             return AbstractHashedMap.NULL;
+         }
+-    }   
++    }
+ 
+     //-----------------------------------------------------------------------
+     /**

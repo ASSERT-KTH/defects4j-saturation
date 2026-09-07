@@ -1,0 +1,49 @@
+diff --git a/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java b/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
+index 8214827..26e8f49 100644
+--- a/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
++++ b/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
+@@ -344,12 +344,12 @@ public class OpenMapRealVector extends SparseRealVector
+         /*
+          * MATH-803: it is not sufficient to loop through non zero entries of
+          * this only. Indeed, if this[i] = 0d and v[i] = 0d, then
+-         * this[i] / v[i] = NaN, and not 0d.
++         * this[i] / v[i] = NaN, and not 0d. Therefore all entries, including
++         * those which are zero in this, must be considered.
+          */
+-        Iterator iter = entries.iterator();
+-        while (iter.hasNext()) {
+-            iter.advance();
+-            res.setEntry(iter.key(), iter.value() / v.getEntry(iter.key()));
++        final int n = getDimension();
++        for (int i = 0; i < n; i++) {
++            res.setEntry(i, getEntry(i) / v.getEntry(i));
+         }
+         return res;
+     }
+@@ -359,18 +359,16 @@ public class OpenMapRealVector extends SparseRealVector
+     public OpenMapRealVector ebeMultiply(RealVector v) {
+         checkVectorDimensions(v.getDimension());
+         OpenMapRealVector res = new OpenMapRealVector(this);
+-        Iterator iter = entries.iterator();
+-        while (iter.hasNext()) {
+-            iter.advance();
+-            res.setEntry(iter.key(), iter.value() * v.getEntry(iter.key()));
+-        }
+         /*
+-         * MATH-803: the above loop assumes that 0d * x  = 0d for any double x,
+-         * which allows to consider only the non-zero entries of this. However,
+-         * this fails if this[i] == 0d and (v[i] = NaN or v[i] = Infinity).
+-         *
+-         * These special cases are handled below.
++         * MATH-803: iterating only through the non-zero entries of this
++         * assumes that 0d * x = 0d for any double x, which does not hold if
++         * x is NaN or Infinity. Therefore all entries, including those which
++         * are zero in this, must be considered.
+          */
++        final int n = getDimension();
++        for (int i = 0; i < n; i++) {
++            res.setEntry(i, getEntry(i) * v.getEntry(i));
++        }
+         return res;
+     }
+ 

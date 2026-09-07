@@ -1,0 +1,25 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+index 23380f0..e4020db 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+@@ -171,7 +171,8 @@ public abstract class TypeDeserializerBase
+                  *   type in process (getting SimpleType of Map.class which will not work as expected)
+                  */
+                 if ((_baseType != null)
+-                        && _baseType.getClass() == type.getClass()) {
++                        && _baseType.getClass() == type.getClass()
++                        && _baseType.getRawClass() != type.getRawClass()) {
+                     /* 09-Aug-2015, tatu: Not sure if the second part of the check makes sense;
+                      *   but it appears to check that JavaType impl class is the same which is
+                      *   important for some reason?
+@@ -181,6 +182,10 @@ public abstract class TypeDeserializerBase
+                     //   generic type with custom type resolvers. If so, should try to retain them.
+                     //  Whether this is sufficient to avoid problems remains to be seen, but for
+                     //  now it should improve things.
++                    // 06-Sep-2016: if raw classes already match, `type` is already at least
++                    //   as specific as `_baseType` (may even carry full generic parameters
++                    //   resolved by a custom `TypeIdResolver`), so narrowing would only
++                    //   discard information; only narrow when raw type actually differs.
+                         type = ctxt.getTypeFactory().constructSpecializedType(_baseType, type.getRawClass());
+                 }
+                 deser = ctxt.findContextualValueDeserializer(type, _property);

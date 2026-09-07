@@ -1,0 +1,37 @@
+{
+  "project": "Csv",
+  "bug": 9,
+  "id": "Csv-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:53:45Z",
+  "wallclock_s": 34,
+  "agent_s": 14,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 11022,
+  "total_cost_usd": 0.06220859999999999,
+  "session_id": "0160e955-22e4-4d0a-a85e-096c781d5557",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 826,
+  "cache_read_input_tokens": 63883,
+  "cache_creation_input_tokens": 9667,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVRecordTest::testToMapWithNoHeader"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/CSVRecord.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,18 @@
+diff --git a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+index fd03ab8..8f05839 100644
+--- a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
++++ b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+@@ -471,7 +471,12 @@ public class NumberUtils {
+         String dec;
+         String exp;
+         int decPos = str.indexOf('.');
+-        int expPos = str.indexOf('e') + str.indexOf('E') + 1;
++        int lowerExpPos = str.indexOf('e');
++        int upperExpPos = str.indexOf('E');
++        if (lowerExpPos > -1 && upperExpPos > -1) {
++            throw new NumberFormatException(str + " is not a valid number.");
++        }
++        int expPos = lowerExpPos > -1 ? lowerExpPos : upperExpPos;
+ 
+         if (decPos > -1) {
+ 

@@ -1,0 +1,68 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/CollectionType.java b/src/main/java/com/fasterxml/jackson/databind/type/CollectionType.java
+index 39c1038..b107c8d 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/CollectionType.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/CollectionType.java
+@@ -1,5 +1,6 @@
+ package com.fasterxml.jackson.databind.type;
+ 
++import java.lang.reflect.TypeVariable;
+ 
+ import com.fasterxml.jackson.databind.JavaType;
+ 
+@@ -47,8 +48,14 @@ public final class CollectionType
+     public static CollectionType construct(Class<?> rawType, JavaType elemT) {
+         // First: may need to fabricate TypeBindings (needed for refining into
+         // concrete collection types, as per [databind#1102])
+-        return new CollectionType(rawType, null,
+-                // !!! TODO: Wrong, does have supertypes, but:
++        TypeVariable<?>[] vars = rawType.getTypeParameters();
++        TypeBindings bindings;
++        if ((vars == null) || (vars.length != 1)) {
++            bindings = TypeBindings.emptyBindings();
++        } else {
++            bindings = TypeBindings.create(rawType, elemT);
++        }
++        return new CollectionType(rawType, bindings,
+                 _bogusSuperClass(rawType), null, elemT,
+                 null, null, false);
+     }
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/MapType.java b/src/main/java/com/fasterxml/jackson/databind/type/MapType.java
+index a11767f..54ae9d0 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/MapType.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/MapType.java
+@@ -1,5 +1,6 @@
+ package com.fasterxml.jackson.databind.type;
+ 
++import java.lang.reflect.TypeVariable;
+ 
+ import com.fasterxml.jackson.databind.JavaType;
+ 
+@@ -44,8 +45,14 @@ public final class MapType extends MapLikeType
+     {
+         // First: may need to fabricate TypeBindings (needed for refining into
+         // concrete collection types, as per [databind#1102])
+-        // !!! TODO: Wrong, does have supertypes
+-        return new MapType(rawType, null, _bogusSuperClass(rawType), null,
++        TypeVariable<?>[] vars = rawType.getTypeParameters();
++        TypeBindings bindings;
++        if ((vars == null) || (vars.length != 2)) {
++            bindings = TypeBindings.emptyBindings();
++        } else {
++            bindings = TypeBindings.create(rawType, keyT, valueT);
++        }
++        return new MapType(rawType, bindings, _bogusSuperClass(rawType), null,
+                 keyT, valueT, null, null, false);
+     }
+ 
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeBase.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeBase.java
+index 73e1d94..46a98e3 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeBase.java
+@@ -257,6 +257,6 @@ public abstract class TypeBase
+         if (parent == null) {
+             return null;
+         }
+-        return TypeFactory.unknownType();
++        return new SimpleType(parent, NO_BINDINGS, _bogusSuperClass(parent), null);
+     }
+ }

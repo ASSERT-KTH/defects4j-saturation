@@ -1,0 +1,77 @@
+diff --git a/src/com/google/javascript/jscomp/Normalize.java b/src/com/google/javascript/jscomp/Normalize.java
+index 26655f1..578d983 100644
+--- a/src/com/google/javascript/jscomp/Normalize.java
++++ b/src/com/google/javascript/jscomp/Normalize.java
+@@ -278,6 +278,12 @@ class Normalize implements CompilerPass {
+           }
+           break;
+ 
++        case Token.FUNCTION:
++          if (NodeUtil.isFunctionDeclaration(n)
++              && !NodeUtil.isHoistedFunctionDeclaration(n)) {
++            rewriteFunctionDeclaration(n);
++          }
++          break;
+       }
+     }
+ 
+@@ -289,29 +295,25 @@ class Normalize implements CompilerPass {
+      * to:
+      *    var f = function () {};
+      */
+-
+-    /**
+-     * Rewrite the function declaration from:
+-     *   function x() {}
+-     *   FUNCTION
+-     *     NAME
+-     *     LP
+-     *     BLOCK
+-     * to:
+-     *   var x = function() {};
+-     *   VAR
+-     *     NAME
+-     *       FUNCTION
+-     *         NAME (w/ empty string)
+-     *         LP
+-     *         BLOCK
+-     */
++    private void rewriteFunctionDeclaration(Node n) {
+       // Prepare a spot for the function.
++      Node oldNameNode = n.getFirstChild();
++      Node fnNameNode = oldNameNode.cloneNode();
++      Node var = new Node(Token.VAR, fnNameNode);
++      var.copyInformationFrom(n);
+ 
+       // Prepare the function
++      Node emptyName = Node.newString(Token.NAME, "");
++      emptyName.copyInformationFrom(oldNameNode);
++      n.replaceChild(oldNameNode, emptyName);
+ 
+       // Move the function
++      Node parent = n.getParent();
++      parent.replaceChild(n, var);
++      fnNameNode.addChildToFront(n);
+ 
++      reportCodeChange("Function declaration");
++    }
+ 
+     /**
+      * Do normalizations that introduce new siblings or parents.
+@@ -523,6 +525,16 @@ class Normalize implements CompilerPass {
+         Preconditions.checkState(parent.hasOneChild());
+ 
+         replaceVarWithAssignment(n, parent, gramps);
++      } else if (parent.getType() == Token.FUNCTION) {
++        // The current declaration is a hoisted function declaration, which
++        // must remain in place, so remove the previous VAR declaration
++        // of the same name instead.
++        Var v = s.getVar(name);
++        Node valueParent = v.getParentNode();
++        if (valueParent.getType() == Token.VAR) {
++          replaceVarWithAssignment(
++              v.getNameNode(), valueParent, valueParent.getParent());
++        }
+       }
+     }
+ 

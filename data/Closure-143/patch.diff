@@ -1,0 +1,29 @@
+diff --git a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+index 13cb626..934e264 100644
+--- a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+@@ -868,6 +868,8 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+           } else if (defValue.length() > 1
+               && ((defValue.charAt(0) == '\'' &&
+                   defValue.charAt(defValue.length() - 1) == '\'')
++              || (defValue.charAt(0) == '\"' &&
++                  defValue.charAt(defValue.length() - 1) == '\"')
+             )) {
+             // If the value starts and ends with a single quote,
+             // we assume that it's a string.
+diff --git a/src/com/google/javascript/jscomp/RemoveConstantExpressions.java b/src/com/google/javascript/jscomp/RemoveConstantExpressions.java
+index fee9c28..56cfff3 100644
+--- a/src/com/google/javascript/jscomp/RemoveConstantExpressions.java
++++ b/src/com/google/javascript/jscomp/RemoveConstantExpressions.java
+@@ -87,10 +87,7 @@ final class RemoveConstantExpressions implements CompilerPass {
+       }
+ 
+       Node exprBody = node.getFirstChild();
+-      if (!NodeUtil.nodeTypeMayHaveSideEffects(exprBody)
+-      ) {
+-        changeProxy.replaceWith(parent, node, getSideEffectNodes(exprBody));
+-      }
++      changeProxy.replaceWith(parent, node, getSideEffectNodes(exprBody));
+     }
+ 
+     /**

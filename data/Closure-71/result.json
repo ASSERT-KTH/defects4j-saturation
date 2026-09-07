@@ -1,0 +1,38 @@
+{
+  "project": "Closure",
+  "bug": 71,
+  "id": "Closure-71",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:32:05Z",
+  "wallclock_s": 427,
+  "agent_s": 280,
+  "agent_rc": 0,
+  "num_turns": 24,
+  "api_duration_ms": 201115,
+  "total_cost_usd": 0.5520994000000001,
+  "session_id": "b658cf04-3e4e-4f26-b82a-62708acee7cd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 48,
+  "output_tokens": 18645,
+  "cache_read_input_tokens": 906112,
+  "cache_creation_input_tokens": 45168,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckAccessControlsTest::testNoPrivateAccessForProperties6",
+    "com.google.javascript.jscomp.CheckAccessControlsTest::testNoPrivateAccessForProperties8"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CheckAccessControls.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

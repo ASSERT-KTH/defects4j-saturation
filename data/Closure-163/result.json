@@ -1,0 +1,39 @@
+{
+  "project": "Closure",
+  "bug": 163,
+  "id": "Closure-163",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T04:06:48Z",
+  "wallclock_s": 400,
+  "agent_s": 285,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 197553,
+  "total_cost_usd": 0.6062074000000002,
+  "session_id": "ece5144a-62d7-49fd-96c3-260613748743",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 18541,
+  "cache_read_input_tokens": 936517,
+  "cache_creation_input_tokens": 57157,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600b",
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600e",
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java"
+  ],
+  "patch_added_lines": 62,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 106,
+  "id": "Closure-106",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T00:20:29Z",
+  "wallclock_s": 660,
+  "agent_s": 612,
+  "agent_rc": 0,
+  "num_turns": 75,
+  "api_duration_ms": 564966,
+  "total_cost_usd": 2.2719118000000003,
+  "session_id": "96fe8f74-d82d-4ab4-95d0-704758f04841",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 150,
+  "output_tokens": 53884,
+  "cache_read_input_tokens": 6209949,
+  "cache_creation_input_tokens": 121317,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckSideEffectsTest::testJSDocComments",
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testTwinReferenceCancelsChildCollapsing",
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testCrashInNestedAssign",
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testCrashInCommaOperator"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/GlobalNamespace.java",
+    "src/com/google/javascript/rhino/JSDocInfoBuilder.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

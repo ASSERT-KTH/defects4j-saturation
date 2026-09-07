@@ -1,0 +1,168 @@
+diff --git a/src/main/java/org/jsoup/nodes/Element.java b/src/main/java/org/jsoup/nodes/Element.java
+index 12c68ca..ca1fe23 100644
+--- a/src/main/java/org/jsoup/nodes/Element.java
++++ b/src/main/java/org/jsoup/nodes/Element.java
+@@ -266,9 +266,9 @@ public class Element extends Node {
+      */
+     public Element append(String html) {
+         Validate.notNull(html);
+-        
+-        Element fragment = Parser.parseBodyFragment(html, baseUri).body();
+-        for (Node node : fragment.childNodes()) {
++
++        List<Node> nodes = Parser.parseFragment(html, this, baseUri);
++        for (Node node : nodes) {
+             node.parentNode = null;
+             appendChild(node);
+         }
+@@ -283,9 +283,8 @@ public class Element extends Node {
+      */
+     public Element prepend(String html) {
+         Validate.notNull(html);
+-        
+-        Element fragment = Parser.parseBodyFragment(html, baseUri).body();
+-        List<Node> nodes = fragment.childNodes();
++
++        List<Node> nodes = Parser.parseFragment(html, this, baseUri);
+         for (int i = nodes.size() - 1; i >= 0; i--) {
+             Node node = nodes.get(i);
+             node.parentNode = null;
+diff --git a/src/main/java/org/jsoup/parser/Parser.java b/src/main/java/org/jsoup/parser/Parser.java
+index 0cedf8a..64cb9ad 100644
+--- a/src/main/java/org/jsoup/parser/Parser.java
++++ b/src/main/java/org/jsoup/parser/Parser.java
+@@ -18,11 +18,13 @@ public class Parser {
+     private static final Tag bodyTag = Tag.valueOf("body");
+     private static final Tag titleTag = Tag.valueOf("title");
+     private static final Tag textareaTag = Tag.valueOf("textarea");
++    private static final Tag tableTag = Tag.valueOf("table");
+ 
+     private final LinkedList<Element> stack;
+     private final TokenQueue tq;
+     private final Document doc;
+     private String baseUri;
++    private final Element contextElement;
+ 
+     private Parser(String html, String baseUri, boolean isBodyFragment) {
+         Validate.notNull(html);
+@@ -31,6 +33,7 @@ public class Parser {
+         stack = new LinkedList<Element>();
+         tq = new TokenQueue(html);
+         this.baseUri = baseUri;
++        contextElement = null;
+ 
+         if (isBodyFragment) {
+             doc = Document.createShell(baseUri);
+@@ -41,6 +44,24 @@ public class Parser {
+         }
+     }
+ 
++    // parses a fragment of HTML in the context of another element, so that content that requires a specific
++    // ancestor (e.g. <tr>, which requires a <table>) is not wrapped in a redundant implicit parent.
++    private Parser(String html, String baseUri, Element context) {
++        Validate.notNull(html);
++        Validate.notNull(baseUri);
++        Validate.notNull(context);
++
++        stack = new LinkedList<Element>();
++        tq = new TokenQueue(html);
++        this.baseUri = baseUri;
++
++        doc = Document.createShell(baseUri);
++        contextElement = new Element(context.tag(), baseUri);
++        doc.body().appendChild(contextElement);
++        stack.add(doc.body());
++        stack.add(contextElement);
++    }
++
+     /**
+      Parse HTML into a Document.
+      @param html HTML to parse
+@@ -71,7 +92,27 @@ public class Parser {
+      @return Document, with empty head, and HTML parsed into body
+      */
+ 
++    /**
++     Parse a fragment of HTML into a list of nodes, in the context of the given element. Content that requires
++     a specific ancestor (e.g. a {@code <tr>}, which requires a {@code <table>}) will be parsed as if it were
++     already inside that context, rather than being wrapped in a redundant implicit parent.
++     @param fragmentHtml the fragment of HTML to parse
++     @param context the element that the parsed fragment will be inserted into
++     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
++     @return list of nodes parsed from the input HTML
++     */
++    public static List<Node> parseFragment(String fragmentHtml, Element context, String baseUri) {
++        Parser parser = new Parser(fragmentHtml, baseUri, context);
++        parser.runParser();
++        return parser.contextElement.childNodes();
++    }
++
+     private Document parse() {
++        runParser();
++        return doc.normalise();
++    }
++
++    private void runParser() {
+         while (!tq.isEmpty()) {
+             if (tq.matches("<!--")) {
+                 parseComment();
+@@ -87,7 +128,6 @@ public class Parser {
+                 parseTextNode();
+             }
+         }
+-        return doc.normalise();
+     }
+ 
+     private void parseComment() {
+@@ -258,6 +298,11 @@ public class Parser {
+             if (parent2.isValidParent(childTag)) {
+                 return true;
+             }
++            // a table starts a new scope for content (like <tr>/<td>) that requires a table ancestor; an
++            // outer table (from a different, enclosing table) does not satisfy that requirement
++            if (parent2.equals(tableTag) && childTag.requiresTableAncestor()) {
++                return false;
++            }
+         }
+         return false;
+     }
+diff --git a/src/main/java/org/jsoup/parser/Tag.java b/src/main/java/org/jsoup/parser/Tag.java
+index 6dff9e7..9859899 100644
+--- a/src/main/java/org/jsoup/parser/Tag.java
++++ b/src/main/java/org/jsoup/parser/Tag.java
+@@ -76,6 +76,14 @@ public class Tag {
+         if (this.optionalClosing && this.equals(child))
+             return false;
+ 
++        // table cells/rows are only optionally closed by the tag that they themselves would otherwise be
++        // implicitly wrapped in (e.g. a <tr> auto-closes a still-open <td>), not by unrelated content
++        if (this.optionalClosing && this.requiresTableAncestor()) {
++            Tag implicitParent = getImplicitParent();
++            if (implicitParent != null && implicitParent.equals(child))
++                return false;
++        }
++
+         if (this.empty || this.isData())
+             return false;
+ 
+@@ -165,6 +173,20 @@ public class Tag {
+         return false;
+     }
+ 
++    /**
++     Test if this tag can only ever appear (perhaps indirectly) inside a {@code table}, e.g. {@code tr} or
++     {@code td}. Such tags are scoped to their enclosing table, and can't be satisfied by a table that encloses
++     that table.
++     @return true if this tag requires a table ancestor
++     */
++    boolean requiresTableAncestor() {
++        for (Tag ancestor : ancestors) {
++            if (ancestor.tagName.equals("table") || ancestor.requiresTableAncestor())
++                return true;
++        }
++        return false;
++    }
++
+     @Override
+     public boolean equals(Object o) {
+         if (this == o) return true;

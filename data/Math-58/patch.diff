@@ -1,0 +1,22 @@
+diff --git a/src/main/java/org/apache/commons/math/optimization/fitting/GaussianFitter.java b/src/main/java/org/apache/commons/math/optimization/fitting/GaussianFitter.java
+index ae7ac39..eb87e1c 100644
+--- a/src/main/java/org/apache/commons/math/optimization/fitting/GaussianFitter.java
++++ b/src/main/java/org/apache/commons/math/optimization/fitting/GaussianFitter.java
+@@ -118,7 +118,7 @@ public class GaussianFitter extends CurveFitter {
+      */
+     public double[] fit() {
+         final double[] guess = (new ParameterGuesser(getObservations())).guess();
+-        return fit(new Gaussian.Parametric(), guess);
++        return fit(guess);
+     }
+ 
+     /**
+@@ -175,7 +175,7 @@ public class GaussianFitter extends CurveFitter {
+ 
+             double fwhmApprox;
+             try {
+-                double halfY = params[0] + ((params[1] - params[0]) / 2.0);
++                double halfY = params[0] / 2.0;
+                 double fwhmX1 = interpolateXAtY(points, maxYIdx, -1, halfY);
+                 double fwhmX2 = interpolateXAtY(points, maxYIdx, +1, halfY);
+                 fwhmApprox = fwhmX2 - fwhmX1;

@@ -1,0 +1,41 @@
+{
+  "project": "Time",
+  "bug": 3,
+  "id": "Time-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:29:35Z",
+  "wallclock_s": 134,
+  "agent_s": 94,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 78590,
+  "total_cost_usd": 0.32065079999999985,
+  "session_id": "a464264e-cfe6-42fd-b92f-49048f344dd5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 6493,
+  "cache_read_input_tokens": 644769,
+  "cache_creation_input_tokens": 30229,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.TestMutableDateTime_Adds::testAddYears_int_dstOverlapWinter_addZero",
+    "org.joda.time.TestMutableDateTime_Adds::testAddDays_int_dstOverlapWinter_addZero",
+    "org.joda.time.TestMutableDateTime_Adds::testAddWeeks_int_dstOverlapWinter_addZero",
+    "org.joda.time.TestMutableDateTime_Adds::testAdd_DurationFieldType_int_dstOverlapWinter_addZero",
+    "org.joda.time.TestMutableDateTime_Adds::testAddMonths_int_dstOverlapWinter_addZero"
+  ],
+  "failing_before": 5,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/chrono/ZonedChronology.java"
+  ],
+  "patch_added_lines": 18,
+  "patch_removed_lines": 16,
+  "has_dev_patch": true
+}

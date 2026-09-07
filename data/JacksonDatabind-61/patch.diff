@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
+index ad9888f..1a4ae33 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java
+@@ -71,6 +71,7 @@ public class StdTypeResolverBuilder
+         if (_idType == JsonTypeInfo.Id.NONE) { return null; }
+         // 03-Oct-2016, tatu: As per [databind#1395] better prevent use for primitives,
+         //    regardless of setting
++        if (baseType.isPrimitive()) { return null; }
+         TypeIdResolver idRes = idResolver(config, baseType, subtypes, true, false);
+         switch (_includeAs) {
+         case WRAPPER_ARRAY:
+@@ -101,6 +102,7 @@ public class StdTypeResolverBuilder
+         if (_idType == JsonTypeInfo.Id.NONE) { return null; }
+         // 03-Oct-2016, tatu: As per [databind#1395] better prevent use for primitives,
+         //    regardless of setting
++        if (baseType.isPrimitive()) { return null; }
+ 
+         TypeIdResolver idRes = idResolver(config, baseType, subtypes, false, true);
+ 

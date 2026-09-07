@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 32,
+  "id": "Compress-32",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:44:58Z",
+  "wallclock_s": 78,
+  "agent_s": 25,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 17220,
+  "total_cost_usd": 0.0807856,
+  "session_id": "95a92082-6d52-49f9-9e51-7bc3742dbd04",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1163,
+  "cache_read_input_tokens": 106558,
+  "cache_creation_input_tokens": 11296,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.tar.TarArchiveInputStreamTest::shouldReadBigGid"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

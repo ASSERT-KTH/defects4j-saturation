@@ -1,0 +1,38 @@
+{
+  "project": "Lang",
+  "bug": 47,
+  "id": "Lang-47",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:38:27Z",
+  "wallclock_s": 72,
+  "agent_s": 32,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 18180,
+  "total_cost_usd": 0.09287,
+  "session_id": "b4153381-3257-4e58-a6c3-ac9c6fa121b6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1328,
+  "cache_read_input_tokens": 132740,
+  "cache_creation_input_tokens": 12435,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.text.StrBuilderTest::testLang412Left",
+    "org.apache.commons.lang.text.StrBuilderTest::testLang412Right"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/text/StrBuilder.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

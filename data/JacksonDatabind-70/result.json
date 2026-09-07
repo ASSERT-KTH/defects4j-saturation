@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 70,
+  "id": "JacksonDatabind-70",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:49:57Z",
+  "wallclock_s": 193,
+  "agent_s": 65,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 22780,
+  "total_cost_usd": 0.12263940000000001,
+  "session_id": "788e2b93-fcae-464e-aaa1-c6861c86e15e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1765,
+  "cache_read_input_tokens": 136572,
+  "cache_creation_input_tokens": 18768,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.struct.TestUnwrapped::testCaseInsensitiveUnwrap"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/BeanPropertyMap.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

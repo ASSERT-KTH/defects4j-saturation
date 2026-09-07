@@ -1,0 +1,44 @@
+diff --git a/src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java b/src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java
+index 04488e5..e9ff753 100644
+--- a/src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java
++++ b/src/main/java/org/apache/commons/math3/linear/RectangularCholeskyDecomposition.java
+@@ -79,8 +79,8 @@ public class RectangularCholeskyDecomposition {
+             swap[r] = r;
+             for (int i = r + 1; i < order; ++i) {
+                 int ii  = index[i];
+-                int isi = index[swap[i]];
+-                if (c[ii][ii] > c[isi][isi]) {
++                int isr = index[swap[r]];
++                if (c[ii][ii] > c[isr][isr]) {
+                     swap[r] = i;
+                 }
+             }
+@@ -119,16 +119,16 @@ public class RectangularCholeskyDecomposition {
+ 
+                 // transform the matrix
+                 final double sqrt = FastMath.sqrt(c[ir][ir]);
+-                b[r][r] = sqrt;
++                b[ir][r] = sqrt;
+                 final double inverse  = 1 / sqrt;
+                 for (int i = r + 1; i < order; ++i) {
+                     final int ii = index[i];
+                     final double e = inverse * c[ii][ir];
+-                    b[i][r] = e;
++                    b[ii][r] = e;
+                     c[ii][ii] -= e * e;
+                     for (int j = r + 1; j < i; ++j) {
+                         final int ij = index[j];
+-                        final double f = c[ii][ij] - e * b[j][r];
++                        final double f = c[ii][ij] - e * b[ij][r];
+                         c[ii][ij] = f;
+                         c[ij][ii] = f;
+                     }
+@@ -144,7 +144,7 @@ public class RectangularCholeskyDecomposition {
+         root = MatrixUtils.createRealMatrix(order, r);
+         for (int i = 0; i < order; ++i) {
+             for (int j = 0; j < r; ++j) {
+-                root.setEntry(index[i], j, b[i][j]);
++                root.setEntry(i, j, b[i][j]);
+             }
+         }
+ 

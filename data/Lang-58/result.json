@@ -1,0 +1,37 @@
+{
+  "project": "Lang",
+  "bug": 58,
+  "id": "Lang-58",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:43:36Z",
+  "wallclock_s": 75,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 22615,
+  "total_cost_usd": 0.09892940000000003,
+  "session_id": "5ba80057-42ee-45b1-8d1d-68170a63413b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1728,
+  "cache_read_input_tokens": 150322,
+  "cache_creation_input_tokens": 12343,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.math.NumberUtilsTest::testLang300"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/math/NumberUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

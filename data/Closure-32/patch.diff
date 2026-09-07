@@ -1,0 +1,45 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+index f6a6400..d2ba99a 100644
+--- a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
++++ b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+@@ -1355,12 +1355,15 @@ public final class JsDocInfoParser {
+     // Track the start of the line to count whitespace that
+     // the tokenizer skipped. Because this case is rare, it's easier
+     // to do this here than in the tokenizer.
++    int lineStartChar = -1;
+ 
+     do {
+       switch (token) {
+         case STAR:
+           if (ignoreStar) {
+             // Mark the position after the star as the new start of the line.
++            stream.update();
++            lineStartChar = stream.getCharno() + 1;
+           } else {
+             // The star is part of the comment.
+             if (builder.length() > 0) {
+@@ -1379,6 +1382,7 @@ public final class JsDocInfoParser {
+           }
+ 
+           ignoreStar = true;
++          lineStartChar = 0;
+           token = next();
+           continue;
+ 
+@@ -1411,9 +1415,15 @@ public final class JsDocInfoParser {
+             return new ExtractionInfo(multilineText, token);
+           }
+ 
+-          if (builder.length() > 0) {
++          if (option == WhitespaceOption.PRESERVE && lineStartChar != -1) {
++            int charno = stream.getCharno();
++            for (int i = lineStartChar; i < charno; i++) {
++              builder.append(' ');
++            }
++          } else if (builder.length() > 0) {
+             builder.append(' ');
+           }
++          lineStartChar = -1;
+           builder.append(toString(token));
+ 
+           line = stream.getRemainingJSDocLine();

@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 82,
+  "id": "Math-82",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:17:23Z",
+  "wallclock_s": 378,
+  "agent_s": 333,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 141041,
+  "total_cost_usd": 0.5164902000000001,
+  "session_id": "0212e08c-1450-4190-97ad-52f21f4745f7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 13371,
+  "cache_read_input_tokens": 715391,
+  "cache_creation_input_tokens": 59289,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.linear.SimplexSolverTest::testMath288"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/linear/SimplexSolver.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

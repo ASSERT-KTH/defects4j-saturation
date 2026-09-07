@@ -1,0 +1,38 @@
+{
+  "project": "Math",
+  "bug": 14,
+  "id": "Math-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:02:49Z",
+  "wallclock_s": 233,
+  "agent_s": 108,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 43184,
+  "total_cost_usd": 0.21522660000000002,
+  "session_id": "70041664-e88a-4b30-9d6a-a94de0180744",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3559,
+  "cache_read_input_tokens": 381898,
+  "cache_creation_input_tokens": 25236,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.fitting.PolynomialFitterTest::testLargeSample"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/Weight.java",
+    "src/main/java/org/apache/commons/math3/optim/nonlinear/vector/jacobian/AbstractLeastSquaresOptimizer.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

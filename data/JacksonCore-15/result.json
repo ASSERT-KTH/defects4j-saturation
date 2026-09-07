@@ -1,0 +1,37 @@
+{
+  "project": "JacksonCore",
+  "bug": 15,
+  "id": "JacksonCore-15",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:14:09Z",
+  "wallclock_s": 236,
+  "agent_s": 205,
+  "agent_rc": 0,
+  "num_turns": 29,
+  "api_duration_ms": 185825,
+  "total_cost_usd": 0.6590490000000001,
+  "session_id": "18ce0e5b-e4dd-412b-8047-2f92abd42806",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 58,
+  "output_tokens": 19579,
+  "cache_read_input_tokens": 1283840,
+  "cache_creation_input_tokens": 51020,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.filter.BasicParserFilteringTest::testNotAllowMultipleMatches"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java"
+  ],
+  "patch_added_lines": 83,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

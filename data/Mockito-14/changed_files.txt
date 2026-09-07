@@ -1,0 +1,5 @@
+M	src/org/mockito/internal/MockHandler.java
+M	src/org/mockito/internal/MockitoCore.java
+M	src/org/mockito/internal/progress/MockingProgress.java
+M	src/org/mockito/internal/progress/MockingProgressImpl.java
+M	src/org/mockito/internal/progress/ThreadSafeMockingProgress.java

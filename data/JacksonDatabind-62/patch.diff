@@ -1,0 +1,187 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/ArrayBlockingQueueDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/ArrayBlockingQueueDeserializer.java
+index 0394068..6b1df0e 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/ArrayBlockingQueueDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/ArrayBlockingQueueDeserializer.java
+@@ -39,10 +39,11 @@ public class ArrayBlockingQueueDeserializer
+      protected ArrayBlockingQueueDeserializer(JavaType collectionType,
+             JsonDeserializer<Object> valueDeser, TypeDeserializer valueTypeDeser,
+             ValueInstantiator valueInstantiator,
+-            JsonDeserializer<Object> delegateDeser, Boolean unwrapSingle)
++            JsonDeserializer<Object> delegateDeser,
++            JsonDeserializer<Object> arrayDelegateDeser, Boolean unwrapSingle)
+     {
+         super(collectionType, valueDeser, valueTypeDeser, valueInstantiator,
+-                delegateDeser, unwrapSingle);
++                delegateDeser, arrayDelegateDeser, unwrapSingle);
+     }
+ 
+     /**
+@@ -59,16 +60,19 @@ public class ArrayBlockingQueueDeserializer
+     @Override
+     @SuppressWarnings("unchecked")
+     protected ArrayBlockingQueueDeserializer withResolved(JsonDeserializer<?> dd,
++            JsonDeserializer<?> ad,
+             JsonDeserializer<?> vd, TypeDeserializer vtd, Boolean unwrapSingle)
+     {
+-        if ((dd == _delegateDeserializer) && (vd == _valueDeserializer) && (vtd == _valueTypeDeserializer)
++        if ((dd == _delegateDeserializer) && (ad == _arrayDelegateDeserializer)
++                && (vd == _valueDeserializer) && (vtd == _valueTypeDeserializer)
+                 && (_unwrapSingle == unwrapSingle)) {
+             return this;
+         }
+         return new ArrayBlockingQueueDeserializer(_collectionType,
+                 (JsonDeserializer<Object>) vd, vtd,
+-                _valueInstantiator, (JsonDeserializer<Object>) dd, unwrapSingle);
+-                
++                _valueInstantiator, (JsonDeserializer<Object>) dd,
++                (JsonDeserializer<Object>) ad, unwrapSingle);
++
+     }
+ 
+     /*
+@@ -85,6 +89,10 @@ public class ArrayBlockingQueueDeserializer
+             return (Collection<Object>) _valueInstantiator.createUsingDelegate(ctxt,
+                     _delegateDeserializer.deserialize(jp, ctxt));
+         }
++        if (_arrayDelegateDeserializer != null && jp.isExpectedStartArrayToken()) {
++            return (Collection<Object>) _valueInstantiator.createUsingArrayDelegate(ctxt,
++                    _arrayDelegateDeserializer.deserialize(jp, ctxt));
++        }
+         if (jp.getCurrentToken() == JsonToken.VALUE_STRING) {
+             String str = jp.getText();
+             if (str.length() == 0) {
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+index 7f58b7a..52c3510 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java
+@@ -55,6 +55,14 @@ public class CollectionDeserializer
+      */
+     protected final JsonDeserializer<Object> _delegateDeserializer;
+ 
++    /**
++     * Deserializer that is used iff array-delegate-based creator
++     * is to be used for deserializing from JSON Array.
++     *
++     * @since 2.7
++     */
++    protected final JsonDeserializer<Object> _arrayDelegateDeserializer;
++
+     /**
+      * Specific override for this instance (from proper, or global per-type overrides)
+      * to indicate whether single value may be taken to mean an unwrapped one-element array
+@@ -80,7 +88,7 @@ public class CollectionDeserializer
+             JsonDeserializer<Object> valueDeser,
+             TypeDeserializer valueTypeDeser, ValueInstantiator valueInstantiator)
+     {
+-        this(collectionType, valueDeser, valueTypeDeser, valueInstantiator, null, null);
++        this(collectionType, valueDeser, valueTypeDeser, valueInstantiator, null, null, null);
+     }
+ 
+     /**
+@@ -90,6 +98,7 @@ public class CollectionDeserializer
+             JsonDeserializer<Object> valueDeser, TypeDeserializer valueTypeDeser,
+             ValueInstantiator valueInstantiator,
+             JsonDeserializer<Object> delegateDeser,
++            JsonDeserializer<Object> arrayDelegateDeser,
+             Boolean unwrapSingle)
+     {
+         super(collectionType);
+@@ -98,6 +107,7 @@ public class CollectionDeserializer
+         _valueTypeDeserializer = valueTypeDeser;
+         _valueInstantiator = valueInstantiator;
+         _delegateDeserializer = delegateDeser;
++        _arrayDelegateDeserializer = arrayDelegateDeser;
+         _unwrapSingle = unwrapSingle;
+     }
+ 
+@@ -113,6 +123,7 @@ public class CollectionDeserializer
+         _valueTypeDeserializer = src._valueTypeDeserializer;
+         _valueInstantiator = src._valueInstantiator;
+         _delegateDeserializer = src._delegateDeserializer;
++        _arrayDelegateDeserializer = src._arrayDelegateDeserializer;
+         _unwrapSingle = src._unwrapSingle;
+     }
+ 
+@@ -123,16 +134,19 @@ public class CollectionDeserializer
+      */
+     @SuppressWarnings("unchecked")
+     protected CollectionDeserializer withResolved(JsonDeserializer<?> dd,
++            JsonDeserializer<?> ad,
+             JsonDeserializer<?> vd, TypeDeserializer vtd,
+             Boolean unwrapSingle)
+     {
+-        if ((dd == _delegateDeserializer) && (vd == _valueDeserializer) && (vtd == _valueTypeDeserializer)
++        if ((dd == _delegateDeserializer) && (ad == _arrayDelegateDeserializer)
++                && (vd == _valueDeserializer) && (vtd == _valueTypeDeserializer)
+                 && (_unwrapSingle == unwrapSingle)) {
+             return this;
+         }
+         return new CollectionDeserializer(_collectionType,
+                 (JsonDeserializer<Object>) vd, vtd,
+-                _valueInstantiator, (JsonDeserializer<Object>) dd, unwrapSingle);
++                _valueInstantiator, (JsonDeserializer<Object>) dd,
++                (JsonDeserializer<Object>) ad, unwrapSingle);
+     }
+ 
+     /**
+@@ -142,7 +156,7 @@ public class CollectionDeserializer
+     protected CollectionDeserializer withResolved(JsonDeserializer<?> dd,
+             JsonDeserializer<?> vd, TypeDeserializer vtd)
+     {
+-        return withResolved(dd, vd, vtd, _unwrapSingle);
++        return withResolved(dd, _arrayDelegateDeserializer, vd, vtd, _unwrapSingle);
+     }
+ 
+     // Important: do NOT cache if polymorphic values
+@@ -152,6 +166,7 @@ public class CollectionDeserializer
+         return (_valueDeserializer == null)
+                 && (_valueTypeDeserializer == null)
+                 && (_delegateDeserializer == null)
++                && (_arrayDelegateDeserializer == null)
+                 ;
+     }
+ 
+@@ -172,6 +187,7 @@ public class CollectionDeserializer
+     {
+         // May need to resolve types for delegate-based creators:
+         JsonDeserializer<Object> delegateDeser = null;
++        JsonDeserializer<Object> arrayDelegateDeser = null;
+         if (_valueInstantiator != null) {
+             if (_valueInstantiator.canCreateUsingDelegate()) {
+                 JavaType delegateType = _valueInstantiator.getDelegateType(ctxt.getConfig());
+@@ -182,6 +198,15 @@ public class CollectionDeserializer
+                 }
+                 delegateDeser = findDeserializer(ctxt, delegateType, property);
+             }
++            if (_valueInstantiator.canCreateUsingArrayDelegate()) {
++                JavaType delegateType = _valueInstantiator.getArrayDelegateType(ctxt.getConfig());
++                if (delegateType == null) {
++                    throw new IllegalArgumentException("Invalid array-delegate-creator definition for "+_collectionType
++                            +": value instantiator ("+_valueInstantiator.getClass().getName()
++                            +") returned true for 'canCreateUsingArrayDelegate()', but null for 'getArrayDelegateType()'");
++                }
++                arrayDelegateDeser = findDeserializer(ctxt, delegateType, property);
++            }
+         }
+         // [databind#1043]: allow per-property allow-wrapping of single overrides:
+         // 11-Dec-2015, tatu: Should we pass basic `Collection.class`, or more refined? Mostly
+@@ -204,7 +229,7 @@ public class CollectionDeserializer
+         if (valueTypeDeser != null) {
+             valueTypeDeser = valueTypeDeser.forProperty(property);
+         }
+-        return withResolved(delegateDeser, valueDeser, valueTypeDeser, unwrapSingle);
++        return withResolved(delegateDeser, arrayDelegateDeser, valueDeser, valueTypeDeser, unwrapSingle);
+     }
+ 
+     /*
+@@ -238,6 +263,10 @@ public class CollectionDeserializer
+             return (Collection<Object>) _valueInstantiator.createUsingDelegate(ctxt,
+                     _delegateDeserializer.deserialize(p, ctxt));
+         }
++        if (_arrayDelegateDeserializer != null && p.isExpectedStartArrayToken()) {
++            return (Collection<Object>) _valueInstantiator.createUsingArrayDelegate(ctxt,
++                    _arrayDelegateDeserializer.deserialize(p, ctxt));
++        }
+         /* Empty String may be ok; bit tricky to check, however, since
+          * there is also possibility of "auto-wrapping" of single-element arrays.
+          * Hence we only accept empty String here.

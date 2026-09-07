@@ -1,0 +1,37 @@
+{
+  "project": "JacksonCore",
+  "bug": 16,
+  "id": "JacksonCore-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:12:27Z",
+  "wallclock_s": 80,
+  "agent_s": 54,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 47613,
+  "total_cost_usd": 0.15653040000000001,
+  "session_id": "a95c3e06-17f1-4548-8463-eed9d61c9f2f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 4281,
+  "cache_read_input_tokens": 217002,
+  "cache_creation_input_tokens": 16990,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.ParserSequenceTest::testInitialized"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/util/JsonParserSequence.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,32 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/ResolvedRecursiveType.java b/src/main/java/com/fasterxml/jackson/databind/type/ResolvedRecursiveType.java
+index 3080783..6cbceb4 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/ResolvedRecursiveType.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/ResolvedRecursiveType.java
+@@ -1,5 +1,8 @@
+ package com.fasterxml.jackson.databind.type;
+ 
++import java.util.Collections;
++import java.util.List;
++
+ import com.fasterxml.jackson.databind.JavaType;
+ 
+ /**
+@@ -29,6 +32,18 @@ public class ResolvedRecursiveType extends TypeBase
+ 
+     public JavaType getSelfReferencedType() { return _referencedType; }
+ 
++    // Delegate to referenced type once resolved, since self-reference placeholder
++    // itself has no super-type information of its own (see [databind#1257])
++    @Override
++    public JavaType getSuperClass() {
++        return (_referencedType == null) ? null : _referencedType.getSuperClass();
++    }
++
++    @Override
++    public List<JavaType> getInterfaces() {
++        return (_referencedType == null) ? Collections.<JavaType>emptyList() : _referencedType.getInterfaces();
++    }
++
+     @Override
+     public StringBuilder getGenericSignature(StringBuilder sb) {
+         return _referencedType.getGenericSignature(sb);

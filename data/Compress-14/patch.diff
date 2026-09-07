@@ -1,0 +1,19 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveEntry.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveEntry.java
+index 836f212..e2b3cac 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveEntry.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveEntry.java
+@@ -816,7 +816,13 @@ public class TarArchiveEntry implements TarConstants, ArchiveEntry {
+         offset += GIDLEN;
+         size = TarUtils.parseOctalOrBinary(header, offset, SIZELEN);
+         offset += SIZELEN;
+-        modTime = TarUtils.parseOctal(header, offset, MODTIMELEN);
++        try {
++            modTime = TarUtils.parseOctal(header, offset, MODTIMELEN);
++        } catch (IllegalArgumentException ex) {
++            // workaround for broken tar implementations that write an
++            // invalid (e.g. NUL-prefixed) modification time field
++            modTime = 0;
++        }
+         offset += MODTIMELEN;
+         offset += CHKSUMLEN;
+         linkFlag = header[offset++];

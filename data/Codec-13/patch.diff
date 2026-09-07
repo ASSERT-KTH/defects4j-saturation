@@ -1,0 +1,41 @@
+diff --git a/src/main/java/org/apache/commons/codec/binary/StringUtils.java b/src/main/java/org/apache/commons/codec/binary/StringUtils.java
+index b3c399f..f08b388 100644
+--- a/src/main/java/org/apache/commons/codec/binary/StringUtils.java
++++ b/src/main/java/org/apache/commons/codec/binary/StringUtils.java
+@@ -67,6 +67,15 @@ public class StringUtils {
+      * @return {@code true} if the CharSequences are equal (case-sensitive), or both {@code null}
+      * @since 1.10
+      */
++    public static boolean equals(final CharSequence cs1, final CharSequence cs2) {
++        if (cs1 == cs2) {
++            return true;
++        }
++        if (cs1 == null || cs2 == null) {
++            return false;
++        }
++        return cs1.toString().equals(cs2.toString());
++    }
+ 
+     /**
+      * Calls {@link String#getBytes(Charset)}
+diff --git a/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java b/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
+index 125503a..6ccd3f2 100644
+--- a/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
++++ b/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
+@@ -19,6 +19,7 @@ package org.apache.commons.codec.language;
+ 
+ import org.apache.commons.codec.EncoderException;
+ import org.apache.commons.codec.StringEncoder;
++import org.apache.commons.codec.binary.StringUtils;
+ 
+ /**
+  * Encodes a string into a double metaphone value. This Implementation is based on the algorithm by <CITE>Lawrence
+@@ -241,7 +242,7 @@ public class DoubleMetaphone implements StringEncoder {
+      *          {@code false} otherwise.
+      */
+     public boolean isDoubleMetaphoneEqual(final String value1, final String value2, final boolean alternate) {
+-        return doubleMetaphone(value1, alternate).equals(doubleMetaphone(value2, alternate));
++        return StringUtils.equals(doubleMetaphone(value1, alternate), doubleMetaphone(value2, alternate));
+     }
+ 
+     /**

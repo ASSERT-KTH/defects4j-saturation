@@ -1,0 +1,38 @@
+{
+  "project": "Math",
+  "bug": 76,
+  "id": "Math-76",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T19:21:33Z",
+  "wallclock_s": 805,
+  "agent_s": 764,
+  "agent_rc": 0,
+  "num_turns": 35,
+  "api_duration_ms": 611288,
+  "total_cost_usd": 1.2665289999999998,
+  "session_id": "2e290758-d213-4228-8991-dbd02cfaa56b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 70,
+  "output_tokens": 55421,
+  "cache_read_input_tokens": 1808090,
+  "cache_creation_input_tokens": 86682,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.SingularValueSolverTest::testMath320A",
+    "org.apache.commons.math.linear.SingularValueSolverTest::testMath320B"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java"
+  ],
+  "patch_added_lines": 30,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 105,
+  "id": "Closure-105",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T00:10:50Z",
+  "wallclock_s": 122,
+  "agent_s": 75,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 53503,
+  "total_cost_usd": 0.16277840000000002,
+  "session_id": "f7815a3b-a791-4e92-9d77-1343d1c46769",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 5310,
+  "cache_read_input_tokens": 186942,
+  "cache_creation_input_tokens": 17387,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.FoldConstantsTest::testStringJoinAdd"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FoldConstants.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

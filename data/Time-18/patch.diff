@@ -1,0 +1,54 @@
+diff --git a/src/main/java/org/joda/time/chrono/GJChronology.java b/src/main/java/org/joda/time/chrono/GJChronology.java
+index 29e559d..b36b350 100644
+--- a/src/main/java/org/joda/time/chrono/GJChronology.java
++++ b/src/main/java/org/joda/time/chrono/GJChronology.java
+@@ -332,9 +332,21 @@ public final class GJChronology extends AssembledChronology {
+             return base.getDateTimeMillis(year, monthOfYear, dayOfMonth, millisOfDay);
+         }
+ 
+-        // Assume date is Gregorian.
+-        long instant = iGregorianChronology.getDateTimeMillis
+-            (year, monthOfYear, dayOfMonth, millisOfDay);
++        // Assume date is Gregorian, but it might be a date that is only
++        // valid in the Julian chronology, such as a leap day that the
++        // Gregorian calendar does not recognise.
++        long instant;
++        try {
++            instant = iGregorianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth, millisOfDay);
++        } catch (IllegalFieldValueException ex) {
++            instant = iJulianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth, millisOfDay);
++            if (instant >= iCutoverMillis) {
++                throw ex;
++            }
++            return instant;
++        }
+         if (instant < iCutoverMillis) {
+             // Maybe it's Julian.
+             instant = iJulianChronology.getDateTimeMillis
+@@ -359,11 +371,23 @@ public final class GJChronology extends AssembledChronology {
+                  hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);
+         }
+ 
+-        // Assume date is Gregorian.
++        // Assume date is Gregorian, but it might be a date that is only
++        // valid in the Julian chronology, such as a leap day that the
++        // Gregorian calendar does not recognise.
+         long instant;
++        try {
+             instant = iGregorianChronology.getDateTimeMillis
+                 (year, monthOfYear, dayOfMonth,
+                  hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);
++        } catch (IllegalFieldValueException ex) {
++            instant = iJulianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth,
++                 hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);
++            if (instant >= iCutoverMillis) {
++                throw ex;
++            }
++            return instant;
++        }
+         if (instant < iCutoverMillis) {
+             // Maybe it's Julian.
+             instant = iJulianChronology.getDateTimeMillis

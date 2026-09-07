@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 97,
+  "id": "Math-97",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:21:22Z",
+  "wallclock_s": 102,
+  "agent_s": 48,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 35542,
+  "total_cost_usd": 0.1515158,
+  "session_id": "68d024ae-0ebd-4588-ab96-8dffce14d67b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2780,
+  "cache_read_input_tokens": 267954,
+  "cache_creation_input_tokens": 16957,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.analysis.BrentSolverTest::testRootEndpoints"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/analysis/BrentSolver.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

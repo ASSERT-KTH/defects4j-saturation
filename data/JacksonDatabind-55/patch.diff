@@ -1,0 +1,73 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializers.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializers.java
+index 7f55a3f..8a8787c 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializers.java
+@@ -7,6 +7,7 @@ import java.util.Date;
+ import com.fasterxml.jackson.core.*;
+ import com.fasterxml.jackson.databind.*;
+ import com.fasterxml.jackson.databind.ser.impl.PropertySerializerMap;
++import com.fasterxml.jackson.databind.util.EnumValues;
+ 
+ @SuppressWarnings("serial")
+ public class StdKeySerializers
+@@ -79,7 +80,7 @@ public class StdKeySerializers
+                 return new Dynamic();
+             }
+             if (rawKeyType.isEnum()) {
+-                return new Default(Default.TYPE_ENUM, rawKeyType);
++                return EnumKeySerializer.construct(rawKeyType, config);
+             }
+         }
+         return DEFAULT_KEY_SERIALIZER;
+@@ -111,7 +112,6 @@ public class StdKeySerializers
+         final static int TYPE_DATE = 1;
+         final static int TYPE_CALENDAR = 2;
+         final static int TYPE_CLASS = 3;
+-        final static int TYPE_ENUM = 4;
+         final static int TYPE_TO_STRING = 5;
+ 
+         protected final int _typeId;
+@@ -133,13 +133,6 @@ public class StdKeySerializers
+             case TYPE_CLASS:
+                 g.writeFieldName(((Class<?>)value).getName());
+                 break;
+-            case TYPE_ENUM:
+-                {
+-                    String str = provider.isEnabled(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+-                            ? value.toString() : ((Enum<?>) value).name();
+-                    g.writeFieldName(str);
+-                }
+-                break;
+             case TYPE_TO_STRING:
+             default:
+                 g.writeFieldName(value.toString());
+@@ -212,7 +205,28 @@ public class StdKeySerializers
+      *
+      * @since 2.8
+      */
++    public static class EnumKeySerializer extends StdSerializer<Object>
++    {
++        protected final EnumValues _values;
++
++        protected EnumKeySerializer(Class<Enum<?>> enumType, EnumValues values) {
++            super(enumType, false);
++            _values = values;
++        }
+ 
++        @SuppressWarnings("unchecked")
++        public static EnumKeySerializer construct(Class<?> enumType, SerializationConfig config) {
++            EnumValues values = EnumValues.construct(config, (Class<Enum<?>>) enumType);
++            return new EnumKeySerializer((Class<Enum<?>>) enumType, values);
++        }
+ 
+-        
++        @Override
++        public void serialize(Object value, JsonGenerator g, SerializerProvider provider) throws IOException {
++            if (provider.isEnabled(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)) {
++                g.writeFieldName(value.toString());
++                return;
++            }
++            g.writeFieldName(_values.serializedValueFor((Enum<?>) value));
++        }
++    }
+ }

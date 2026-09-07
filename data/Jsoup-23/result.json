@@ -1,0 +1,38 @@
+{
+  "project": "Jsoup",
+  "bug": 23,
+  "id": "Jsoup-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:54:34Z",
+  "wallclock_s": 47,
+  "agent_s": 29,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 24362,
+  "total_cost_usd": 0.10578619999999997,
+  "session_id": "1a1ae1b3-aac5-4b9d-bef1-8443b753ca25",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1792,
+  "cache_read_input_tokens": 171381,
+  "cache_creation_input_tokens": 12769,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.EntitiesTest::letterDigitEntities"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java",
+    "src/main/java/org/jsoup/parser/Tokeniser.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+{
+  "project": "Cli",
+  "bug": 11,
+  "id": "Cli-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:21:45Z",
+  "wallclock_s": 29,
+  "agent_s": 20,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 19290,
+  "total_cost_usd": 0.08773700000000001,
+  "session_id": "3029d0ba-ca11-404c-9d64-39c54f66a1bc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1462,
+  "cache_read_input_tokens": 140055,
+  "cache_creation_input_tokens": 10704,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.HelpFormatterTest::testPrintOptionWithEmptyArgNameUsage"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/HelpFormatter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

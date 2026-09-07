@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 100,
+  "id": "Math-100",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:22:42Z",
+  "wallclock_s": 80,
+  "agent_s": 41,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 27725,
+  "total_cost_usd": 0.1270406,
+  "session_id": "207cbee1-648b-41f5-8d29-8e579d105063",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2242,
+  "cache_read_input_tokens": 192273,
+  "cache_creation_input_tokens": 15976,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.estimation.GaussNewtonEstimatorTest::testBoundParameters"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/estimation/AbstractEstimator.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

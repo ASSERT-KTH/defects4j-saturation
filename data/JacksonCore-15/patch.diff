@@ -1,0 +1,213 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+index e2de6f8..e995cc9 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+@@ -139,6 +139,22 @@ public class FilteringParserDelegate extends JsonParserDelegate
+         return _matchCount;
+     }
+ 
++    /**
++     * Method called when a new match is found: this happens when a filter,
++     * previously not {@link TokenFilter#INCLUDE_ALL}, becomes
++     * <code>INCLUDE_ALL</code>, indicating start of an included subtree.
++     * Used to enforce {@link #_allowMultipleMatches}: if a match had already
++     * been found earlier and multiple matches are not allowed, further
++     * matches are suppressed.
++     */
++    protected boolean _verifyAllowedMatches() throws IOException {
++        if (_matchCount == 0 || _allowMultipleMatches) {
++            ++_matchCount;
++            return true;
++        }
++        return false;
++    }
++
+     /*
+     /**********************************************************
+     /* Public API, token accessors
+@@ -298,13 +314,20 @@ public class FilteringParserDelegate extends JsonParserDelegate
+             if (f != TokenFilter.INCLUDE_ALL) {
+                 f = f.filterStartArray();
+             }
++            if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                f = null;
++            }
+             _itemFilter = f;
+             if (f == TokenFilter.INCLUDE_ALL) {
+                 _headContext = _headContext.createChildArrayContext(f, true);
+                 return (_currToken = t);
+             }
++            if (f == null) {
++                delegate.skipChildren();
++                break;
++            }
+             _headContext = _headContext.createChildArrayContext(f, false);
+-            
++
+             // Also: only need buffering if parent path to be included
+             if (_includePath) {
+                 t = _nextTokenWithBuffering(_headContext);
+@@ -334,11 +357,18 @@ public class FilteringParserDelegate extends JsonParserDelegate
+             if (f != TokenFilter.INCLUDE_ALL) {
+                 f = f.filterStartObject();
+             }
++            if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                f = null;
++            }
+             _itemFilter = f;
+             if (f == TokenFilter.INCLUDE_ALL) {
+                 _headContext = _headContext.createChildObjectContext(f, true);
+                 return (_currToken = t);
+             }
++            if (f == null) {
++                delegate.skipChildren();
++                break;
++            }
+             _headContext = _headContext.createChildObjectContext(f, false);
+             // Also: only need buffering if parent path to be included
+             if (_includePath) {
+@@ -396,6 +426,11 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                     delegate.skipChildren();
+                     break;
+                 }
++                if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                    delegate.nextToken();
++                    delegate.skipChildren();
++                    break;
++                }
+                 _itemFilter = f;
+                 if (f == TokenFilter.INCLUDE_ALL) {
+                     if (_includePath) {
+@@ -421,7 +456,9 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                 f = _headContext.checkValue(f);
+                 if ((f == TokenFilter.INCLUDE_ALL)
+                         || ((f != null) && f.includeValue(delegate))) {
+-                    return (_currToken = t);
++                    if (_verifyAllowedMatches()) {
++                        return (_currToken = t);
++                    }
+                 }
+             }
+             // Otherwise not included (leaves must be explicitly included)
+@@ -468,11 +505,18 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                 if (f != TokenFilter.INCLUDE_ALL) {
+                     f = f.filterStartArray();
+                 }
++                if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                    f = null;
++                }
+                 _itemFilter = f;
+                 if (f == TokenFilter.INCLUDE_ALL) {
+                     _headContext = _headContext.createChildArrayContext(f, true);
+                     return (_currToken = t);
+                 }
++                if (f == null) {
++                    delegate.skipChildren();
++                    continue main_loop;
++                }
+                 _headContext = _headContext.createChildArrayContext(f, false);
+                 // but if we didn't figure it out yet, need to buffer possible events
+                 if (_includePath) {
+@@ -503,11 +547,18 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                 if (f != TokenFilter.INCLUDE_ALL) {
+                     f = f.filterStartObject();
+                 }
++                if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                    f = null;
++                }
+                 _itemFilter = f;
+                 if (f == TokenFilter.INCLUDE_ALL) {
+                     _headContext = _headContext.createChildObjectContext(f, true);
+                     return (_currToken = t);
+                 }
++                if (f == null) {
++                    delegate.skipChildren();
++                    continue main_loop;
++                }
+                 _headContext = _headContext.createChildObjectContext(f, false);
+                 if (_includePath) {
+                     t = _nextTokenWithBuffering(_headContext);
+@@ -553,6 +604,11 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                         delegate.skipChildren();
+                         continue main_loop;
+                     }
++                    if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                        delegate.nextToken();
++                        delegate.skipChildren();
++                        continue main_loop;
++                    }
+                     _itemFilter = f;
+                     if (f == TokenFilter.INCLUDE_ALL) {
+                         if (_includePath) {
+@@ -580,7 +636,9 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                     f = _headContext.checkValue(f);
+                     if ((f == TokenFilter.INCLUDE_ALL)
+                             || ((f != null) && f.includeValue(delegate))) {
+-                        return (_currToken = t);
++                        if (_verifyAllowedMatches()) {
++                            return (_currToken = t);
++                        }
+                     }
+                 }
+                 // Otherwise not included (leaves must be explicitly included)
+@@ -617,11 +675,18 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                 if (f != TokenFilter.INCLUDE_ALL) {
+                     f = f.filterStartArray();
+                 }
++                if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                    f = null;
++                }
+                 _itemFilter = f;
+                 if (f == TokenFilter.INCLUDE_ALL) {
+                     _headContext = _headContext.createChildArrayContext(f, true);
+                     return _nextBuffered(buffRoot);
+                 }
++                if (f == null) {
++                    delegate.skipChildren();
++                    continue main_loop;
++                }
+                 _headContext = _headContext.createChildArrayContext(f, false);
+                 continue main_loop;
+ 
+@@ -644,11 +709,18 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                 if (f != TokenFilter.INCLUDE_ALL) {
+                     f = f.filterStartObject();
+                 }
++                if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                    f = null;
++                }
+                 _itemFilter = f;
+                 if (f == TokenFilter.INCLUDE_ALL) {
+                     _headContext = _headContext.createChildObjectContext(f, true);
+                     return _nextBuffered(buffRoot);
+                 }
++                if (f == null) {
++                    delegate.skipChildren();
++                    continue main_loop;
++                }
+                 _headContext = _headContext.createChildObjectContext(f, false);
+                 continue main_loop;
+ 
+@@ -696,6 +768,11 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                         delegate.skipChildren();
+                         continue main_loop;
+                     }
++                    if ((f == TokenFilter.INCLUDE_ALL) && !_verifyAllowedMatches()) {
++                        delegate.nextToken();
++                        delegate.skipChildren();
++                        continue main_loop;
++                    }
+                     _itemFilter = f;
+                     if (f == TokenFilter.INCLUDE_ALL) {
+                         return _nextBuffered(buffRoot);
+@@ -712,7 +789,9 @@ public class FilteringParserDelegate extends JsonParserDelegate
+                     f = _headContext.checkValue(f);
+                     if ((f == TokenFilter.INCLUDE_ALL)
+                             || ((f != null) && f.includeValue(delegate))) {
+-                        return _nextBuffered(buffRoot);
++                        if (_verifyAllowedMatches()) {
++                            return _nextBuffered(buffRoot);
++                        }
+                     }
+                 }
+                 // Otherwise not included (leaves must be explicitly included)

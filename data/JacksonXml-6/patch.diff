@@ -1,0 +1,72 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+index 63e42a1..8507afe 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.*;
+ import com.fasterxml.jackson.core.base.GeneratorBase;
+ import com.fasterxml.jackson.core.io.IOContext;
+ import com.fasterxml.jackson.core.json.JsonWriteContext;
++import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+ import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
+ import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+@@ -808,7 +809,7 @@ public final class ToXmlGenerator
+     public void writeBinary(Base64Variant b64variant,
+     		byte[] data, int offset, int len) throws IOException
+     {
+-        if (data == null) {
++        if (data == null || len == 0) {
+             writeNull();
+             return;
+         }
+@@ -840,16 +841,43 @@ public final class ToXmlGenerator
+         }
+     }
+ 
+-                // Stax2 API only has 'full buffer' write method:
+-              // should we consider pretty-printing or not?
+-
+-
++    @Override
++    public int writeBinary(Base64Variant b64variant,
++            InputStream data, int dataLength) throws IOException
++    {
++        byte[] bytes = (dataLength < 0) ?
++                _readAll(data) : _readAll(data, dataLength);
++        writeBinary(b64variant, bytes, 0, bytes.length);
++        return bytes.length;
++    }
+ 
+-        // base64 encodes up to 3 bytes into a 4 bytes string
++    private byte[] _readAll(InputStream in) throws IOException
++    {
++        ByteArrayBuilder bb = new ByteArrayBuilder();
++        final byte[] buffer = new byte[4000];
++        int count;
++        while ((count = in.read(buffer)) > 0) {
++            bb.write(buffer, 0, count);
++        }
++        byte[] result = bb.toByteArray();
++        bb.release();
++        return result;
++    }
+ 
+-        // we still have < 3 bytes in the buffer
++    private byte[] _readAll(InputStream in, int len) throws IOException
++    {
++        byte[] result = new byte[len];
++        int offset = 0;
++        while (offset < len) {
++            int count = in.read(result, offset, len - offset);
++            if (count < 0) {
++                throw new IOException("Too few bytes available: missing "+(len - offset)+" bytes (out of "+len+")");
++            }
++            offset += count;
++        }
++        return result;
++    }
+ 
+-    
+     private byte[] toFullBuffer(byte[] data, int offset, int len)
+     {
+         // might already be ok:

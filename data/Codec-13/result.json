@@ -1,0 +1,39 @@
+{
+  "project": "Codec",
+  "bug": 13,
+  "id": "Codec-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:14:18Z",
+  "wallclock_s": 75,
+  "agent_s": 54,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 45667,
+  "total_cost_usd": 0.2232422,
+  "session_id": "a0de0f7e-bdc5-411e-b812-47072e02bb83",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 3865,
+  "cache_read_input_tokens": 391341,
+  "cache_creation_input_tokens": 25610,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.codec.language.DoubleMetaphoneTest::testIsDoubleMetaphoneEqualBasic",
+    "org.apache.commons.codec.language.DoubleMetaphoneTest::testCodec184"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/codec/binary/StringUtils.java",
+    "src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

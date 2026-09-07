@@ -1,0 +1,39 @@
+{
+  "project": "Compress",
+  "bug": 44,
+  "id": "Compress-44",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:50:44Z",
+  "wallclock_s": 71,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 17564,
+  "total_cost_usd": 0.1086922,
+  "session_id": "cac60d3e-1e22-47cc-aada-0be636387965",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1177,
+  "cache_read_input_tokens": 148651,
+  "cache_creation_input_tokens": 15732,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.utils.ChecksumCalculatingInputStreamTest::testClassInstantiationWithParameterBeingNullThrowsNullPointerExceptionOne",
+    "org.apache.commons.compress.utils.ChecksumCalculatingInputStreamTest::testClassInstantiationWithParameterBeingNullThrowsNullPointerExceptionTwo",
+    "org.apache.commons.compress.utils.ChecksumCalculatingInputStreamTest::testClassInstantiationWithParameterBeingNullThrowsNullPointerExceptionThree"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/utils/ChecksumCalculatingInputStream.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

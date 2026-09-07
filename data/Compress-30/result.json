@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 30,
+  "id": "Compress-30",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:43:43Z",
+  "wallclock_s": 64,
+  "agent_s": 23,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 11194,
+  "total_cost_usd": 0.0612604,
+  "session_id": "9edd1381-f25b-4316-84e8-abbf22fe2a73",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 738,
+  "cache_read_input_tokens": 64017,
+  "cache_creation_input_tokens": 9624,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStreamTest::readOfLength0ShouldReturn0"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

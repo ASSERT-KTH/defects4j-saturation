@@ -1,0 +1,160 @@
+diff --git a/src/com/google/javascript/jscomp/InlineVariables.java b/src/com/google/javascript/jscomp/InlineVariables.java
+index 18c9fbe..944b32d 100644
+--- a/src/com/google/javascript/jscomp/InlineVariables.java
++++ b/src/com/google/javascript/jscomp/InlineVariables.java
+@@ -19,6 +19,7 @@ package com.google.javascript.jscomp;
+ import com.google.common.base.Preconditions;
+ import com.google.common.base.Predicate;
+ import com.google.common.base.Predicates;
++import com.google.common.collect.Lists;
+ import com.google.common.collect.Maps;
+ import com.google.common.collect.Sets;
+ import com.google.javascript.jscomp.CodingConvention.SubclassRelationship;
+@@ -281,7 +282,8 @@ class InlineVariables implements CompilerPass {
+           if (aliasCandidates.containsKey(nameNode)) {
+             AliasCandidate candidate = aliasCandidates.get(nameNode);
+             if (!staleVars.contains(candidate.alias) &&
+-                !isVarInlineForbidden(candidate.alias)) {
++                !isVarInlineForbidden(candidate.alias) &&
++                isSafeToAliasOutOfArguments(v, candidate.refInfo.references)) {
+               Reference aliasInit;
+               aliasInit = candidate.refInfo.getInitializingReference();
+               Node value = aliasInit.getAssignedValue();
+@@ -296,6 +298,137 @@ class InlineVariables implements CompilerPass {
+       }
+     }
+ 
++    /**
++     * Determines whether it is safe to replace all uses of {@code alias}
++     * (given by {@code aliasReferences}, starting with its declaration) with
++     * reads of the formal parameter {@code param}.
++     *
++     * This is unsafe when the enclosing function's "arguments" object may
++     * have been used to indirectly write to (or leak a live reference to)
++     * {@code param}, since in that case {@code param}'s value may no longer
++     * match the value that was originally copied into {@code alias}.
++     */
++    private boolean isSafeToAliasOutOfArguments(
++        Var param, List<Reference> aliasReferences) {
++      if (param.getParentNode() == null
++          || param.getParentNode().getType() != Token.LP) {
++        // Not a formal parameter, so the "arguments" object can't alias it.
++        return true;
++      }
++
++      Node function = param.scope.getRootNode();
++      if (function.getType() != Token.FUNCTION) {
++        return true;
++      }
++
++      List<Node> argumentsRefs = Lists.newArrayList();
++      collectArgumentsReferences(function.getLastChild(), argumentsRefs);
++      if (argumentsRefs.isEmpty()) {
++        return true;
++      }
++
++      // Find the call (if any) through which the alias itself is ultimately
++      // used (e.g. the CALL node in "alias.apply(...)"), and note whether
++      // that same call also passes the whole "arguments" object along.
++      Node ownCall = null;
++      boolean ownCallHasWholeArguments = false;
++      for (int i = 1; i < aliasReferences.size(); i++) {
++        Reference use = aliasReferences.get(i);
++        Node parent = use.getParent();
++        Node grandparent = use.getGrandparent();
++        if (parent.getType() == Token.GETPROP
++            && grandparent.getType() == Token.CALL
++            && grandparent.getFirstChild() == parent) {
++          ownCall = grandparent;
++          for (Node arg = ownCall.getFirstChild().getNext();
++               arg != null; arg = arg.getNext()) {
++            if (arg.getType() == Token.NAME
++                && arg.getString().equals("arguments")) {
++              ownCallHasWholeArguments = true;
++            }
++          }
++        }
++      }
++
++      for (Node argumentsName : argumentsRefs) {
++        if (isArgumentsWrite(argumentsName)) {
++          return false;
++        }
++
++        Node parent = argumentsName.getParent();
++        boolean isElementAccess =
++            (parent.getType() == Token.GETELEM || parent.getType() == Token.GETPROP)
++            && parent.getFirstChild() == argumentsName;
++        Node exprNode = isElementAccess ? parent : argumentsName;
++        Node callSite = getEnclosingCallIfArgument(exprNode);
++        if (callSite == null) {
++          // Merely reading (part of) "arguments" without passing it
++          // elsewhere cannot indirectly modify a parameter.
++          continue;
++        }
++
++        if (!isElementAccess) {
++          // The whole "arguments" object is passed to some call. If that
++          // call is not the alias's own use, the callee may run and mutate
++          // parameters before the alias is read.
++          if (callSite != ownCall) {
++            return false;
++          }
++        } else if (ownCallHasWholeArguments) {
++          // A piece of "arguments" escapes to some call, and separately the
++          // whole "arguments" object is passed at the alias's use point.
++          // Conservatively assume the parameter may have been touched.
++          return false;
++        }
++      }
++
++      return true;
++    }
++
++    /**
++     * @return Whether the given "arguments" NAME node is the target of an
++     *     assignment via an indexed element, e.g. "arguments[0] = ...".
++     */
++    private boolean isArgumentsWrite(Node argumentsName) {
++      Node parent = argumentsName.getParent();
++      if (parent.getType() != Token.GETELEM || parent.getFirstChild() != argumentsName) {
++        return false;
++      }
++      Node grandparent = parent.getParent();
++      return (NodeUtil.isAssignmentOp(grandparent) && grandparent.getFirstChild() == parent)
++          || grandparent.getType() == Token.INC
++          || grandparent.getType() == Token.DEC;
++    }
++
++    /**
++     * @return The CALL node that {@code expr} is passed to as an argument,
++     *     or null if {@code expr} is not a call argument.
++     */
++    private Node getEnclosingCallIfArgument(Node expr) {
++      Node parent = expr.getParent();
++      if (parent != null && parent.getType() == Token.CALL
++          && parent.getFirstChild() != expr) {
++        return parent;
++      }
++      return null;
++    }
++
++    /**
++     * Collects all NAME nodes named "arguments" within {@code n}, not
++     * descending into nested functions (which have their own "arguments").
++     */
++    private void collectArgumentsReferences(Node n, List<Node> out) {
++      if (n.getType() == Token.FUNCTION) {
++        return;
++      }
++      if (n.getType() == Token.NAME && n.getString().equals("arguments")) {
++        out.add(n);
++      }
++      for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++        collectArgumentsReferences(c, out);
++      }
++    }
++
+     /**
+      * If there are any variable references in the given node tree, blacklist
+      * them to prevent the pass from trying to inline the variable.

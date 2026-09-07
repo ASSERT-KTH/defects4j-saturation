@@ -1,0 +1,13 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+index 23d8af2..e67c702 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+@@ -799,6 +799,8 @@ enum HtmlTreeBuilderState {
+                 // if: An end tag whose tag name is "script" -- scripting nesting level, if evaluating scripts
+                 tb.pop();
+                 tb.transition(tb.originalState());
++                // Make sure the tokeniser is on the right state, especially after self-closing tags: <script src="foo" />
++                tb.tokeniser.transition(TokeniserState.Data);
+             }
+             return true;
+         }

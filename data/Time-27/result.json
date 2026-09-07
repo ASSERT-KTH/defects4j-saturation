@@ -1,0 +1,37 @@
+{
+  "project": "Time",
+  "bug": 27,
+  "id": "Time-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:53:26Z",
+  "wallclock_s": 368,
+  "agent_s": 332,
+  "agent_rc": 0,
+  "num_turns": 53,
+  "api_duration_ms": 309858,
+  "total_cost_usd": 0.9806834000000003,
+  "session_id": "83d47d39-3d52-4ac8-a077-06b13fb87830",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 106,
+  "output_tokens": 27046,
+  "cache_read_input_tokens": 2307472,
+  "cache_creation_input_tokens": 61563,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.format.TestPeriodFormatterBuilder::testBug2495455"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/format/PeriodFormatterBuilder.java"
+  ],
+  "patch_added_lines": 40,
+  "patch_removed_lines": 24,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 8,
+  "id": "JacksonDatabind-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:32:33Z",
+  "wallclock_s": 252,
+  "agent_s": 164,
+  "agent_rc": 0,
+  "num_turns": 24,
+  "api_duration_ms": 110827,
+  "total_cost_usd": 0.37889019999999995,
+  "session_id": "6369b2ff-4dfb-43b9-ba7d-985a6933996e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 48,
+  "output_tokens": 9026,
+  "cache_read_input_tokens": 749391,
+  "cache_creation_input_tokens": 33894,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.TestJdkTypes::testStringBuilder"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/CreatorCollector.java"
+  ],
+  "patch_added_lines": 20,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

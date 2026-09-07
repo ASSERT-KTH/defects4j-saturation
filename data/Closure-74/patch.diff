@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+index a61bb6c..d1b4748 100644
+--- a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
++++ b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+@@ -906,6 +906,23 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+               && NodeUtil.isLiteralValue(right.getFirstChild(), false)));
+     int lhType = left.getType();
+     int rhType = right.getType();
++
++    // A NOT of a literal value is itself a literal boolean value, so treat
++    // it as a TRUE/FALSE node for the purpose of dispatching and comparing
++    // against other boolean-like values (true, false, null).
++    if (lhType == Token.NOT) {
++      TernaryValue lhValue = NodeUtil.getPureBooleanValue(left);
++      if (lhValue != TernaryValue.UNKNOWN) {
++        lhType = lhValue.toBoolean(true) ? Token.TRUE : Token.FALSE;
++      }
++    }
++    if (rhType == Token.NOT) {
++      TernaryValue rhValue = NodeUtil.getPureBooleanValue(right);
++      if (rhValue != TernaryValue.UNKNOWN) {
++        rhType = rhValue.toBoolean(true) ? Token.TRUE : Token.FALSE;
++      }
++    }
++
+     switch (lhType) {
+       case Token.VOID:
+         if (!NodeUtil.isLiteralValue(left.getFirstChild(), false)) {

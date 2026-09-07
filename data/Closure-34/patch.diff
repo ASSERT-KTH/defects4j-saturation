@@ -1,0 +1,52 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index f28378c..e1e1888 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -108,20 +108,34 @@ class CodeGenerator {
+       // Handle associativity.
+       // e.g. if the parse tree is a * (b * c),
+       // we can simply generate a * b * c.
+-      if (last.getType() == type &&
+-          NodeUtil.isAssociative(type)) {
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p, rhsContext);
+-      } else if (NodeUtil.isAssignmentOp(n) && NodeUtil.isAssignmentOp(last)) {
+-        // Assignments are the only right-associative binary operators
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p, rhsContext);
+-      } else {
+-        addExpr(first, p, context);
++      //
++      // A chain of left-nested nodes of the same type (e.g. a + b + c + ...)
++      // is walked iteratively here, rather than recursing into "first" for
++      // every level, since deeply nested expressions (thousands of terms)
++      // would otherwise overflow the stack.
++      Node current = n;
++      java.util.ArrayDeque<Node> parents = new java.util.ArrayDeque<Node>();
++      while (current.getType() == type
++          && current.getChildCount() == 2
++          && current.getFirstChild() != current.getLastChild()) {
++        parents.push(current);
++        current = current.getFirstChild();
++      }
++
++      addExpr(current, p, context);
++      while (!parents.isEmpty()) {
++        Node parent = parents.pop();
++        Node parentLast = parent.getLastChild();
++
+         cc.addOp(opstr, true);
+-        addExpr(last, p + 1, rhsContext);
++
++        if ((parentLast.getType() == type && NodeUtil.isAssociative(type)) ||
++            (NodeUtil.isAssignmentOp(parent) &&
++                NodeUtil.isAssignmentOp(parentLast))) {
++          addExpr(parentLast, p, rhsContext);
++        } else {
++          addExpr(parentLast, p + 1, rhsContext);
++        }
+       }
+       return;
+     }

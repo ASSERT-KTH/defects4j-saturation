@@ -1,0 +1,39 @@
+{
+  "project": "Jsoup",
+  "bug": 18,
+  "id": "Jsoup-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:52:16Z",
+  "wallclock_s": 48,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 22001,
+  "total_cost_usd": 0.12607680000000002,
+  "session_id": "18659bc4-15b3-49a2-945e-649b0298845d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1572,
+  "cache_read_input_tokens": 200584,
+  "cache_creation_input_tokens": 16298,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.CharacterReaderTest::handleCarriageReturnAsLineFeed",
+    "org.jsoup.parser.CharacterReaderTest::consumeToEnd",
+    "org.jsoup.parser.ParserTest::handlesNewlinesAndWhitespaceInTag"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

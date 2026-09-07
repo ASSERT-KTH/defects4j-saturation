@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 29,
+  "id": "Mockito-29",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:19:34Z",
+  "wallclock_s": 141,
+  "agent_s": 57,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 10793,
+  "total_cost_usd": 0.0667948,
+  "session_id": "ee36dc31-567b-4cf3-a0ce-d85d79e2278d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 662,
+  "cache_read_input_tokens": 84459,
+  "cache_creation_input_tokens": 10075,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.NPEWithCertainMatchersTest::shouldNotThrowNPEWhenNullPassedToSame"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/matchers/Same.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

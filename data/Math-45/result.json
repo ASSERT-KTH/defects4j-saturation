@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 45,
+  "id": "Math-45",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:29:54Z",
+  "wallclock_s": 134,
+  "agent_s": 55,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 28694,
+  "total_cost_usd": 0.12134900000000001,
+  "session_id": "01a57742-9462-423a-b840-ba5ed72528ad",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2178,
+  "cache_read_input_tokens": 195285,
+  "cache_creation_input_tokens": 14580,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.OpenMapRealMatrixTest::testMath679"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/OpenMapRealMatrix.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

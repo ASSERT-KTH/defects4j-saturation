@@ -1,0 +1,185 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
+index 3a053d4..08d9d2e 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
+@@ -28,10 +28,8 @@ public class CoreOperationGreaterThan extends CoreOperationRelationalExpression
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l > r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean evaluateCompare(double l, double r) {
++        return l > r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
+index b9f156c..1de3dce 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
+@@ -29,10 +29,8 @@ public class CoreOperationGreaterThanOrEqual extends
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l >= r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean evaluateCompare(double l, double r) {
++        return l >= r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
+index 374f772..974b7ce 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
+@@ -28,10 +28,8 @@ public class CoreOperationLessThan extends CoreOperationRelationalExpression {
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l < r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean evaluateCompare(double l, double r) {
++        return l < r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
+index db562d8..fa75768 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
+@@ -29,10 +29,8 @@ public class CoreOperationLessThanOrEqual extends
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l <= r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean evaluateCompare(double l, double r) {
++        return l <= r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+index 4893dd6..a9bdb7c 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+@@ -16,7 +16,15 @@
+  */
+ package org.apache.commons.jxpath.ri.compiler;
+ 
++import java.util.ArrayList;
++import java.util.Collection;
++import java.util.Iterator;
++import java.util.List;
+ 
++import org.apache.commons.jxpath.ri.EvalContext;
++import org.apache.commons.jxpath.ri.InfoSetUtil;
++import org.apache.commons.jxpath.ri.axes.InitialContext;
++import org.apache.commons.jxpath.ri.axes.SelfContext;
+ 
+ /**
+  * Base implementation of Expression for the operations "&gt;", "&gt;=", "&lt;", "&lt;=".
+@@ -30,20 +38,90 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
+         super(args);
+     }
+ 
++    public final Object computeValue(EvalContext context) {
++        return compute(args[0].compute(context), args[1].compute(context))
++            ? Boolean.TRUE
++            : Boolean.FALSE;
++    }
+ 
+-    protected final int getPrecedence() {
+-        return 3;
++    /**
++     * Compares two values honoring the XPath rules for node-set comparisons:
++     * if either operand is a node-set, the comparison is true if it holds
++     * true for at least one of the values in that node-set.
++     */
++    private boolean compute(Object l, Object r) {
++        if (l instanceof InitialContext) {
++            ((EvalContext) l).reset();
++        }
++        if (l instanceof SelfContext) {
++            l = ((EvalContext) l).getSingleNodePointer();
++        }
++        if (r instanceof InitialContext) {
++            ((EvalContext) r).reset();
++        }
++        if (r instanceof SelfContext) {
++            r = ((EvalContext) r).getSingleNodePointer();
++        }
++        if (l instanceof Collection) {
++            l = ((Collection) l).iterator();
++        }
++        if (r instanceof Collection) {
++            r = ((Collection) r).iterator();
++        }
++        if ((l instanceof Iterator) && !(r instanceof Iterator)) {
++            return containsMatch((Iterator) l, r);
++        }
++        if (!(l instanceof Iterator) && (r instanceof Iterator)) {
++            return containsMatch((Iterator) r, l);
++        }
++        if (l instanceof Iterator && r instanceof Iterator) {
++            return findMatch((Iterator) l, (Iterator) r);
++        }
++        return evaluateCompare(InfoSetUtil.doubleValue(l), InfoSetUtil.doubleValue(r));
+     }
+ 
+-    protected final boolean isSymmetric() {
++    /**
++     * Returns true if the comparison holds for the given value paired with
++     * some element of the iterator. The iterator is assumed to hold the
++     * left-hand operand's values.
++     */
++    private boolean containsMatch(Iterator it, Object value) {
++        double d = InfoSetUtil.doubleValue(value);
++        while (it.hasNext()) {
++            if (evaluateCompare(InfoSetUtil.doubleValue(it.next()), d)) {
++                return true;
++            }
++        }
+         return false;
+     }
+ 
++    private boolean findMatch(Iterator lit, Iterator rit) {
++        List rvalues = new ArrayList();
++        while (rit.hasNext()) {
++            rvalues.add(new Double(InfoSetUtil.doubleValue(rit.next())));
++        }
++        while (lit.hasNext()) {
++            double l = InfoSetUtil.doubleValue(lit.next());
++            for (Iterator it = rvalues.iterator(); it.hasNext();) {
++                if (evaluateCompare(l, ((Double) it.next()).doubleValue())) {
++                    return true;
++                }
++            }
++        }
++        return false;
++    }
+ 
++    /**
++     * Evaluates the actual relational operator on two double values.
++     */
++    protected abstract boolean evaluateCompare(double l, double r);
+ 
++    protected final int getPrecedence() {
++        return 3;
++    }
+ 
+-
+-
+-
++    protected final boolean isSymmetric() {
++        return false;
++    }
+ 
+ }

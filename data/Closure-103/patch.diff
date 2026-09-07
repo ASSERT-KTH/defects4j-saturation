@@ -1,0 +1,33 @@
+diff --git a/src/com/google/javascript/jscomp/ControlFlowAnalysis.java b/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
+index 3b67af3..6bbbcf0 100644
+--- a/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
++++ b/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
+@@ -889,6 +889,7 @@ final class ControlFlowAnalysis implements Callback, CompilerPass {
+       case Token.THROW:
+       case Token.NEW:
+       case Token.ASSIGN:
++      case Token.INSTANCEOF:
+       case Token.INC:
+       case Token.DEC:
+         return true;
+diff --git a/src/com/google/javascript/jscomp/DisambiguateProperties.java b/src/com/google/javascript/jscomp/DisambiguateProperties.java
+index 4937879..ef226d5 100644
+--- a/src/com/google/javascript/jscomp/DisambiguateProperties.java
++++ b/src/com/google/javascript/jscomp/DisambiguateProperties.java
+@@ -760,9 +760,16 @@ class DisambiguateProperties<T> implements CompilerPass {
+       }
+       // If the property does not exist on the referenced type but the original
+       // type is an object type, see if any subtype has the property.
++      if (foundType == null) {
++        JSType subType = registry.getGreatestSubtypeWithProperty(type, field);
+         // getGreatestSubtypeWithProperty does not guarantee that the property
+         // is defined on the returned type, it just indicates that it might be,
+         // so we have to double check.
++        ObjectType foundSubType = ObjectType.cast(subType);
++        if (foundSubType != null && foundSubType.hasOwnProperty(field)) {
++          foundType = foundSubType;
++        }
++      }
+       return foundType;
+     }
+ 

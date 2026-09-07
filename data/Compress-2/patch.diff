@@ -1,0 +1,66 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/ar/ArArchiveInputStream.java b/src/main/java/org/apache/commons/compress/archivers/ar/ArArchiveInputStream.java
+index acfe327..52dafd1 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/ar/ArArchiveInputStream.java
++++ b/src/main/java/org/apache/commons/compress/archivers/ar/ArArchiveInputStream.java
+@@ -39,10 +39,13 @@ public class ArArchiveInputStream extends ArchiveInputStream {
+      * If getNextEnxtry has been called, the entry metadata is stored in
+      * currentEntry.
+      */
++    private ArArchiveEntry currentEntry = null;
++
+     /*
+-     * The offset where the current entry started. -1 if no entry has been
+-     * called
++     * The offset where the current entry's content started. Undefined if
++     * currentEntry is null.
+      */
++    private long entryOffset = 0;
+ 
+     public ArArchiveInputStream( final InputStream pInput ) {
+         input = pInput;
+@@ -57,8 +60,17 @@ public class ArArchiveInputStream extends ArchiveInputStream {
+      *             if the entry could not be read
+      */
+     public ArArchiveEntry getNextArEntry() throws IOException {
++        if (currentEntry != null) {
++            final long entryEnd = entryOffset + currentEntry.getLength();
++            while (offset < entryEnd) {
++                if (read() < 0) {
+                     // hit EOF before previous entry was complete
+                     // TODO: throw an exception instead?
++                    break;
++                }
++            }
++            currentEntry = null;
++        }
+ 
+         if (offset == 0) {
+             final byte[] expected = ArArchiveEntry.HEADER.getBytes();
+@@ -111,9 +123,11 @@ public class ArArchiveInputStream extends ArchiveInputStream {
+             }
+         }
+ 
+-        return new ArArchiveEntry(new String(name).trim(),
++        entryOffset = offset;
++        currentEntry = new ArArchiveEntry(new String(name).trim(),
+                                           Long.parseLong(new String(length)
+                                                          .trim()));
++        return currentEntry;
+     }
+ 
+ 
+@@ -140,6 +154,14 @@ public class ArArchiveInputStream extends ArchiveInputStream {
+ 
+     public int read(byte[] b, final int off, final int len) throws IOException {
+         int toRead = len;
++        if (currentEntry != null) {
++            final long entryEnd = entryOffset + currentEntry.getLength();
++            if (len > 0 && entryEnd > offset) {
++                toRead = (int) Math.min(len, entryEnd - offset);
++            } else {
++                return -1;
++            }
++        }
+         final int ret = this.input.read(b, off, toRead);
+         offset += (ret > 0 ? ret : 0);
+         return ret;

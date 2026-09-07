@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 92,
+  "id": "Jsoup-92",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:29:53Z",
+  "wallclock_s": 191,
+  "agent_s": 161,
+  "agent_rc": 0,
+  "num_turns": 36,
+  "api_duration_ms": 140705,
+  "total_cost_usd": 0.6154593999999998,
+  "session_id": "eee24a4f-83ac-44a9-89f9-374d434445c5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 70,
+  "output_tokens": 12202,
+  "cache_read_input_tokens": 1465467,
+  "cache_creation_input_tokens": 48765,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::retainsAttributesOfDifferentCaseIfSensitive",
+    "org.jsoup.parser.HtmlParserTest::dropsDuplicateAttributes",
+    "org.jsoup.parser.XmlTreeBuilderTest::dropsDuplicateAttributes"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Attributes.java",
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilder.java",
+    "src/main/java/org/jsoup/parser/ParseSettings.java",
+    "src/main/java/org/jsoup/parser/Token.java",
+    "src/main/java/org/jsoup/parser/XmlTreeBuilder.java"
+  ],
+  "patch_added_lines": 38,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

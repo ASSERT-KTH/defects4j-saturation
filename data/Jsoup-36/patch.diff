@@ -1,0 +1,48 @@
+diff --git a/src/main/java/org/jsoup/helper/DataUtil.java b/src/main/java/org/jsoup/helper/DataUtil.java
+index f07173c..e30e5a0 100644
+--- a/src/main/java/org/jsoup/helper/DataUtil.java
++++ b/src/main/java/org/jsoup/helper/DataUtil.java
+@@ -7,6 +7,7 @@ import org.jsoup.parser.Parser;
+ import java.io.*;
+ import java.nio.ByteBuffer;
+ import java.nio.charset.Charset;
++import java.nio.charset.IllegalCharsetNameException;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ import java.util.Locale;
+@@ -16,7 +17,7 @@ import java.util.Locale;
+  *
+  */
+ public class DataUtil {
+-    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
++    private static final Pattern charsetPattern = Pattern.compile("(?i)\\bcharset=\\s*(?:\"|')?([^\\s,;\"']*)");
+     static final String defaultCharset = "UTF-8"; // used if not found in header or meta charset
+     private static final int bufferSize = 0x20000; // ~130K.
+ 
+@@ -85,7 +86,7 @@ public class DataUtil {
+                 if (meta.hasAttr("http-equiv")) {
+                     foundCharset = getCharsetFromContentType(meta.attr("content"));
+                 } else {
+-                    foundCharset = meta.attr("charset");
++                    foundCharset = getCharsetFromContentType("charset=" + meta.attr("charset"));
+                 }
+ 
+                 if (foundCharset != null && foundCharset.length() != 0 && !foundCharset.equals(defaultCharset)) { // need to re-decode
+@@ -158,10 +159,17 @@ public class DataUtil {
+         Matcher m = charsetPattern.matcher(contentType);
+         if (m.find()) {
+             String charset = m.group(1).trim();
++            charset = charset.replace("charset=", "");
++            if (charset.length() == 0) return null;
++            try {
+                 if (Charset.isSupported(charset)) return charset;
+                 charset = charset.toUpperCase(Locale.ENGLISH);
+                 if (Charset.isSupported(charset)) return charset;
+                 // if our advanced charset matching fails.... we just take the default
++            } catch (IllegalCharsetNameException e) {
++                // if the charset is not recognized, return null so the caller can fall back to a default
++                return null;
++            }
+         }
+         return null;
+     }

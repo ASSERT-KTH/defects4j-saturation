@@ -1,0 +1,22 @@
+diff --git a/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java b/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
+index afca44e..837ed16 100644
+--- a/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
++++ b/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
+@@ -208,7 +208,16 @@ class BasicMonthOfYearDateTimeField extends ImpreciseDateTimeField {
+         }
+             // month is largest field and being added to, such as month-day
+         if (DateTimeUtils.isContiguous(partial)) {
+-            long instant = 0L;
++            // Use a leap year as the reference point when reconstructing the
++            // instant from the partial's field values. Without a year field
++            // in the partial (eg. MonthDay), the default epoch year may not
++            // be a leap year, which would incorrectly reject or truncate a
++            // Feb 29th value before the addition is even performed.
++            int year = iChronology.getYear(0L);
++            while (iChronology.isLeapYear(year) == false) {
++                year++;
++            }
++            long instant = iChronology.getYearMonthDayMillis(year, 1, 1);
+             for (int i = 0, isize = partial.size(); i < isize; i++) {
+                 instant = partial.getFieldType(i).getField(iChronology).set(instant, values[i]);
+             }

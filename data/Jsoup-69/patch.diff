@@ -1,0 +1,57 @@
+diff --git a/src/main/java/org/jsoup/nodes/Element.java b/src/main/java/org/jsoup/nodes/Element.java
+index f9746e5..2fc9d18 100644
+--- a/src/main/java/org/jsoup/nodes/Element.java
++++ b/src/main/java/org/jsoup/nodes/Element.java
+@@ -610,6 +610,31 @@ public class Element extends Node {
+         return this;
+     }
+ 
++    /**
++     * Remove (delete) this element from the DOM tree. If this element has children, they are also removed. If this
++     * element (or one of its descendants) is a control associated with a {@link FormElement}, it is also
++     * disassociated from that form.
++     */
++    @Override
++    public void remove() {
++        FormElement form = formOwner();
++        if (form != null) {
++            for (Element el : getAllElements())
++                form.removeElement(el);
++        }
++        super.remove();
++    }
++
++    private FormElement formOwner() {
++        Element el = parent();
++        while (el != null) {
++            if (el instanceof FormElement)
++                return (FormElement) el;
++            el = el.parent();
++        }
++        return null;
++    }
++
+     /**
+      * Wrap the supplied HTML around this element.
+      *
+diff --git a/src/main/java/org/jsoup/nodes/FormElement.java b/src/main/java/org/jsoup/nodes/FormElement.java
+index e498975..ada61b6 100644
+--- a/src/main/java/org/jsoup/nodes/FormElement.java
++++ b/src/main/java/org/jsoup/nodes/FormElement.java
+@@ -46,6 +46,16 @@ public class FormElement extends Element {
+         return this;
+     }
+ 
++    /**
++     * Remove a form control element from this form.
++     * @param element form control to remove
++     * @return this form element, for chaining
++     */
++    public FormElement removeElement(Element element) {
++        elements.remove(element);
++        return this;
++    }
++
+ 
+     /**
+      * Prepare to submit this form. A Connection object is created with the request set up from the form values. You

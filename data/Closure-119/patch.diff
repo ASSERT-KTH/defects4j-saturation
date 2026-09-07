@@ -1,0 +1,16 @@
+diff --git a/src/com/google/javascript/jscomp/GlobalNamespace.java b/src/com/google/javascript/jscomp/GlobalNamespace.java
+index 639318d..994d4a0 100644
+--- a/src/com/google/javascript/jscomp/GlobalNamespace.java
++++ b/src/com/google/javascript/jscomp/GlobalNamespace.java
+@@ -263,7 +263,10 @@ class GlobalNamespace
+     if (v == null && externsScope != null) {
+       v = externsScope.getVar(name);
+     }
+-    return v != null && !v.isLocal();
++    // Exception variables (e.g. "e" in "catch (e) {...}") are not real
++    // global names, even when the catch block is at the top level.
++    return v != null && !v.isLocal() &&
++        (v.getParentNode() == null || !v.getParentNode().isCatch());
+   }
+ 
+   /**

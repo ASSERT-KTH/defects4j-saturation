@@ -1,0 +1,38 @@
+{
+  "project": "Time",
+  "bug": 22,
+  "id": "Time-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:52:43Z",
+  "wallclock_s": 801,
+  "agent_s": 764,
+  "agent_rc": 0,
+  "num_turns": 82,
+  "api_duration_ms": 682406,
+  "total_cost_usd": 2.0178654,
+  "session_id": "4459e58d-1073-4985-835d-9497bb7662cc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 164,
+  "output_tokens": 56681,
+  "cache_read_input_tokens": 4999987,
+  "cache_creation_input_tokens": 111825,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.TestDuration_Basics::testToPeriod_fixedZone",
+    "org.joda.time.TestPeriod_Constructors::testConstructor_long_fixedZone"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/chrono/BaseChronology.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

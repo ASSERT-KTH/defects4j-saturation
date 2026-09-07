@@ -1,0 +1,50 @@
+diff --git a/src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java b/src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java
+index 68891ac..3d11b35 100644
+--- a/src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java
++++ b/src/main/java/org/apache/commons/lang3/text/translate/NumericEntityUnescaper.java
+@@ -41,21 +41,30 @@ public class NumericEntityUnescaper extends CharSequenceTranslator {
+             int start = index + 2;
+             boolean isHex = false;
+ 
+-            char firstChar = input.charAt(start);
+-            if(firstChar == 'x' || firstChar == 'X') {
+-                start++;
+-                isHex = true;
++            if (start < seqEnd) {
++                char firstChar = input.charAt(start);
++                if(firstChar == 'x' || firstChar == 'X') {
++                    start++;
++                    isHex = true;
+ 
+-                // Check there's more than just an x after the &#
++                    // Check there's more than just an x after the &#
++                    if (start == seqEnd) {
++                        return 0;
++                    }
++                }
++            } else {
++                return 0;
+             }
+ 
+             int end = start;
+             // Note that this supports character codes without a ; on the end
+-            while(input.charAt(end) != ';') 
++            while(end < seqEnd && Character.digit(input.charAt(end), isHex ? 16 : 10) != -1)
+             {
+                 end++;
+             }
+ 
++            boolean isSemiColonTerminated = end != seqEnd && input.charAt(end) == ';';
++
+             int entityValue;
+             try {
+                 if(isHex) {
+@@ -77,7 +86,7 @@ public class NumericEntityUnescaper extends CharSequenceTranslator {
+             }
+ 
+ 
+-            return 2 + (end - start) + (isHex ? 1 : 0) + 1;
++            return 2 + (end - start) + (isHex ? 1 : 0) + (isSemiColonTerminated ? 1 : 0);
+         }
+         return 0;
+     }

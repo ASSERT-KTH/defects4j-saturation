@@ -1,0 +1,41 @@
+{
+  "project": "Chart",
+  "bug": 14,
+  "id": "Chart-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:16:29Z",
+  "wallclock_s": 85,
+  "agent_s": 47,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 33841,
+  "total_cost_usd": 0.1805204,
+  "session_id": "8e4aa2a0-3996-492a-8c6d-5566e5bc1912",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 2918,
+  "cache_read_input_tokens": 343437,
+  "cache_creation_input_tokens": 19210,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.plot.junit.CategoryPlotTests::testRemoveRangeMarker",
+    "org.jfree.chart.plot.junit.CategoryPlotTests::testRemoveDomainMarker",
+    "org.jfree.chart.plot.junit.XYPlotTests::testRemoveRangeMarker",
+    "org.jfree.chart.plot.junit.XYPlotTests::testRemoveDomainMarker"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/plot/CategoryPlot.java",
+    "source/org/jfree/chart/plot/XYPlot.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

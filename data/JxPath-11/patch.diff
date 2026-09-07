@@ -1,0 +1,91 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java
+index f4c2ac6..93b0e78 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java
+@@ -19,6 +19,7 @@ package org.apache.commons.jxpath.ri.model.dom;
+ import java.util.ArrayList;
+ import java.util.List;
+ 
++import org.apache.commons.jxpath.ri.NamespaceResolver;
+ import org.apache.commons.jxpath.ri.QName;
+ import org.apache.commons.jxpath.ri.model.NodeIterator;
+ import org.apache.commons.jxpath.ri.model.NodePointer;
+@@ -87,7 +88,7 @@ public class DOMAttributeIterator implements NodeIterator {
+ 
+             String testNS = null;
+             if (testPrefix != null) {
+-                testNS = parent.getNamespaceURI(testPrefix);
++                testNS = getTestNamespaceURI(testPrefix);
+             }
+ 
+             String nodeNS = null;
+@@ -103,12 +104,29 @@ public class DOMAttributeIterator implements NodeIterator {
+         return s1 == s2 || s1 != null && s1.equals(s2);
+     }
+ 
++    /**
++     * Resolves a namespace prefix used in the XPath expression to a URI,
++     * giving preference to namespaces registered with the JXPathContext
++     * over those declared in the document itself.
++     */
++    private String getTestNamespaceURI(String prefix) {
++        NamespaceResolver namespaceResolver = parent.getNamespaceResolver();
++        String namespaceURI = null;
++        if (namespaceResolver != null) {
++            namespaceURI = namespaceResolver.getNamespaceURI(prefix);
++        }
++        if (namespaceURI == null) {
++            namespaceURI = parent.getNamespaceURI(prefix);
++        }
++        return namespaceURI;
++    }
++
+     private Attr getAttribute(Element element, QName name) {
+         String testPrefix = name.getPrefix();
+         String testNS = null;
+ 
+         if (testPrefix != null) {
+-            testNS = parent.getNamespaceURI(testPrefix);
++            testNS = getTestNamespaceURI(testPrefix);
+         }
+ 
+         if (testNS != null) {
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java
+index cfa6da3..0425bc8 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java
+@@ -20,6 +20,7 @@ import java.util.ArrayList;
+ import java.util.Collections;
+ import java.util.List;
+ 
++import org.apache.commons.jxpath.ri.NamespaceResolver;
+ import org.apache.commons.jxpath.ri.QName;
+ import org.apache.commons.jxpath.ri.model.NodeIterator;
+ import org.apache.commons.jxpath.ri.model.NodePointer;
+@@ -49,11 +50,21 @@ public class JDOMAttributeIterator implements NodeIterator {
+                     ns = Namespace.XML_NAMESPACE;
+                 }
+                 else {
+-                        ns = element.getNamespace(prefix);
+-                        if (ns == null) {
+-                            // TBD: no attributes
+-                            attributes = Collections.EMPTY_LIST;
+-                            return;
++                        NamespaceResolver namespaceResolver =
++                            parent.getNamespaceResolver();
++                        String namespaceURI = namespaceResolver == null
++                                ? null
++                                : namespaceResolver.getNamespaceURI(prefix);
++                        if (namespaceURI != null) {
++                            ns = Namespace.getNamespace(namespaceURI);
++                        }
++                        else {
++                            ns = element.getNamespace(prefix);
++                            if (ns == null) {
++                                // TBD: no attributes
++                                attributes = Collections.EMPTY_LIST;
++                                return;
++                            }
+                         }
+                 }
+             }

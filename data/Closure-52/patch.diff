@@ -1,0 +1,14 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index ac6299d..d50fe3f 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -749,7 +749,8 @@ class CodeGenerator {
+     if (isSimpleNumber(s)) {
+       try {
+         long l = Long.parseLong(s);
+-        if (l < NodeUtil.MAX_POSITIVE_INTEGER_NUMBER) {
++        if (l < NodeUtil.MAX_POSITIVE_INTEGER_NUMBER
++            && String.valueOf(l).equals(s)) {
+           return l;
+         }
+       } catch (NumberFormatException e) {

@@ -1,0 +1,7 @@
+M	src/main/java/com/fasterxml/jackson/databind/deser/CreatorProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/FieldProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/MethodProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdReferenceProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/impl/SetterlessProperty.java
+M	src/main/java/com/fasterxml/jackson/databind/deser/std/AtomicReferenceDeserializer.java

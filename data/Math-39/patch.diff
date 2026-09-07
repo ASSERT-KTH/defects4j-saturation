@@ -1,0 +1,70 @@
+diff --git a/src/main/java/org/apache/commons/math/ode/nonstiff/AdaptiveStepsizeIntegrator.java b/src/main/java/org/apache/commons/math/ode/nonstiff/AdaptiveStepsizeIntegrator.java
+index 265f891..1de024e 100644
+--- a/src/main/java/org/apache/commons/math/ode/nonstiff/AdaptiveStepsizeIntegrator.java
++++ b/src/main/java/org/apache/commons/math/ode/nonstiff/AdaptiveStepsizeIntegrator.java
+@@ -241,17 +241,22 @@ public abstract class AdaptiveStepsizeIntegrator
+    * @param yDot0 first time derivative of y0
+    * @param y1 work array for a state vector
+    * @param yDot1 work array for the first time derivative of y1
++   * @param t target time for the integration
+    * @return first integration step
+    */
+   public double initializeStep(final boolean forward, final int order, final double[] scale,
+                                final double t0, final double[] y0, final double[] yDot0,
+-                               final double[] y1, final double[] yDot1) {
++                               final double[] y1, final double[] yDot1,
++                               final double t) {
+ 
+     if (initialStep > 0) {
+       // use the user provided value
+       return forward ? initialStep : -initialStep;
+     }
+ 
++    // limit h so the first step does not overshoot the target time
++    final double remaining = FastMath.abs(t - t0);
++
+     // very rough first guess : h = 0.01 * ||y/scale|| / ||y'/scale||
+     // this guess will be used to perform an Euler step
+     double ratio;
+@@ -266,6 +271,7 @@ public abstract class AdaptiveStepsizeIntegrator
+ 
+     double h = ((yOnScale2 < 1.0e-10) || (yDotOnScale2 < 1.0e-10)) ?
+                1.0e-6 : (0.01 * FastMath.sqrt(yOnScale2 / yDotOnScale2));
++    h = FastMath.min(h, remaining);
+     if (! forward) {
+       h = -h;
+     }
+@@ -291,6 +297,7 @@ public abstract class AdaptiveStepsizeIntegrator
+                       FastMath.max(1.0e-6, 0.001 * FastMath.abs(h)) :
+                       FastMath.pow(0.01 / maxInv2, 1.0 / order);
+     h = FastMath.min(100.0 * FastMath.abs(h), h1);
++    h = FastMath.min(h, remaining);
+     h = FastMath.max(h, 1.0e-12 * FastMath.abs(t0));  // avoids cancellation when computing t1 - t0
+     if (h < getMinStep()) {
+       h = getMinStep();
+diff --git a/src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java b/src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java
+index 13ced27..3bfa2f5 100644
+--- a/src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java
++++ b/src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java
+@@ -242,7 +242,7 @@ public abstract class EmbeddedRungeKuttaIntegrator
+               }
+           }
+           hNew = initializeStep(forward, getOrder(), scale,
+-                                stepStart, y, yDotK[0], yTmp, yDotK[1]);
++                                stepStart, y, yDotK[0], yTmp, yDotK[1], t);
+           firstTime = false;
+         }
+ 
+diff --git a/src/main/java/org/apache/commons/math/ode/nonstiff/GraggBulirschStoerIntegrator.java b/src/main/java/org/apache/commons/math/ode/nonstiff/GraggBulirschStoerIntegrator.java
+index 873f50c..170df83 100644
+--- a/src/main/java/org/apache/commons/math/ode/nonstiff/GraggBulirschStoerIntegrator.java
++++ b/src/main/java/org/apache/commons/math/ode/nonstiff/GraggBulirschStoerIntegrator.java
+@@ -631,7 +631,7 @@ public class GraggBulirschStoerIntegrator extends AdaptiveStepsizeIntegrator {
+ 
+         if (firstTime) {
+           hNew = initializeStep(forward, 2 * targetIter + 1, scale,
+-                                stepStart, y, yDot0, yTmp, yTmpDot);
++                                stepStart, y, yDot0, yTmp, yTmpDot, t);
+         }
+ 
+         newStep = false;

@@ -1,0 +1,14 @@
+sessions audited: 854
+
+ground-truth channels
+  none  developer patch (patches/*.src.patch)    0 session(s)
+  none  moved-aside .git (.gitorig)              0 session(s)
+  none  checkout of the fixed version            0 session(s)
+  none  D4J_*_FIXED_VERSION tag                  0 session(s)
+  none  upstream repo of the bug under repair    0 session(s)
+
+not ground truth, reported for completeness
+  a *dependency's* upstream repo: 1 session(s)
+          JacksonDatabind-106: ['jackson-core'] (5 calls)
+
+VERDICT: CLEAN - no session read the ground truth for its own bug

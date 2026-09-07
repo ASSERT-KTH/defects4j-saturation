@@ -1,0 +1,64 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index 8bf10e8..c93982f 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -425,7 +425,7 @@ public final class TypeFactory
+ 
+         // 25-Sep-2016, tatu: As per [databind#1384] also need to ensure handlers get
+         //   copied as well
+-        return newType;
++        return _copyHandlers(baseType, newType);
+ 
+         // 20-Oct-2015, tatu: Old simplistic approach
+         
+@@ -473,6 +473,50 @@ public final class TypeFactory
+         */
+     }
+ 
++    /**
++     * Helper method called to ensure that any explicitly attached handlers (key/value
++     * (de)serializers, `TypeDeserializer`s) that base type may have (or, for Map(-like)
++     * types, key type may have) are also retained by the specialized type: this is
++     * necessary since underlying caching of {@link JavaType} instances may end up
++     * returning a "plain" instance for otherwise equivalent (same erased type,
++     * same generic parameters) type, one lacking handlers of the original.
++     *
++     * @since 2.8.8
++     */
++    private JavaType _copyHandlers(JavaType baseType, JavaType newType)
++    {
++        Object h = baseType.<Object>getValueHandler();
++        if (h != null) {
++            newType = newType.withValueHandler(h);
++        }
++        h = baseType.<Object>getTypeHandler();
++        if (h != null) {
++            newType = newType.withTypeHandler(h);
++        }
++        if (baseType.hasContentType()) {
++            h = baseType.getContentValueHandler();
++            if (h != null) {
++                newType = newType.withContentValueHandler(h);
++            }
++            h = baseType.getContentTypeHandler();
++            if (h != null) {
++                newType = newType.withContentTypeHandler(h);
++            }
++        }
++        if ((baseType instanceof MapLikeType) && (newType instanceof MapLikeType)) {
++            JavaType keyType = baseType.getKeyType();
++            h = keyType.<Object>getValueHandler();
++            if (h != null) {
++                newType = ((MapLikeType) newType).withKeyValueHandler(h);
++            }
++            h = keyType.<Object>getTypeHandler();
++            if (h != null) {
++                newType = ((MapLikeType) newType).withKeyTypeHandler(h);
++            }
++        }
++        return newType;
++    }
++
+     private TypeBindings _bindingsForSubtype(JavaType baseType, int typeParamCount, Class<?> subclass)
+     {
+         // But otherwise gets bit tricky, as we need to partially resolve the type hierarchy

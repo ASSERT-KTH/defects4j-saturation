@@ -1,0 +1,38 @@
+{
+  "project": "Gson",
+  "bug": 9,
+  "id": "Gson-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:59:46Z",
+  "wallclock_s": 99,
+  "agent_s": 71,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 63093,
+  "total_cost_usd": 0.20877,
+  "session_id": "d260e79a-de9a-46c5-84dd-4afc672f244d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 4842,
+  "cache_read_input_tokens": 435540,
+  "cache_creation_input_tokens": 17734,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.stream.JsonWriterTest::testBoxedBooleans"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java",
+    "gson/src/main/java/com/google/gson/stream/JsonWriter.java"
+  ],
+  "patch_added_lines": 18,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

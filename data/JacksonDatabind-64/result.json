@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 64,
+  "id": "JacksonDatabind-64",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:43:06Z",
+  "wallclock_s": 224,
+  "agent_s": 106,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 66797,
+  "total_cost_usd": 0.2083172,
+  "session_id": "511d4832-be13-40d8-89de-d0ad5bc7b040",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 5662,
+  "cache_read_input_tokens": 304716,
+  "cache_creation_input_tokens": 22107,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.filter.JsonIncludeTest::testIssue1351"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/PropertyBuilder.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

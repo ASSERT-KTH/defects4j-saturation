@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 3,
+  "id": "Collections-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:17:32Z",
+  "wallclock_s": 61,
+  "agent_s": 26,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 13948,
+  "total_cost_usd": 0.07696780000000002,
+  "session_id": "65b749e1-4bc6-4a36-bd82-a8d478e25f58",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 967,
+  "cache_read_input_tokens": 104549,
+  "cache_creation_input_tokens": 11028,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.TestCollectionUtils::testRemoveAll"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/CollectionUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

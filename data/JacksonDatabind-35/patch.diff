@@ -1,0 +1,36 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index 01f5227..df122db 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+ import com.fasterxml.jackson.annotation.ObjectIdResolver;
+ import com.fasterxml.jackson.core.*;
++import com.fasterxml.jackson.core.util.JsonParserSequence;
+ import com.fasterxml.jackson.databind.*;
+ import com.fasterxml.jackson.databind.deser.impl.*;
+ import com.fasterxml.jackson.databind.deser.std.StdDelegatingDeserializer;
+@@ -955,10 +956,19 @@ public abstract class BeanDeserializerBase
+                 // but, with 2.5+, a simple Object-wrapped value also legal:
+                 if (t == JsonToken.START_OBJECT) {
+                     t = p.nextToken();
+-                }
+-                if (t == JsonToken.FIELD_NAME && _objectIdReader.maySerializeAsObject()
+-                        && _objectIdReader.isValidReferencePropertyName(p.getCurrentName(), p)) {
+-                    return deserializeFromObjectId(p, ctxt);
++                    if (t == JsonToken.FIELD_NAME && _objectIdReader.maySerializeAsObject()
++                            && _objectIdReader.isValidReferencePropertyName(p.getCurrentName(), p)) {
++                        return deserializeFromObjectId(p, ctxt);
++                    }
++                    // Not an Object Id; need to "put back" START_OBJECT (and following
++                    // FIELD_NAME, if any) so that type deserializer can see it as-is
++                    TokenBuffer tb = new TokenBuffer(null, false);
++                    tb.writeStartObject();
++                    if (t == JsonToken.FIELD_NAME) {
++                        tb.copyCurrentEvent(p);
++                    }
++                    p = JsonParserSequence.createFlattened(tb.asParser(p), p);
++                    p.nextToken();
+                 }
+             }
+         }

@@ -1,0 +1,39 @@
+{
+  "project": "Closure",
+  "bug": 134,
+  "id": "Closure-134",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:10:26Z",
+  "wallclock_s": 395,
+  "agent_s": 337,
+  "agent_rc": 0,
+  "num_turns": 61,
+  "api_duration_ms": 306002,
+  "total_cost_usd": 1.3460529999999997,
+  "session_id": "1f9c6f4b-1ed1-4f95-8856-caa770500056",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 122,
+  "output_tokens": 25476,
+  "cache_read_input_tokens": 3708280,
+  "cache_creation_input_tokens": 86157,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.AmbiguatePropertiesTest::testImplementsAndExtends",
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue86"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/AmbiguateProperties.java",
+    "src/com/google/javascript/jscomp/TypedScopeCreator.java"
+  ],
+  "patch_added_lines": 28,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

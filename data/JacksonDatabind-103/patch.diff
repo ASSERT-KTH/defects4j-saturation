@@ -1,0 +1,17 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+index c904c2e..8b5f3b2 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+@@ -130,6 +130,12 @@ public class StdKeyDeserializer extends KeyDeserializer
+                 return result;
+             }
+         } catch (Exception re) {
++            // Do not re-wrap an exception that already went through handleWeirdKey():
++            // wrapping it again would duplicate the "not a valid representation" message
++            // and its location info.
++            if (re instanceof JsonMappingException) {
++                throw (JsonMappingException) re;
++            }
+             return ctxt.handleWeirdKey(_keyClass, key, "not a valid representation, problem: (%s) %s",
+                     re.getClass().getName(),
+                     re.getMessage());

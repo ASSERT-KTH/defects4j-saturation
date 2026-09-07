@@ -1,0 +1,45 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index 16f81db..86bbee3 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -224,12 +224,13 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         insertNode(el);
+         if (startTag.isSelfClosing()) {
+             if (tag.isKnownTag()) {
+-                if (tag.isSelfClosing()) tokeniser.acknowledgeSelfClosingFlag();
++                if (!tag.isSelfClosing())
++                    tokeniser.error("Tag cannot be self closing; not a void tag");
+             }
+             else {
+                 tag.setSelfClosing();
+-                tokeniser.acknowledgeSelfClosingFlag();
+             }
++            tokeniser.acknowledgeSelfClosingFlag();
+         }
+         return el;
+     }
+diff --git a/src/main/java/org/jsoup/parser/Tokeniser.java b/src/main/java/org/jsoup/parser/Tokeniser.java
+index 29fe4cc..8c5273e 100644
+--- a/src/main/java/org/jsoup/parser/Tokeniser.java
++++ b/src/main/java/org/jsoup/parser/Tokeniser.java
+@@ -60,6 +60,11 @@ final class Tokeniser {
+             return token;
+         } else {
+             isEmitPending = false;
++            if (emitPending.type == Token.TokenType.StartTag) {
++                Token.StartTag startTag = emitPending.asStartTag();
++                if (startTag.selfClosing)
++                    selfClosingFlagAcknowledged = false;
++            }
+             return emitPending;
+         }
+     }
+@@ -73,8 +78,6 @@ final class Tokeniser {
+         if (token.type == Token.TokenType.StartTag) {
+             Token.StartTag startTag = (Token.StartTag) token;
+             lastStartTag = startTag.tagName;
+-            if (startTag.selfClosing)
+-                selfClosingFlagAcknowledged = false;
+         } else if (token.type == Token.TokenType.EndTag) {
+             Token.EndTag endTag = (Token.EndTag) token;
+             if (endTag.attributes != null)

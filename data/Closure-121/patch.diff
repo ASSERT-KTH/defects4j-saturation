@@ -1,0 +1,23 @@
+diff --git a/src/com/google/javascript/jscomp/InlineVariables.java b/src/com/google/javascript/jscomp/InlineVariables.java
+index 376abd4..7779a23 100644
+--- a/src/com/google/javascript/jscomp/InlineVariables.java
++++ b/src/com/google/javascript/jscomp/InlineVariables.java
+@@ -301,10 +301,17 @@ class InlineVariables implements CompilerPass {
+       if (!maybeModifiedArguments &&
+           !staleVars.contains(v) &&
+           referenceInfo.isWellDefined() &&
+-          referenceInfo.isAssignedOnceInLifetime()) {
++          referenceInfo.isAssignedOnceInLifetime() &&
++          referenceInfo.isOnlyAssignmentSameScopeAsDeclaration()) {
+           // Inlining the variable based solely on well-defined and assigned
+           // once is *NOT* correct. We relax the correctness requirement if
+           // the variable is declared constant.
++          //
++          // If the assignment happens inside a nested function, that
++          // function may run more than once (or recursively), so the
++          // aliased value could be re-assigned between the alias's
++          // declaration and its use; only alias when the assignment is
++          // guaranteed to happen in the same scope as the declaration.
+         List<Reference> refs = referenceInfo.references;
+         for (int i = 1 /* start from a read */; i < refs.size(); i++) {
+           Node nameNode = refs.get(i).getNode();

@@ -1,0 +1,28 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+index b968cd5..8d9e2ab 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+@@ -24,6 +24,7 @@ import org.apache.commons.jxpath.ri.EvalContext;
+ import org.apache.commons.jxpath.ri.InfoSetUtil;
+ import org.apache.commons.jxpath.ri.axes.InitialContext;
+ import org.apache.commons.jxpath.ri.axes.SelfContext;
++import org.apache.commons.jxpath.ri.model.NodePointer;
+ 
+ /**
+  * Base implementation of Expression for the operations "&gt;", "&gt;=", "&lt;", "&lt;=".
+@@ -72,6 +73,15 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
+         if (right instanceof Iterator) {
+             return containsMatch((Iterator) right, left);
+         }
++        if (left == null || right == null) {
++            return false;
++        }
++        if (left instanceof NodePointer && !((NodePointer) left).isActual()) {
++            return false;
++        }
++        if (right instanceof NodePointer && !((NodePointer) right).isActual()) {
++            return false;
++        }
+         double ld = InfoSetUtil.doubleValue(left);
+         if (Double.isNaN(ld)) {
+             return false;

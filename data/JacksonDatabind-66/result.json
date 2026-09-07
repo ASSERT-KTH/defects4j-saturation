@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 66,
+  "id": "JacksonDatabind-66",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:47:34Z",
+  "wallclock_s": 425,
+  "agent_s": 286,
+  "agent_rc": 0,
+  "num_turns": 44,
+  "api_duration_ms": 198876,
+  "total_cost_usd": 0.8144211999999998,
+  "session_id": "6b807e74-73d9-4021-8b88-465dcb0e2903",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 16168,
+  "cache_read_input_tokens": 2080591,
+  "cache_creation_input_tokens": 58338,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.module.TestCustomEnumKeyDeserializer::testCustomEnumKeySerializerWithPolymorphic"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

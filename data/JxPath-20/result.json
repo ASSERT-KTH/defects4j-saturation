@@ -1,0 +1,37 @@
+{
+  "project": "JxPath",
+  "bug": 20,
+  "id": "JxPath-20",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:14:22Z",
+  "wallclock_s": 197,
+  "agent_s": 174,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 118130,
+  "total_cost_usd": 0.4742862,
+  "session_id": "a0d59974-fe5a-4116-af74-b4ec1794859d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 60,
+  "output_tokens": 9638,
+  "cache_read_input_tokens": 979101,
+  "cache_creation_input_tokens": 44911,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.JXPath149Test::testComplexOperationWithVariables"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,85 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 8654ae6..63c7b84 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -590,6 +590,23 @@ final class TypedScopeCreator implements ScopeCreator {
+         createdEnumType = true;
+       }
+ 
++      // If this is a "F.prototype = {...}" assignment, and F already has a
++      // declared prototype (e.g. because F has an explicit @extends, even
++      // one that could not be resolved), then reassigning F.prototype does
++      // not change F's actual prototype object (see the handling of
++      // "prototype" properties in #maybeDeclareQualifiedName). We still
++      // want the members named in the object literal to end up on F's real
++      // prototype, so merge them in directly here instead of attaching
++      // them to a disconnected type that would otherwise be discarded.
++      ObjectType prototypeToMergeInto = null;
++      if (type == null && lValueName != null &&
++          lValueName.endsWith(".prototype")) {
++        Var qVar = scope.getVar(lValueName);
++        if (qVar != null && !qVar.isTypeInferred()) {
++          prototypeToMergeInto = ObjectType.cast(qVar.getType());
++        }
++      }
++
+       if (type == null) {
+         type = typeRegistry.createAnonymousObjectType();
+       }
+@@ -601,6 +618,33 @@ final class TypedScopeCreator implements ScopeCreator {
+         processObjectLitProperties(
+             t, objectLit, ObjectType.cast(objectLit.getJSType()));
+       }
++
++      if (prototypeToMergeInto != null) {
++        mergeObjectLitPropertiesIntoPrototype(objectLit, prototypeToMergeInto);
++      }
++    }
++
++    /**
++     * Copies the members of an object literal used to reassign a class's
++     * prototype (e.g. {@code Bar.prototype = {baz: function() {}};}) onto
++     * the prototype object that instances of the class actually inherit
++     * from. This is needed because such an assignment does not change the
++     * prototype's identity when the class already has a declared supertype.
++     */
++    private void mergeObjectLitPropertiesIntoPrototype(
++        Node objLit, ObjectType prototypeType) {
++      for (Node keyNode = objLit.getFirstChild(); keyNode != null;
++           keyNode = keyNode.getNext()) {
++        String memberName = NodeUtil.getObjectLitKeyName(keyNode);
++        if (memberName == null || prototypeType.hasOwnProperty(memberName)) {
++          continue;
++        }
++        Node value = keyNode.getFirstChild();
++        JSType valueType = value == null ? null : value.getJSType();
++        if (valueType != null) {
++          prototypeType.defineInferredProperty(memberName, valueType, keyNode);
++        }
++      }
+     }
+ 
+     /**
+@@ -1100,13 +1144,18 @@ final class TypedScopeCreator implements ScopeCreator {
+           if ((fnType.isConstructor() || fnType.isInterface()) &&
+               !fnType.equals(getNativeType(U2U_CONSTRUCTOR_TYPE))) {
+             // Declare var.prototype in the scope chain.
+-            FunctionType superClassCtor = fnType.getSuperClassConstructor();
++            // Note that we can't just check for a resolved super class
++            // constructor here: an unresolvable @extends (e.g. one that
++            // refers to an unknown type) also leaves an ancestor recorded
++            // on the prototype chain (even though there is no actual
++            // super class constructor), and should be treated the same
++            // way as an explicit, resolved supertype.
++            ObjectType protoAncestor = fnType.getPrototype().getImplicitPrototype();
+             scopeToDeclareIn.declare(variableName + ".prototype", n,
+                 fnType.getPrototype(), input,
+                 /* declared iff there's an explicit supertype */
+-                superClassCtor == null ||
+-                superClassCtor.getInstanceType().equals(
+-                    getNativeType(OBJECT_TYPE)));
++                protoAncestor == null ||
++                protoAncestor.equals(getNativeType(OBJECT_TYPE)));
+ 
+             // Make sure the variable is initialized to something if
+             // it constructs itself.

@@ -1,0 +1,167 @@
+diff --git a/src/java/org/apache/commons/cli2/WriteableCommandLine.java b/src/java/org/apache/commons/cli2/WriteableCommandLine.java
+index d6aaf49..7b58078 100644
+--- a/src/java/org/apache/commons/cli2/WriteableCommandLine.java
++++ b/src/java/org/apache/commons/cli2/WriteableCommandLine.java
+@@ -99,6 +99,7 @@ public interface WriteableCommandLine extends CommandLine {
+      *
+      * @return the current option
+      */
++    Option getCurrentOption();
+ 
+     /**
+      * Sets the current option. This method is called by concrete option
+@@ -107,4 +108,5 @@ public interface WriteableCommandLine extends CommandLine {
+      *
+      * @param currentOption the new current option
+      */
++    void setCurrentOption(final Option currentOption);
+ }
+diff --git a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+index 88d3286..c926c3a 100644
+--- a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
++++ b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+@@ -48,6 +48,7 @@ public class WriteableCommandLineImpl
+     private final Map defaultSwitches = new HashMap();
+     private final List normalised;
+     private final Set prefixes;
++    private Option currentOption;
+ 
+     /**
+      * Creates a new WriteableCommandLineImpl rooted on the specified Option, to
+@@ -231,20 +232,36 @@ public class WriteableCommandLineImpl
+      */
+     public boolean looksLikeOption(final String trigger)
+     {
+-            // this is a reentrant call
+-
+             for (final Iterator i = prefixes.iterator(); i.hasNext();)
+             {
+                 final String prefix = (String) i.next();
+ 
+                 if (trigger.startsWith(prefix))
+                 {
+-                        return true;
++                        // no known option in scope, fall back to the
++                        // permissive prefix based check
++                        if (currentOption == null) {
++                            return true;
++                        }
++
++                        // check whether the current option's scope actually
++                        // has an option matching this trigger, so that values
++                        // which merely coincide with a prefix (e.g. negative
++                        // numbers) aren't mistaken for an option
++                        return currentOption.findOption(trigger) != null;
+                 }
+             }
+             return false;
+     }
+ 
++    public Option getCurrentOption() {
++        return currentOption;
++    }
++
++    public void setCurrentOption(final Option currentOption) {
++        this.currentOption = currentOption;
++    }
++
+     public String toString() {
+         final StringBuffer buffer = new StringBuffer();
+ 
+diff --git a/src/java/org/apache/commons/cli2/option/ArgumentImpl.java b/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
+index f776f7e..3ddabcf 100644
+--- a/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
++++ b/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
+@@ -143,48 +143,59 @@ public class ArgumentImpl
+         // count of arguments processed for this option.
+         int argumentCount = commandLine.getUndefaultedValues(option).size();
+ 
+-        while (arguments.hasNext() && (argumentCount < maximum)) {
+-            final String allValuesQuoted = (String) arguments.next();
+-            final String allValues = stripBoundaryQuotes(allValuesQuoted);
++        // narrow the scope of the "looks like an option" check to the Group
++        // enclosing this option, so that values which merely coincide with a
++        // prefix (e.g. negative numbers) aren't mistaken for an unrelated
++        // option
++        final Option previousOption = commandLine.getCurrentOption();
++        commandLine.setCurrentOption(option.getParent());
++
++        try {
++            while (arguments.hasNext() && (argumentCount < maximum)) {
++                final String allValuesQuoted = (String) arguments.next();
++                final String allValues = stripBoundaryQuotes(allValuesQuoted);
++
++                // should we ignore things that look like options?
++                if (allValuesQuoted.equals(consumeRemaining)) {
++                    while (arguments.hasNext() && (argumentCount < maximum)) {
++                        ++argumentCount;
++                        commandLine.addValue(option, arguments.next());
++                    }
++                }
++                // does it look like an option?
++                else if (commandLine.looksLikeOption(allValuesQuoted)) {
++                    arguments.previous();
+ 
+-            // should we ignore things that look like options?
+-            if (allValuesQuoted.equals(consumeRemaining)) {
+-                while (arguments.hasNext() && (argumentCount < maximum)) {
+-                    ++argumentCount;
+-                    commandLine.addValue(option, arguments.next());
++                    break;
+                 }
+-            }
+-            // does it look like an option?
+-            else if (commandLine.looksLikeOption(allValuesQuoted)) {
+-                arguments.previous();
++                // should we split the string up?
++                else if (subsequentSplit) {
++                    final StringTokenizer values =
++                        new StringTokenizer(allValues, String.valueOf(subsequentSeparator));
+ 
+-                break;
+-            }
+-            // should we split the string up?
+-            else if (subsequentSplit) {
+-                final StringTokenizer values =
+-                    new StringTokenizer(allValues, String.valueOf(subsequentSeparator));
++                    arguments.remove();
+ 
+-                arguments.remove();
++                    while (values.hasMoreTokens() && (argumentCount < maximum)) {
++                        ++argumentCount;
+ 
+-                while (values.hasMoreTokens() && (argumentCount < maximum)) {
+-                    ++argumentCount;
++                        final String token = values.nextToken();
++                        commandLine.addValue(option, token);
++                        arguments.add(token);
++                    }
+ 
+-                    final String token = values.nextToken();
+-                    commandLine.addValue(option, token);
+-                    arguments.add(token);
++                    if (values.hasMoreTokens()) {
++                        throw new OptionException(option, ResourceConstants.ARGUMENT_UNEXPECTED_VALUE,
++                                                  values.nextToken());
++                    }
+                 }
+-
+-                if (values.hasMoreTokens()) {
+-                    throw new OptionException(option, ResourceConstants.ARGUMENT_UNEXPECTED_VALUE,
+-                                              values.nextToken());
++                // it must be a value as it is
++                else {
++                    ++argumentCount;
++                    commandLine.addValue(option, allValues);
+                 }
+             }
+-            // it must be a value as it is
+-            else {
+-                ++argumentCount;
+-                commandLine.addValue(option, allValues);
+-            }
++        } finally {
++            commandLine.setCurrentOption(previousOption);
+         }
+     }
+ 

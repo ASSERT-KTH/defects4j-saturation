@@ -1,0 +1,24 @@
+diff --git a/src/com/google/javascript/jscomp/InlineVariables.java b/src/com/google/javascript/jscomp/InlineVariables.java
+index b150053..f4cd776 100644
+--- a/src/com/google/javascript/jscomp/InlineVariables.java
++++ b/src/com/google/javascript/jscomp/InlineVariables.java
+@@ -298,9 +298,18 @@ class InlineVariables implements CompilerPass {
+       // inline an alias of it. (If the variable was inlined, then the
+       // reference data is out of sync. We're better off just waiting for
+       // the next pass.)
++      //
++      // This is only safe if the value being aliased is assigned in the
++      // same scope in which it is declared. Otherwise, a call crossed while
++      // moving the value to another alias's use site (e.g. a recursive call
++      // back into the scope that performs the assignment) could change the
++      // value between the point it was captured by the alias and the point
++      // where the alias is used, even though the variable is only assigned
++      // once lexically.
+       if (!maybeModifiedArguments &&
+           !staleVars.contains(v) && referenceInfo.isWellDefined() &&
+-          referenceInfo.isAssignedOnceInLifetime()) {
++          referenceInfo.isAssignedOnceInLifetime() &&
++          referenceInfo.getInitializingReference().getScope() == v.scope) {
+         List<Reference> refs = referenceInfo.references;
+         for (int i = 1 /* start from a read */; i < refs.size(); i++) {
+           Node nameNode = refs.get(i).getNode();

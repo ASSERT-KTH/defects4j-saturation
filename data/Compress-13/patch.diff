@@ -1,0 +1,18 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/zip/ZipUtil.java b/src/main/java/org/apache/commons/compress/archivers/zip/ZipUtil.java
+index a5e6cb2..a61c50d 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/zip/ZipUtil.java
++++ b/src/main/java/org/apache/commons/compress/archivers/zip/ZipUtil.java
+@@ -126,7 +126,12 @@ public abstract class ZipUtil {
+         String newName = getUnicodeStringIfOriginalMatches(name,
+                                                            originalNameBytes);
+         if (newName != null && !originalName.equals(newName)) {
+-            ze.setName(newName);
++            // Some ZIP tools (such as WinZip) incorrectly write
++            // backslashes instead of forward slashes as path
++            // separators into the Unicode Path Extra Field.  ZIP
++            // archives always use forward slashes as directory
++            // separators, so it is safe to normalize them here.
++            ze.setName(newName.replace('\\', '/'));
+         }
+ 
+         if (commentBytes != null && commentBytes.length > 0) {

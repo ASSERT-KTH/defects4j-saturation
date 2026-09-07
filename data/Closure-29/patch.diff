@@ -1,0 +1,81 @@
+diff --git a/src/com/google/javascript/jscomp/InlineObjectLiterals.java b/src/com/google/javascript/jscomp/InlineObjectLiterals.java
+index 9f5c607..70725f9 100644
+--- a/src/com/google/javascript/jscomp/InlineObjectLiterals.java
++++ b/src/com/google/javascript/jscomp/InlineObjectLiterals.java
+@@ -154,6 +154,43 @@ class InlineObjectLiterals implements CompilerPass {
+      */
+     private boolean isInlinableObject(List<Reference> refs) {
+       boolean ret = false;
++
++      // NOTE(nicksantos): This pass's object-splitting algorithm has
++      // a blind spot. It assumes that if a property isn't defined on an
++      // object, then the value is undefined. This is not true, because
++      // Object.prototype can have arbitrary properties on it.
++      //
++      // We short-circuit this problem by bailing out if we see a reference
++      // to a property that is never explicitly defined on the object
++      // literal (as an object literal key, or via a direct property
++      // assignment). This isn't a perfect algorithm, but it should catch
++      // most cases.
++      Set<String> validProperties = Sets.newHashSet();
++      for (Reference ref : refs) {
++        Node name = ref.getNode();
++        Node parent = ref.getParent();
++        if (isVarOrAssignExprLhs(name)) {
++          Node val = ref.getAssignedValue();
++          if (val != null && val.isObjectLit()) {
++            for (Node key = val.getFirstChild(); key != null;
++                 key = key.getNext()) {
++              validProperties.add(key.getString());
++            }
++          }
++        } else if (parent.isGetProp() && NodeUtil.isLValue(parent)) {
++          validProperties.add(parent.getLastChild().getString());
++        }
++      }
++
++      // Whether we have seen an assignment of an object literal to the
++      // variable yet. A property of the variable can't be safely
++      // dereferenced (read or written) until the variable is known to
++      // hold an object, otherwise the rewritten code (which reads or
++      // writes a plain, possibly-undefined variable) would not throw
++      // where the original code (dereferencing an undefined value)
++      // would have.
++      boolean hasAssignment = false;
++
+       for (Reference ref : refs) {
+         Node name = ref.getNode();
+         Node parent = ref.getParent();
+@@ -170,14 +207,16 @@ class InlineObjectLiterals implements CompilerPass {
+             return false;
+           }
+ 
+-          // NOTE(nicksantos): This pass's object-splitting algorithm has
+-          // a blind spot. It assumes that if a property isn't defined on an
+-          // object, then the value is undefined. This is not true, because
+-          // Object.prototype can have arbitrary properties on it.
+-          //
+-          // We short-circuit this problem by bailing out if we see a reference
+-          // to a property that isn't defined on the object literal. This
+-          // isn't a perfect algorithm, but it should catch most cases.
++          if (!validProperties.contains(parent.getLastChild().getString())) {
++            return false;
++          }
++
++          // The property can't be safely dereferenced unless it's known
++          // that the variable already holds an object at this point.
++          if (!hasAssignment) {
++            return false;
++          }
++
+           continue;
+         }
+ 
+@@ -234,6 +273,7 @@ class InlineObjectLiterals implements CompilerPass {
+         // We have found an acceptable object literal assignment. As
+         // long as there are no other assignments that mess things up,
+         // we can inline.
++        hasAssignment = true;
+         ret = true;
+       }
+       return ret;

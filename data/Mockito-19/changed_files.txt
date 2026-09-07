@@ -1,0 +1,6 @@
+A	${OUTFILE}
+M	src/org/mockito/internal/configuration/injection/PropertyAndSetterInjection.java
+M	src/org/mockito/internal/configuration/injection/filter/FinalMockCandidateFilter.java
+M	src/org/mockito/internal/configuration/injection/filter/MockCandidateFilter.java
+M	src/org/mockito/internal/configuration/injection/filter/NameBasedCandidateFilter.java
+M	src/org/mockito/internal/configuration/injection/filter/TypeBasedCandidateFilter.java

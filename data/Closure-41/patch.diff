@@ -1,0 +1,26 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionTypeBuilder.java b/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
+index 14694ce..fb31c76 100644
+--- a/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
++++ b/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
+@@ -289,6 +289,10 @@ final class FunctionTypeBuilder {
+       }
+ 
+       // Clone any remaining params that aren't in the function literal.
++      while (oldParams.hasNext()) {
++        Node oldParam = oldParams.next();
++        paramBuilder.newParameterFromNode(oldParam);
++      }
+ 
+       parametersNode = paramBuilder.build();
+     }
+@@ -480,6 +484,10 @@ final class FunctionTypeBuilder {
+     }
+ 
+     // Copy over any old parameters that aren't in the param list.
++    for (; oldParameterType != null;
++         oldParameterType = oldParameterType.getNext()) {
++      builder.newParameterFromNode(oldParameterType);
++    }
+ 
+     if (templateTypeName != null && !foundTemplateType) {
+       reportError(TEMPLATE_TYPE_EXPECTED, fnName);

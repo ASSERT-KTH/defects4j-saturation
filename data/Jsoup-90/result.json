@@ -1,0 +1,37 @@
+{
+  "project": "Jsoup",
+  "bug": 90,
+  "id": "Jsoup-90",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:26:42Z",
+  "wallclock_s": 51,
+  "agent_s": 23,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 17555,
+  "total_cost_usd": 0.07813080000000003,
+  "session_id": "ae139b0f-725f-4263-81c5-b70c0a1dc255",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1254,
+  "cache_read_input_tokens": 104349,
+  "cache_creation_input_tokens": 10537,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.helper.HttpConnectionTest::handlesHeaderEncodingOnRequest"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/HttpConnection.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

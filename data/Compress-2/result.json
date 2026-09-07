@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 2,
+  "id": "Compress-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:33:02Z",
+  "wallclock_s": 92,
+  "agent_s": 69,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 53758,
+  "total_cost_usd": 0.18084139999999999,
+  "session_id": "99ea27ad-09e7-4930-a7fc-fc7ea0a49f49",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 4685,
+  "cache_read_input_tokens": 298732,
+  "cache_creation_input_tokens": 17978,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.ArTestCase::testArDelete"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/ar/ArArchiveInputStream.java"
+  ],
+  "patch_added_lines": 25,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

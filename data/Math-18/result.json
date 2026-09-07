@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 18,
+  "id": "Math-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T18:15:58Z",
+  "wallclock_s": 788,
+  "agent_s": 700,
+  "agent_rc": 0,
+  "num_turns": 46,
+  "api_duration_ms": 403477,
+  "total_cost_usd": 1.0676190000000003,
+  "session_id": "afed8a34-71f4-4753-8f58-c80408a7f5dd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 92,
+  "output_tokens": 33915,
+  "cache_read_input_tokens": 2282595,
+  "cache_creation_input_tokens": 67300,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.optimization.direct.CMAESOptimizerTest::testFitAccuracyDependsOnBoundary"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java"
+  ],
+  "patch_added_lines": 26,
+  "patch_removed_lines": 38,
+  "has_dev_patch": true
+}

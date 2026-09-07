@@ -1,0 +1,82 @@
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index 044bdd9..27a196a 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -599,8 +599,10 @@ public final class NodeUtil {
+       case Token.GETELEM:
+         return true;
+ 
+-        // Anonymous functions definitions are not changed by side-effects,
+-        // and named functions are not part of expressions.
++      // Anonymous functions definitions are not changed by side-effects,
++      // and named functions are not part of expressions.
++      case Token.FUNCTION:
++        return false;
+     }
+ 
+     for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+diff --git a/src/com/google/javascript/jscomp/PureFunctionIdentifier.java b/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
+index 55afa60..5f6d569 100644
+--- a/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
++++ b/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
+@@ -176,25 +176,46 @@ class PureFunctionIdentifier implements CompilerPass {
+       DefinitionProvider definitionProvider, Node name) {
+       List<Definition> result = Lists.newArrayList();
+ 
+-      if (!NodeUtil.isGetProp(name) && !NodeUtil.isName(name)) {
+-        return null;
+-      }
+-      Collection<Definition> decls =
+-          definitionProvider.getDefinitionsReferencedAt(name);
+-      if (decls == null) {
+-        return null;
+-      }
++      if (NodeUtil.isGetProp(name) || NodeUtil.isName(name)) {
++        Collection<Definition> decls =
++            definitionProvider.getDefinitionsReferencedAt(name);
++        if (decls == null) {
++          return null;
++        }
+ 
+-      for (Definition current : decls) {
+-        Node rValue = current.getRValue();
+-        if ((rValue != null) && NodeUtil.isFunction(rValue)) {
+-          result.add(current);
++        for (Definition current : decls) {
++          Node rValue = current.getRValue();
++          if ((rValue != null) && NodeUtil.isFunction(rValue)) {
++            result.add(current);
++          } else {
++            return null;
++          }
++        }
++
++        return result;
++      } else if (name.getType() == Token.OR || name.getType() == Token.HOOK) {
++        Node firstVal;
++        if (name.getType() == Token.HOOK) {
++          firstVal = name.getFirstChild().getNext();
+         } else {
++          firstVal = name.getFirstChild();
++        }
++        Node secondVal = firstVal.getNext();
++
++        Collection<Definition> defs1 =
++            getCallableDefinitions(definitionProvider, firstVal);
++        Collection<Definition> defs2 =
++            getCallableDefinitions(definitionProvider, secondVal);
++        if (defs1 == null || defs2 == null) {
+           return null;
+         }
+-      }
+ 
+-      return result;
++        result.addAll(defs1);
++        result.addAll(defs2);
++        return result;
++      } else {
++        return null;
++      }
+   }
+ 
+   /**

@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 88,
+  "id": "Math-88",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:18:59Z",
+  "wallclock_s": 195,
+  "agent_s": 151,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 141536,
+  "total_cost_usd": 0.35952259999999997,
+  "session_id": "b4480782-1250-433e-85b9-04360d7fd51b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 15338,
+  "cache_read_input_tokens": 308163,
+  "cache_creation_input_tokens": 35499,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.linear.SimplexSolverTest::testMath272"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/optimization/linear/SimplexTableau.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

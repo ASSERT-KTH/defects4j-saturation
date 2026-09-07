@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 136,
+  "id": "Closure-136",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:20:57Z",
+  "wallclock_s": 878,
+  "agent_s": 804,
+  "agent_rc": 0,
+  "num_turns": 98,
+  "api_duration_ms": 750864,
+  "total_cost_usd": 3.016097799999999,
+  "session_id": "83049aa3-394c-47d4-a6a9-48cf56f3e123",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 196,
+  "output_tokens": 64842,
+  "cache_read_input_tokens": 8703974,
+  "cache_creation_input_tokens": 155221,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineGettersTest::testIssue2508576_1",
+    "com.google.javascript.jscomp.InlineGettersTest::testIssue2508576_3",
+    "com.google.javascript.jscomp.MethodCheckTest::testSeparateMethods",
+    "com.google.javascript.jscomp.RenameVarsTest::testDollarSignSuperExport2"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/MethodCompilerPass.java",
+    "src/com/google/javascript/jscomp/RenameVars.java"
+  ],
+  "patch_added_lines": 50,
+  "patch_removed_lines": 13,
+  "has_dev_patch": true
+}

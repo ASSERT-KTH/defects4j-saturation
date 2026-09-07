@@ -1,0 +1,25 @@
+diff --git a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+index 1e6ccdc..2342244 100644
+--- a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
++++ b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+@@ -464,11 +464,17 @@ public class NumberUtils {
+             }
+         }
+         if (pfxLen > 0) { // we have a hex number
+-            final int hexDigits = str.length() - pfxLen;
+-            if (hexDigits > 16) { // too many for Long
++            final boolean negative = str.charAt(0) == '-';
++            int i = pfxLen;
++            // strip leading zeros from the hex digits, but always leave at least one digit
++            while (i < str.length() - 1 && str.charAt(i) == '0') {
++                i++;
++            }
++            final int hexDigits = str.length() - i;
++            if (hexDigits > 16 || hexDigits == 16 && str.charAt(i) > '7' && !negative) { // too many for Long
+                 return createBigInteger(str);
+             }
+-            if (hexDigits > 8) { // too many for an int
++            if (hexDigits > 8 || hexDigits == 8 && str.charAt(i) > '7' && !negative) { // too many for an int
+                 return createLong(str);
+             }
+             return createInteger(str);

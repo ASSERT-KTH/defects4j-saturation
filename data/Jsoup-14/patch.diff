@@ -1,0 +1,53 @@
+diff --git a/src/main/java/org/jsoup/parser/Tokeniser.java b/src/main/java/org/jsoup/parser/Tokeniser.java
+index 6d729cf..ecfecd5 100644
+--- a/src/main/java/org/jsoup/parser/Tokeniser.java
++++ b/src/main/java/org/jsoup/parser/Tokeniser.java
+@@ -191,7 +191,11 @@ class Tokeniser {
+     }
+ 
+     boolean isAppropriateEndTagToken() {
+-        return tagPending.tagName.equals(lastStartTag.tagName);
++        return lastStartTag != null && tagPending.tagName.equals(lastStartTag.tagName);
++    }
++
++    String appropriateEndTagName() {
++        return lastStartTag == null ? null : lastStartTag.tagName;
+     }
+ 
+ 
+diff --git a/src/main/java/org/jsoup/parser/TokeniserState.java b/src/main/java/org/jsoup/parser/TokeniserState.java
+index ca27ea0..77c7d15 100644
+--- a/src/main/java/org/jsoup/parser/TokeniserState.java
++++ b/src/main/java/org/jsoup/parser/TokeniserState.java
+@@ -215,8 +215,12 @@ enum TokeniserState {
+             if (r.matches('/')) {
+                 t.createTempBuffer();
+                 t.advanceTransition(RCDATAEndTagOpen);
+-                // diverge from spec: got a start tag, but there's no appropriate end tag (</title>), so rather than
+-                // consuming to EOF; break out here
++            } else if (r.matchesLetter() && t.appropriateEndTagName() != null
++                    && !r.containsIgnoreCase("</" + t.appropriateEndTagName())) {
++                // diverge from spec: if the appropriate end tag isn't found anywhere else in the input, this is an
++                // unterminated title/textarea; break out of rcdata and parse the rest of the input normally, rather
++                // than consuming to EOF as plain text
++                t.transition(TagOpen);
+             } else {
+                 t.emit("<");
+                 t.transition(Rcdata);
+diff --git a/src/main/java/org/jsoup/parser/TreeBuilderState.java b/src/main/java/org/jsoup/parser/TreeBuilderState.java
+index 0b36067..d43c2f2 100644
+--- a/src/main/java/org/jsoup/parser/TreeBuilderState.java
++++ b/src/main/java/org/jsoup/parser/TreeBuilderState.java
+@@ -797,6 +797,12 @@ public enum TreeBuilderState {
+                 // if: An end tag whose tag name is "script" -- scripting nesting level, if evaluating scripts
+                 tb.pop();
+                 tb.transition(tb.originalState());
++            } else if (t.isStartTag()) {
++                // the rcdata/rawtext content was broken out of (unterminated title/textarea): close it out and
++                // reprocess the tag in the mode we were in before entering text mode
++                tb.pop();
++                tb.transition(tb.originalState());
++                return tb.process(t);
+             }
+             return true;
+         }

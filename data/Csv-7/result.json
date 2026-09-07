@@ -1,0 +1,37 @@
+{
+  "project": "Csv",
+  "bug": 7,
+  "id": "Csv-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:53:48Z",
+  "wallclock_s": 53,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 23734,
+  "total_cost_usd": 0.0989268,
+  "session_id": "69573a4f-090a-40e1-8b0e-f9cf8f940771",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1512,
+  "cache_read_input_tokens": 180404,
+  "cache_creation_input_tokens": 11388,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVParserTest::testDuplicateHeaderEntries"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/CSVParser.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

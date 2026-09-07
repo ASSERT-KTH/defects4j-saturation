@@ -1,0 +1,35 @@
+diff --git a/src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java b/src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java
+index 83b4c41..b2e2657 100644
+--- a/src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java
++++ b/src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java
+@@ -18,10 +18,9 @@ package org.apache.commons.math.stat.correlation;
+ 
+ import org.apache.commons.math.MathException;
+ import org.apache.commons.math.MathRuntimeException;
+-import org.apache.commons.math.distribution.TDistribution;
+-import org.apache.commons.math.distribution.TDistributionImpl;
+ import org.apache.commons.math.linear.RealMatrix;
+ import org.apache.commons.math.linear.BlockRealMatrix;
++import org.apache.commons.math.special.Beta;
+ import org.apache.commons.math.stat.regression.SimpleRegression;
+ 
+ /**
+@@ -158,7 +157,6 @@ public class PearsonsCorrelation {
+      * @throws MathException if an error occurs estimating probabilities
+      */
+     public RealMatrix getCorrelationPValues() throws MathException {
+-        TDistribution tDistribution = new TDistributionImpl(nObs - 2);
+         int nVars = correlationMatrix.getColumnDimension();
+         double[][] out = new double[nVars][nVars];
+         for (int i = 0; i < nVars; i++) {
+@@ -167,8 +165,8 @@ public class PearsonsCorrelation {
+                     out[i][j] = 0d;
+                 } else {
+                     double r = correlationMatrix.getEntry(i, j);
+-                    double t = Math.abs(r * Math.sqrt((nObs - 2)/(1 - r * r)));
+-                    out[i][j] = 2 * (1 - tDistribution.cumulativeProbability(t));
++                    double t = Math.abs(r * Math.sqrt((nObs - 2) / (1 - r * r)));
++                    out[i][j] = Beta.regularizedBeta((nObs - 2) / ((nObs - 2) + t * t), 0.5 * (nObs - 2), 0.5);
+                 }
+             }
+         }

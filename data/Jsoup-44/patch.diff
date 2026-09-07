@@ -1,0 +1,35 @@
+diff --git a/src/main/java/org/jsoup/parser/TreeBuilder.java b/src/main/java/org/jsoup/parser/TreeBuilder.java
+index 3984e87..22aff46 100644
+--- a/src/main/java/org/jsoup/parser/TreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/TreeBuilder.java
+@@ -19,9 +19,6 @@ abstract class TreeBuilder {
+     protected Token currentToken; // currentToken is used only for error tracking.
+     protected ParseErrorList errors; // null when not tracking errors
+ 
+-    private Token.StartTag start = new Token.StartTag(); // start tag to process
+-    private Token.EndTag end  = new Token.EndTag();
+-
+     protected void initialiseParse(String input, String baseUri, ParseErrorList errors) {
+         Validate.notNull(input, "String input must not be null");
+         Validate.notNull(baseUri, "BaseURI must not be null");
+@@ -58,17 +55,15 @@ abstract class TreeBuilder {
+     protected abstract boolean process(Token token);
+ 
+     protected boolean processStartTag(String name) {
+-        return process(start.reset().name(name));
++        return process(new Token.StartTag().name(name));
+     }
+ 
+     public boolean processStartTag(String name, Attributes attrs) {
+-        start.reset();
+-        start.nameAttr(name, attrs);
+-        return process(start);
++        return process(new Token.StartTag().nameAttr(name, attrs));
+     }
+ 
+     protected boolean processEndTag(String name) {
+-        return process(end.reset().name(name));
++        return process(new Token.EndTag().name(name));
+     }
+ 
+ 

@@ -1,0 +1,37 @@
+{
+  "project": "Compress",
+  "bug": 1,
+  "id": "Compress-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:33:05Z",
+  "wallclock_s": 145,
+  "agent_s": 103,
+  "agent_rc": 0,
+  "num_turns": 23,
+  "api_duration_ms": 98326,
+  "total_cost_usd": 0.39889379999999997,
+  "session_id": "010ca2db-f05b-4850-b441-e9161553bf88",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 46,
+  "output_tokens": 7883,
+  "cache_read_input_tokens": 813864,
+  "cache_creation_input_tokens": 38719,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.CpioTestCase::testCpioUnarchive"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/cpio/CpioArchiveOutputStream.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

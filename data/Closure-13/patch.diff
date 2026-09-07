@@ -1,0 +1,16 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeOptimizationsPass.java b/src/com/google/javascript/jscomp/PeepholeOptimizationsPass.java
+index b51c088..8cfefb8 100644
+--- a/src/com/google/javascript/jscomp/PeepholeOptimizationsPass.java
++++ b/src/com/google/javascript/jscomp/PeepholeOptimizationsPass.java
+@@ -123,8 +123,10 @@ class PeepholeOptimizationsPass
+     do {
+       Node c = node.getFirstChild();
+       while(c != null) {
+-        traverse(c);
++        // 'c' may be replaced during traversal, so we must grab the next
++        // sibling before that happens.
+         Node next = c.getNext();
++        traverse(c);
+         c = next;
+       }
+ 

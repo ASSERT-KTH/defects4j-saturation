@@ -1,0 +1,38 @@
+{
+  "project": "Closure",
+  "bug": 156,
+  "id": "Closure-156",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:50:29Z",
+  "wallclock_s": 475,
+  "agent_s": 404,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 317418,
+  "total_cost_usd": 1.0290295999999999,
+  "session_id": "c5d8de98-f291-4679-a9bf-da0d20bdfca9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 30864,
+  "cache_read_input_tokens": 1839883,
+  "cache_creation_input_tokens": 86751,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testAliasedTopLevelEnum",
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testIssue389"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CollapseProperties.java"
+  ],
+  "patch_added_lines": 30,
+  "patch_removed_lines": 14,
+  "has_dev_patch": true
+}

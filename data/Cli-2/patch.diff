@@ -1,0 +1,20 @@
+diff --git a/src/java/org/apache/commons/cli/PosixParser.java b/src/java/org/apache/commons/cli/PosixParser.java
+index 2590de7..4a87e83 100644
+--- a/src/java/org/apache/commons/cli/PosixParser.java
++++ b/src/java/org/apache/commons/cli/PosixParser.java
+@@ -138,6 +138,15 @@ public class PosixParser extends Parser {
+                 else if (options.hasOption(token)) {
+                 	tokens.add(token);
+                 }
++                else if (currentOption != null && currentOption.hasArg()
++                         && !options.hasOption(String.valueOf(token.charAt(1))))
++                {
++                    // the token cannot be burst into a known option, so
++                    // the current option (which is expecting a value) is
++                    // given this token, hyphens and all, as its value
++                    tokens.add(token);
++                    currentOption = null;
++                }
+                 // requires bursting
+                 else
+                 {

@@ -1,0 +1,137 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+index 5236867..8bcf98c 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+@@ -640,7 +640,10 @@ public class DOMNodePointer extends NodePointer {
+         }
+         if (nodeType == Node.TEXT_NODE || nodeType == Node.CDATA_SECTION_NODE) {
+             String text = node.getNodeValue();
+-            return text == null ? "" : text.trim();
++            if (text == null) {
++                return "";
++            }
++            return isXMLSpacePreserved(node) ? text : text.trim();
+         }
+         if (nodeType == Node.PROCESSING_INSTRUCTION_NODE) {
+             String text = ((ProcessingInstruction) node).getData();
+@@ -650,14 +653,31 @@ public class DOMNodePointer extends NodePointer {
+         StringBuffer buf = new StringBuffer(16);
+         for (int i = 0; i < list.getLength(); i++) {
+             Node child = list.item(i);
+-            if (child.getNodeType() == Node.TEXT_NODE) {
+-                buf.append(child.getNodeValue());
++            int childType = child.getNodeType();
++            if (childType == Node.COMMENT_NODE
++                    || childType == Node.PROCESSING_INSTRUCTION_NODE) {
++                continue;
+             }
+-            else {
+             buf.append(stringValue(child));
++        }
++        return buf.toString();
++    }
++
++    /**
++     * Determines whether whitespace should be preserved for the given node,
++     * based on the nearest xml:space attribute found on the node or one
++     * of its ancestors. Defaults to false ("default") if none is found.
++     */
++    private static boolean isXMLSpacePreserved(Node node) {
++        for (Node n = node; n != null; n = n.getParentNode()) {
++            if (n.getNodeType() == Node.ELEMENT_NODE) {
++                Attr attr = ((Element) n).getAttributeNode("xml:space");
++                if (attr != null) {
++                    return "preserve".equals(attr.getValue());
++                }
+             }
+         }
+-        return buf.toString().trim();
++        return false;
+     }
+ 
+     /**
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
+index 975dbc4..5b31e74 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java
+@@ -236,30 +236,63 @@ public class JDOMNodePointer extends NodePointer {
+     }
+ 
+     public Object getValue() {
+-        if (node instanceof Element) {
+-            return ((Element) node).getTextTrim();
++        return stringValue(node);
++    }
++
++    private String stringValue(Object value) {
++        if (value instanceof Element) {
++            return aggregatedText(((Element) value).getContent());
+         }
+-        if (node instanceof Comment) {
+-            String text = ((Comment) node).getText();
+-            if (text != null) {
+-                text = text.trim();
++        if (value instanceof Document) {
++            return aggregatedText(((Document) value).getContent());
++        }
++        if (value instanceof Comment) {
++            String text = ((Comment) value).getText();
++            return text == null ? "" : text.trim();
++        }
++        if (value instanceof Text) {
++            String text = ((Text) value).getText();
++            if (text == null) {
++                return "";
+             }
+-            return text;
++            return isXMLSpacePreserved(value) ? text : text.trim();
+         }
+-        if (node instanceof Text) {
+-            return ((Text) node).getTextTrim();
++        if (value instanceof ProcessingInstruction) {
++            String text = ((ProcessingInstruction) value).getData();
++            return text == null ? "" : text.trim();
+         }
+-        if (node instanceof CDATA) {
+-            return ((CDATA) node).getTextTrim();
++        return "";
++    }
++
++    private String aggregatedText(List content) {
++        StringBuffer buf = new StringBuffer();
++        for (int i = 0; i < content.size(); i++) {
++            Object child = content.get(i);
++            if (child instanceof Comment || child instanceof ProcessingInstruction) {
++                continue;
++            }
++            buf.append(stringValue(child));
+         }
+-        if (node instanceof ProcessingInstruction) {
+-            String text = ((ProcessingInstruction) node).getData();
+-            if (text != null) {
+-                text = text.trim();
++        return buf.toString();
++    }
++
++    /**
++     * Determines whether whitespace should be preserved for the given text
++     * node, based on the nearest xml:space attribute found on its nearest
++     * ancestor element. Defaults to false ("default") if none is found.
++     */
++    private static boolean isXMLSpacePreserved(Object value) {
++        Object parent = ((Text) value).getParent();
++        while (parent instanceof Element) {
++            String space =
++                ((Element) parent).getAttributeValue(
++                        "space", Namespace.XML_NAMESPACE);
++            if (space != null) {
++                return "preserve".equals(space);
+             }
+-            return text;
++            parent = ((Element) parent).getParent();
+         }
+-        return null;
++        return false;
+     }
+ 
+     public void setValue(Object value) {

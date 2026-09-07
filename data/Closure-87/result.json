@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 87,
+  "id": "Closure-87",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:51:59Z",
+  "wallclock_s": 168,
+  "agent_s": 102,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 62880,
+  "total_cost_usd": 0.21151520000000004,
+  "session_id": "875ccc17-487f-4959-9734-e8d34361747c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 5516,
+  "cache_read_input_tokens": 358881,
+  "cache_creation_input_tokens": 20347,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeSubstituteAlternateSyntaxTest::testIssue291"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java"
+  ],
+  "patch_added_lines": 22,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

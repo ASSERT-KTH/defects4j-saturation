@@ -1,0 +1,38 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 62,
+  "id": "JacksonDatabind-62",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:43:48Z",
+  "wallclock_s": 467,
+  "agent_s": 328,
+  "agent_rc": 0,
+  "num_turns": 48,
+  "api_duration_ms": 228159,
+  "total_cost_usd": 1.0645177999999997,
+  "session_id": "3289496a-ee27-4f70-a9a0-a95d762b0584",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 96,
+  "output_tokens": 20703,
+  "cache_read_input_tokens": 2713559,
+  "cache_creation_input_tokens": 77989,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.creators.ArrayDelegatorCreatorForCollectionTest::testUnmodifiable"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/ArrayBlockingQueueDeserializer.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/CollectionDeserializer.java"
+  ],
+  "patch_added_lines": 47,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

@@ -1,0 +1,173 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+index 26875b8..818b28e 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+@@ -55,8 +55,55 @@ public abstract class CoreOperationCompare extends CoreOperation {
+     protected boolean equal(
+         EvalContext context,
+         Expression left,
+-        Expression right) 
++        Expression right)
+     {
++        Object[] resolved = resolve(context, left, right);
++        Object l = resolved[0];
++        Object r = resolved[1];
++
++        if (l instanceof Iterator && r instanceof Iterator) {
++            return findMatch((Iterator) l, (Iterator) r);
++        }
++        if (l instanceof Iterator) {
++            return contains((Iterator) l, r);
++        }
++        if (r instanceof Iterator) {
++            return contains((Iterator) r, l);
++        }
++        return equal(l, r);
++    }
++
++    /**
++     * Compares two values for inequality, treating NaN consistently with
++     * the other relational operators: a comparison involving NaN is never
++     * true, not even "!=" when both operands are NaN.
++     */
++    protected boolean notEqual(
++        EvalContext context,
++        Expression left,
++        Expression right)
++    {
++        Object[] resolved = resolve(context, left, right);
++        Object l = resolved[0];
++        Object r = resolved[1];
++
++        if (l instanceof Iterator && r instanceof Iterator) {
++            return findMismatch((Iterator) l, (Iterator) r);
++        }
++        if (l instanceof Iterator) {
++            return containsNotEqual((Iterator) l, r);
++        }
++        if (r instanceof Iterator) {
++            return containsNotEqual((Iterator) r, l);
++        }
++        return notEqual(l, r);
++    }
++
++    /**
++     * Evaluates both operands and resolves contexts/collections down to
++     * plain values or Iterators, ready for equal()/notEqual() comparison.
++     */
++    private Object[] resolve(EvalContext context, Expression left, Expression right) {
+         Object l = left.compute(context);
+         Object r = right.compute(context);
+ 
+@@ -84,16 +131,7 @@ public abstract class CoreOperationCompare extends CoreOperation {
+             r = ((Collection) r).iterator();
+         }
+ 
+-        if (l instanceof Iterator && r instanceof Iterator) {
+-            return findMatch((Iterator) l, (Iterator) r);
+-        }
+-        if (l instanceof Iterator) {
+-            return contains((Iterator) l, r);
+-        }
+-        if (r instanceof Iterator) {
+-            return contains((Iterator) r, l);
+-        }
+-        return equal(l, r);
++        return new Object[] { l, r };
+     }
+ 
+     protected boolean contains(Iterator it, Object value) {
+@@ -119,12 +157,30 @@ public abstract class CoreOperationCompare extends CoreOperation {
+         return false;
+     }
+ 
+-    protected boolean equal(Object l, Object r) {
+-        if (l instanceof Pointer && r instanceof Pointer) {
+-            if (l.equals(r)) {
++    protected boolean containsNotEqual(Iterator it, Object value) {
++        while (it.hasNext()) {
++            Object element = it.next();
++            if (notEqual(element, value)) {
+                 return true;
+             }
+         }
++        return false;
++    }
++
++    protected boolean findMismatch(Iterator lit, Iterator rit) {
++        HashSet left = new HashSet();
++        while (lit.hasNext()) {
++            left.add(lit.next());
++        }
++        while (rit.hasNext()) {
++            if (containsNotEqual(left.iterator(), rit.next())) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    protected boolean equal(Object l, Object r) {
+         if (l instanceof Pointer) {
+             l = ((Pointer) l).getValue();
+         }
+@@ -133,13 +189,10 @@ public abstract class CoreOperationCompare extends CoreOperation {
+             r = ((Pointer) r).getValue();
+         }
+ 
+-        if (l == r) {
+-            return true;
+-        }
+         if (l instanceof Boolean || r instanceof Boolean) {
+             return (InfoSetUtil.booleanValue(l) == InfoSetUtil.booleanValue(r));
+             }
+-            //if either side is NaN, no comparison returns true:
++            //if either side is NaN, no comparison returns true, even to itself:
+         if (l instanceof Number || r instanceof Number) {
+             return (InfoSetUtil.doubleValue(l) == InfoSetUtil.doubleValue(r));
+             }
+@@ -147,7 +200,31 @@ public abstract class CoreOperationCompare extends CoreOperation {
+             return (
+                 InfoSetUtil.stringValue(l).equals(InfoSetUtil.stringValue(r)));
+         }
++        if (l == r) {
++            return true;
++        }
+         return l != null && l.equals(r);
+     }
+ 
++    protected boolean notEqual(Object l, Object r) {
++        if (l instanceof Pointer) {
++            l = ((Pointer) l).getValue();
++        }
++
++        if (r instanceof Pointer) {
++            r = ((Pointer) r).getValue();
++        }
++
++            //if either side is NaN, no comparison returns true, not even "!=":
++        if (l instanceof Number || r instanceof Number) {
++            double ld = InfoSetUtil.doubleValue(l);
++            double rd = InfoSetUtil.doubleValue(r);
++            if (Double.isNaN(ld) || Double.isNaN(rd)) {
++                return false;
++            }
++            return ld != rd;
++        }
++        return !equal(l, r);
++    }
++
+ }
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
+index 6754f46..32ad852 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
+@@ -29,7 +29,7 @@ public class CoreOperationNotEqual extends CoreOperationCompare {
+     }
+ 
+     public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        return equal(context, args[0], args[1]) ? Boolean.FALSE : Boolean.TRUE;
++        return notEqual(context, args[0], args[1]) ? Boolean.TRUE : Boolean.FALSE;
+     }
+     public String getSymbol() {
+         return "!=";

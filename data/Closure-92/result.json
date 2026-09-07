@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 92,
+  "id": "Closure-92",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:58:34Z",
+  "wallclock_s": 134,
+  "agent_s": 62,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 18993,
+  "total_cost_usd": 0.1110678,
+  "session_id": "b6c73277-d050-41d9-ae4f-44282785a9e4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1448,
+  "cache_read_input_tokens": 147479,
+  "cache_creation_input_tokens": 15782,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ProcessClosurePrimitivesTest::testProvideInIndependentModules4"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ProcessClosurePrimitives.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

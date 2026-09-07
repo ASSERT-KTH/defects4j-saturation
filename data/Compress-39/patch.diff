@@ -1,0 +1,32 @@
+diff --git a/src/main/java/org/apache/commons/compress/utils/ArchiveUtils.java b/src/main/java/org/apache/commons/compress/utils/ArchiveUtils.java
+index 0a755ce..499bbce 100644
+--- a/src/main/java/org/apache/commons/compress/utils/ArchiveUtils.java
++++ b/src/main/java/org/apache/commons/compress/utils/ArchiveUtils.java
+@@ -28,6 +28,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
+  */
+ public class ArchiveUtils {
+ 
++    private static final int MAX_SANITIZED_NAME_LENGTH = 255;
+ 
+     /** Private constructor to prevent instantiation of this utility class. */
+     private ArchiveUtils(){
+@@ -271,7 +272,8 @@ public class ArchiveUtils {
+      */
+     public static String sanitize(String s) {
+         final char[] chars = s.toCharArray();
+-        final int len = chars.length;
++        final boolean needsTruncation = chars.length > MAX_SANITIZED_NAME_LENGTH;
++        final int len = needsTruncation ? MAX_SANITIZED_NAME_LENGTH - 3 : chars.length;
+         final StringBuilder sb = new StringBuilder();
+         for (int i = 0; i < len; i++) {
+             final char c = chars[i];
+@@ -284,6 +286,9 @@ public class ArchiveUtils {
+             }
+             sb.append('?');
+         }
++        if (needsTruncation) {
++            sb.append("...");
++        }
+         return sb.toString();
+     }
+ 

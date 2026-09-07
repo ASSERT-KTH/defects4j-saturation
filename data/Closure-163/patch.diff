@@ -1,0 +1,107 @@
+diff --git a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+index 10989ec..3ee8f71 100644
+--- a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
++++ b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+@@ -227,11 +227,44 @@ class AnalyzePrototypeProperties implements CompilerPass {
+             n.getFirstChild().getString() /* named function */;
+         symbolStack.push(new NameContext(getNameInfoForName(name, VAR)));
+       } else if (n.isFunction()) {
+-        symbolStack.push(new NameContext(anonymousNode));
++        String prototypeLiteralPropertyName = getPrototypeLiteralPropertyName(n);
++        if (prototypeLiteralPropertyName != null) {
++          symbolStack.push(new NameContext(getNameInfoForName(
++                  prototypeLiteralPropertyName, PROPERTY)));
++        } else {
++          symbolStack.push(new NameContext(anonymousNode));
++        }
+       }
+       return true;
+     }
+ 
++    /**
++     * If {@code n} is the value of a key in an object literal that is being
++     * assigned to a prototype (as in {@code Foo.prototype = {bar: function()
++     * {...}}}), returns the name of that key. Otherwise returns null.
++     */
++    private String getPrototypeLiteralPropertyName(Node n) {
++      Node key = n.getParent();
++      if (key == null || key.getFirstChild() != n) {
++        return null;
++      }
++      Node objLit = key.getParent();
++      if (objLit == null || !objLit.isObjectLit()) {
++        return null;
++      }
++      Node assign = objLit.getParent();
++      if (assign == null || !assign.isAssign() ||
++          assign.getLastChild() != objLit) {
++        return null;
++      }
++      Node lhs = assign.getFirstChild();
++      if (lhs.isGetProp() &&
++          lhs.getLastChild().getString().equals("prototype")) {
++        return key.getString();
++      }
++      return null;
++    }
++
+     @Override
+     public void visit(NodeTraversal t, Node n, Node parent) {
+       if (n.isGetProp()) {
+@@ -424,7 +457,11 @@ class AnalyzePrototypeProperties implements CompilerPass {
+             Property prop = new AssignmentProperty(
+                 grandParent,
+                 t.getModule());
+-            getNameInfoForName(name, PROPERTY).getDeclarations().add(prop);
++            NameInfo nameInfo = getNameInfoForName(name, PROPERTY);
++            nameInfo.getDeclarations().add(prop);
++            if (!isGloballyAccessible(t, n.getFirstChild())) {
++              nameInfo.readClosureVariables = true;
++            }
+           }
+           break;
+ 
+@@ -432,6 +469,7 @@ class AnalyzePrototypeProperties implements CompilerPass {
+         case Token.ASSIGN:
+           Node map = n.getFirstChild().getNext();
+           if (map.isObjectLit()) {
++            boolean isGlobalAccess = isGloballyAccessible(t, n.getFirstChild());
+             for (Node key = map.getFirstChild();
+                  key != null; key = key.getNext()) {
+               // May be STRING, GET, or SET,
+@@ -439,13 +477,34 @@ class AnalyzePrototypeProperties implements CompilerPass {
+               Property prop = new LiteralProperty(
+                   key, key.getFirstChild(), map, n,
+                   t.getModule());
+-              getNameInfoForName(name, PROPERTY).getDeclarations().add(prop);
++              NameInfo nameInfo = getNameInfoForName(name, PROPERTY);
++              nameInfo.getDeclarations().add(prop);
++              if (!isGlobalAccess) {
++                nameInfo.readClosureVariables = true;
++              }
+             }
+           }
+           break;
+       }
+     }
+ 
++    /**
++     * Determines whether the object whose prototype is being modified is
++     * reachable from the global scope, i.e., whether its root variable is a
++     * global variable. If it is not (e.g., it's a local variable of some
++     * enclosing function), then any properties assigned to its prototype
++     * cannot safely be moved to a different module, since the object itself
++     * would not be reachable from that module.
++     */
++    private boolean isGloballyAccessible(NodeTraversal t, Node qualifiedName) {
++      Node root = NodeUtil.getRootOfQualifiedName(qualifiedName);
++      if (!root.isName()) {
++        return false;
++      }
++      Var var = t.getScope().getVar(root.getString());
++      return var != null && var.isGlobal();
++    }
++
+     private void addGlobalUseOfSymbol(String name, JSModule module,
+         SymbolType type) {
+       symbolGraph.connect(globalNode, module, getNameInfoForName(name, type));

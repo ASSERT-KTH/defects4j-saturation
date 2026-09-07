@@ -1,0 +1,38 @@
+diff --git a/source/org/jfree/data/general/DatasetUtilities.java b/source/org/jfree/data/general/DatasetUtilities.java
+index 927cbad..e17b364 100644
+--- a/source/org/jfree/data/general/DatasetUtilities.java
++++ b/source/org/jfree/data/general/DatasetUtilities.java
+@@ -754,6 +754,16 @@ public final class DatasetUtilities {
+                 for (int item = 0; item < itemCount; item++) {
+                     lvalue = intervalXYData.getStartXValue(series, item);
+                     uvalue = intervalXYData.getEndXValue(series, item);
++                    if (Double.isNaN(lvalue) && Double.isNaN(uvalue)) {
++                        lvalue = intervalXYData.getXValue(series, item);
++                        uvalue = lvalue;
++                    }
++                    else if (Double.isNaN(lvalue)) {
++                        lvalue = uvalue;
++                    }
++                    else if (Double.isNaN(uvalue)) {
++                        uvalue = lvalue;
++                    }
+                     if (!Double.isNaN(lvalue)) {
+                         minimum = Math.min(minimum, lvalue);
+                     }
+@@ -1241,6 +1251,16 @@ public final class DatasetUtilities {
+                 for (int item = 0; item < itemCount; item++) {
+                     double lvalue = ixyd.getStartYValue(series, item);
+                     double uvalue = ixyd.getEndYValue(series, item);
++                    if (Double.isNaN(lvalue) && Double.isNaN(uvalue)) {
++                        lvalue = ixyd.getYValue(series, item);
++                        uvalue = lvalue;
++                    }
++                    else if (Double.isNaN(lvalue)) {
++                        lvalue = uvalue;
++                    }
++                    else if (Double.isNaN(uvalue)) {
++                        uvalue = lvalue;
++                    }
+                     if (!Double.isNaN(lvalue)) {
+                         minimum = Math.min(minimum, lvalue);
+                     }

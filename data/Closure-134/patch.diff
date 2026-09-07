@@ -1,0 +1,90 @@
+diff --git a/src/com/google/javascript/jscomp/AmbiguateProperties.java b/src/com/google/javascript/jscomp/AmbiguateProperties.java
+index aad743f..cf23687 100644
+--- a/src/com/google/javascript/jscomp/AmbiguateProperties.java
++++ b/src/com/google/javascript/jscomp/AmbiguateProperties.java
+@@ -207,7 +207,9 @@ class AmbiguateProperties implements CompilerPass {
+     for (Property p : propertyMap.values()) {
+       if (!p.skipAmbiguating) {
+         ++numRenamedPropertyNames;
+-        computeRelatedTypes(p.type);
++        for (JSType type : p.types) {
++          computeRelatedTypes(type);
++        }
+         propsByFreq.add(p);
+       } else {
+         ++numSkippedPropertyNames;
+@@ -353,7 +355,7 @@ class AmbiguateProperties implements CompilerPass {
+       if (typesRelatedToSet.intersects(prop.typesSet)) {
+         return false;
+       }
+-      return !getRelated(prop.type).intersects(typesInSet);
++      return !getRelated(prop).intersects(typesInSet);
+     }
+ 
+     /**
+@@ -363,7 +365,19 @@ class AmbiguateProperties implements CompilerPass {
+      */
+     public void addNode(Property prop) {
+       typesInSet.or(prop.typesSet);
+-      typesRelatedToSet.or(getRelated(prop.type));
++      typesRelatedToSet.or(getRelated(prop));
++    }
++
++    /**
++     * Finds all types related to any of the types referenced by the given
++     * property and returns a BitSet with their bits set to true.
++     */
++    private JSTypeBitSet getRelated(Property prop) {
++      JSTypeBitSet relatedTypes = new JSTypeBitSet(intForType.size());
++      for (JSType type : prop.types) {
++        relatedTypes.or(getRelated(type));
++      }
++      return relatedTypes;
+     }
+ 
+     /**
+@@ -550,7 +564,8 @@ class AmbiguateProperties implements CompilerPass {
+   /** Encapsulates the information needed for renaming a property. */
+   private class Property {
+     final String oldName;
+-    JSType type;
++    /** The distinct, non-union types that this property has been seen on. */
++    final Set<JSType> types = Sets.newHashSet();
+     String newName;
+     int numOccurrences;
+     boolean skipAmbiguating;
+@@ -591,11 +606,7 @@ class AmbiguateProperties implements CompilerPass {
+         return;
+       }
+ 
+-      if (type == null) {
+-        type = newType;
+-      } else {
+-        type = type.getLeastSupertype(newType);
+-      }
++      types.add(newType);
+       typesSet.set(getIntForType(newType));
+     }
+   }
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 5fdec75..2daa6f5 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -557,9 +557,16 @@ final class TypedScopeCreator implements ScopeCreator {
+       JSType propType = ownerType.getPropertyType(propName);
+       if (propType instanceof FunctionType) {
+         return (FunctionType) propType;
+-      }
++      } else {
+         // If it's not, then check to see if it's implemented
+         // on an implemented interface.
++        for (ObjectType iface : ownerType.getCtorImplementedInterfaces()) {
++          propType = iface.getPropertyType(propName);
++          if (propType instanceof FunctionType) {
++            return (FunctionType) propType;
++          }
++        }
++      }
+ 
+       return null;
+     }

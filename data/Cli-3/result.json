@@ -1,0 +1,37 @@
+{
+  "project": "Cli",
+  "bug": 3,
+  "id": "Cli-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T21:20:29Z",
+  "wallclock_s": 34,
+  "agent_s": 22,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 20990,
+  "total_cost_usd": 0.0955968,
+  "session_id": "9db11313-a310-4af5-a81c-a1ca98326ed2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1618,
+  "cache_read_input_tokens": 128334,
+  "cache_creation_input_tokens": 12866,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.PatternOptionBuilderTest::testSimplePattern"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/TypeHandler.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

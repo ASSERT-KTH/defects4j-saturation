@@ -1,0 +1,16 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java b/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java
+index f19acc7..9294144 100644
+--- a/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java
++++ b/src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java
+@@ -269,6 +269,11 @@ public final class ByteQuadsCanonicalizer
+         // and then set other state to reflect sharing status
+         _needRehash = false;
+         _hashShared = true;
++        // Inherited state may already be at/over the rehash threshold: short-lived
++        // child instances merge their state back into the parent without ever
++        // calling rehash() themselves, so a new child must check right away,
++        // before its spill-over area can overflow on the very first add.
++        _verifyNeedForRehash();
+     }
+ 
+     /*

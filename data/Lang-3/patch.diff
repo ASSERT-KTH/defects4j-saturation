@@ -1,0 +1,35 @@
+diff --git a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+index c584021..8e60a50 100644
+--- a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
++++ b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+@@ -589,9 +589,11 @@ public class NumberUtils {
+ 
+         //Must be a Float, Double, BigDecimal
+         final boolean allZeros = isAllZeros(mant) && isAllZeros(exp);
++        final BigDecimal exact = createBigDecimal(str);
+         try {
+                 final Float f = createFloat(str);
+-                if (!(f.isInfinite() || (f.floatValue() == 0.0F && !allZeros))) {
++                if (!(f.isInfinite() || (f.floatValue() == 0.0F && !allZeros))
++                        && new BigDecimal(f.toString()).compareTo(exact) == 0) {
+                     return f;
+                 }
+         } catch (final NumberFormatException nfe) { // NOPMD
+@@ -599,14 +601,15 @@ public class NumberUtils {
+         }
+         try {
+                 final Double d = createDouble(str);
+-                if (!(d.isInfinite() || (d.doubleValue() == 0.0D && !allZeros))) {
++                if (!(d.isInfinite() || (d.doubleValue() == 0.0D && !allZeros))
++                        && new BigDecimal(d.toString()).compareTo(exact) == 0) {
+                     return d;
+                 }
+         } catch (final NumberFormatException nfe) { // NOPMD
+             // ignore the bad number
+         }
+ 
+-        return createBigDecimal(str);
++        return exact;
+     }
+ 
+     /**

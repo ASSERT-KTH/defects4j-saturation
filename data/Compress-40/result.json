@@ -1,0 +1,38 @@
+{
+  "project": "Compress",
+  "bug": 40,
+  "id": "Compress-40",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:52:08Z",
+  "wallclock_s": 275,
+  "agent_s": 245,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 237344,
+  "total_cost_usd": 0.44098420000000005,
+  "session_id": "c2b27373-f7db-493d-ae23-c939a5d80055",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 22262,
+  "cache_read_input_tokens": 323871,
+  "cache_creation_input_tokens": 37445,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.utils.BitInputStreamTest::littleEndianWithOverflow",
+    "org.apache.commons.compress.utils.BitInputStreamTest::bigEndianWithOverflow"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/utils/BitInputStream.java"
+  ],
+  "patch_added_lines": 47,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

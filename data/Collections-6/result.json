@@ -1,0 +1,37 @@
+{
+  "project": "Collections",
+  "bug": 6,
+  "id": "Collections-6",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T07:19:21Z",
+  "wallclock_s": 101,
+  "agent_s": 71,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 57958,
+  "total_cost_usd": 0.2211358,
+  "session_id": "5c69de0d-d7a9-4e98-a587-e78e5eae1fcd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 5326,
+  "cache_read_input_tokens": 336384,
+  "cache_creation_input_tokens": 24570,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.map.TestFlat3Map::testCollections261"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/map/Flat3Map.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 6,
+  "has_dev_patch": true
+}

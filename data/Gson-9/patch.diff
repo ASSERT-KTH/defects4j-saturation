@@ -1,0 +1,42 @@
+diff --git a/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java b/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java
+index 502d5ab..62b6865 100644
+--- a/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java
++++ b/gson/src/main/java/com/google/gson/internal/bind/JsonTreeWriter.java
+@@ -159,6 +159,14 @@ public final class JsonTreeWriter extends JsonWriter {
+     return this;
+   }
+ 
++  @Override public JsonWriter value(Boolean value) throws IOException {
++    if (value == null) {
++      return nullValue();
++    }
++    put(new JsonPrimitive(value));
++    return this;
++  }
++
+ 
+   @Override public JsonWriter value(double value) throws IOException {
+     if (!isLenient() && (Double.isNaN(value) || Double.isInfinite(value))) {
+diff --git a/gson/src/main/java/com/google/gson/stream/JsonWriter.java b/gson/src/main/java/com/google/gson/stream/JsonWriter.java
+index a4178ee..69359ef 100644
+--- a/gson/src/main/java/com/google/gson/stream/JsonWriter.java
++++ b/gson/src/main/java/com/google/gson/stream/JsonWriter.java
+@@ -471,8 +471,18 @@ public class JsonWriter implements Closeable, Flushable {
+   /**
+    * Encodes {@code value}.
+    *
++   * @param value the value to write, or null to write a null literal.
+    * @return this writer.
+    */
++  public JsonWriter value(Boolean value) throws IOException {
++    if (value == null) {
++      return nullValue();
++    }
++    writeDeferredName();
++    beforeValue();
++    out.write(value ? "true" : "false");
++    return this;
++  }
+ 
+   /**
+    * Encodes {@code value}.

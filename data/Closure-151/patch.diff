@@ -1,0 +1,72 @@
+diff --git a/src/com/google/javascript/jscomp/CommandLineRunner.java b/src/com/google/javascript/jscomp/CommandLineRunner.java
+index ebf4b51..bf1e0fa 100644
+--- a/src/com/google/javascript/jscomp/CommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/CommandLineRunner.java
+@@ -85,6 +85,10 @@ public class CommandLineRunner extends
+         usage = "Displays this message")
+     private boolean display_help = false;
+ 
++    @Option(name = "--version",
++        usage = "Prints the compiler version to stdout and exit.")
++    private boolean version = false;
++
+     @Option(name = "--print_tree",
+         handler = BooleanOptionHandler.class,
+         usage = "Prints out the parse tree and exits")
+@@ -416,6 +420,14 @@ public class CommandLineRunner extends
+     }
+ 
+ 
++    if (flags.version) {
++      err.println(
++          "Closure Compiler (http://code.google.com/p/closure/compiler)\n" +
++          "Version: " + Compiler.getReleaseVersion() + "\n" +
++          "Built on: " + Compiler.getReleaseDate());
++      err.flush();
++    }
++
+     if (!isConfigValid || flags.display_help) {
+       isConfigValid = false;
+       parser.printUsage(err);
+diff --git a/src/com/google/javascript/jscomp/Compiler.java b/src/com/google/javascript/jscomp/Compiler.java
+index ff1d6ee..098dd63 100644
+--- a/src/com/google/javascript/jscomp/Compiler.java
++++ b/src/com/google/javascript/jscomp/Compiler.java
+@@ -40,6 +40,7 @@ import java.util.Collections;
+ import java.util.HashMap;
+ import java.util.List;
+ import java.util.Map;
++import java.util.ResourceBundle;
+ import java.util.Set;
+ import java.util.concurrent.Callable;
+ import java.util.logging.Level;
+@@ -162,6 +163,10 @@ public class Compiler extends AbstractCompiler {
+   private static final Logger logger =
+       Logger.getLogger("com.google.javascript.jscomp");
+ 
++  /** Resource bundle that holds the compiler's version and build date. */
++  private static final String CONFIG_RESOURCE =
++      "com.google.javascript.jscomp.parsing.ParserConfig";
++
+   private final PrintStream outStream;
+ 
+   /**
+@@ -1766,6 +1771,18 @@ public class Compiler extends AbstractCompiler {
+     logger.setLevel(level);
+   }
+ 
++  /** Gets the current version of the compiler. */
++  public static String getReleaseVersion() {
++    ResourceBundle config = ResourceBundle.getBundle(CONFIG_RESOURCE);
++    return config.getString("compiler.version");
++  }
++
++  /** Gets the current date of the compiler. */
++  public static String getReleaseDate() {
++    ResourceBundle config = ResourceBundle.getBundle(CONFIG_RESOURCE);
++    return config.getString("compiler.date");
++  }
++
+   /** Gets the DOT graph of the AST generated at the end of compilation. */
+   public String getAstDotGraph() throws IOException {
+     if (jsRoot != null) {

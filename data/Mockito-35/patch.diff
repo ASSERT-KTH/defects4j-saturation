@@ -1,0 +1,56 @@
+diff --git a/src/org/mockito/Matchers.java b/src/org/mockito/Matchers.java
+index 16f1b5b..ed9f718 100644
+--- a/src/org/mockito/Matchers.java
++++ b/src/org/mockito/Matchers.java
+@@ -359,7 +359,7 @@ public class Matchers {
+      * @return <code>null</code>.
+      */
+     public static <T> T isA(Class<T> clazz) {
+-        return reportMatcher(new InstanceOf(clazz)).<T>returnNull();
++        return reportMatcher(new InstanceOf(clazz)).<T>returnFor(clazz);
+     }
+ 
+     /**
+@@ -476,8 +476,8 @@ public class Matchers {
+      * @return <code>null</code>.
+      */
+     public static <T> T eq(T value) {
+-        return reportMatcher(new Equals(value)).<T>returnNull();
+-    }  
++        return reportMatcher(new Equals(value)).<T>returnFor(value);
++    }
+ 
+     /**
+      * Object argument that is reflection-equal to the given value with support for excluding
+@@ -513,7 +513,7 @@ public class Matchers {
+      * @return <code>null</code>.
+      */
+     public static <T> T same(T value) {
+-        return reportMatcher(new Same(value)).<T>returnNull();
++        return reportMatcher(new Same(value)).<T>returnFor(value);
+     }
+ 
+     /**
+diff --git a/src/org/mockito/internal/progress/HandyReturnValues.java b/src/org/mockito/internal/progress/HandyReturnValues.java
+index 453a344..9804e2d 100644
+--- a/src/org/mockito/internal/progress/HandyReturnValues.java
++++ b/src/org/mockito/internal/progress/HandyReturnValues.java
+@@ -39,10 +39,17 @@ public class HandyReturnValues {
+     public <T> T returnFor(Class<T> clazz) {
+         if (isPrimitiveWrapper(clazz)) {
+             return primitiveWrapperOf(clazz);
+-        } 
++        }
+         return primitiveValueOrNullFor(clazz);
+     }
+ 
++    public <T> T returnFor(T instance) {
++        if (instance == null) {
++            return null;
++        }
++        return (T) returnFor(instance.getClass());
++    }
++
+     public Map returnMap() {
+         return new HashMap();
+     }

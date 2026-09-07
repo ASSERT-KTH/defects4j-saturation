@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java
+index 0afabc8..3d19a81 100644
+--- a/src/com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java
+@@ -610,9 +610,14 @@ public abstract class ChainableReverseAbstractInterpreter
+     public JSType caseObjectType(ObjectType type) {
+       if (value.equals("function")) {
+         JSType ctorType = getNativeType(U2U_CONSTRUCTOR_TYPE);
+-        return resultEqualsValue && ctorType.isSubtype(type) ? ctorType : null;
+-          // Objects are restricted to "Function", subtypes are left
++        if (!ctorType.isSubtype(type)) {
+           // Only filter out subtypes of "function"
++          return null;
++        }
++        // Objects are restricted to "Function", subtypes are left
++        // unrestricted, since we have no way to precisely express
++        // "an object that is not a function".
++        return resultEqualsValue ? ctorType : type;
+       }
+       return matchesExpectation("object") ? type : null;
+     }

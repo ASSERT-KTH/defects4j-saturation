@@ -1,0 +1,23 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java b/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java
+index 37c6503..ca39a71 100644
+--- a/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java
++++ b/src/main/java/com/fasterxml/jackson/core/base/ParserMinimalBase.java
+@@ -386,15 +386,15 @@ public abstract class ParserMinimalBase extends JsonParser
+ 
+     @Override
+     public String getValueAsString() throws IOException {
+-        if (_currToken == JsonToken.VALUE_STRING) {
++        if (_currToken == JsonToken.VALUE_STRING || _currToken == JsonToken.FIELD_NAME) {
+             return getText();
+         }
+         return getValueAsString(null);
+     }
+-    
++
+     @Override
+     public String getValueAsString(String defaultValue) throws IOException {
+-        if (_currToken == JsonToken.VALUE_STRING) {
++        if (_currToken == JsonToken.VALUE_STRING || _currToken == JsonToken.FIELD_NAME) {
+             return getText();
+         }
+         if (_currToken == null || _currToken == JsonToken.VALUE_NULL || !_currToken.isScalarValue()) {

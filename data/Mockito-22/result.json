@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 22,
+  "id": "Mockito-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:07:20Z",
+  "wallclock_s": 288,
+  "agent_s": 96,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 16481,
+  "total_cost_usd": 0.0779234,
+  "session_id": "aa6306a9-a32b-4e9e-8b16-6d71dab1af4e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1155,
+  "cache_read_input_tokens": 104927,
+  "cache_creation_input_tokens": 10714,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.matchers.EqualityTest::shouldKnowIfObjectsAreEqual"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/matchers/Equality.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

@@ -1,0 +1,20 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index 8cd3ab9..dd84066 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -963,6 +963,15 @@ class CodeGenerator {
+     for (int i = 0; i < s.length(); i++) {
+       char c = s.charAt(i);
+       switch (c) {
++        case '\0':
++          // Don't use \0 if the next character is a digit, as that would
++          // form an octal escape (e.g. "\01" != "\0" + "1").
++          if (i < s.length() - 1 && Character.isDigit(s.charAt(i + 1))) {
++            appendHexJavaScriptRepresentation(sb, c);
++          } else {
++            sb.append("\\0");
++          }
++          break;
+         case '\n': sb.append("\\n"); break;
+         case '\r': sb.append("\\r"); break;
+         case '\t': sb.append("\\t"); break;

@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 9,
+  "id": "JacksonDatabind-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T08:30:52Z",
+  "wallclock_s": 112,
+  "agent_s": 42,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 16315,
+  "total_cost_usd": 0.07729739999999999,
+  "session_id": "ca600f31-1913-4fa3-af79-3a39b240837b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1097,
+  "cache_read_input_tokens": 119097,
+  "cache_creation_input_tokens": 10051,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.TestMapSerialization::testClassKey"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializer.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

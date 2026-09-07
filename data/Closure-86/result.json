@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 86,
+  "id": "Closure-86",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-05T23:51:51Z",
+  "wallclock_s": 206,
+  "agent_s": 83,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 19780,
+  "total_cost_usd": 0.1262974,
+  "session_id": "eb575c48-ffa6-41da-868b-714a41dff410",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1443,
+  "cache_read_input_tokens": 183482,
+  "cache_creation_input_tokens": 17366,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.NodeUtilTest::testLocalValue1",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testLocalizedSideEffects8",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testLocalizedSideEffects9",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testAnnotationInExterns_new4",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testAnnotationInExterns_new6",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testIssue303b",
+    "com.google.javascript.jscomp.PureFunctionIdentifierTest::testIssue303"
+  ],
+  "failing_before": 7,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NodeUtil.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

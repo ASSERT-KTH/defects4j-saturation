@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 36,
+  "id": "JacksonDatabind-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:14:40Z",
+  "wallclock_s": 215,
+  "agent_s": 83,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 43510,
+  "total_cost_usd": 0.20330940000000003,
+  "session_id": "9b74fa25-5948-4418-947f-35918984283a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3414,
+  "cache_read_input_tokens": 350762,
+  "cache_creation_input_tokens": 24175,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.TestStdDateFormat::testLenient"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

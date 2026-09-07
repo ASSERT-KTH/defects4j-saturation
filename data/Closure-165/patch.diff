@@ -1,0 +1,106 @@
+diff --git a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+index 6c6fcd4..cace308 100644
+--- a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
++++ b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+@@ -695,8 +695,10 @@ public class JSTypeRegistry implements Serializable {
+         if (!greatestSubtype.isEmptyType()) {
+           // We've found a type with this property. Now we just have to make
+           // sure it's not a type used for internal bookkeeping.
+-
+-          return true;
++          RecordType maybeRecordType = greatestSubtype.toMaybeRecordType();
++          if (maybeRecordType == null || !maybeRecordType.isSynthesized()) {
++            return true;
++          }
+         }
+       }
+     }
+@@ -1315,7 +1317,7 @@ public class JSTypeRegistry implements Serializable {
+    * Creates a record type.
+    */
+   public RecordType createRecordType(Map<String, RecordProperty> properties) {
+-    return new RecordType(this, properties);
++    return new RecordType(this, properties, true);
+   }
+ 
+   /**
+diff --git a/src/com/google/javascript/rhino/jstype/RecordType.java b/src/com/google/javascript/rhino/jstype/RecordType.java
+index 7cc4890..0d5bd99 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordType.java
++++ b/src/com/google/javascript/rhino/jstype/RecordType.java
+@@ -66,6 +66,7 @@ class RecordType extends PrototypeObjectType {
+ 
+   private final SortedMap<String, JSType> properties = Maps.newTreeMap();
+   private boolean isFrozen = false;
++  private final boolean isSynthesized;
+ 
+ 
+   /**
+@@ -80,9 +81,11 @@ class RecordType extends PrototypeObjectType {
+    * @throws IllegalStateException if the {@code RecordProperty} associated
+    *         with a property is null.
+    */
+-  RecordType(JSTypeRegistry registry, Map<String, RecordProperty> properties) {
++  RecordType(JSTypeRegistry registry, Map<String, RecordProperty> properties,
++      boolean declared) {
+     super(registry, null, null);
+     setPrettyPrint(true);
++    this.isSynthesized = !declared;
+ 
+     for (String property : properties.keySet()) {
+       RecordProperty prop = properties.get(property);
+@@ -99,6 +102,9 @@ class RecordType extends PrototypeObjectType {
+   }
+ 
+   /** @return Is this synthesized for internal bookkeeping? */
++  boolean isSynthesized() {
++    return isSynthesized;
++  }
+ 
+   @Override
+   public boolean isEquivalentTo(JSType other) {
+@@ -149,6 +155,7 @@ class RecordType extends PrototypeObjectType {
+     if (that.isRecordType()) {
+       RecordType thatRecord = that.toMaybeRecordType();
+       RecordTypeBuilder builder = new RecordTypeBuilder(registry);
++      builder.setSynthesized(true);
+ 
+       // The greatest subtype consists of those *unique* properties of both
+       // record types. If any property conflicts, then the NO_TYPE type
+diff --git a/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java b/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
+index 345795b..7243ab1 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
++++ b/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
+@@ -51,6 +51,7 @@ import java.util.HashMap;
+  */
+ public class RecordTypeBuilder {
+   private boolean isEmpty = true;
++  private boolean synthesized = false;
+   private final JSTypeRegistry registry;
+   private final HashMap<String, RecordProperty> properties = Maps.newHashMap();
+ 
+@@ -58,7 +59,14 @@ public class RecordTypeBuilder {
+     this.registry = registry;
+   }
+ 
+-  /** See the comments on RecordType about synthetic types. */
++  /**
++   * See the comments on RecordType about synthetic types. By default,
++   * RecordTypes are not synthetic.
++   */
++  public RecordTypeBuilder setSynthesized(boolean synthesized) {
++    this.synthesized = synthesized;
++    return this;
++  }
+ 
+   /**
+    * Adds a property with the given name and type to the record type.
+@@ -89,7 +97,7 @@ public class RecordTypeBuilder {
+     }
+ 
+     return new RecordType(
+-        registry, Collections.unmodifiableMap(properties));
++        registry, Collections.unmodifiableMap(properties), !synthesized);
+   }
+ 
+   static class RecordProperty {

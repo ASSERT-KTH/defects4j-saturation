@@ -1,0 +1,39 @@
+{
+  "project": "Jsoup",
+  "bug": 83,
+  "id": "Jsoup-83",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T14:25:21Z",
+  "wallclock_s": 131,
+  "agent_s": 108,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 95944,
+  "total_cost_usd": 0.2647824,
+  "session_id": "7603c6aa-3e20-4252-aa8f-4d428256f4e5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 8629,
+  "cache_read_input_tokens": 396162,
+  "cache_creation_input_tokens": 23849,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::parsesQuiteRoughAttributes",
+    "org.jsoup.parser.TokeniserStateTest::handlesLessInTagThanAsNewTag"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java",
+    "src/main/java/org/jsoup/parser/TokeniserState.java"
+  ],
+  "patch_added_lines": 32,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

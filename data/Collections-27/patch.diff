@@ -1,0 +1,19 @@
+diff --git a/src/main/java/org/apache/commons/collections4/map/MultiValueMap.java b/src/main/java/org/apache/commons/collections4/map/MultiValueMap.java
+index d131af2..77480a2 100644
+--- a/src/main/java/org/apache/commons/collections4/map/MultiValueMap.java
++++ b/src/main/java/org/apache/commons/collections4/map/MultiValueMap.java
+@@ -565,6 +565,14 @@ public class MultiValueMap<K, V> extends AbstractMapDecorator<K, Object> impleme
+             }
+         }
+ 
++        private void readObject(final ObjectInputStream is) throws IOException, ClassNotFoundException {
++            is.defaultReadObject();
++            // ensure that the de-serialized class is a legitimate Collection class
++            if (Collection.class.isAssignableFrom(clazz)) {
++                return;
++            }
++            throw new UnsupportedOperationException();
++        }
+     }
+ 
+ }

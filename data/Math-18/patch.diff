@@ -1,0 +1,146 @@
+diff --git a/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java b/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
+index bc754a5..296131a 100644
+--- a/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
++++ b/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
+@@ -536,7 +536,7 @@ public class CMAESOptimizer
+                 boundaries[0] = lB;
+                 boundaries[1] = uB;
+ 
+-                // Abort early if the normalization will overflow (cf. "encode" method).
++                // Abort early if computing the range would overflow.
+                 for (int i = 0; i < lB.length; i++) {
+                     if (Double.isInfinite(boundaries[1][i] - boundaries[0][i])) {
+                         final double max = Double.MAX_VALUE + boundaries[0][i];
+@@ -585,8 +585,7 @@ public class CMAESOptimizer
+         // initialize sigma
+         double[][] sigmaArray = new double[guess.length][1];
+         for (int i = 0; i < guess.length; i++) {
+-            final double range = (boundaries == null) ? 1.0 : boundaries[1][i] - boundaries[0][i];
+-            sigmaArray[i][0] = ((inputSigma == null) ? 0.3 : inputSigma[i]) / range;
++            sigmaArray[i][0] = (inputSigma == null) ? 0.3 : inputSigma[i];
+         }
+         RealMatrix insigma = new Array2DRowRealMatrix(sigmaArray, false);
+         sigma = max(insigma); // overall standard deviation
+@@ -919,45 +918,34 @@ public class CMAESOptimizer
+         }
+ 
+         /**
++         * The objective variables are kept in their original (unscaled) units:
++         * scaling them into, e.g., [0, 1] would cause a catastrophic loss of
++         * precision whenever the boundary interval is many orders of magnitude
++         * larger than the values actually explored (cf. MATH-1102).
++         *
+          * @param x Original objective variables.
+-         * @return the normalized objective variables.
++         * @return the objective variables (identity, no transform applied).
+          */
+         public double[] encode(final double[] x) {
+-            if (boundaries == null) {
+-                return x;
+-            }
+-            double[] res = new double[x.length];
+-            for (int i = 0; i < x.length; i++) {
+-                double diff = boundaries[1][i] - boundaries[0][i];
+-                res[i] = (x[i] - boundaries[0][i]) / diff;
+-            }
+-            return res;
++            return x;
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
++         * @param x Objective variables.
+          * @return the original objective variables, possibly repaired.
+          */
+         public double[] repairAndDecode(final double[] x) {
+             return boundaries != null && isRepairMode ?
+-                decode(repair(x)) :
+-                decode(x);
++                repair(x) :
++                x;
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
+-         * @return the original objective variables.
++         * @param x Objective variables.
++         * @return the original objective variables (identity, no transform applied).
+          */
+         public double[] decode(final double[] x) {
+-            if (boundaries == null) {
+-                return x;
+-            }
+-            double[] res = new double[x.length];
+-            for (int i = 0; i < x.length; i++) {
+-                double diff = boundaries[1][i] - boundaries[0][i];
+-                res[i] = diff * x[i] + boundaries[0][i];
+-            }
+-            return res;
++            return x;
+         }
+ 
+         /**
+@@ -979,7 +967,7 @@ public class CMAESOptimizer
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
++         * @param x Objective variables.
+          * @return {@code true} if in bounds.
+          */
+         public boolean isFeasible(final double[] x) {
+@@ -987,12 +975,11 @@ public class CMAESOptimizer
+                 return true;
+             }
+ 
+-
+             for (int i = 0; i < x.length; i++) {
+-                if (x[i] < 0) {
++                if (x[i] < boundaries[0][i]) {
+                     return false;
+                 }
+-                if (x[i] > 1.0) {
++                if (x[i] > boundaries[1][i]) {
+                     return false;
+                 }
+             }
+@@ -1007,16 +994,16 @@ public class CMAESOptimizer
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
++         * @param x Objective variables.
+          * @return the repaired objective variables - all in bounds.
+          */
+         private double[] repair(final double[] x) {
+             double[] repaired = new double[x.length];
+             for (int i = 0; i < x.length; i++) {
+-                if (x[i] < 0) {
+-                    repaired[i] = 0;
+-                } else if (x[i] > 1.0) {
+-                    repaired[i] = 1.0;
++                if (x[i] < boundaries[0][i]) {
++                    repaired[i] = boundaries[0][i];
++                } else if (x[i] > boundaries[1][i]) {
++                    repaired[i] = boundaries[1][i];
+                 } else {
+                     repaired[i] = x[i];
+                 }
+@@ -1025,14 +1012,15 @@ public class CMAESOptimizer
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
++         * @param x Objective variables.
+          * @param repaired Repaired objective variables.
+          * @return Penalty value according to the violation of the bounds.
+          */
+         private double penalty(final double[] x, final double[] repaired) {
+             double penalty = 0;
+             for (int i = 0; i < x.length; i++) {
+-                double diff = Math.abs(x[i] - repaired[i]);
++                double diff = Math.abs(x[i] - repaired[i]) /
++                    (boundaries[1][i] - boundaries[0][i]);
+                 penalty += diff * valueRange;
+             }
+             return isMinimize ? penalty : -penalty;

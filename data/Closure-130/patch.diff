@@ -1,0 +1,17 @@
+diff --git a/src/com/google/javascript/jscomp/GlobalNamespace.java b/src/com/google/javascript/jscomp/GlobalNamespace.java
+index d09219d..9f764b4 100644
+--- a/src/com/google/javascript/jscomp/GlobalNamespace.java
++++ b/src/com/google/javascript/jscomp/GlobalNamespace.java
+@@ -259,6 +259,12 @@ class GlobalNamespace
+    * @return Whether the name reference is a global variable reference
+    */
+   private boolean isGlobalVarReference(String name, Scope s) {
++    // "arguments" is declared as a global extern for typing purposes, but it
++    // really only has meaning within a function body, so it should never be
++    // treated as a global name reference.
++    if (name.equals("arguments")) {
++      return false;
++    }
+     Scope.Var v = s.getVar(name);
+     if (v == null && externsScope != null) {
+       v = externsScope.getVar(name);

@@ -1,0 +1,44 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java b/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+index 39d9e71..f44c63c 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+@@ -77,7 +77,8 @@ public class TokenBuffer
+      *
+      * @since 2.7
+      */
+-    
++    protected boolean _forceBigDecimal;
++
+     /*
+     /**********************************************************
+     /* Token buffering state
+@@ -185,6 +186,8 @@ public class TokenBuffer
+         _hasNativeTypeIds = p.canReadTypeId();
+         _hasNativeObjectIds = p.canReadObjectId();
+         _mayHaveNativeIds = _hasNativeTypeIds | _hasNativeObjectIds;
++        _forceBigDecimal = (ctxt == null) ? false
++                : ctxt.isEnabled(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);
+     }
+ 
+     /**
+@@ -966,10 +969,18 @@ sb.append("NativeObjectIds=").append(_hasNativeObjectIds).append(",");
+                     writeNumber(p.getDecimalValue());
+                     break;
+                 case FLOAT:
+-                    writeNumber(p.getFloatValue());
++                    if (_forceBigDecimal) {
++                        writeNumber(p.getDecimalValue());
++                    } else {
++                        writeNumber(p.getFloatValue());
++                    }
+                     break;
+                 default:
+-                    writeNumber(p.getDoubleValue());
++                    if (_forceBigDecimal) {
++                        writeNumber(p.getDecimalValue());
++                    } else {
++                        writeNumber(p.getDoubleValue());
++                    }
+             }
+             break;
+         case VALUE_TRUE:

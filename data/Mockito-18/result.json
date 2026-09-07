@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 18,
+  "id": "Mockito-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:01:50Z",
+  "wallclock_s": 490,
+  "agent_s": 120,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 16379,
+  "total_cost_usd": 0.08947879999999998,
+  "session_id": "0f1c68b1-ae4f-46b1-b4f9-40ec513b2e37",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 969,
+  "cache_read_input_tokens": 129219,
+  "cache_creation_input_tokens": 12855,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValuesTest::should_return_empty_iterable"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

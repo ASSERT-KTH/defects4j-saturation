@@ -1,0 +1,37 @@
+{
+  "project": "Mockito",
+  "bug": 31,
+  "id": "Mockito-31",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T23:24:20Z",
+  "wallclock_s": 286,
+  "agent_s": 179,
+  "agent_rc": 0,
+  "num_turns": 23,
+  "api_duration_ms": 90735,
+  "total_cost_usd": 0.2858198,
+  "session_id": "13771487-d409-4818-a072-d2104abaa698",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 46,
+  "output_tokens": 7052,
+  "cache_read_input_tokens": 592174,
+  "cache_creation_input_tokens": 23543,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.stubbing.defaultanswers.ReturnsSmartNullsTest::shouldPrintTheParametersWhenCallingAMethodWithArgs"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

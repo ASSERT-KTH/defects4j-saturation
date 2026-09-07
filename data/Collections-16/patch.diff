@@ -1,0 +1,35 @@
+diff --git a/src/java/org/apache/commons/collections/list/SetUniqueList.java b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+index 8ad3553..7a4de4c 100644
+--- a/src/java/org/apache/commons/collections/list/SetUniqueList.java
++++ b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+@@ -283,7 +283,29 @@ public class SetUniqueList extends AbstractSerializableListDecorator {
+     }
+ 
+     public List subList(int fromIndex, int toIndex) {
+-        return new SetUniqueList(super.subList(fromIndex, toIndex), set);
++        List superSubList = super.subList(fromIndex, toIndex);
++        Set subSet = createSetBasedOnList(set, superSubList);
++        return new SetUniqueList(superSubList, subSet);
++    }
++
++    /**
++     * Create a new member set for the subList to keep the identity of the given set.
++     * The subList's set contains only the elements of the subList, so that contains
++     * checks on the subList are correctly scoped to it, rather than to the whole list.
++     *
++     * @param set  the set from which to create a subset
++     * @param list  the list to check for elements to add to the subset
++     * @return the newly created set
++     */
++    protected Set createSetBasedOnList(Set set, List list) {
++        Set subSet;
++        try {
++            subSet = (Set) set.getClass().newInstance();
++        } catch (Exception e) {
++            subSet = new HashSet();
++        }
++        subSet.addAll(list);
++        return subSet;
+     }
+ 
+     //-----------------------------------------------------------------------

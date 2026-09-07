@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 3fb4813..10d1576 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -1520,9 +1520,22 @@ final class TypedScopeCreator implements ScopeCreator {
+ 
+       if (inferred) {
+         // Determining declaration for #2
++        // A "this" property that's already declared on the instance type
++        // (e.g. inherited from the prototype) is not re-declared by
++        // assigning a new (non-jsdoc'd) function literal to it inside some
++        // other method; that's just a re-assignment of the existing
++        // declared property.
++        boolean alreadyDeclaredThisProp = false;
++        if (rhsValue != null && rhsValue.isFunction() && ownerNode.isThis()) {
++          ObjectType thisType = scope.getTypeOfThis();
++          alreadyDeclaredThisProp = thisType != null &&
++              thisType.isPropertyTypeDeclared(propName);
++        }
++
+         inferred = !(rhsValue != null &&
+             rhsValue.isFunction() &&
+-            (info != null || !scope.isDeclared(qName, false)));
++            (info != null ||
++             (!scope.isDeclared(qName, false) && !alreadyDeclaredThisProp)));
+       }
+ 
+       if (!inferred) {

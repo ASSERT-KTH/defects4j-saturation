@@ -1,0 +1,48 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlTokenStream.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlTokenStream.java
+index fe37ee9..14b8145 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlTokenStream.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlTokenStream.java
+@@ -323,7 +323,13 @@ public class XmlTokenStream
+             String text = _collectUntilTag();
+             // If we have no/all-whitespace text followed by START_ELEMENT, ignore text
+             if (_xmlReader.getEventType() == XMLStreamReader.START_ELEMENT) {
+-                    return _initStartElement();
++                if (text != null && !_allWhitespace(text)) {
++                    // Mixed content: need to return actual text first, and
++                    // only then (on next call) process the START_ELEMENT
++                    _textValue = text;
++                    return (_currentState = XML_TEXT);
++                }
++                return _initStartElement();
+             }
+             // For END_ELEMENT we will return text, if any
+             if (text != null) {
+@@ -337,7 +343,10 @@ public class XmlTokenStream
+             return (_currentState = XML_ATTRIBUTE_VALUE);
+         case XML_TEXT:
+             // mixed text with other elements
+-            // text followed by END_ELEMENT
++            // text may be followed by START_ELEMENT (mixed content) or END_ELEMENT
++            if (_xmlReader.getEventType() == XMLStreamReader.START_ELEMENT) {
++                return _initStartElement();
++            }
+             return _handleEndElement();
+         case XML_END:
+             return XML_END;
+@@ -379,6 +388,16 @@ public class XmlTokenStream
+         }
+     }
+ 
++    private final boolean _allWhitespace(String str)
++    {
++        for (int i = 0, len = str.length(); i < len; ++i) {
++            if (str.charAt(i) > ' ') {
++                return false;
++            }
++        }
++        return true;
++    }
++
+     private final int _skipUntilTag() throws XMLStreamException
+     {
+         while (_xmlReader.hasNext()) {

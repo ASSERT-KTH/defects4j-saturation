@@ -1,0 +1,37 @@
+{
+  "project": "Math",
+  "bug": 95,
+  "id": "Math-95",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T22:20:01Z",
+  "wallclock_s": 62,
+  "agent_s": 29,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 18598,
+  "total_cost_usd": 0.0907702,
+  "session_id": "444e334b-daf8-4010-b9a8-f5c69bfc0ecd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1429,
+  "cache_read_input_tokens": 112391,
+  "cache_creation_input_tokens": 12901,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.distribution.FDistributionTest::testSmallDegreesOfFreedom"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/distribution/FDistributionImpl.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

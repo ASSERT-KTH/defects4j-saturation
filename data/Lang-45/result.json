@@ -1,0 +1,37 @@
+{
+  "project": "Lang",
+  "bug": 45,
+  "id": "Lang-45",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:37:31Z",
+  "wallclock_s": 77,
+  "agent_s": 38,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 20930,
+  "total_cost_usd": 0.08812760000000001,
+  "session_id": "28d3f29d-fa15-4a93-a516-2367dc366ce8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1382,
+  "cache_read_input_tokens": 125953,
+  "cache_creation_input_tokens": 11715,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.WordUtilsTest::testAbbreviate"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/WordUtils.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

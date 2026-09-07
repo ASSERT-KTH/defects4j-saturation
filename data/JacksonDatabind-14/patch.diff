@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+index e684b10..11bdab7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+@@ -1548,7 +1548,7 @@ public class ObjectReader
+             JavaType valueType)
+         throws JsonMappingException
+     {
+-        if (_rootDeserializer != null) {
++        if (_rootDeserializer != null && valueType.equals(_valueType)) {
+             return _rootDeserializer;
+         }
+ 

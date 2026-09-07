@@ -1,0 +1,9 @@
+{
+  "autoContinueAtUsageLimit": false,
+  "includeCoAuthoredBy": false,
+  "enabledPlugins": {},
+  "env": {
+    "DISABLE_TELEMETRY": "1",
+    "DISABLE_AUTOUPDATER": "1"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "project": "Lang",
+  "bug": 31,
+  "id": "Lang-31",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T17:30:42Z",
+  "wallclock_s": 94,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 25635,
+  "total_cost_usd": 0.1088652,
+  "session_id": "41fb0296-41fd-491e-8d08-8443e7903599",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 2304,
+  "cache_read_input_tokens": 118801,
+  "cache_creation_input_tokens": 14641,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.StringUtilsEqualsIndexOfTest::testContainsAnyCharArrayWithSupplementaryChars",
+    "org.apache.commons.lang3.StringUtilsEqualsIndexOfTest::testContainsAnyStringWithSupplementaryChars"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/StringUtils.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 93,
+  "id": "JacksonDatabind-93",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T13:14:10Z",
+  "wallclock_s": 197,
+  "agent_s": 72,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 29322,
+  "total_cost_usd": 0.12154779999999998,
+  "session_id": "e9f99a56-7cbe-4b3f-a3f3-35c420811db9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2252,
+  "cache_read_input_tokens": 185239,
+  "cache_creation_input_tokens": 14739,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.interop.IllegalTypesCheckTest::testJDKTypes1872"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/jsontype/impl/SubTypeValidator.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

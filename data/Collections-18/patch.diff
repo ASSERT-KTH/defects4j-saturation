@@ -1,0 +1,16 @@
+diff --git a/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java b/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
+index ce6926f..f598864 100644
+--- a/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
++++ b/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
+@@ -226,7 +226,10 @@ public class ListOrderedSet<E>
+ 
+     @Override
+     public boolean retainAll(Collection<?> coll) {
+-        boolean result = collection.retainAll(coll);
++        // use a Set to guarantee O(1) lookups, otherwise contains() on
++        // the supplied collection may be O(n), making this method O(n^2)
++        final Collection<?> retainCache = coll instanceof Set<?> ? coll : new HashSet<Object>(coll);
++        boolean result = collection.retainAll(retainCache);
+         if (result == false) {
+             return false;
+         }

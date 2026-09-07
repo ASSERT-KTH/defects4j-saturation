@@ -1,0 +1,24 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java b/src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java
+index 37dfbe0..c4f8307 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java
++++ b/src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java
+@@ -30,6 +30,7 @@ import org.apache.commons.compress.archivers.cpio.CpioArchiveOutputStream;
+ import org.apache.commons.compress.archivers.dump.DumpArchiveInputStream;
+ import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
+ import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
++import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+@@ -241,8 +242,10 @@ public class ArchiveStreamFactory {
+                 try {
+                     TarArchiveInputStream tais = new TarArchiveInputStream(new ByteArrayInputStream(tarheader));
+                     // COMPRESS-191 - verify the header checksum
+-                    tais.getNextEntry();
++                    TarArchiveEntry ent = tais.getNextTarEntry();
++                    if (ent.isCheckSumOK()) {
+                         return new TarArchiveInputStream(in);
++                    }
+                 } catch (Exception e) { // NOPMD
+                     // can generate IllegalArgumentException as well
+                     // as IOException

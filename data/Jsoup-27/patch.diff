@@ -1,0 +1,29 @@
+diff --git a/src/main/java/org/jsoup/helper/DataUtil.java b/src/main/java/org/jsoup/helper/DataUtil.java
+index f978141..161c584 100644
+--- a/src/main/java/org/jsoup/helper/DataUtil.java
++++ b/src/main/java/org/jsoup/helper/DataUtil.java
+@@ -7,6 +7,7 @@ import org.jsoup.parser.Parser;
+ import java.io.*;
+ import java.nio.ByteBuffer;
+ import java.nio.charset.Charset;
++import java.nio.charset.IllegalCharsetNameException;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+ import java.util.Locale;
+@@ -129,8 +130,14 @@ public class DataUtil {
+         Matcher m = charsetPattern.matcher(contentType);
+         if (m.find()) {
+             String charset = m.group(1).trim();
+-            charset = charset.toUpperCase(Locale.ENGLISH);
+-            return charset;
++            try {
++                if (Charset.isSupported(charset)) return charset;
++                charset = charset.toUpperCase(Locale.ENGLISH);
++                if (Charset.isSupported(charset)) return charset;
++            } catch (IllegalCharsetNameException e) {
++                // if the charset is invalid, return null so the default will kick in
++                return null;
++            }
+         }
+         return null;
+     }

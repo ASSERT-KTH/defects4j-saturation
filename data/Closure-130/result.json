@@ -1,0 +1,37 @@
+{
+  "project": "Closure",
+  "bug": 130,
+  "id": "Closure-130",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T03:05:51Z",
+  "wallclock_s": 550,
+  "agent_s": 433,
+  "agent_rc": 0,
+  "num_turns": 43,
+  "api_duration_ms": 208068,
+  "total_cost_usd": 0.6800499999999999,
+  "session_id": "6f7dfac4-3958-42ac-8d14-0062207b5bec",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 86,
+  "output_tokens": 15439,
+  "cache_read_input_tokens": 1677990,
+  "cache_creation_input_tokens": 46603,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CollapsePropertiesTest::testIssue931"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/GlobalNamespace.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

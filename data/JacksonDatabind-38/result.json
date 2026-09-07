@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 38,
+  "id": "JacksonDatabind-38",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "finished_at": "2026-09-06T12:16:52Z",
+  "wallclock_s": 347,
+  "agent_s": 217,
+  "agent_rc": 0,
+  "num_turns": 36,
+  "api_duration_ms": 176697,
+  "total_cost_usd": 0.6564946,
+  "session_id": "86ff7bed-4055-4865-b65a-729e63313e4f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 72,
+  "output_tokens": 14829,
+  "cache_read_input_tokens": 1534838,
+  "cache_creation_input_tokens": 49007,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.interop.DeprecatedTypeHandling1102Test::testExplicitMapType",
+    "com.fasterxml.jackson.databind.interop.DeprecatedTypeHandling1102Test::testExplicitCollectionType",
+    "com.fasterxml.jackson.databind.interop.DeprecatedTypeHandling1102Test::testPOJOSubType"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/CollectionType.java",
+    "src/main/java/com/fasterxml/jackson/databind/type/MapType.java",
+    "src/main/java/com/fasterxml/jackson/databind/type/TypeBase.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

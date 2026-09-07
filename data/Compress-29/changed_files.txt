@@ -1,0 +1,7 @@
+M	src/main/java/org/apache/commons/compress/archivers/ArchiveStreamFactory.java
+M	src/main/java/org/apache/commons/compress/archivers/cpio/CpioArchiveInputStream.java
+M	src/main/java/org/apache/commons/compress/archivers/cpio/CpioArchiveOutputStream.java
+M	src/main/java/org/apache/commons/compress/archivers/dump/DumpArchiveInputStream.java
+M	src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java
+M	src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
+M	src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveInputStream.java

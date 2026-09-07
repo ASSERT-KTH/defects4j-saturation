@@ -1,0 +1,15 @@
+diff --git a/src/main/java/org/jsoup/parser/Parser.java b/src/main/java/org/jsoup/parser/Parser.java
+index da4bdce..de2ea4c 100644
+--- a/src/main/java/org/jsoup/parser/Parser.java
++++ b/src/main/java/org/jsoup/parser/Parser.java
+@@ -151,7 +151,9 @@ public class Parser {
+                 dataNode = TextNode.createFromEncoded(data, baseUri);
+             else
+                 dataNode = new DataNode(data, baseUri); // data not encoded but raw (for " in script)
+-            child.appendChild(dataNode);   
++            child.appendChild(dataNode);
++            if (!isEmptyElement)
++                stack.removeLast(); // data tag's end tag was already consumed, so pop it off the stack
+         }
+ 
+         // <base href>: update the base uri

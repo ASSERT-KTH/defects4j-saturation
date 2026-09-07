@@ -1,0 +1,27 @@
+diff --git a/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
+index 52fd176..e514595 100644
+--- a/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
+@@ -289,15 +289,15 @@ class SemanticReverseAbstractInterpreter
+     TypePair merged = merging.apply(new TypePair(leftType, rightType));
+ 
+     // creating new scope
+-    if (merged != null &&
+-        ((leftIsRefineable && merged.typeA != null) ||
+-         (rightIsRefineable && merged.typeB != null))) {
++    if (merged != null && (leftIsRefineable || rightIsRefineable)) {
+       FlowScope informed = blindScope.createChildFlowScope();
+-      if (leftIsRefineable && merged.typeA != null) {
+-        declareNameInScope(informed, left, merged.typeA);
++      if (leftIsRefineable) {
++        declareNameInScope(informed, left, merged.typeA == null ?
++            getNativeType(JSTypeNative.NO_TYPE) : merged.typeA);
+       }
+-      if (rightIsRefineable && merged.typeB != null) {
+-        declareNameInScope(informed, right, merged.typeB);
++      if (rightIsRefineable) {
++        declareNameInScope(informed, right, merged.typeB == null ?
++            getNativeType(JSTypeNative.NO_TYPE) : merged.typeB);
+       }
+       return informed;
+     }

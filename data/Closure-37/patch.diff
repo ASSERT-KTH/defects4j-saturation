@@ -1,0 +1,32 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index 4da4085..7fa7304 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -663,10 +663,26 @@ class IRFactory {
+       }
+       node.addChildToBack(lp);
+ 
+-      Node bodyNode = transform(functionNode.getBody());
+         // When in ideMode Rhino tries to parse some constructs the compiler
+         // doesn't support, repair it here. see Rhino's
+         // Parser#parseFunctionBodyExpr.
++      AstNode rawBody = functionNode.getBody();
++      Node bodyNode;
++      if (rawBody instanceof ReturnStatement
++          && ((ReturnStatement) rawBody).getReturnValue() != null
++          && ((ReturnStatement) rawBody).getReturnValue().getType()
++              == com.google.javascript.rhino.head.Token.ERROR) {
++        // Parser#parseFunctionBodyExpr synthesizes a "return <expr>;"
++        // statement for braceless function bodies. If the expression itself
++        // failed to parse, there is no usable body at all, so report the
++        // parse error and produce an empty block instead of a return
++        // statement wrapping garbage.
++        transform(((ReturnStatement) rawBody).getReturnValue());
++        bodyNode = newNode(Token.BLOCK);
++        setSourceInfo(bodyNode, rawBody);
++      } else {
++        bodyNode = transformBlock(rawBody);
++      }
+       parseDirectives(bodyNode);
+       node.addChildToBack(bodyNode);
+      return node;

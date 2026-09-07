@@ -1,0 +1,18 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java
+index 921904f..baa09b7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ObjectIdValueProperty.java
+@@ -89,9 +89,10 @@ public final class ObjectIdValueProperty
+          *  will be generated externally, at a later point, and is not available
+          *  quite yet. Typical use case is with DB inserts.
+          */
+-        
+-        ReadableObjectId roid = ctxt.findObjectId(id, _objectIdReader.generator, _objectIdReader.resolver);
+-        roid.bindItem(instance);
++        if (id != null) {
++            ReadableObjectId roid = ctxt.findObjectId(id, _objectIdReader.generator, _objectIdReader.resolver);
++            roid.bindItem(instance);
++        }
+         // also: may need to set a property value as well
+         SettableBeanProperty idProp = _objectIdReader.idProperty;
+         if (idProp != null) {
