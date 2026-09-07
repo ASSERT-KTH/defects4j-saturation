@@ -173,10 +173,16 @@ echo "$AGENT_RC" > "$OUT/agent_rc"
 printf '%s\n' "$AGENT_MODEL" > "$OUT/agent_model"
 printf '%s\n' "$AGENT_TIMEOUT" > "$OUT/agent_timeout_s"
 
-if grep -qiE "usage limit|rate.?limit(ed)? |too many requests|overloaded_error" "$OUT/claude.err" "$OUT/claude.jsonl" 2>/dev/null; then
-  if ! grep -q '"subtype":"success"' "$OUT/claude.jsonl" 2>/dev/null; then
-    finish USAGE_LIMIT "claude reported a usage/rate limit"
-  fi
+# A run cut short by the account usage limit is an interrupted attempt, not a
+# result: requeue it instead of scoring it. See bin/is_usage_limit.py for why
+# this reads the CLI's result event rather than grepping the log for text.
+if python3 "$D4J_CLAUDE_ROOT/bin/is_usage_limit.py" "$OUT/claude.jsonl"; then
+  finish USAGE_LIMIT "run cut short by the account usage limit"
+fi
+LIMIT_RE="session limit|usage limit|rate.?limit(ed)?|too many requests|overloaded_error|quota"
+if [ "$AGENT_RC" -ne 0 ] && [ "$AGENT_RC" -ne 124 ] \
+   && grep -qiE "$LIMIT_RE" "$OUT/claude.err" "$OUT/claude.jsonl" 2>/dev/null; then
+  finish USAGE_LIMIT "agent exited $AGENT_RC with usage-limit wording"
 fi
 [ "$AGENT_RC" -eq 124 ] && TIMED_OUT=1 || TIMED_OUT=0
 
