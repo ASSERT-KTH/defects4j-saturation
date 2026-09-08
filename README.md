@@ -35,7 +35,7 @@ is the same either way, and the interesting results only show up in the comparis
 - **The harness leaked, in a way five audited channels missed.** `~/.m2` holds released jars
   of these same projects, and a post-fix version is ground truth. One session decompiled pre-
   and post-fix bytecode of the class it was repairing; it is excluded. The agent now runs
-  with those caches masked.
+  with those caches masked. All six channels are documented in [`leakage.md`](leakage.md).
 - **A short wall-clock cap suppresses the agent's own signal that it is stuck.** Zero honest
   failure reports in 854 runs at 30 minutes; four out of four at a 4-hour cap.
 
@@ -44,6 +44,7 @@ is the same either way, and the interesting results only show up in the comparis
 | | |
 |---|---|
 | [Evidence of memorisation](campaign/perfect-fault-localization/results/contamination-evidence.md) | the developer's comments reproduced verbatim, plus a negative control |
+| [**Leakage**](leakage.md) | all six channels, exhaustively: what was blocked, what was audited, what got through |
 | [The sixth leakage channel](campaign/no-fault-localization/results/contamination-own-artefact.md) | the project's own published jars, and the bug excluded for reading them |
 | [Agent self-certification](campaign/perfect-fault-localization/results/self-certification.md) | 852 assertions of success, one false, zero failure reports |
 | [The three unsolved bugs](campaign/perfect-fault-localization/results/remaining3.md) | varying wall-clock cap and model; none of four pre-registered predictions held |
@@ -172,6 +173,7 @@ byte-exact parity with the Defects4J CI, install `jdk-11.0.17` from
 ## Repository layout
 
 ```
+leakage.md                   every way the ground truth could reach an agent
 harness/
   bin/                       the harness and the analysis scripts
   prompts/rules.md           the system prompt, shared by all campaigns
