@@ -141,14 +141,95 @@ tests as written:
 
 It then reported searching "well over a billion candidate replacement formulas (varying
 shift amounts, add/xor/multiply combinations, seed placement, known avalanche constants, and
-the rehash growth threshold in tandem)" without success. **That claim does not hold up.** The
-developer's replacement is `hash ^= (hash << 3); hash += (hash >>> 12);` — two operations,
-shifts of 3 and 12, one xor and one add — squarely inside the space as described. The
-session log also shows the agent fighting breakage in its own harness ("my earlier `sed`
-only replaced the constructor signature line, not this instantiation"). The likely reading
-is a faulty search rather than an inadequate search space: the agent aimed the right tool at
-the right target and its own coverage claim is not reliable. The search itself was not
-independently reproduced here.
+the rehash growth threshold in tandem)" without success.
+
+**The count is plausible. The coverage claim is false, and the search could never have
+succeeded** — see [the case study below](#case-study-a-self-built-brute-force-search-that-could-not-win).
+
+### Case study: a self-built brute-force search that could not win
+
+The single most elaborate agent behaviour in this study, and worth recording in full.
+
+**Run:** `JacksonCore-10`, condition `T` rep 2 — `claude-sonnet-5`, effort `high`, 4-hour
+cap. Artefacts under
+[`data-followup/T-r2/JacksonCore-10/`](../data-followup/T-r2/JacksonCore-10).
+`TEST_FAIL`, 214 turns, 9,523 s of a 14,400 s cap, $13.11, `agent_rc=0` — it stopped
+voluntarily with 81 minutes left.
+
+Rep 1 of the same cell reached the same one-line patch in 33 minutes and stopped. Rep 2
+industrialised instead. Over 213 tool calls it:
+
+- reverse-engineered the symbol table into a standalone simulator (`Sim4`, then `Sim5`),
+  reimplementing the quad-packing (`calcQuad`) and the primary/secondary/tertiary/spillover
+  bucket accounting outside the project;
+- **63 `javac` invocations** iterating on that simulator;
+- parameterised the hash function over five shift amounts and an `opmask` selecting
+  add-versus-xor at each step, using reflection to rewrite a `MULTC` multiplier field
+  between runs;
+- targeted the tests' **exact asserted counts** as the search predicate —
+  `targetShort = {1024, 564, 122, 14, 0}` and `targetNum = {16384, 5402, 2744, 1834, 20}`;
+- **launched 14 JVMs in parallel**, one per remaining opmask (`nohup`, 9 background launch
+  calls), each sweeping 31⁵ ≈ 28.6 M shift combinations — about 400 M candidates in that
+  wave alone, so the "well over a billion" total across waves is plausible;
+- polled them with **27 `sleep`-and-check calls** (`sleep 280; for f in /tmp/lso5_*.log; …`),
+  which is why its message rate collapsed: 335 messages at 99 minutes, 364 at 152.
+
+Then it cleaned up every trace — `changed_files.txt` lists one modified file — and reported
+the same `+1/−1` patch as rep 1, byte for byte.
+
+**Why it could not have worked.** The template it searched was:
+
+```java
+int hash = q1 ^ seed;
+if ((opmask&16)==0) hash += (hash >>> a); else hash ^= (hash >>> a);
+hash *= MULTC;                                    // always applied
+if ((opmask&1)==0) hash += (hash >>> b); else hash ^= (hash >>> b);
+if ((opmask&2)==0) hash += (hash >>> c); else hash ^= (hash >>> c);
+if ((opmask&4)==0) hash += (hash >>> d); else hash ^= (hash >>> d);
+if ((opmask&8)==0) hash += (hash << e); else hash ^= (hash << e);
+```
+
+The developer's function is:
+
+```java
+int hash = q1 ^ _seed;
+hash += (hash >>> 16);
+hash ^= (hash << 3);
+hash += (hash >>> 12);
+```
+
+Three structural mismatches, any one of which is fatal:
+
+1. **The real function contains no multiplication.** `Sim5` always applies `hash *= MULTC`.
+2. **The real function has three operations.** `Sim5` has five mandatory operation slots —
+   the `opmask` bits choose `+` versus `^`, never whether an operation happens.
+3. **The real function's left-shift is in the middle** (`hash ^= (hash << 3)` between two
+   right-shift steps). `Sim5`'s only left-shift slot is pinned last.
+
+So the target was **not in the hypothesis space at any shift values**. Roughly 400 M
+candidates were evaluated against a template that could not express the answer, and the
+`31⁵` sweep per opmask was searching precision it did not need while missing the structural
+freedom it did.
+
+**What this is a case study in.** Not a search bug — the search worked. The failure was in
+the hypothesis space, and the agent never revisited the shape of its template after
+committing to it. It had the evidence to: rep 2's own analysis correctly proved the current
+formula *cannot* produce the asserted counts, which says the formula is wrong, not that its
+shifts are mistuned.
+
+It also matters for reading agent self-reports. The claim was *"searching well over a
+billion candidate replacement formulas (varying shift amounts, add/xor/multiply
+combinations, seed placement …)"*. The number is credible; "add/xor/multiply combinations"
+describes a space that sounds like it contains the answer and does not. An earlier version
+of this document accepted that description and concluded the search must have been buggy —
+which was the same mistake, trusting the agent's account of its own coverage instead of
+reading the program. The program is in the session log; the description was not enough.
+
+For contrast, the same bug was solved in **3 minutes and 15 turns** by `claude-opus-5` in
+condition `M`, which emitted the developer's expression and the developer's comments
+verbatim in a single edit — see
+[`contamination-evidence.md`](contamination-evidence.md). One run searched 400 M candidates
+from the wrong template and failed; the other recalled the answer. Neither derived it.
 
 **`Math-66` — 0/2, and rep 2 came within one constant.** Rep 1 left 3 of 4 triggering tests
 failing; rep 2 left 1. The developer fix is a structural refactor *plus* three constructor

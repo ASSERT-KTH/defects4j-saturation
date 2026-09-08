@@ -51,6 +51,7 @@ is the same either way, and the interesting results only show up in the comparis
 | [The sixth leakage channel](campaign/no-fault-localization/results/contamination-own-artefact.md) | the project's own published jars, and the bug excluded for reading them |
 | [Agent self-certification](campaign/perfect-fault-localization/results/self-certification.md) | 852 assertions of success, one false, zero failure reports |
 | [The three unsolved bugs](campaign/perfect-fault-localization/results/remaining3.md) | varying wall-clock cap and model; none of four pre-registered predictions held |
+| [A brute-force search that could not win](campaign/perfect-fault-localization/results/remaining3.md#case-study-a-self-built-brute-force-search-that-could-not-win) | an agent builds a simulator, runs 14 JVMs over ~400M candidates, and searches a template that cannot express the answer |
 | [Campaign comparison](campaign/no-fault-localization/results/comparison.md) | generated per-bug transition table and paired statistics |
 
 ## Protocol
