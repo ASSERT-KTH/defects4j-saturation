@@ -1,0 +1,40 @@
+{
+  "project": "JxPath",
+  "bug": 14,
+  "id": "JxPath-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 13,
+  "finished_at": "2026-09-08T06:10:00Z",
+  "wallclock_s": 44,
+  "agent_s": 21,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 14022,
+  "total_cost_usd": 0.067097,
+  "session_id": "253e46f0-f176-46eb-a3a9-41404fd69bdd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 883,
+  "cache_read_input_tokens": 82160,
+  "cache_creation_input_tokens": 9885,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.CoreFunctionTest::testCoreFunctions"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreFunction.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

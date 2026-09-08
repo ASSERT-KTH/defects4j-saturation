@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 70,
+  "id": "Math-70",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 260,
+  "finished_at": "2026-09-08T10:42:40Z",
+  "wallclock_s": 60,
+  "agent_s": 24,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 15076,
+  "total_cost_usd": 0.07208400000000001,
+  "session_id": "947bf9e8-b4d9-44f6-93de-2e68f39d8c0b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1077,
+  "cache_read_input_tokens": 84620,
+  "cache_creation_input_tokens": 10528,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.analysis.solvers.BisectionSolverTest::testMath369"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/analysis/solvers/BisectionSolver.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

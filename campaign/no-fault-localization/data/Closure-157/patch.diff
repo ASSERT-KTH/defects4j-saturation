@@ -1,0 +1,168 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index 142e820..1b19063 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -20,6 +20,7 @@ import com.google.common.base.Charsets;
+ import com.google.common.base.Preconditions;
+ import com.google.javascript.jscomp.NodeUtil.MatchNotFunction;
+ import com.google.javascript.rhino.Node;
++import com.google.javascript.rhino.ScriptRuntime;
+ import com.google.javascript.rhino.Token;
+ import com.google.javascript.rhino.TokenStream;
+ 
+@@ -340,14 +341,15 @@ class CodeGenerator {
+         Node body = fn.getLastChild();
+ 
+         // Add the property name.
+-        if (TokenStream.isJSIdentifier(name) &&
++        if (!n.isQuotedString() &&
++            !TokenStream.isKeyword(name) &&
++            TokenStream.isJSIdentifier(name) &&
+             // do not encode literally any non-literal characters that were
+             // unicode escaped.
+             NodeUtil.isLatin(name)) {
+           add(name);
+         } else {
+-          // Determine if the string is a simple number.
+-          add(jsString(n.getString(), outputCharsetEncoder));
++          addPropertyKeyName(name);
+         }
+ 
+         add(parameters);
+@@ -621,15 +623,20 @@ class CodeGenerator {
+         }
+         break;
+ 
+-      case Token.STRING:
+-        if (childCount !=
+-            ((n.getParent() != null &&
+-              n.getParent().getType() == Token.OBJECTLIT) ? 1 : 0)) {
++      case Token.STRING: {
++        boolean isObjLitKey = n.getParent() != null &&
++            n.getParent().getType() == Token.OBJECTLIT;
++        if (childCount != (isObjLitKey ? 1 : 0)) {
+           throw new IllegalStateException(
+               "Unexpected String children: " + n.getParent().toStringTree());
+         }
+-        add(jsString(n.getString(), outputCharsetEncoder));
++        if (isObjLitKey) {
++          addPropertyKeyName(n.getString());
++        } else {
++          add(jsString(n.getString(), outputCharsetEncoder));
++        }
+         break;
++      }
+ 
+       case Token.DELPROP:
+         Preconditions.checkState(childCount == 1);
+@@ -662,7 +669,6 @@ class CodeGenerator {
+                 NodeUtil.isLatin(c.getString())) {
+               add(c.getString());
+             } else {
+-              // Determine if the string is a simple number.
+               addExpr(c, 1);
+             }
+             add(":");
+@@ -907,6 +913,23 @@ class CodeGenerator {
+     }
+   }
+ 
++  /**
++   * Adds an object literal, getter, or setter property name that is not a
++   * valid identifier. If the name is the canonical string representation of
++   * an integer, it is printed unquoted as a number literal (e.g. {@code 2}
++   * instead of {@code "2"}); otherwise it is printed as a quoted string.
++   */
++  private void addPropertyKeyName(String name) {
++    if (NodeUtil.isSimpleNumber(name)) {
++      double value = Double.parseDouble(name);
++      if (ScriptRuntime.numberToString(value, 10).equals(name)) {
++        cc.addNumber(value);
++        return;
++      }
++    }
++    add(jsString(name, outputCharsetEncoder));
++  }
++
+   /** Outputs a js string, using the optimal (single/double) quote character */
+   static String jsString(String s, CharsetEncoder outputCharsetEncoder) {
+     int singleq = 0, doubleq = 0;
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index 28222de..3c91d0d 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -2433,6 +2433,22 @@ public final class NodeUtil {
+     return true;
+   }
+ 
++  /**
++   * Determines whether the given name consists exclusively of digits, e.g.
++   * as used to identify object literal keys, such as {@code 2}, that are
++   * always treated as numeric properties rather than as renamable names.
++   */
++  static boolean isSimpleNumber(String s) {
++    int len = s.length();
++    for (int index = 0; index < len; index++) {
++      char c = s.charAt(index);
++      if (c < '0' || c > '9') {
++        return false;
++      }
++    }
++    return len > 0;
++  }
++
+   /**
+    * Determines whether the given name can appear on the right side of
+    * the dot operator. Many properties (like reserved words) cannot.
+diff --git a/src/com/google/javascript/jscomp/RenamePrototypes.java b/src/com/google/javascript/jscomp/RenamePrototypes.java
+index 304c0e1..7bbbd85 100644
+--- a/src/com/google/javascript/jscomp/RenamePrototypes.java
++++ b/src/com/google/javascript/jscomp/RenamePrototypes.java
+@@ -333,7 +333,7 @@ class RenamePrototypes implements CompilerPass {
+                  child != null;
+                  child = child.getNext()) {
+ 
+-              if (child.getType() != Token.NUMBER) {
++              if (!NodeUtil.isSimpleNumber(child.getString())) {
+                 markObjLitPropertyCandidate(child, t.getInput());
+               }
+             }
+@@ -374,7 +374,7 @@ class RenamePrototypes implements CompilerPass {
+ 
+             for (Node key = map.getFirstChild();
+                  key != null; key = key.getNext()) {
+-              if (key.getType() != Token.NUMBER) {
++              if (!NodeUtil.isSimpleNumber(key.getString())) {
+                // May be STRING, GET, or SET
+                 markPrototypePropertyCandidate(key, input);
+               }
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index dcc3def..5e01cb9 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -22,6 +22,7 @@ import com.google.common.base.Preconditions;
+ import com.google.common.collect.ImmutableSet;
+ import com.google.common.collect.Sets;
+ import com.google.javascript.jscomp.mozilla.rhino.ErrorReporter;
++import com.google.javascript.jscomp.mozilla.rhino.ScriptRuntime;
+ import com.google.javascript.jscomp.mozilla.rhino.ast.ArrayLiteral;
+ import com.google.javascript.jscomp.mozilla.rhino.ast.Assignment;
+ import com.google.javascript.jscomp.mozilla.rhino.ast.AstNode;
+@@ -348,9 +349,15 @@ public class IRFactory {
+         ret = transform(n);
+         Preconditions.checkState(ret.getType() == Token.NUMBER
+             || ret.getType() == Token.STRING);
+-        if (ret.getType() == Token.STRING) {
+-        ret.putBooleanProp(Node.QUOTED_PROP, true);
++        if (ret.getType() == Token.NUMBER) {
++          double value = ret.getDouble();
++          Node stringNode = newStringNode(ScriptRuntime.numberToString(value, 10));
++          stringNode.setLineno(ret.getLineno());
++          stringNode.setCharno(ret.getCharno());
++          stringNode.setJSDocInfo(ret.getJSDocInfo());
++          ret = stringNode;
+         }
++        ret.putBooleanProp(Node.QUOTED_PROP, true);
+       }
+       return ret;
+     }

@@ -1,0 +1,13 @@
+diff --git a/src/com/google/javascript/jscomp/type/ClosureReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/type/ClosureReverseAbstractInterpreter.java
+index e2e3316..d8e64e8 100644
+--- a/src/com/google/javascript/jscomp/type/ClosureReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/type/ClosureReverseAbstractInterpreter.java
+@@ -208,7 +208,7 @@ public class ClosureReverseAbstractInterpreter
+     if (condition.isCall() && condition.getChildCount() == 2) {
+       Node callee = condition.getFirstChild();
+       Node param = condition.getLastChild();
+-      if (callee.isGetProp() && param.isQualifiedName()) {
++      if (callee.isGetProp() && param.isQualifiedName() && !param.isThis()) {
+         JSType paramType =  getTypeIfRefinable(param, blindScope);
+         Node left = callee.getFirstChild();
+         Node right = callee.getLastChild();

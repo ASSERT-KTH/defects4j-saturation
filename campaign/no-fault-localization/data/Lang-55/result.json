@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 55,
+  "id": "Lang-55",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 111,
+  "finished_at": "2026-09-08T09:23:50Z",
+  "wallclock_s": 71,
+  "agent_s": 25,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 13243,
+  "total_cost_usd": 0.0777684,
+  "session_id": "b269f959-a3b1-4362-b4b4-e3a0fa632b3e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 1045,
+  "cache_read_input_tokens": 69637,
+  "cache_creation_input_tokens": 12789,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.time.StopWatchTest::testLang315"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/time/StopWatch.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

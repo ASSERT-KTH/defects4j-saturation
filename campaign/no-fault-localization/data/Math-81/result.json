@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 81,
+  "id": "Math-81",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 13530,
+  "finished_at": "2026-09-08T11:08:06Z",
+  "wallclock_s": 303,
+  "agent_s": 276,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 193182,
+  "total_cost_usd": 0.5776782,
+  "session_id": "e659be4a-5f01-49df-8853-a7e1bd4877a4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 17350,
+  "cache_read_input_tokens": 901261,
+  "cache_creation_input_tokens": 55360,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.EigenDecompositionImplTest::testMath308"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/EigenDecompositionImpl.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

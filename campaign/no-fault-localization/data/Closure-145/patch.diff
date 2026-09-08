@@ -1,0 +1,35 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index 42c9ab3..e30443f 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -706,12 +706,24 @@ class CodeGenerator {
+    * labels).
+    */
+   private boolean isOneExactlyFunctionOrDo(Node n) {
+-        // For labels with block children, we need to ensure that a
+-        // labeled FUNCTION or DO isn't generated when extraneous BLOCKs 
+-        // are skipped. 
+-          // Either a empty statement or an block with more than one child,
+-          // way it isn't a FUNCTION or DO.
+-      return (n.getType() == Token.FUNCTION || n.getType() == Token.DO);
++    // For labels with block children, we need to ensure that a
++    // labeled FUNCTION or DO isn't generated when extraneous BLOCKs
++    // are skipped.
++    if (n.getType() == Token.LABEL) {
++      Node labeledStatement = n.getLastChild();
++      if (labeledStatement.getType() != Token.BLOCK) {
++        return isOneExactlyFunctionOrDo(labeledStatement);
++      } else {
++        // A labeled block containing exactly one FUNCTION or DO also
++        // needs to be wrapped.
++        if (getNonEmptyChildCount(labeledStatement, 2) == 1) {
++          return isOneExactlyFunctionOrDo(
++              getFirstNonEmptyChild(labeledStatement));
++        }
++      }
++    }
++
++    return (n.getType() == Token.FUNCTION || n.getType() == Token.DO);
+   }
+ 
+   /**

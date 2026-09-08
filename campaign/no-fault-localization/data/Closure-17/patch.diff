@@ -1,0 +1,35 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index efaba2c..50ee00b 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -635,6 +635,19 @@ final class TypedScopeCreator implements ScopeCreator {
+         createdEnumType = true;
+       }
+ 
++      if (type == null) {
++        // Determine if this is a cast to a specific type,
++        // e.g. /** @type {Foo} */ ({a: 1, b: 2})
++        JSDocInfo castInfo = objectLit.getJSDocInfo();
++        if (castInfo != null && castInfo.hasType()) {
++          JSType castType = castInfo.getType().evaluate(scope, typeRegistry);
++          if (castType.restrictByNotNullOrUndefined().isSubtype(
++                  typeRegistry.getNativeType(OBJECT_TYPE))) {
++            type = castType;
++          }
++        }
++      }
++
+       if (type == null) {
+         type = typeRegistry.createAnonymousObjectType();
+       }
+@@ -643,7 +656,9 @@ final class TypedScopeCreator implements ScopeCreator {
+ 
+       // If this is an enum, the properties were already taken care of above.
+       processObjectLitProperties(
+-          objectLit, ObjectType.cast(objectLit.getJSType()), !createdEnumType);
++          objectLit,
++          ObjectType.cast(type.restrictByNotNullOrUndefined()),
++          !createdEnumType);
+     }
+ 
+     /**

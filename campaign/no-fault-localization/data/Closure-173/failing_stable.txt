@@ -1,0 +1,2 @@
+com.google.javascript.jscomp.PeepholeIntegrationTest::testFoldLogicalOpIntegration
+com.google.javascript.jscomp.PeepholeIntegrationTest::testFoldOneChildBlocksIntegration

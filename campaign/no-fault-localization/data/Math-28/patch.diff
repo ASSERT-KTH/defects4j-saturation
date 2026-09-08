@@ -1,0 +1,38 @@
+diff --git a/src/main/java/org/apache/commons/math3/optimization/linear/SimplexSolver.java b/src/main/java/org/apache/commons/math3/optimization/linear/SimplexSolver.java
+index a84438d..b908b18 100644
+--- a/src/main/java/org/apache/commons/math3/optimization/linear/SimplexSolver.java
++++ b/src/main/java/org/apache/commons/math3/optimization/linear/SimplexSolver.java
+@@ -135,20 +135,23 @@ public class SimplexSolver extends AbstractLinearOptimizer {
+             // Additional heuristic: if we did not get a solution after half of maxIterations
+             //                       revert to the simple case of just returning the top-most row
+             // This heuristic is based on empirical data gathered while investigating MATH-828.
+-                Integer minRow = null;
+-                int minIndex = tableau.getWidth();
+-                for (Integer row : minRatioPositions) {
+-                    int i = tableau.getNumObjectiveFunctions();
+-                    for (; i < tableau.getWidth() - 1 && minRow != row; i++) {
+-                        if (row == tableau.getBasicRow(i)) {
+-                            if (i < minIndex) {
+-                                minIndex = i;
+-                                minRow = row;
++                if (getIterations() < getMaxIterations() / 2) {
++                    Integer minRow = null;
++                    int minIndex = tableau.getWidth();
++                    for (Integer row : minRatioPositions) {
++                        int i = tableau.getNumObjectiveFunctions();
++                        for (; i < tableau.getWidth() - 1 && minRow != row; i++) {
++                            if (row == tableau.getBasicRow(i)) {
++                                if (i < minIndex) {
++                                    minIndex = i;
++                                    minRow = row;
++                                }
+                             }
+                         }
+                     }
++                    return minRow;
+                 }
+-                return minRow;
++                return minRatioPositions.get(0);
+         }
+         return minRatioPositions.get(0);
+     }

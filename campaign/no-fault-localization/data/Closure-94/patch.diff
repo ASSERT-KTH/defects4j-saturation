@@ -1,0 +1,14 @@
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index a31b17a..c6535f5 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -330,6 +330,9 @@ public final class NodeUtil {
+       case Token.BITNOT:
+       case Token.BITOR:
+       case Token.BITXOR:
++      case Token.ADD:
++        return isValidDefineValue(val.getFirstChild(), defines)
++            && isValidDefineValue(val.getLastChild(), defines);
+ 
+       // Uniary operators are valid if the child is valid.
+       case Token.NOT:

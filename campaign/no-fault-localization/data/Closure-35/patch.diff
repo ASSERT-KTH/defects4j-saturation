@@ -1,0 +1,63 @@
+diff --git a/src/com/google/javascript/rhino/jstype/JSType.java b/src/com/google/javascript/rhino/jstype/JSType.java
+index 7317e94..487814b 100644
+--- a/src/com/google/javascript/rhino/jstype/JSType.java
++++ b/src/com/google/javascript/rhino/jstype/JSType.java
+@@ -661,6 +661,14 @@ public abstract class JSType implements Serializable {
+     return this.isSubtype(getNativeType(JSTypeNative.NULL_TYPE));
+   }
+ 
++  /**
++   * Tests whether this type explicitly includes {@code undefined} as one
++   * of its possible values, as opposed to merely being unknown.
++   */
++  public boolean isVoidable() {
++    return this.isVoidType();
++  }
++
+   /**
+    * Gets the least supertype of this that's not a union.
+    */
+diff --git a/src/com/google/javascript/rhino/jstype/RecordType.java b/src/com/google/javascript/rhino/jstype/RecordType.java
+index b418dbd..9f9d8dc 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordType.java
++++ b/src/com/google/javascript/rhino/jstype/RecordType.java
+@@ -245,12 +245,17 @@ class RecordType extends PrototypeObjectType {
+     // same type, the properties of z are inferred--and so an assignment
+     // to the property of z would not violate any restrictions on it.
+     for (String property : typeB.properties.keySet()) {
++      JSType propB = typeB.getPropertyType(property);
+       if (!typeA.hasProperty(property)) {
++        // typeA is missing the property, but that's OK if typeB's
++        // property can be undefined (i.e. is effectively optional).
++        if (propB.isVoidable()) {
++          continue;
++        }
+         return false;
+       }
+ 
+       JSType propA = typeA.getPropertyType(property);
+-      JSType propB = typeB.getPropertyType(property);
+       if (!propA.isUnknownType() && !propB.isUnknownType()) {
+         if (typeA.isPropertyTypeDeclared(property)) {
+           if (!propA.isEquivalentTo(propB)) {
+diff --git a/src/com/google/javascript/rhino/jstype/UnionType.java b/src/com/google/javascript/rhino/jstype/UnionType.java
+index fcb0172..73034e6 100644
+--- a/src/com/google/javascript/rhino/jstype/UnionType.java
++++ b/src/com/google/javascript/rhino/jstype/UnionType.java
+@@ -256,6 +256,16 @@ public class UnionType extends JSType {
+     return false;
+   }
+ 
++  @Override
++  public boolean isVoidable() {
++    for (JSType t : alternates) {
++      if (t.isVoidable()) {
++        return true;
++      }
++    }
++    return false;
++  }
++
+   @Override
+   public boolean isUnknownType() {
+     for (JSType t : alternates) {

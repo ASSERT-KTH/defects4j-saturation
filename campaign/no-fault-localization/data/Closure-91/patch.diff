@@ -1,0 +1,35 @@
+diff --git a/src/com/google/javascript/jscomp/CheckGlobalThis.java b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+index fa598d2..9f3fc4f 100644
+--- a/src/com/google/javascript/jscomp/CheckGlobalThis.java
++++ b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+@@ -112,6 +112,10 @@ final class CheckGlobalThis implements Callback {
+       }
+ 
+       // Don't traverse functions that are getting lent to a prototype.
++      if ((pType == Token.STRING || pType == Token.NUMBER) &&
++          isLentToPrototype(parent)) {
++        return false;
++      }
+     }
+ 
+     if (parent != null && parent.getType() == Token.ASSIGN) {
+@@ -164,6 +168,19 @@ final class CheckGlobalThis implements Callback {
+     return parent != null && NodeUtil.isGet(parent);
+   }
+ 
++  /**
++   * Determines whether a function-valued object literal property (identified
++   * by its key node) is being lent to some type's prototype via a
++   * {@code @lends} annotation on the enclosing object literal.
++   */
++  private boolean isLentToPrototype(Node key) {
++    Node objectLit = key.getParent();
++    JSDocInfo jsDoc = objectLit.getJSDocInfo();
++    return jsDoc != null &&
++        jsDoc.getLendsName() != null &&
++        jsDoc.getLendsName().endsWith(".prototype");
++  }
++
+   /**
+    * Gets a function's JSDoc information, if it has any. Checks for a few
+    * patterns (ellipses show where JSDoc would be):

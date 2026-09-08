@@ -1,0 +1,42 @@
+diff --git a/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java b/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
+index 8214827..dfd12e5 100644
+--- a/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
++++ b/src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java
+@@ -346,10 +346,8 @@ public class OpenMapRealVector extends SparseRealVector
+          * this only. Indeed, if this[i] = 0d and v[i] = 0d, then
+          * this[i] / v[i] = NaN, and not 0d.
+          */
+-        Iterator iter = entries.iterator();
+-        while (iter.hasNext()) {
+-            iter.advance();
+-            res.setEntry(iter.key(), iter.value() / v.getEntry(iter.key()));
++        for (int i = 0; i < getDimension(); i++) {
++            res.setEntry(i, getEntry(i) / v.getEntry(i));
+         }
+         return res;
+     }
+@@ -371,6 +369,24 @@ public class OpenMapRealVector extends SparseRealVector
+          *
+          * These special cases are handled below.
+          */
++        if (v instanceof OpenMapRealVector) {
++            OpenMapRealVector v2 = (OpenMapRealVector) v;
++            Iterator v2Iter = v2.entries.iterator();
++            while (v2Iter.hasNext()) {
++                v2Iter.advance();
++                final int key = v2Iter.key();
++                if (!entries.containsKey(key)) {
++                    res.setEntry(key, getEntry(key) * v2Iter.value());
++                }
++            }
++        } else {
++            final int n = getDimension();
++            for (int i = 0; i < n; i++) {
++                if (!entries.containsKey(i)) {
++                    res.setEntry(i, getEntry(i) * v.getEntry(i));
++                }
++            }
++        }
+         return res;
+     }
+ 

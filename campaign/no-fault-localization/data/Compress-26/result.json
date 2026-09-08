@@ -1,0 +1,41 @@
+{
+  "project": "Compress",
+  "bug": 26,
+  "id": "Compress-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 248,
+  "finished_at": "2026-09-07T23:49:15Z",
+  "wallclock_s": 66,
+  "agent_s": 37,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 27648,
+  "total_cost_usd": 0.12674000000000002,
+  "session_id": "58439959-18b7-4315-a747-dcd005edae22",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2301,
+  "cache_read_input_tokens": 190010,
+  "cache_creation_input_tokens": 15472,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.utils.IOUtilsTest::skipUsingRead",
+    "org.apache.commons.compress.utils.IOUtilsTest::skipUsingSkipAndRead"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/utils/IOUtils.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

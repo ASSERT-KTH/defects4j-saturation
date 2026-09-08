@@ -1,0 +1,40 @@
+{
+  "project": "JacksonCore",
+  "bug": 13,
+  "id": "JacksonCore-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 340,
+  "finished_at": "2026-09-08T00:14:52Z",
+  "wallclock_s": 70,
+  "agent_s": 43,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 32378,
+  "total_cost_usd": 0.1445788,
+  "session_id": "b6c04570-e716-4758-a1c7-56b8e143a9c0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 2523,
+  "cache_read_input_tokens": 268274,
+  "cache_creation_input_tokens": 15841,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.TestJsonGeneratorFeatures::testFieldNameQuotingEnabled"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/json/JsonGeneratorImpl.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

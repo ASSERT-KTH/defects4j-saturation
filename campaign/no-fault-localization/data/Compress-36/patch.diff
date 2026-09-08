@@ -1,0 +1,14 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/sevenz/SevenZFile.java b/src/main/java/org/apache/commons/compress/archivers/sevenz/SevenZFile.java
+index 3e2113d..352cce6 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/sevenz/SevenZFile.java
++++ b/src/main/java/org/apache/commons/compress/archivers/sevenz/SevenZFile.java
+@@ -824,8 +824,7 @@ public class SevenZFile implements Closeable {
+         final int folderIndex = archive.streamMap.fileFolderIndex[currentEntryIndex];
+         if (folderIndex < 0) {
+             deferredBlockStreams.clear();
+-            // TODO: previously it'd return an empty stream?
+-            // new BoundedInputStream(new ByteArrayInputStream(new byte[0]), 0);
++            deferredBlockStreams.add(new ByteArrayInputStream(new byte[0]));
+             return;
+         }
+         final SevenZArchiveEntry file = archive.files[currentEntryIndex];

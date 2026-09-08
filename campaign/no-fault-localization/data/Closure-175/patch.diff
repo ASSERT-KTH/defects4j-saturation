@@ -1,0 +1,116 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionInjector.java b/src/com/google/javascript/jscomp/FunctionInjector.java
+index 9d3fdd3..8938a38 100644
+--- a/src/com/google/javascript/jscomp/FunctionInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionInjector.java
+@@ -718,7 +718,18 @@ class FunctionInjector {
+         if (cArg != null) {
+           if (NodeUtil.mayEffectMutableState(cArg, compiler)
+               && NodeUtil.getNameReferenceCount(
+-                  block, fnParam.getString()) > 1) {
++                  block, fnParam.getString()) > 0) {
++            return CanInlineResult.NO;
++          }
++
++          if (NodeUtil.canBeSideEffected(cArg)
++              && isParameterReferencedAfterSideEffect(
++                  fnParam.getString(), block)) {
++            return CanInlineResult.NO;
++          }
++
++          if (NodeUtil.getNameReferenceCount(block, fnParam.getString()) > 1
++              && !canDuplicateWithoutBloat(cArg)) {
+             return CanInlineResult.NO;
+           }
+         }
+@@ -736,6 +747,91 @@ class FunctionInjector {
+     return CanInlineResult.YES;
+   }
+ 
++  /**
++   * Direct inlining substitutes a call's argument expression verbatim
++   * wherever the corresponding parameter is referenced, so a parameter
++   * referenced more than once in the function body would cause the
++   * argument to be duplicated in the resulting code. Only allow this for
++   * values cheap enough that the duplication doesn't bloat the output.
++   */
++  private boolean canDuplicateWithoutBloat(Node cArg) {
++    switch (cArg.getType()) {
++      case Token.NAME:
++        return !compiler.getCodingConvention().isExported(cArg.getString());
++      case Token.THIS:
++        return true;
++      case Token.STRING:
++        return cArg.getString().length() < 2;
++      default:
++        return NodeUtil.isImmutableValue(cArg);
++    }
++  }
++
++  /**
++   * Direct inlining substitutes a call's argument expression verbatim
++   * wherever the corresponding parameter is referenced. If the argument's
++   * value can be changed by some other part of the expression (a side
++   * effect), and that side effect happens before the parameter is
++   * referenced, evaluating the argument at the point of reference (instead
++   * of before any of the function body executes, as normally happens at a
++   * call site) would change the result.
++   *
++   * @return Whether the given parameter is referenced in the expression tree
++   *     after something that may change program state.
++   */
++  private boolean isParameterReferencedAfterSideEffect(
++      String parameterName, Node root) {
++    ParameterReferenceCheck check = new ParameterReferenceCheck(parameterName);
++    NodeUtil.visitPostOrder(root, check, check);
++    return check.referencedAfterSideEffect;
++  }
++
++  private class ParameterReferenceCheck
++      implements NodeUtil.Visitor, Predicate<Node> {
++    private final String parameterName;
++    private boolean sideEffectSeen = false;
++    private boolean referencedAfterSideEffect = false;
++
++    ParameterReferenceCheck(String parameterName) {
++      this.parameterName = parameterName;
++    }
++
++    @Override
++    public boolean apply(Node node) {
++      // Once found, there is no need to keep looking.
++      return !referencedAfterSideEffect;
++    }
++
++    @Override
++    public void visit(Node n) {
++      if (sideEffectSeen && n.isName()
++          && parameterName.equals(n.getString())) {
++        referencedAfterSideEffect = true;
++      } else if (!sideEffectSeen && hasShallowSideEffect(n)) {
++        sideEffectSeen = true;
++      }
++    }
++  }
++
++  /**
++   * @return Whether the given node itself (ignoring its children, which are
++   *     checked separately as the traversal unwinds) may change program
++   *     state when it is evaluated.
++   */
++  private boolean hasShallowSideEffect(Node n) {
++    switch (n.getType()) {
++      case Token.CALL:
++        return NodeUtil.functionCallHasSideEffects(n, compiler);
++      case Token.NEW:
++        return NodeUtil.constructorCallHasSideEffects(n, compiler);
++      case Token.INC:
++      case Token.DEC:
++        return true;
++      default:
++        return NodeUtil.isAssignmentOp(n);
++    }
++  }
++
+   /**
+    * Determine if inlining the function is likely to reduce the code size.
+    * @param namesToAlias

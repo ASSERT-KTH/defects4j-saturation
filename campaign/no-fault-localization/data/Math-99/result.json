@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 99,
+  "id": "Math-99",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3376,
+  "finished_at": "2026-09-08T11:19:06Z",
+  "wallclock_s": 108,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 56069,
+  "total_cost_usd": 0.1824388,
+  "session_id": "524a5fbf-9f3c-4c36-95e9-616726b7abc6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 5225,
+  "cache_read_input_tokens": 214514,
+  "cache_creation_input_tokens": 21007,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.util.MathUtilsTest::testGcd",
+    "org.apache.commons.math.util.MathUtilsTest::testLcm"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/util/MathUtils.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

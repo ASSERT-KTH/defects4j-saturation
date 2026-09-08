@@ -1,0 +1,214 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index 6ada343..1b7f0be 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -44,6 +44,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     private FormElement formElement; // the current form element
+     private Element contextElement; // fragment parse context -- could be null even if fragment parsing
+     private ArrayList<Element> formattingElements; // active (open) formatting elements
++    private ArrayList<HtmlTreeBuilderState> tmplInsertMode; // stack of Template Insertion modes
+     private List<String> pendingTableCharacters; // chars in table to be shifted out
+     private Token.EndTag emptyEnd; // reused empty end tag
+ 
+@@ -69,6 +70,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         formElement = null;
+         contextElement = null;
+         formattingElements = new ArrayList<>();
++        tmplInsertMode = new ArrayList<>();
+         pendingTableCharacters = new ArrayList<>();
+         emptyEnd = new Token.EndTag();
+         framesetOk = true;
+@@ -154,6 +156,22 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         return originalState;
+     }
+ 
++    void pushTemplateMode(HtmlTreeBuilderState state) {
++        tmplInsertMode.add(state);
++    }
++
++    HtmlTreeBuilderState popTemplateMode() {
++        if (tmplInsertMode.size() > 0) {
++            return tmplInsertMode.remove(tmplInsertMode.size() -1);
++        } else {
++            return null;
++        }
++    }
++
++    HtmlTreeBuilderState currentTemplateMode() {
++        return (tmplInsertMode.size() > 0) ? tmplInsertMode.get(tmplInsertMode.size() -1) : null;
++    }
++
+     void framesetOk(boolean framesetOk) {
+         this.framesetOk = framesetOk;
+     }
+@@ -353,15 +371,15 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     }
+ 
+     void clearStackToTableContext() {
+-        clearStackToContext("table");
++        clearStackToContext("table", "template");
+     }
+ 
+     void clearStackToTableBodyContext() {
+-        clearStackToContext("tbody", "tfoot", "thead");
++        clearStackToContext("tbody", "tfoot", "thead", "template");
+     }
+ 
+     void clearStackToTableRowContext() {
+-        clearStackToContext("tr");
++        clearStackToContext("tr", "template");
+     }
+ 
+     private void clearStackToContext(String... nodeNames) {
+@@ -413,6 +431,9 @@ public class HtmlTreeBuilder extends TreeBuilder {
+             if ("select".equals(name)) {
+                 transition(HtmlTreeBuilderState.InSelect);
+                 break; // frag
++            } else if ("template".equals(name)) {
++                transition(currentTemplateMode());
++                break;
+             } else if (("td".equals(name) || "th".equals(name) && !last)) {
+                 transition(HtmlTreeBuilderState.InCell);
+                 break;
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+index aaf6041..6fbabdc 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java
+@@ -135,6 +135,12 @@ enum HtmlTreeBuilderState {
+                     } else if (name.equals("head")) {
+                         tb.error(this);
+                         return false;
++                    } else if (name.equals("template")) {
++                        tb.insert(start);
++                        tb.insertMarkerToFormattingElements();
++                        tb.framesetOk(false);
++                        tb.transition(InTemplate);
++                        tb.pushTemplateMode(InTemplate);
+                     } else {
+                         return anythingElse(t, tb);
+                     }
+@@ -147,6 +153,17 @@ enum HtmlTreeBuilderState {
+                         tb.transition(AfterHead);
+                     } else if (StringUtil.in(name, "body", "html", "br")) {
+                         return anythingElse(t, tb);
++                    } else if (name.equals("template")) {
++                        if (tb.getFromStack(name) == null) {
++                            tb.error(this);
++                        } else {
++                            tb.generateImpliedEndTags();
++                            if (!tb.currentElement().nodeName().equals(name)) tb.error(this);
++                            tb.popStackToClose(name);
++                            tb.clearFormattingElementsToLastMarker();
++                            tb.popTemplateMode();
++                            tb.resetInsertionMode();
++                        }
+                     } else {
+                         tb.error(this);
+                         return false;
+@@ -746,6 +763,8 @@ enum HtmlTreeBuilderState {
+                         tb.error(this);
+                         tb.processStartTag("br");
+                         return false;
++                    } else if (name.equals("template")) {
++                        return tb.process(t, InHead);
+                     } else {
+                         return anyOtherEndTag(t, tb);
+                     }
+@@ -839,7 +858,7 @@ enum HtmlTreeBuilderState {
+                     boolean processed = tb.processEndTag("table");
+                     if (processed) // only ignored if in fragment
+                         return tb.process(t);
+-                } else if (StringUtil.in(name, "style", "script")) {
++                } else if (StringUtil.in(name, "style", "script", "template")) {
+                     return tb.process(t, InHead);
+                 } else if (name.equals("input")) {
+                     if (!startTag.attributes.get("type").equalsIgnoreCase("hidden")) {
+@@ -874,6 +893,8 @@ enum HtmlTreeBuilderState {
+                         "body", "caption", "col", "colgroup", "html", "tbody", "td", "tfoot", "th", "thead", "tr")) {
+                     tb.error(this);
+                     return false;
++                } else if (name.equals("template")) {
++                    return tb.process(t, InHead);
+                 } else {
+                     return anythingElse(t, tb);
+                 }
+@@ -899,6 +920,70 @@ enum HtmlTreeBuilderState {
+             return processed;
+         }
+     },
++    InTemplate {
++        boolean process(Token t, HtmlTreeBuilder tb) {
++            switch (t.type) {
++                case Character:
++                case Comment:
++                case Doctype:
++                    return tb.process(t, InBody);
++                case StartTag:
++                    Token.StartTag start = t.asStartTag();
++                    String name = start.normalName();
++                    if (StringUtil.in(name, "base", "basefont", "bgsound", "link", "meta", "noframes", "script",
++                            "style", "template", "title")) {
++                        return tb.process(t, InHead);
++                    } else if (StringUtil.in(name, "caption", "colgroup", "tbody", "tfoot", "thead")) {
++                        tb.popTemplateMode();
++                        tb.pushTemplateMode(InTable);
++                        tb.transition(InTable);
++                        return tb.process(t);
++                    } else if (name.equals("col")) {
++                        tb.popTemplateMode();
++                        tb.pushTemplateMode(InColumnGroup);
++                        tb.transition(InColumnGroup);
++                        return tb.process(t);
++                    } else if (name.equals("tr")) {
++                        tb.popTemplateMode();
++                        tb.pushTemplateMode(InTableBody);
++                        tb.transition(InTableBody);
++                        return tb.process(t);
++                    } else if (StringUtil.in(name, "td", "th")) {
++                        tb.popTemplateMode();
++                        tb.pushTemplateMode(InRow);
++                        tb.transition(InRow);
++                        return tb.process(t);
++                    } else {
++                        tb.popTemplateMode();
++                        tb.pushTemplateMode(InBody);
++                        tb.transition(InBody);
++                        return tb.process(t);
++                    }
++                case EndTag:
++                    Token.EndTag end = t.asEndTag();
++                    name = end.normalName();
++                    if (name.equals("template")) {
++                        return tb.process(t, InHead);
++                    } else {
++                        tb.error(this);
++                        return false;
++                    }
++                case EOF:
++                    if (tb.getFromStack("template") == null) {
++                        return true; // stop parsing
++                    }
++                    tb.error(this);
++                    tb.popStackToClose("template");
++                    tb.clearFormattingElementsToLastMarker();
++                    tb.popTemplateMode();
++                    tb.resetInsertionMode();
++                    return tb.process(t);
++                default:
++                    tb.error(this);
++                    return false;
++            }
++        }
++    },
+     InTableText {
+         boolean process(Token t, HtmlTreeBuilder tb) {
+             switch (t.type) {
+@@ -1496,7 +1581,7 @@ enum HtmlTreeBuilderState {
+     // lists of tags to search through. A little harder to read here, but causes less GC than dynamic varargs.
+     // was contributing around 10% of parse GC load.
+     private static final class Constants {
+-        private static final String[] InBodyStartToHead = new String[]{"base", "basefont", "bgsound", "command", "link", "meta", "noframes", "script", "style", "title"};
++        private static final String[] InBodyStartToHead = new String[]{"base", "basefont", "bgsound", "command", "link", "meta", "noframes", "script", "style", "template", "title"};
+         private static final String[] InBodyStartPClosers = new String[]{"address", "article", "aside", "blockquote", "center", "details", "dir", "div", "dl",
+                 "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "menu", "nav", "ol",
+                 "p", "section", "summary", "ul"};

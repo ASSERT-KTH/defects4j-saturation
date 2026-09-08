@@ -1,0 +1,30 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
+index 15beec8..bc93fd1 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java
+@@ -59,7 +59,7 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+     /** indicates if this archive is finished */
+     private boolean finished = false;
+     
+-    private final OutputStream out;
++    private final CountingOutputStream out;
+ 
+     /**
+      * Constructor for TarInputStream.
+@@ -157,6 +157,16 @@ public class TarArchiveOutputStream extends ArchiveOutputStream {
+         return buffer.getRecordSize();
+     }
+ 
++    /**
++     * Returns the current number of bytes written to this stream.
++     * @return the number of written bytes
++     * @since Apache Commons Compress 1.1
++     */
++    @Override
++    public long getBytesWritten() {
++        return out.getBytesWritten();
++    }
++
+     /**
+      * Put an entry on the output stream. This writes the entry's
+      * header record and positions the output stream for writing

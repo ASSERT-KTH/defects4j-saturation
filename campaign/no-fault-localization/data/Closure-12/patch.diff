@@ -1,0 +1,22 @@
+diff --git a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+index d1836e6..ca66b2b 100644
+--- a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
++++ b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+@@ -341,6 +341,17 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+         return false;
+       }
+ 
++      // If the CFG node for the use can complete abnormally due to an
++      // exception (i.e. it is guarded by a try block), inlining would move
++      // the assignment of the variable inside the guarded code. If an
++      // exception is thrown before the assignment completes, the variable
++      // would end up without a value, whereas before inlining it would
++      // already have held the value from the definition. See issue 794.
++      for (DiGraphEdge<Node, Branch> outEdge : cfg.getOutEdges(useCfgNode)) {
++        if (outEdge.getValue() == Branch.ON_EX) {
++          return false;
++        }
++      }
+ 
+       Collection<Node> uses = reachingUses.getUses(varName, getDefCfgNode());
+ 

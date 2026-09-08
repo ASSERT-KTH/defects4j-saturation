@@ -1,0 +1,16 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+index 6e3294b..f677105 100644
+--- a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
++++ b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+@@ -955,6 +955,11 @@ public final class JsDocInfoParser {
+ 
+                         // Find the return's description (if applicable).
+                         if (jsdocBuilder.shouldParseDocumentation()) {
++                          // *Update* the token to that after the type
++                          // annotation, in case the type parsing left the
++                          // stream's position lagging behind a buffered
++                          // lookahead token (e.g. after a malformed type).
++                          token = current();
+                           ExtractionInfo returnDescriptionInfo =
+                               extractMultilineTextualBlock(token);
+ 

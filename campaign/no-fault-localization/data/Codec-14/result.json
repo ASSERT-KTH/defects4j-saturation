@@ -1,0 +1,40 @@
+{
+  "project": "Codec",
+  "bug": 14,
+  "id": "Codec-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4972,
+  "finished_at": "2026-09-07T23:25:49Z",
+  "wallclock_s": 196,
+  "agent_s": 164,
+  "agent_rc": 0,
+  "num_turns": 27,
+  "api_duration_ms": 145238,
+  "total_cost_usd": 0.4364907999999999,
+  "session_id": "1254ad5c-1bee-4f80-b0c0-bb904533dd79",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 54,
+  "output_tokens": 9723,
+  "cache_read_input_tokens": 952774,
+  "cache_creation_input_tokens": 36524,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.codec.language.bm.PhoneticEngineRegressionTest::testCompatibilityWithOriginalVersion"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java"
+  ],
+  "patch_added_lines": 18,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

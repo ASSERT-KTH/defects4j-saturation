@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 30,
+  "id": "Mockito-30",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1257,
+  "finished_at": "2026-09-08T14:22:54Z",
+  "wallclock_s": 213,
+  "agent_s": 103,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 58318,
+  "total_cost_usd": 0.18245419999999998,
+  "session_id": "05781ecc-0d42-4e3b-b2c0-0d836ab2ed28",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3903,
+  "cache_read_input_tokens": 354076,
+  "cache_creation_input_tokens": 17487,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.stubbing.defaultanswers.ReturnsSmartNullsTest::shouldPrintTheParametersOnSmartNullPointerExceptionMessage"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/exceptions/Reporter.java",
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

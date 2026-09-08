@@ -1,0 +1,40 @@
+{
+  "project": "Chart",
+  "bug": 12,
+  "id": "Chart-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 12,
+  "finished_at": "2026-09-07T15:21:10Z",
+  "wallclock_s": 96,
+  "agent_s": 45,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 26432,
+  "total_cost_usd": 0.09751720000000001,
+  "session_id": "50c94579-fe44-4dd1-ba46-ed1881feabe4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1416,
+  "cache_read_input_tokens": 180276,
+  "cache_creation_input_tokens": 11262,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.plot.junit.MultiplePiePlotTests::testConstructor"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/plot/MultiplePiePlot.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 39,
+  "id": "Math-39",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2268,
+  "finished_at": "2026-09-08T10:08:15Z",
+  "wallclock_s": 211,
+  "agent_s": 151,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 113282,
+  "total_cost_usd": 0.3922596,
+  "session_id": "3ea7ad18-ea3d-4a7c-b8d5-4ad78fcad491",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 11886,
+  "cache_read_input_tokens": 753283,
+  "cache_creation_input_tokens": 29986,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.ode.nonstiff.DormandPrince853IntegratorTest::testTooLargeFirstStep"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/ode/nonstiff/AdaptiveStepsizeIntegrator.java",
+    "src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java",
+    "src/main/java/org/apache/commons/math/ode/nonstiff/GraggBulirschStoerIntegrator.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

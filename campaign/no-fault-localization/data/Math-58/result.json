@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 58,
+  "id": "Math-58",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1868,
+  "finished_at": "2026-09-08T10:29:10Z",
+  "wallclock_s": 228,
+  "agent_s": 140,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 71845,
+  "total_cost_usd": 0.29105159999999997,
+  "session_id": "0d429fcf-4764-4762-afbf-d2a786a69075",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 6182,
+  "cache_read_input_tokens": 598973,
+  "cache_creation_input_tokens": 26623,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.fitting.GaussianFitterTest::testMath519"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/fitting/GaussianFitter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

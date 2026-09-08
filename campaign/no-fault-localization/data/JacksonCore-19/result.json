@@ -1,0 +1,40 @@
+{
+  "project": "JacksonCore",
+  "bug": 19,
+  "id": "JacksonCore-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 81,
+  "finished_at": "2026-09-08T00:18:53Z",
+  "wallclock_s": 57,
+  "agent_s": 26,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 19913,
+  "total_cost_usd": 0.0896192,
+  "session_id": "183b862a-d9ec-444b-af79-50caf52e6819",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1415,
+  "cache_read_input_tokens": 127956,
+  "cache_creation_input_tokens": 11876,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.TestNumericValues::testLongerFloatingPoint"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

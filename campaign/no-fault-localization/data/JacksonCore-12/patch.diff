@@ -1,0 +1,92 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java b/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java
+index 60919c8..c5b18ec 100644
+--- a/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java
++++ b/src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java
+@@ -619,7 +619,6 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+         if (_parsingContext.expectComma()) {
+             i = _skipComma(i);
+         }
+-        _updateLocation();
+ 
+         /* And should we now have a name? Always true for Object contexts, since
+          * the intermediate 'expect-value' state is never retained.
+@@ -627,10 +626,14 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+         boolean inObject = _parsingContext.inObject();
+         if (inObject) {
+             // First, field name itself:
++            _updateNameLocation();
+             String name = (i == INT_QUOTE) ? _parseName() : _handleOddName(i);
+             _parsingContext.setCurrentName(name);
+             _currToken = JsonToken.FIELD_NAME;
+             i = _skipColon();
++            _updateLocation();
++        } else {
++            _updateLocation();
+         }
+ 
+         // Ok: we must have a value... what is it?
+@@ -770,12 +773,13 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+         if (_parsingContext.expectComma()) {
+             i = _skipComma(i);
+         }
+-        _updateLocation();
+ 
+         if (!_parsingContext.inObject()) {
++            _updateLocation();
+             _nextTokenNotInObject(i);
+             return false;
+         }
++        _updateNameLocation();
+ 
+         if (i == INT_QUOTE) {
+             // when doing literal match, must consider escaping:
+@@ -792,7 +796,9 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+                     while (true) {
+                         if (ptr == end) { // yes, match!
+                             _parsingContext.setCurrentName(sstr.getValue());
+-                            _isNextTokenNameYes(_skipColonFast(ptr+1));
++                            int j = _skipColonFast(ptr+1);
++                            _updateLocation();
++                            _isNextTokenNameYes(j);
+                             return true;
+                         }
+                         if (nameChars[offset] != _inputBuffer[ptr]) {
+@@ -848,16 +854,18 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+         if (_parsingContext.expectComma()) {
+             i = _skipComma(i);
+         }
+-        _updateLocation();
+         if (!_parsingContext.inObject()) {
++            _updateLocation();
+             _nextTokenNotInObject(i);
+             return null;
+         }
+ 
++        _updateNameLocation();
+         String name = (i == INT_QUOTE) ? _parseName() : _handleOddName(i);
+         _parsingContext.setCurrentName(name);
+         _currToken = JsonToken.FIELD_NAME;
+         i = _skipColon();
++        _updateLocation();
+ 
+         if (i == INT_QUOTE) {
+             _tokenIncomplete = true;
+@@ -964,6 +972,7 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+         _parsingContext.setCurrentName(name);
+         _currToken = JsonToken.FIELD_NAME;
+         i = _skipColon();
++        _updateLocation();
+         if (i == INT_QUOTE) {
+             _tokenIncomplete = true;
+             _nextToken = JsonToken.VALUE_STRING;
+@@ -2668,6 +2677,10 @@ public class ReaderBasedJsonParser // final in 2.3, earlier
+     public JsonLocation getTokenLocation()
+     {
+         final Object src = _ioContext.getSourceReference();
++        if (_currToken == JsonToken.FIELD_NAME) {
++            return new JsonLocation(src,
++                    -1L, _nameInputTotal, _nameInputRow, _nameInputCol);
++        }
+         return new JsonLocation(src,
+                 -1L, getTokenCharacterOffset(),
+                 getTokenLineNr(),

@@ -1,0 +1,29 @@
+diff --git a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+index 1a5937f..6ee5715 100644
+--- a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
++++ b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+@@ -39,6 +39,10 @@ import java.util.Map;
+ class MakeDeclaredNamesUnique
+     implements NodeTraversal.ScopedCallback {
+ 
++  // The arguments variable is special, in that it's declared in every
++  // local scope, but not explicitly declared.
++  private static final String ARGUMENTS = "arguments";
++
+   private Deque<Renamer> nameStack = new ArrayDeque<Renamer>();
+   private final Renamer rootRenamer;
+ 
+@@ -326,6 +330,13 @@ class MakeDeclaredNamesUnique
+      */
+     @Override
+     public void addDeclaredName(String name) {
++      // Don't rename "arguments" as it is implicitly declared in every
++      // local scope, sharing the same binding whether declared or not.
++      // Reserving its name globally would cause an actual declaration of
++      // it in some other scope to be needlessly renamed.
++      if (ARGUMENTS.equals(name)) {
++        return;
++      }
+       if (global) {
+         reserveName(name);
+       } else {

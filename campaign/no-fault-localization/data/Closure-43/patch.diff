@@ -1,0 +1,42 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 92d8715..4d23b23 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -417,6 +417,7 @@ final class TypedScopeCreator implements ScopeCreator {
+      * For more information, see
+      * http://code.google.com/p/closure-compiler/issues/detail?id=314
+      */
++    private final List<Node> lentObjectLiterals = Lists.newArrayList();
+ 
+     /**
+      * Type-less stubs.
+@@ -544,6 +545,12 @@ final class TypedScopeCreator implements ScopeCreator {
+       }
+ 
+       // Analyze any @lends object literals in this statement.
++      if (!lentObjectLiterals.isEmpty() && NodeUtil.isStatement(n)) {
++        for (Node objLit : lentObjectLiterals) {
++          defineObjectLiteral(objLit);
++        }
++        lentObjectLiterals.clear();
++      }
+     }
+ 
+     private void attachLiteralTypes(NodeTraversal t, Node n) {
+@@ -577,7 +584,16 @@ final class TypedScopeCreator implements ScopeCreator {
+           break;
+ 
+         case Token.OBJECTLIT:
++          JSDocInfo objLitInfo = n.getJSDocInfo();
++          if (objLitInfo != null && objLitInfo.getLendsName() != null) {
++            // Defer the analysis of object literals with a @lends
++            // annotation until we reach the root of the statement they're
++            // defined in. This ensures that the type on the @lends
++            // annotation resolves correctly.
++            lentObjectLiterals.add(n);
++          } else {
+             defineObjectLiteral(n);
++          }
+           break;
+ 
+           // NOTE(nicksantos): If we ever support Array tuples,

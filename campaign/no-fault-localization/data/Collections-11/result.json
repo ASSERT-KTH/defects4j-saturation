@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 11,
+  "id": "Collections-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 85,
+  "finished_at": "2026-09-08T15:05:52Z",
+  "wallclock_s": 64,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 14751,
+  "total_cost_usd": 0.0810648,
+  "session_id": "6499f325-054e-4be4-8b99-2039712c969f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1027,
+  "cache_read_input_tokens": 90944,
+  "cache_creation_input_tokens": 12588,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.keyvalue.TestMultiKey::testEqualsAfterSerialization"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/keyvalue/MultiKey.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

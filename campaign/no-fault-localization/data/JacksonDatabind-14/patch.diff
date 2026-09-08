@@ -1,0 +1,17 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+index e684b10..e57523b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+@@ -1548,7 +1548,11 @@ public class ObjectReader
+             JavaType valueType)
+         throws JsonMappingException
+     {
+-        if (_rootDeserializer != null) {
++        // Cached root deserializer is only valid for the type this reader was
++        // configured with; requests for other types (e.g. reading a JsonNode
++        // while this reader is used as codec for tree traversal) must resolve
++        // their own deserializer instead of reusing this one.
++        if (_rootDeserializer != null && valueType.equals(_valueType)) {
+             return _rootDeserializer;
+         }
+ 

@@ -1,0 +1,49 @@
+diff --git a/src/com/google/javascript/jscomp/CheckGlobalThis.java b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+index d63c72b..169f9f6 100644
+--- a/src/com/google/javascript/jscomp/CheckGlobalThis.java
++++ b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+@@ -105,7 +105,8 @@ final class CheckGlobalThis implements Callback {
+       if (!(pType == Token.BLOCK ||
+             pType == Token.SCRIPT ||
+             pType == Token.NAME ||
+-            pType == Token.ASSIGN)) {
++            pType == Token.ASSIGN ||
++            pType == Token.OBJECTLIT)) {
+         return false;
+       }
+     }
+@@ -183,6 +184,13 @@ final class CheckGlobalThis implements Callback {
+             jsDoc = gramps.getJSDocInfo();
+           }
+         }
++      } else if (parentType == Token.OBJECTLIT) {
++        // The function is the value of a key in an object literal.
++        // The JSDoc, if any, is attached to the preceding key node.
++        Node key = parent.getChildBefore(n);
++        if (key != null && NodeUtil.isObjectLitKey(key, parent)) {
++          jsDoc = key.getJSDocInfo();
++        }
+       }
+     }
+     return jsDoc;
+diff --git a/src/com/google/javascript/jscomp/RuntimeTypeCheck.java b/src/com/google/javascript/jscomp/RuntimeTypeCheck.java
+index ed4a6b9..5d17923 100644
+--- a/src/com/google/javascript/jscomp/RuntimeTypeCheck.java
++++ b/src/com/google/javascript/jscomp/RuntimeTypeCheck.java
+@@ -240,10 +240,15 @@ class RuntimeTypeCheck implements CompilerPass {
+       FunctionType funType = (FunctionType) n.getJSType();
+       Node block = n.getLastChild();
+       Node paramName = NodeUtil.getFnParameters(n).getFirstChild();
+-      Node insertionPoint = null;
+ 
+       // To satisfy normalization constraints, the type checking must be
+       // added after any inner function declarations.
++      Node insertionPoint = null;
++      for (Node current = block.getFirstChild();
++          current != null && NodeUtil.isFunctionDeclaration(current);
++          current = current.getNext()) {
++        insertionPoint = current;
++      }
+ 
+       for (Node paramType : funType.getParameters()) {
+         // Can this ever happen?

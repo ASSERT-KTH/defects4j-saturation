@@ -1,0 +1,40 @@
+{
+  "project": "Csv",
+  "bug": 2,
+  "id": "Csv-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 52,
+  "finished_at": "2026-09-07T23:59:54Z",
+  "wallclock_s": 36,
+  "agent_s": 19,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 14383,
+  "total_cost_usd": 0.071794,
+  "session_id": "84b48d5e-fbeb-49ee-9bfd-d5e5cc966539",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 927,
+  "cache_read_input_tokens": 101955,
+  "cache_creation_input_tokens": 9884,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVRecordTest::testGetStringInconsistentRecord"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/CSVRecord.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

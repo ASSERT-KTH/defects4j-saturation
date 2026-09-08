@@ -1,0 +1,42 @@
+{
+  "project": "Csv",
+  "bug": 13,
+  "id": "Csv-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4093,
+  "finished_at": "2026-09-08T00:04:45Z",
+  "wallclock_s": 163,
+  "agent_s": 141,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 110255,
+  "total_cost_usd": 0.36229999999999996,
+  "session_id": "9008c00b-895d-4ac7-beba-62fb97838555",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 8639,
+  "cache_read_input_tokens": 751210,
+  "cache_creation_input_tokens": 30460,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVPrinterTest::testMySqlNullOutput",
+    "org.apache.commons.csv.CSVPrinterTest::testMySqlNullStringDefault"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/CSVFormat.java",
+    "src/main/java/org/apache/commons/csv/CSVPrinter.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

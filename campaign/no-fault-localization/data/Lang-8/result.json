@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 8,
+  "id": "Lang-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 306,
+  "finished_at": "2026-09-08T06:36:39Z",
+  "wallclock_s": 151,
+  "agent_s": 60,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 27149,
+  "total_cost_usd": 0.116531,
+  "session_id": "17b5e878-dabe-41b1-b3b8-88b531a2fd6a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1882,
+  "cache_read_input_tokens": 166030,
+  "cache_creation_input_tokens": 15185,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.time.FastDateFormat_PrinterTest::testCalendarTimezoneRespected",
+    "org.apache.commons.lang3.time.FastDatePrinterTest::testCalendarTimezoneRespected"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/time/FastDatePrinter.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

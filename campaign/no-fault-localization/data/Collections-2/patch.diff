@@ -1,0 +1,39 @@
+diff --git a/src/java/org/apache/commons/collections/ExtendedProperties.java b/src/java/org/apache/commons/collections/ExtendedProperties.java
+index bdfd0ad..7057caf 100644
+--- a/src/java/org/apache/commons/collections/ExtendedProperties.java
++++ b/src/java/org/apache/commons/collections/ExtendedProperties.java
+@@ -185,6 +185,13 @@ public class ExtendedProperties extends Hashtable {
+      */
+     protected static String include = "include";
+ 
++    /**
++     * This is the property name that can point to other
++     * properties file for including other properties files, on an
++     * instance basis.
++     */
++    protected String includeProperty = include;
++
+     /**
+      * These are the keys in the order they listed
+      * in the configuration file. This is useful when
+@@ -510,7 +517,7 @@ public class ExtendedProperties extends Hashtable {
+      * @return the property name which includes another property
+      */
+     public String getInclude() {
+-            return include;  // backwards compatability
++            return includeProperty;
+     }
+ 
+     /**
+@@ -525,7 +532,10 @@ public class ExtendedProperties extends Hashtable {
+      * @param inc  the property name which includes another property, empty converted to null
+      */
+     public void setInclude(String inc) {
+-        include = inc;
++        if (inc != null && inc.length() == 0) {
++            inc = null;
++        }
++        includeProperty = inc;
+     }
+ 
+     /**

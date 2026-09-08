@@ -1,0 +1,40 @@
+{
+  "project": "JacksonCore",
+  "bug": 4,
+  "id": "JacksonCore-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 337,
+  "finished_at": "2026-09-08T00:12:13Z",
+  "wallclock_s": 59,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 24478,
+  "total_cost_usd": 0.09773280000000001,
+  "session_id": "0b3815c1-0d18-47bb-af98-23e6376b35d9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1967,
+  "cache_read_input_tokens": 159049,
+  "cache_creation_input_tokens": 11004,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.util.TestTextBuffer::testExpand"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/util/TextBuffer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

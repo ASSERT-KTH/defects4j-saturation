@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 12,
+  "id": "Collections-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 254,
+  "finished_at": "2026-09-08T15:06:07Z",
+  "wallclock_s": 77,
+  "agent_s": 43,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 28385,
+  "total_cost_usd": 0.10660720000000001,
+  "session_id": "7775e938-fc8a-450d-af22-1d22c5f319f5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1773,
+  "cache_read_input_tokens": 169141,
+  "cache_creation_input_tokens": 13198,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.TestExtendedProperties::testCollections271"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/ExtendedProperties.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

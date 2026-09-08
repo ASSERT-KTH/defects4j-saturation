@@ -1,0 +1,29 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index cca8d9b..91739b7 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -338,6 +338,10 @@ public class IRFactory {
+     @Override
+     Node processAssignment(Assignment assignmentNode) {
+       Node assign = processInfixExpression(assignmentNode);
++      AstNode target = assignmentNode.getLeft();
++      if (target instanceof ArrayLiteral || target instanceof ObjectLiteral) {
++        reportInvalidAssignmentTarget(target);
++      }
+       return assign;
+     }
+ 
+@@ -857,6 +861,13 @@ public class IRFactory {
+           node.getLineno(), "", 0);
+     }
+ 
++    void reportInvalidAssignmentTarget(AstNode node) {
++      errorReporter.error(
++          "invalid assignment target",
++          sourceName,
++          node.getLineno(), "", 0);
++    }
++
+     void reportGetter(AstNode node) {
+       errorReporter.error(
+           "getters are not supported in Internet Explorer",

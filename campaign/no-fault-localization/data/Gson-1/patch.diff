@@ -1,0 +1,54 @@
+diff --git a/gson/src/main/java/com/google/gson/ObjectNavigator.java b/gson/src/main/java/com/google/gson/ObjectNavigator.java
+index f294eb1..84afca3 100644
+--- a/gson/src/main/java/com/google/gson/ObjectNavigator.java
++++ b/gson/src/main/java/com/google/gson/ObjectNavigator.java
+@@ -125,10 +125,16 @@ final class ObjectNavigator {
+           visitor.startVisitingObject(objectToVisit);
+           ObjectTypePair currObjTypePair = objTypePair.toMoreSpecificType();
+           Class<?> topLevelClass = new TypeInfo(currObjTypePair.type).getRawClass();
++          Type currTypeDefiningClass = currObjTypePair.type;
+           for (Class<?> curr = topLevelClass; curr != null && !curr.equals(Object.class); curr =
+               curr.getSuperclass()) {
+             if (!curr.isSynthetic()) {
+-              navigateClassFields(objectToVisit, curr, visitor);
++              navigateClassFields(objectToVisit, curr, currTypeDefiningClass, visitor);
++            }
++            Type genericSuperclass = curr.getGenericSuperclass();
++            if (genericSuperclass != null) {
++              currTypeDefiningClass =
++                  TypeInfoFactory.getActualType(genericSuperclass, currTypeDefiningClass, curr);
+             }
+           }
+         }
+@@ -144,7 +150,8 @@ final class ObjectNavigator {
+         || Primitives.unwrap(realClazz).isPrimitive();
+   }
+ 
+-  private void navigateClassFields(Object obj, Class<?> clazz, Visitor visitor) {
++  private void navigateClassFields(Object obj, Class<?> clazz, Type typeDefiningClazz,
++      Visitor visitor) {
+     Field[] fields = clazz.getDeclaredFields();
+     AccessibleObject.setAccessible(fields, true);
+     for (Field f : fields) {
+@@ -153,7 +160,7 @@ final class ObjectNavigator {
+           || exclusionStrategy.shouldSkipClass(fieldAttributes.getDeclaredClass())) {
+         continue; // skip
+       }
+-      TypeInfo fieldTypeInfo = TypeInfoFactory.getTypeInfoForField(f, objTypePair.type);
++      TypeInfo fieldTypeInfo = TypeInfoFactory.getTypeInfoForField(f, typeDefiningClazz);
+       Type declaredTypeOfField = fieldTypeInfo.getActualType();
+       boolean visitedWithCustomHandler =
+         visitor.visitFieldUsingCustomHandler(fieldAttributes, declaredTypeOfField, obj);
+diff --git a/gson/src/main/java/com/google/gson/TypeInfoFactory.java b/gson/src/main/java/com/google/gson/TypeInfoFactory.java
+index eaf3a10..349f7cc 100644
+--- a/gson/src/main/java/com/google/gson/TypeInfoFactory.java
++++ b/gson/src/main/java/com/google/gson/TypeInfoFactory.java
+@@ -55,7 +55,7 @@ final class TypeInfoFactory {
+     return new TypeInfo(actualType);
+   }
+ 
+-  private static Type getActualType(
++  static Type getActualType(
+       Type typeToEvaluate, Type parentType, Class<?> rawParentClass) {
+     if (typeToEvaluate instanceof Class<?>) {
+       return typeToEvaluate;

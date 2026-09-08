@@ -1,0 +1,82 @@
+diff --git a/src/java/org/apache/commons/lang/time/FastDateFormat.java b/src/java/org/apache/commons/lang/time/FastDateFormat.java
+index 8a26f28..1adcddb 100644
+--- a/src/java/org/apache/commons/lang/time/FastDateFormat.java
++++ b/src/java/org/apache/commons/lang/time/FastDateFormat.java
+@@ -277,21 +277,19 @@ public class FastDateFormat extends Format {
+      *  pattern defined
+      */
+     public static synchronized FastDateFormat getDateInstance(int style, TimeZone timeZone, Locale locale) {
++        if (locale == null) {
++            locale = Locale.getDefault();
++        }
++
+         Object key = new Integer(style);
+         if (timeZone != null) {
+             key = new Pair(key, timeZone);
+         }
+-
+-        if (locale != null) {
+-            key = new Pair(key, locale);
+-        }
++        key = new Pair(key, locale);
+ 
+ 
+         FastDateFormat format = (FastDateFormat) cDateInstanceCache.get(key);
+         if (format == null) {
+-            if (locale == null) {
+-                locale = Locale.getDefault();
+-            }
+             try {
+                 SimpleDateFormat formatter = (SimpleDateFormat) DateFormat.getDateInstance(style, locale);
+                 String pattern = formatter.toPattern();
+@@ -364,20 +362,18 @@ public class FastDateFormat extends Format {
+      *  pattern defined
+      */
+     public static synchronized FastDateFormat getTimeInstance(int style, TimeZone timeZone, Locale locale) {
++        if (locale == null) {
++            locale = Locale.getDefault();
++        }
++
+         Object key = new Integer(style);
+         if (timeZone != null) {
+             key = new Pair(key, timeZone);
+         }
+-        if (locale != null) {
+-            key = new Pair(key, locale);
+-        }
++        key = new Pair(key, locale);
+ 
+         FastDateFormat format = (FastDateFormat) cTimeInstanceCache.get(key);
+         if (format == null) {
+-            if (locale == null) {
+-                locale = Locale.getDefault();
+-            }
+-
+             try {
+                 SimpleDateFormat formatter = (SimpleDateFormat) DateFormat.getTimeInstance(style, locale);
+                 String pattern = formatter.toPattern();
+@@ -457,20 +453,18 @@ public class FastDateFormat extends Format {
+      */
+     public static synchronized FastDateFormat getDateTimeInstance(int dateStyle, int timeStyle, TimeZone timeZone,
+             Locale locale) {
++        if (locale == null) {
++            locale = Locale.getDefault();
++        }
+ 
+         Object key = new Pair(new Integer(dateStyle), new Integer(timeStyle));
+         if (timeZone != null) {
+             key = new Pair(key, timeZone);
+         }
+-        if (locale != null) {
+-            key = new Pair(key, locale);
+-        }
++        key = new Pair(key, locale);
+ 
+         FastDateFormat format = (FastDateFormat) cDateTimeInstanceCache.get(key);
+         if (format == null) {
+-            if (locale == null) {
+-                locale = Locale.getDefault();
+-            }
+             try {
+                 SimpleDateFormat formatter = (SimpleDateFormat) DateFormat.getDateTimeInstance(dateStyle, timeStyle,
+                         locale);

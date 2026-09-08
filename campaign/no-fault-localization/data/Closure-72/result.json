@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 72,
+  "id": "Closure-72",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4463,
+  "finished_at": "2026-09-07T17:42:07Z",
+  "wallclock_s": 239,
+  "agent_s": 148,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 95136,
+  "total_cost_usd": 0.3275548,
+  "session_id": "5df2df23-a5cd-43ee-8404-5fa4b7b3052a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 8425,
+  "cache_read_input_tokens": 588139,
+  "cache_creation_input_tokens": 30701,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineFunctionsTest::testInlineFunctions31"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FunctionToBlockMutator.java"
+  ],
+  "patch_added_lines": 49,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

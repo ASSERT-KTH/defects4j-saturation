@@ -1,0 +1,48 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
+index dc4906e..7a77061 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java
+@@ -55,6 +55,9 @@ public class NumberSerializer
+             switch (format.getShape()) {
+             case STRING:
+                 // [databind#2264]: Need special handling for `BigDecimal`
++                if (((Class<?>) handledType()) == BigDecimal.class) {
++                    return new NumberSerializer.BigDecimalAsStringSerializer();
++                }
+                 return ToStringSerializer.instance;
+             default:
+             }
+@@ -92,6 +95,33 @@ public class NumberSerializer
+         return createSchemaNode(_isInt ? "integer" : "number", true);
+     }
+ 
++    /**
++     * Serializer used for {@link BigDecimal} when it is to be written as
++     * a JSON String, needing to still respect
++     * {@link com.fasterxml.jackson.core.JsonGenerator.Feature#WRITE_BIGDECIMAL_AS_PLAIN}.
++     *
++     * @since 2.10
++     */
++    static class BigDecimalAsStringSerializer extends ToStringSerializer
++    {
++        private static final long serialVersionUID = 1L;
++
++        public BigDecimalAsStringSerializer() {
++            super(BigDecimal.class);
++        }
++
++        @Override
++        public void serialize(Object value, JsonGenerator g, SerializerProvider provider) throws IOException
++        {
++            BigDecimal v = (BigDecimal) value;
++            if (g.isEnabled(JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN)) {
++                g.writeString(v.toPlainString());
++            } else {
++                g.writeString(v.toString());
++            }
++        }
++    }
++
+     @Override
+     public void acceptJsonFormatVisitor(JsonFormatVisitorWrapper visitor, JavaType typeHint) throws JsonMappingException
+     {

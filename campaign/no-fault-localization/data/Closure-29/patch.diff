@@ -1,0 +1,95 @@
+diff --git a/src/com/google/javascript/jscomp/InlineObjectLiterals.java b/src/com/google/javascript/jscomp/InlineObjectLiterals.java
+index 9f5c607..3d814ee 100644
+--- a/src/com/google/javascript/jscomp/InlineObjectLiterals.java
++++ b/src/com/google/javascript/jscomp/InlineObjectLiterals.java
+@@ -144,6 +144,44 @@ class InlineObjectLiterals implements CompilerPass {
+           || staleVars.contains(var);
+     }
+ 
++    /**
++     * Computes the set of property names that are ever given a value,
++     * either through an object literal assignment (x = {a: ...}) or a
++     * direct property assignment (x.a = ...). Any property access that
++     * is not in this set cannot be safely assumed to be undefined, since
++     * it might resolve to a property on {@code Object.prototype}.
++     */
++    private Set<String> getAllValueProperties(List<Reference> refs) {
++      Set<String> props = Sets.newHashSet();
++      for (Reference ref : refs) {
++        Node name = ref.getNode();
++        Node parent = ref.getParent();
++        Node gramps = ref.getGrandparent();
++
++        if (parent.isGetProp()) {
++          if (NodeUtil.isAssignmentOp(gramps) && gramps.getFirstChild() == parent) {
++            props.add(parent.getLastChild().getString());
++          }
++          continue;
++        }
++
++        if (!isVarOrAssignExprLhs(name)) {
++          continue;
++        }
++
++        Node val = ref.getAssignedValue();
++        if (val == null || !val.isObjectLit()) {
++          continue;
++        }
++
++        for (Node child = val.getFirstChild(); child != null;
++             child = child.getNext()) {
++          props.add(child.getString());
++        }
++      }
++      return props;
++    }
++
+     /**
+      * Counts the number of direct (full) references to an object.
+      * Specifically we check for references of the following type:
+@@ -154,6 +192,14 @@ class InlineObjectLiterals implements CompilerPass {
+      */
+     private boolean isInlinableObject(List<Reference> refs) {
+       boolean ret = false;
++      Set<String> validProperties = getAllValueProperties(refs);
++      // Whether an object literal has been assigned to the variable yet, in
++      // reference order. Property accesses that occur before any object
++      // literal is assigned cannot be safely split, since on that code path
++      // the variable might not hold an object at all (e.g. it could still be
++      // undefined), and rewriting it away would silently change that
++      // behavior.
++      boolean sawObjectLitAssignment = false;
+       for (Reference ref : refs) {
+         Node name = ref.getNode();
+         Node parent = ref.getParent();
+@@ -170,6 +216,10 @@ class InlineObjectLiterals implements CompilerPass {
+             return false;
+           }
+ 
++          if (!sawObjectLitAssignment) {
++            return false;
++          }
++
+           // NOTE(nicksantos): This pass's object-splitting algorithm has
+           // a blind spot. It assumes that if a property isn't defined on an
+           // object, then the value is undefined. This is not true, because
+@@ -178,6 +228,11 @@ class InlineObjectLiterals implements CompilerPass {
+           // We short-circuit this problem by bailing out if we see a reference
+           // to a property that isn't defined on the object literal. This
+           // isn't a perfect algorithm, but it should catch most cases.
++          String propName = parent.getLastChild().getString();
++          if (!validProperties.contains(propName)) {
++            return false;
++          }
++
+           continue;
+         }
+ 
+@@ -235,6 +290,7 @@ class InlineObjectLiterals implements CompilerPass {
+         // long as there are no other assignments that mess things up,
+         // we can inline.
+         ret = true;
++        sawObjectLitAssignment = true;
+       }
+       return ret;
+     }

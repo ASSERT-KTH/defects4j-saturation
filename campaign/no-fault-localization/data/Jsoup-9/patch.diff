@@ -1,0 +1,22 @@
+diff --git a/src/main/java/org/jsoup/nodes/Entities.java b/src/main/java/org/jsoup/nodes/Entities.java
+index a4c173b..fe5c389 100644
+--- a/src/main/java/org/jsoup/nodes/Entities.java
++++ b/src/main/java/org/jsoup/nodes/Entities.java
+@@ -35,7 +35,7 @@ public class Entities {
+     private static final Map<Character, String> xhtmlByVal;
+     private static final Map<Character, String> baseByVal;
+     private static final Map<Character, String> fullByVal;
+-    private static final Pattern unescapePattern = Pattern.compile("&(#(x|X)?([0-9a-fA-F]+)|[a-zA-Z]+);?");
++    private static final Pattern unescapePattern = Pattern.compile("&(#(x|X)?([0-9a-fA-F]+)|[a-zA-Z][a-zA-Z0-9]*);?");
+ 
+     static String escape(String string, Document.OutputSettings out) {
+         return escape(string, out.encoder(), out.escapeMode());
+@@ -81,7 +81,7 @@ public class Entities {
+                     charval = full.get(name);
+             }
+ 
+-            if (charval != -1 || charval > 0xFFFF) { // out of range
++            if (charval != -1 && charval <= 0xFFFF) { // out of range
+                 String c = Character.toString((char) charval);
+                 m.appendReplacement(accum, Matcher.quoteReplacement(c));
+             } else {

@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 50,
+  "id": "Lang-50",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 207,
+  "finished_at": "2026-09-08T09:22:33Z",
+  "wallclock_s": 92,
+  "agent_s": 54,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 38596,
+  "total_cost_usd": 0.15557820000000003,
+  "session_id": "e8d91c62-17f4-4d11-9431-938d74719ba1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2960,
+  "cache_read_input_tokens": 250376,
+  "cache_creation_input_tokens": 18117,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.time.FastDateFormatTest::test_changeDefault_Locale_DateInstance",
+    "org.apache.commons.lang.time.FastDateFormatTest::test_changeDefault_Locale_DateTimeInstance"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/time/FastDateFormat.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 20,
+  "has_dev_patch": true
+}

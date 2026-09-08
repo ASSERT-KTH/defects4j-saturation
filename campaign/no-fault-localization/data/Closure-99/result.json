@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 99,
+  "id": "Closure-99",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3234,
+  "finished_at": "2026-09-07T18:17:42Z",
+  "wallclock_s": 151,
+  "agent_s": 96,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 67502,
+  "total_cost_usd": 0.21107400000000004,
+  "session_id": "9de4e7b5-d5e9-4ca5-bbf2-dbef49270664",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 5609,
+  "cache_read_input_tokens": 296500,
+  "cache_creation_input_tokens": 22660,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckGlobalThisTest::testPropertyOfMethod",
+    "com.google.javascript.jscomp.CheckGlobalThisTest::testMethod4",
+    "com.google.javascript.jscomp.CheckGlobalThisTest::testInterface1"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CheckGlobalThis.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

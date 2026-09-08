@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 26,
+  "id": "JacksonDatabind-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6602,
+  "finished_at": "2026-09-08T01:08:13Z",
+  "wallclock_s": 343,
+  "agent_s": 180,
+  "agent_rc": 0,
+  "num_turns": 28,
+  "api_duration_ms": 142290,
+  "total_cost_usd": 0.4507678,
+  "session_id": "87c82951-4cca-4749-8fb1-18cfdfbf3771",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 56,
+  "output_tokens": 10282,
+  "cache_read_input_tokens": 876499,
+  "cache_creation_input_tokens": 42470,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.TestJDKSerialization::testEnumHandlers"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/BeanPropertyWriter.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 11,
+  "id": "JacksonDatabind-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4321,
+  "finished_at": "2026-09-08T00:43:24Z",
+  "wallclock_s": 239,
+  "agent_s": 125,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 93644,
+  "total_cost_usd": 0.3468214,
+  "session_id": "1d1a3a6c-9401-44c5-a88c-93d21ca6e3d8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 7964,
+  "cache_read_input_tokens": 648832,
+  "cache_creation_input_tokens": 33312,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.type.TestJavaType::testLocalType728",
+    "com.fasterxml.jackson.databind.type.TestLocalType609::testLocalPartialType609"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

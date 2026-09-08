@@ -1,0 +1,40 @@
+{
+  "project": "JacksonXml",
+  "bug": 2,
+  "id": "JacksonXml-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3577,
+  "finished_at": "2026-09-08T05:03:07Z",
+  "wallclock_s": 159,
+  "agent_s": 98,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 85865,
+  "total_cost_usd": 0.2588686,
+  "session_id": "43f8f4a3-a53d-4257-9955-8a118dc13061",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 6247,
+  "cache_read_input_tokens": 414168,
+  "cache_creation_input_tokens": 27803,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.dataformat.xml.misc.XmlTextTest::testMixedContent"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/dataformat/xml/deser/XmlTokenStream.java"
+  ],
+  "patch_added_lines": 22,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

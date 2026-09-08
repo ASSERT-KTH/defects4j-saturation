@@ -1,0 +1,75 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+index 5ea467d..df8b0a9 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+@@ -438,12 +438,30 @@ public class StdDateFormat
+         final int year = cal.get(Calendar.YEAR);
+ 
+         // Assuming GregorianCalendar, special handling needed for BCE (aka BC)
+-                // 22-Nov-2018, tatu: Handling beyond 4-digits is not well specified wrt ISO-8601, but
+-                //   it seems that plus prefix IS mandated. Padding is an open question, but since agreeement
+-                //   for max length would be needed, we ewould need to limit to arbitrary length
+-                //   like five digits (erroring out if beyond or padding to that as minimum).
+-                //   Instead, let's just print number out as is and let decoder try to make sense of it.
++        // 22-Nov-2018, tatu: Handling beyond 4-digits is not well specified wrt ISO-8601, but
++        //   it seems that plus prefix IS mandated. Padding is an open question, but since agreeement
++        //   for max length would be needed, we ewould need to limit to arbitrary length
++        //   like five digits (erroring out if beyond or padding to that as minimum).
++        //   Instead, let's just print number out as is and let decoder try to make sense of it.
++        if (cal.get(Calendar.ERA) == GregorianCalendar.BC) {
++            // Ok. First of all, BCE 1 output (given as value `1` in era BCE) needs to become
++            // "+0000", but rest (from `2` up, in that era) need minus sign.
++            // as with CE, 4 digit variant needs padding; beyond that not (although that part is
++            // open to debate, needs agreement with receiver)
++            // But `pad4()` deals with "big" numbers now so:
++            int extendedYear = 1 - year;
++            if (extendedYear == 0) {
++                buffer.append("+0000");
++            } else {
++                buffer.append('-');
++                pad4(buffer, -extendedYear);
++            }
++        } else {
++            if (year > 9999) {
++                buffer.append('+');
++            }
+             pad4(buffer, year);
++        }
+         buffer.append('-');
+         pad2(buffer, cal.get(Calendar.MONTH) + 1);
+         buffer.append('-');
+@@ -480,12 +498,6 @@ public class StdDateFormat
+         }
+     }
+ 
+-        // Ok. First of all, BCE 1 output (given as value `1` in era BCE) needs to become
+-        // "+0000", but rest (from `2` up, in that era) need minus sign.
+-        // as with CE, 4 digit variant needs padding; beyond that not (although that part is
+-        // open to debate, needs agreement with receiver)
+-        // But `pad4()` deals with "big" numbers now so:
+-
+     private static void pad2(StringBuffer buffer, int value) {
+         int tens = value / 10;
+         if (tens == 0) {
+@@ -509,14 +521,14 @@ public class StdDateFormat
+     }
+ 
+     private static void pad4(StringBuffer buffer, int value) {
+-        int h = value / 100;
+-        if (h == 0) {
+-            buffer.append('0').append('0');
+-        } else {
+-                pad2(buffer, h);
+-            value -= (100 * h);
++        if (value < 10) {
++            buffer.append("000");
++        } else if (value < 100) {
++            buffer.append("00");
++        } else if (value < 1000) {
++            buffer.append('0');
+         }
+-        pad2(buffer, value);
++        buffer.append(value);
+     }
+     
+     /*

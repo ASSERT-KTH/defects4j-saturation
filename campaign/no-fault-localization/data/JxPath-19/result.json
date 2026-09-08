@@ -1,0 +1,42 @@
+{
+  "project": "JxPath",
+  "bug": 19,
+  "id": "JxPath-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1165,
+  "finished_at": "2026-09-08T06:13:44Z",
+  "wallclock_s": 104,
+  "agent_s": 80,
+  "agent_rc": 0,
+  "num_turns": 19,
+  "api_duration_ms": 68201,
+  "total_cost_usd": 0.237545,
+  "session_id": "50ae37eb-8bfe-43c5-adee-57100ccca2cc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 4551,
+  "cache_read_input_tokens": 480525,
+  "cache_creation_input_tokens": 23048,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.AliasedNamespaceIterationTest::testIterateJDOM",
+    "org.apache.commons.jxpath.ri.model.AliasedNamespaceIterationTest::testIterateDOM"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java",
+    "src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

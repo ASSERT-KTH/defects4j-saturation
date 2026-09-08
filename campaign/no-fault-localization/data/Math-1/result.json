@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 1,
+  "id": "Math-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3566,
+  "finished_at": "2026-09-08T09:29:55Z",
+  "wallclock_s": 191,
+  "agent_s": 106,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 61892,
+  "total_cost_usd": 0.20385039999999993,
+  "session_id": "ea1af152-3dd6-49ee-b44e-265d4667b2ad",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 5889,
+  "cache_read_input_tokens": 281727,
+  "cache_creation_input_tokens": 21200,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.fraction.BigFractionTest::testDigitLimitConstructor",
+    "org.apache.commons.math3.fraction.FractionTest::testDigitLimitConstructor"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/fraction/BigFraction.java",
+    "src/main/java/org/apache/commons/math3/fraction/Fraction.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

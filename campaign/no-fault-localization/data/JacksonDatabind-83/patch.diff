@@ -1,0 +1,27 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+index 4f4eb67..c97ef13 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java
+@@ -116,9 +116,7 @@ public abstract class FromStringDeserializer<T> extends StdScalarDeserializer<T>
+                 // 19-May-2017, tatu: Used to require non-null result (assuming `null`
+                 //    indicated error; but that seems wrong. Should be able to return
+                 //    `null` as value.
+-                if (_deserialize(text, ctxt) != null) {
+                 return _deserialize(text, ctxt);
+-                }
+             } catch (IllegalArgumentException iae) {
+                 cause = iae;
+             } catch (MalformedURLException me) {
+@@ -132,11 +130,7 @@ public abstract class FromStringDeserializer<T> extends StdScalarDeserializer<T>
+                 }
+             }
+             // 05-May-2016, tatu: Unlike most usage, this seems legit, so...
+-            JsonMappingException e = ctxt.weirdStringException(text, _valueClass, msg);
+-            if (cause != null) {
+-                e.initCause(cause);
+-            }
+-            throw e;
++            return (T) ctxt.handleWeirdStringValue(_valueClass, text, msg);
+             // nothing to do here, yet? We'll fail anyway
+         }
+         JsonToken t = p.getCurrentToken();

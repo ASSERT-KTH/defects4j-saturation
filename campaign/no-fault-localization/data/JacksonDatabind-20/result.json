@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 20,
+  "id": "JacksonDatabind-20",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 12208,
+  "finished_at": "2026-09-08T00:58:04Z",
+  "wallclock_s": 370,
+  "agent_s": 253,
+  "agent_rc": 0,
+  "num_turns": 32,
+  "api_duration_ms": 218829,
+  "total_cost_usd": 0.6089278,
+  "session_id": "92a5045f-c15a-4267-94aa-307049cfe155",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 64,
+  "output_tokens": 18929,
+  "cache_read_input_tokens": 1198814,
+  "cache_creation_input_tokens": 44139,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.introspect.TestNamingStrategyStd::testNamingWithObjectNode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java",
+    "src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java"
+  ],
+  "patch_added_lines": 27,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

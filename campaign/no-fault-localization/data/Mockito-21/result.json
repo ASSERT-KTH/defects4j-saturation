@@ -1,0 +1,40 @@
+{
+  "project": "Mockito",
+  "bug": 21,
+  "id": "Mockito-21",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1447,
+  "finished_at": "2026-09-08T12:04:12Z",
+  "wallclock_s": 527,
+  "agent_s": 282,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 43453,
+  "total_cost_usd": 0.1372874,
+  "session_id": "e908226a-d23a-4091-9028-487e34e010a1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 3353,
+  "cache_read_input_tokens": 176877,
+  "cache_creation_input_tokens": 16392,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.creation.instance.ConstructorInstantiatorTest::creates_instances_of_inner_classes"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/creation/instance/ConstructorInstantiator.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Cli",
+  "bug": 39,
+  "id": "Cli-39",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 323,
+  "finished_at": "2026-09-07T15:39:39Z",
+  "wallclock_s": 44,
+  "agent_s": 32,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 29693,
+  "total_cost_usd": 0.13702920000000002,
+  "session_id": "54989329-fe7d-423d-b52a-cdf1a0330e56",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2180,
+  "cache_read_input_tokens": 218231,
+  "cache_creation_input_tokens": 16958,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.cli.PatternOptionBuilderTest::testExistingFilePattern",
+    "org.apache.commons.cli.PatternOptionBuilderTest::testExistingFilePatternFileNotExist"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/cli/TypeHandler.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

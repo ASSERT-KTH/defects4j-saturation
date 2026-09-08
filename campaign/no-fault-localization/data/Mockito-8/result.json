@@ -1,0 +1,40 @@
+{
+  "project": "Mockito",
+  "bug": 8,
+  "id": "Mockito-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3998,
+  "finished_at": "2026-09-08T11:43:26Z",
+  "wallclock_s": 519,
+  "agent_s": 221,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 66058,
+  "total_cost_usd": 0.2410454,
+  "session_id": "1b87e98c-5ed3-4ee9-be1f-aee8dc5ee4f2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 6113,
+  "cache_read_input_tokens": 313437,
+  "cache_creation_input_tokens": 27988,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.util.reflection.GenericMetadataSupportTest::typeVariable_of_self_type"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/util/reflection/GenericMetadataSupport.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

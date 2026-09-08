@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 10,
+  "id": "Compress-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2057,
+  "finished_at": "2026-09-07T23:40:43Z",
+  "wallclock_s": 82,
+  "agent_s": 63,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 57279,
+  "total_cost_usd": 0.24704260000000006,
+  "session_id": "c060d2df-a044-4258-b2af-d3849c55dbc4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 4524,
+  "cache_read_input_tokens": 398278,
+  "cache_creation_input_tokens": 29949,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.zip.UTF8ZipFilesTest::testReadWinZipArchive"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/zip/ZipFile.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

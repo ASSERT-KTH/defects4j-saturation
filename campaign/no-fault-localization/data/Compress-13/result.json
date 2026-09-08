@@ -1,0 +1,41 @@
+{
+  "project": "Compress",
+  "bug": 13,
+  "id": "Compress-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5655,
+  "finished_at": "2026-09-07T23:43:20Z",
+  "wallclock_s": 157,
+  "agent_s": 131,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 127437,
+  "total_cost_usd": 0.3575278,
+  "session_id": "3346f5b0-e32f-41c3-8231-140f284c53af",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 10194,
+  "cache_read_input_tokens": 702354,
+  "cache_creation_input_tokens": 27856,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.zip.ZipArchiveInputStreamTest::winzipBackSlashWorkaround",
+    "org.apache.commons.compress.archivers.zip.ZipFileTest::testWinzipBackSlashWorkaround"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/zip/ZipUtil.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

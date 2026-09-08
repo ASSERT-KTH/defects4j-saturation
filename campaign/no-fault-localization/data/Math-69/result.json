@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 69,
+  "id": "Math-69",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1521,
+  "finished_at": "2026-09-08T10:41:39Z",
+  "wallclock_s": 94,
+  "agent_s": 62,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 51712,
+  "total_cost_usd": 0.1982466,
+  "session_id": "6b3e0b91-1a43-4cab-b5e4-fa17f7fcfcd9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4729,
+  "cache_read_input_tokens": 336303,
+  "cache_creation_input_tokens": 20079,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.correlation.PearsonsCorrelationTest::testPValueNearZero",
+    "org.apache.commons.math.stat.correlation.SpearmansRankCorrelationTest::testPValueNearZero"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/stat/correlation/PearsonsCorrelation.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

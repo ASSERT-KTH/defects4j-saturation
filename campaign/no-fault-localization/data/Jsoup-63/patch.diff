@@ -1,0 +1,36 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index 16f81db..7ec2ef7 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -224,12 +224,12 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         insertNode(el);
+         if (startTag.isSelfClosing()) {
+             if (tag.isKnownTag()) {
+-                if (tag.isSelfClosing()) tokeniser.acknowledgeSelfClosingFlag();
++                if (!tag.isSelfClosing())
++                    tokeniser.error("Tag cannot be self closing; not a void tag");
+             }
+-            else {
++            else // unknown tag: assume self closing is valid
+                 tag.setSelfClosing();
+-                tokeniser.acknowledgeSelfClosingFlag();
+-            }
++            tokeniser.acknowledgeSelfClosingFlag();
+         }
+         return el;
+     }
+diff --git a/src/main/java/org/jsoup/parser/Tokeniser.java b/src/main/java/org/jsoup/parser/Tokeniser.java
+index 29fe4cc..0d47695 100644
+--- a/src/main/java/org/jsoup/parser/Tokeniser.java
++++ b/src/main/java/org/jsoup/parser/Tokeniser.java
+@@ -41,7 +41,9 @@ final class Tokeniser {
+     }
+ 
+     Token read() {
+-        if (!selfClosingFlagAcknowledged) {
++        // don't flag yet if a token (e.g. buffered chars ahead of this tag) is already pending emission;
++        // check applies to the token this call will actually return, not one already queued from before
++        if (!isEmitPending && !selfClosingFlagAcknowledged) {
+             error("Self closing flag not acknowledged");
+             selfClosingFlagAcknowledged = true;
+         }

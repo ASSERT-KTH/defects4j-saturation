@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 19,
+  "id": "Jsoup-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1176,
+  "finished_at": "2026-09-08T05:18:23Z",
+  "wallclock_s": 57,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 34303,
+  "total_cost_usd": 0.1215442,
+  "session_id": "3aedbe8f-6318-49fb-8dd3-5c2d3c77c0ec",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2456,
+  "cache_read_input_tokens": 177521,
+  "cache_creation_input_tokens": 14756,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.safety.CleanerTest::handlesCustomProtocols"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/safety/Whitelist.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

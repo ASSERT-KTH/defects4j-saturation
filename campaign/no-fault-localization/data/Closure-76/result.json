@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 76,
+  "id": "Closure-76",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 23055,
+  "finished_at": "2026-09-07T17:50:05Z",
+  "wallclock_s": 472,
+  "agent_s": 390,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 291899,
+  "total_cost_usd": 0.5872438,
+  "session_id": "03a3c3d9-c5cc-465a-b223-471b1b75ff7b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 26637,
+  "cache_read_input_tokens": 519494,
+  "cache_creation_input_tokens": 52941,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.DeadAssignmentsEliminationTest::testInExpression2",
+    "com.google.javascript.jscomp.DeadAssignmentsEliminationTest::testIssue384b",
+    "com.google.javascript.jscomp.DeadAssignmentsEliminationTest::testIssue384c",
+    "com.google.javascript.jscomp.DeadAssignmentsEliminationTest::testIssue384d"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/DeadAssignmentsElimination.java"
+  ],
+  "patch_added_lines": 37,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

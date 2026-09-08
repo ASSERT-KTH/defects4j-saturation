@@ -1,0 +1,29 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index 93fe6ae..bb15e76 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -256,8 +256,13 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     void insert(Token.Character characterToken) {
+         Node node;
+         // characters in script and style go in as datanodes, not text nodes
+-        final String tagName = currentElement().tagName();
+-        final String data = characterToken.getData();
++        final Element el = currentElement();
++        final String tagName = el.tagName();
++        String data = characterToken.getData();
++
++        // a leading newline is ignored as the first content of a pre/listing element, per the HTML5 spec
++        if ((tagName.equals("pre") || tagName.equals("listing")) && el.childNodeSize() == 0 && data.startsWith("\n"))
++            data = data.substring(1);
+ 
+         if (characterToken.isCData())
+             node = new CDataNode(data);
+@@ -265,7 +270,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+             node = new DataNode(data);
+         else
+             node = new TextNode(data);
+-        currentElement().appendChild(node); // doesn't use insertNode, because we don't foster these; and will always have a stack.
++        el.appendChild(node); // doesn't use insertNode, because we don't foster these; and will always have a stack.
+     }
+ 
+     private void insertNode(Node node) {

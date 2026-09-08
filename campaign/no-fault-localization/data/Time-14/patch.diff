@@ -1,0 +1,21 @@
+diff --git a/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java b/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
+index afca44e..ac7eb19 100644
+--- a/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
++++ b/src/main/java/org/joda/time/chrono/BasicMonthOfYearDateTimeField.java
+@@ -206,7 +206,15 @@ class BasicMonthOfYearDateTimeField extends ImpreciseDateTimeField {
+         if (valueToAdd == 0) {
+             return values;
+         }
+-            // month is largest field and being added to, such as month-day
++        // month is largest field and being added to, such as month-day
++        if (partial.size() > 0 && partial.getFieldType(0).equals(DateTimeFieldType.monthOfYear())) {
++            if (fieldIndex == 0) {
++                int curMonth0 = values[0] - 1;
++                int newMonth0 = ((curMonth0 + (valueToAdd % 12)) + 12) % 12;
++                int newMonth = newMonth0 + 1;
++                return set(partial, 0, values, newMonth);
++            }
++        }
+         if (DateTimeUtils.isContiguous(partial)) {
+             long instant = 0L;
+             for (int i = 0, isize = partial.size(); i < isize; i++) {

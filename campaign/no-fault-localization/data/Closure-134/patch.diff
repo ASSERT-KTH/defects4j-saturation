@@ -1,0 +1,107 @@
+diff --git a/src/com/google/javascript/jscomp/AmbiguateProperties.java b/src/com/google/javascript/jscomp/AmbiguateProperties.java
+index aad743f..8db3ea2 100644
+--- a/src/com/google/javascript/jscomp/AmbiguateProperties.java
++++ b/src/com/google/javascript/jscomp/AmbiguateProperties.java
+@@ -207,7 +207,9 @@ class AmbiguateProperties implements CompilerPass {
+     for (Property p : propertyMap.values()) {
+       if (!p.skipAmbiguating) {
+         ++numRenamedPropertyNames;
+-        computeRelatedTypes(p.type);
++        for (JSType type : getTypes(p.typesSet)) {
++          computeRelatedTypes(type);
++        }
+         propsByFreq.add(p);
+       } else {
+         ++numSkippedPropertyNames;
+@@ -248,6 +250,15 @@ class AmbiguateProperties implements CompilerPass {
+                 + numSkippedPropertyNames + " properties.");
+   }
+ 
++  /** Returns the individual JSTypes represented by the bits in the set. */
++  private List<JSType> getTypes(JSTypeBitSet typesSet) {
++    List<JSType> types = Lists.newArrayList();
++    for (int i = typesSet.nextSetBit(0); i >= 0; i = typesSet.nextSetBit(i + 1)) {
++      types.add(intForType.inverse().get(i));
++    }
++    return types;
++  }
++
+   private BitSet getRelatedTypesOnNonUnion(JSType type) {
+     // All of the types we encounter should have been added to the
+     // relatedBitsets via computeRelatedTypes.
+@@ -353,7 +364,7 @@ class AmbiguateProperties implements CompilerPass {
+       if (typesRelatedToSet.intersects(prop.typesSet)) {
+         return false;
+       }
+-      return !getRelated(prop.type).intersects(typesInSet);
++      return !getRelated(prop.typesSet).intersects(typesInSet);
+     }
+ 
+     /**
+@@ -363,20 +374,16 @@ class AmbiguateProperties implements CompilerPass {
+      */
+     public void addNode(Property prop) {
+       typesInSet.or(prop.typesSet);
+-      typesRelatedToSet.or(getRelated(prop.type));
++      typesRelatedToSet.or(getRelated(prop.typesSet));
+     }
+ 
+     /**
+-     * Finds all types related to the provided type and returns a BitSet with
++     * Finds all types related to the provided types and returns a BitSet with
+      * their bits to true.
+      */
+-    private JSTypeBitSet getRelated(JSType type) {
++    private JSTypeBitSet getRelated(JSTypeBitSet typesSet) {
+       JSTypeBitSet relatedTypes = new JSTypeBitSet(intForType.size());
+-      if (type instanceof UnionType) {
+-        for (JSType alt : ((UnionType) type).getAlternates()) {
+-          intersectRelatedTypesOnNonUnion(alt, relatedTypes);
+-        }
+-      } else {
++      for (JSType type : getTypes(typesSet)) {
+         intersectRelatedTypesOnNonUnion(type, relatedTypes);
+       }
+       return relatedTypes;
+@@ -550,7 +557,6 @@ class AmbiguateProperties implements CompilerPass {
+   /** Encapsulates the information needed for renaming a property. */
+   private class Property {
+     final String oldName;
+-    JSType type;
+     String newName;
+     int numOccurrences;
+     boolean skipAmbiguating;
+@@ -591,11 +597,6 @@ class AmbiguateProperties implements CompilerPass {
+         return;
+       }
+ 
+-      if (type == null) {
+-        type = newType;
+-      } else {
+-        type = type.getLeastSupertype(newType);
+-      }
+       typesSet.set(getIntForType(newType));
+     }
+   }
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 5fdec75..c83f848 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -558,8 +558,15 @@ final class TypedScopeCreator implements ScopeCreator {
+       if (propType instanceof FunctionType) {
+         return (FunctionType) propType;
+       }
+-        // If it's not, then check to see if it's implemented
+-        // on an implemented interface.
++
++      // If it's not, then check to see if it's implemented
++      // on an implemented interface.
++      for (ObjectType iface : ownerType.getCtorImplementedInterfaces()) {
++        propType = iface.getPropertyType(propName);
++        if (propType instanceof FunctionType) {
++          return (FunctionType) propType;
++        }
++      }
+ 
+       return null;
+     }

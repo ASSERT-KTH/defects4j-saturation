@@ -1,0 +1,65 @@
+diff --git a/src/main/java/org/apache/commons/compress/utils/BitInputStream.java b/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
+index 86dda14..a52df86 100644
+--- a/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
++++ b/src/main/java/org/apache/commons/compress/utils/BitInputStream.java
+@@ -82,7 +82,7 @@ public class BitInputStream implements Closeable {
+         if (count < 0 || count > MAXIMUM_CACHE_SIZE) {
+             throw new IllegalArgumentException("count must not be negative or greater than " + MAXIMUM_CACHE_SIZE);
+         }
+-        while (bitsCachedSize < count) {
++        while (bitsCachedSize < count && bitsCachedSize < 57) {
+             final long nextByte = in.read();
+             if (nextByte < 0) {
+                 return nextByte;
+@@ -95,16 +95,44 @@ public class BitInputStream implements Closeable {
+             }
+             bitsCachedSize += 8;
+         }
+-            // bitsCachedSize >= 57 and left-shifting it 8 bits would cause an overflow
+-        
+-        final long bitsOut;
++
++        // bitsCachedSize >= 57 and left-shifting it 8 bits would cause an overflow, so if
++        // there still aren't enough cached bits, only the bits that are actually needed
++        // are taken from the next byte, the remaining ones are kept for the next call
++        int overflowBitsSize = 0;
++        long overflowBits = 0;
++        if (bitsCachedSize < count) {
++            final long nextByte = in.read();
++            if (nextByte < 0) {
++                return nextByte;
++            }
++            final int bitsNeeded = count - bitsCachedSize;
++            overflowBitsSize = 8 - bitsNeeded;
+             if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+-                bitsOut = (bitsCached & MASKS[count]);
+-                bitsCached >>>= count;
++                bitsCached |= ((nextByte & MASKS[bitsNeeded]) << bitsCachedSize);
++                overflowBits = nextByte >>> bitsNeeded;
+             } else {
+-                bitsOut = (bitsCached >> (bitsCachedSize - count)) & MASKS[count];
++                bitsCached <<= bitsNeeded;
++                bitsCached |= (nextByte >>> overflowBitsSize);
++                overflowBits = nextByte & MASKS[overflowBitsSize];
+             }
+-            bitsCachedSize -= count;
++            bitsCachedSize = count;
++        }
++
++        final long bitsOut;
++        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
++            bitsOut = (bitsCached & MASKS[count]);
++            bitsCached >>>= count;
++        } else {
++            bitsOut = (bitsCached >> (bitsCachedSize - count)) & MASKS[count];
++        }
++        bitsCachedSize -= count;
++
++        if (overflowBitsSize > 0) {
++            bitsCached = overflowBits;
++            bitsCachedSize = overflowBitsSize;
++        }
++
+         return bitsOut;
+     }
+ }

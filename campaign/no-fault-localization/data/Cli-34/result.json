@@ -1,0 +1,42 @@
+{
+  "project": "Cli",
+  "bug": 34,
+  "id": "Cli-34",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1139,
+  "finished_at": "2026-09-07T15:38:54Z",
+  "wallclock_s": 64,
+  "agent_s": 52,
+  "agent_rc": 0,
+  "num_turns": 17,
+  "api_duration_ms": 48969,
+  "total_cost_usd": 0.22049679999999997,
+  "session_id": "2e678085-a167-426f-b73a-4ff3049c102f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 34,
+  "output_tokens": 3585,
+  "cache_read_input_tokens": 449809,
+  "cache_creation_input_tokens": 22824,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.cli.CommandLineTest::testGetParsedOptionValue",
+    "org.apache.commons.cli.OptionBuilderTest::testTwoCompleteOptions"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/cli/Option.java",
+    "src/main/java/org/apache/commons/cli/OptionBuilder.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

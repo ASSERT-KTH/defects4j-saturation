@@ -1,0 +1,31 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+index ac95adc..9ae2c5b 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBase.java
+@@ -1193,6 +1193,10 @@ public abstract class BeanDeserializerBase
+             return _valueInstantiator.createUsingDelegate(ctxt,
+                     _delegateDeserializer.deserialize(p, ctxt));
+         }
++        if (_arrayDelegateDeserializer != null) {
++            return _valueInstantiator.createUsingArrayDelegate(ctxt,
++                    _arrayDelegateDeserializer.deserialize(p, ctxt));
++        }
+         if (_propertyBasedCreator != null) {
+             return _deserializeUsingPropertyBased(p, ctxt);
+         }
+@@ -1275,6 +1279,15 @@ public abstract class BeanDeserializerBase
+                 }
+                 return bean;
+             }
++        } else if (_arrayDelegateDeserializer != null) {
++            if (!_valueInstantiator.canCreateFromString()) {
++                Object bean = _valueInstantiator.createUsingArrayDelegate(ctxt,
++                        _arrayDelegateDeserializer.deserialize(p, ctxt));
++                if (_injectables != null) {
++                    injectValues(ctxt, bean);
++                }
++                return bean;
++            }
+         }
+         return _valueInstantiator.createFromString(ctxt, p.getText());
+     }

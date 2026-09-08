@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 16,
+  "id": "Math-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2652,
+  "finished_at": "2026-09-08T09:46:55Z",
+  "wallclock_s": 247,
+  "agent_s": 112,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 64176,
+  "total_cost_usd": 0.22406519999999996,
+  "session_id": "351ddf3b-2c5f-426e-bb47-74f5ee75904c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 5533,
+  "cache_read_input_tokens": 392066,
+  "cache_creation_input_tokens": 21609,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.util.FastMathTest::testMath905LargePositive",
+    "org.apache.commons.math3.util.FastMathTest::testMath905LargeNegative"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/util/FastMath.java"
+  ],
+  "patch_added_lines": 23,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

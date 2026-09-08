@@ -1,0 +1,38 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java b/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
+index 09fae77..230b47f 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/SimpleType.java
+@@ -133,7 +133,11 @@ public class SimpleType // note: until 2.6 was final
+             throw new IllegalArgumentException("Class "+subclass.getName()+" not sub-type of "
+                     +_class.getName());
+                     */
+-            return new SimpleType(subclass, _bindings, this, _superInterfaces,
++            // 08-Sep-2016: need to preserve any intermediate super types between
++            //   original (masked) class and its new sub-class, so that things like
++            //   field/method introspection do not lose track of them
++            return new SimpleType(subclass, _bindings,
++                    _narrowSuperClass(subclass.getSuperclass()), _superInterfaces,
+                     _valueHandler, _typeHandler, _asStatic);
+         // Otherwise, stitch together the hierarchy. First, super-class
+         // if not found, try a super-interface
+@@ -263,6 +267,20 @@ public class SimpleType // note: until 2.6 was final
+                 superSuper, null, null, null, false);
+     }
+ 
++    /**
++     * Helper method used by {@link #_narrow} to reconstruct the super-class
++     * chain between the (new) narrowed sub-class and this (masked) type,
++     * so that intermediate classes are not lost.
++     */
++    private JavaType _narrowSuperClass(Class<?> superclass)
++    {
++        if (superclass == null || superclass == _class) {
++            return this;
++        }
++        return new SimpleType(superclass, _bindings,
++                _narrowSuperClass(superclass.getSuperclass()), null, null, null, false);
++    }
++
+     /*
+     /**********************************************************
+     /* Standard methods

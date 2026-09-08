@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 53,
+  "id": "Lang-53",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 8333,
+  "finished_at": "2026-09-08T09:24:50Z",
+  "wallclock_s": 165,
+  "agent_s": 129,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 117807,
+  "total_cost_usd": 0.26930680000000007,
+  "session_id": "5b91b3a3-9b63-48eb-8b59-ad86f35e9801",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 10567,
+  "cache_read_input_tokens": 274184,
+  "cache_creation_input_tokens": 26626,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.time.DateUtilsTest::testRoundLang346"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/time/DateUtils.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

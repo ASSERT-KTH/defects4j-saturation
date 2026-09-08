@@ -1,0 +1,51 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java b/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+index ff8b1c4..e5a2915 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/TokenBuffer.java
+@@ -780,19 +780,40 @@ sb.append("NativeObjectIds=").append(_hasNativeObjectIds).append(",");
+     @Override
+     public void writeObject(Object value) throws IOException
+     {
++        if (value == null) {
++            writeNull();
++            return;
++        }
++        // 24-Sep-2016: byte[] is embedded as-is, to avoid infinite recursion
++        // through ByteArraySerializer (which calls writeBinary(), which calls
++        // this method)
++        if (value instanceof byte[]) {
+             _append(JsonToken.VALUE_EMBEDDED_OBJECT, value);
+-            /* 28-May-2014, tatu: Tricky choice here; if no codec, should we
+-             *   err out, or just embed? For now, do latter.
+-             */
+-//          throw new JsonMappingException("No ObjectCodec configured for TokenBuffer, writeObject() called");
++            return;
++        }
++        /* 28-May-2014, tatu: Tricky choice here; if no codec, should we
++         *   err out, or just embed? For now, do latter.
++         */
++        if (_objectCodec == null) {
++            _append(JsonToken.VALUE_EMBEDDED_OBJECT, value);
++        } else {
++            _objectCodec.writeValue(this, value);
++        }
+     }
+ 
+     @Override
+     public void writeTree(TreeNode node) throws IOException
+     {
+-
+-            // as with 'writeObject()', is codec optional?
++        if (node == null) {
++            writeNull();
++            return;
++        }
++        // as with 'writeObject()', is codec optional?
++        if (_objectCodec == null) {
+             _append(JsonToken.VALUE_EMBEDDED_OBJECT, node);
++        } else {
++            _objectCodec.writeValue(this, node);
++        }
+     }
+ 
+     /*

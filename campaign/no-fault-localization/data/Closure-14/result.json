@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 14,
+  "id": "Closure-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 57762,
+  "finished_at": "2026-09-07T16:13:31Z",
+  "wallclock_s": 1025,
+  "agent_s": 895,
+  "agent_rc": 0,
+  "num_turns": 38,
+  "api_duration_ms": 701997,
+  "total_cost_usd": 1.7115298000000003,
+  "session_id": "f854ecde-e865-4cf7-a032-3f04f9beb92b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 76,
+  "output_tokens": 65052,
+  "cache_read_input_tokens": 2975769,
+  "cache_creation_input_tokens": 115240,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckMissingReturnTest::testIssue779",
+    "com.google.javascript.jscomp.ControlFlowAnalysisTest::testDeepNestedFinally",
+    "com.google.javascript.jscomp.ControlFlowAnalysisTest::testDeepNestedBreakwithFinally"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ControlFlowAnalysis.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

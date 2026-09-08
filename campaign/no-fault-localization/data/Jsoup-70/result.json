@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 70,
+  "id": "Jsoup-70",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 215,
+  "finished_at": "2026-09-08T05:47:04Z",
+  "wallclock_s": 51,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 22453,
+  "total_cost_usd": 0.0894144,
+  "session_id": "351db9de-a5b8-4b7b-94e9-1a1c044921ff",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1417,
+  "cache_read_input_tokens": 125552,
+  "cache_creation_input_tokens": 11925,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::testKeepsPreTextAtDepth"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

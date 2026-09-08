@@ -1,0 +1,17 @@
+diff --git a/src/com/google/javascript/jscomp/Normalize.java b/src/com/google/javascript/jscomp/Normalize.java
+index 9f7e290..d3cc6c9 100644
+--- a/src/com/google/javascript/jscomp/Normalize.java
++++ b/src/com/google/javascript/jscomp/Normalize.java
+@@ -411,7 +411,11 @@ class Normalize implements CompilerPass {
+           break;
+ 
+         case Token.CAST:
+-          parent.replaceChild(n, n.removeFirstChild());
++          Node castedNode = n.removeFirstChild();
++          parent.replaceChild(n, castedNode);
++          if (parent.isCall() && parent.getFirstChild() == castedNode) {
++            parent.putBooleanProp(Node.FREE_CALL, !NodeUtil.isGet(castedNode));
++          }
+           break;
+       }
+     }

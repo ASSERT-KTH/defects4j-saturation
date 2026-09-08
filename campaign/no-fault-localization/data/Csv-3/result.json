@@ -1,0 +1,42 @@
+{
+  "project": "Csv",
+  "bug": 3,
+  "id": "Csv-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3359,
+  "finished_at": "2026-09-08T00:01:34Z",
+  "wallclock_s": 103,
+  "agent_s": 91,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 76880,
+  "total_cost_usd": 0.30560360000000003,
+  "session_id": "ede13717-0119-4954-8179-f2d5e6cc9b08",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 5891,
+  "cache_read_input_tokens": 501753,
+  "cache_creation_input_tokens": 35269,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVLexerTest::testEscapedMySqlNullValue",
+    "org.apache.commons.csv.CSVLexerTest::testEscapedCharacter",
+    "org.apache.commons.csv.CSVParserTest::testBackslashEscaping"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/Lexer.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

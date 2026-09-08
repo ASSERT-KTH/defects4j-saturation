@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 90,
+  "id": "Closure-90",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6171,
+  "finished_at": "2026-09-07T18:07:20Z",
+  "wallclock_s": 249,
+  "agent_s": 154,
+  "agent_rc": 0,
+  "num_turns": 24,
+  "api_duration_ms": 119742,
+  "total_cost_usd": 0.4239408,
+  "session_id": "3da33c1e-4088-4e97-b233-4ddea02cc207",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 48,
+  "output_tokens": 10056,
+  "cache_read_input_tokens": 823434,
+  "cache_creation_input_tokens": 38756,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testBackwardsTypedefUse8",
+    "com.google.javascript.jscomp.TypeCheckTest::testBackwardsTypedefUse9"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FunctionTypeBuilder.java",
+    "src/com/google/javascript/rhino/jstype/FunctionType.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,42 @@
+{
+  "project": "Time",
+  "bug": 5,
+  "id": "Time-5",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1336,
+  "finished_at": "2026-09-08T14:31:08Z",
+  "wallclock_s": 108,
+  "agent_s": 66,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 46196,
+  "total_cost_usd": 0.1831064,
+  "session_id": "f0b41f10-dfc1-4f44-ae5f-fb2539d4b7f9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3286,
+  "cache_read_input_tokens": 285472,
+  "cache_creation_input_tokens": 22162,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.TestPeriod_Basics::testNormalizedStandard_periodType_months1",
+    "org.joda.time.TestPeriod_Basics::testNormalizedStandard_periodType_months2",
+    "org.joda.time.TestPeriod_Basics::testNormalizedStandard_periodType_monthsWeeks"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/Period.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

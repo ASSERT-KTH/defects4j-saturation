@@ -1,0 +1,42 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 50,
+  "id": "JacksonDatabind-50",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 40714,
+  "finished_at": "2026-09-08T01:49:12Z",
+  "wallclock_s": 1033,
+  "agent_s": 878,
+  "agent_rc": 0,
+  "num_turns": 90,
+  "api_duration_ms": 659752,
+  "total_cost_usd": 2.5646386000000008,
+  "session_id": "ca109b66-1388-4269-9f72-ce03ad24a37a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 180,
+  "output_tokens": 58810,
+  "cache_read_input_tokens": 7242178,
+  "cache_creation_input_tokens": 131084,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.objectid.ObjectWithCreator1261Test::testObjectIds1261"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyBasedCreator.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/impl/PropertyValueBuffer.java"
+  ],
+  "patch_added_lines": 81,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

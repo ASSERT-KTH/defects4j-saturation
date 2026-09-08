@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 26,
+  "id": "Math-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1464,
+  "finished_at": "2026-09-08T09:55:23Z",
+  "wallclock_s": 176,
+  "agent_s": 82,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 40368,
+  "total_cost_usd": 0.1316158,
+  "session_id": "c5f2bde5-9257-4d5a-bd65-480a825f1eb8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 3193,
+  "cache_read_input_tokens": 200909,
+  "cache_creation_input_tokens": 14266,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.fraction.FractionTest::testIntegerOverflow"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/fraction/Fraction.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

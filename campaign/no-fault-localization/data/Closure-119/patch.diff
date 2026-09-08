@@ -1,0 +1,15 @@
+diff --git a/src/com/google/javascript/jscomp/GlobalNamespace.java b/src/com/google/javascript/jscomp/GlobalNamespace.java
+index 639318d..6028fab 100644
+--- a/src/com/google/javascript/jscomp/GlobalNamespace.java
++++ b/src/com/google/javascript/jscomp/GlobalNamespace.java
+@@ -368,6 +368,10 @@ class GlobalNamespace
+                 isSet = true;
+                 type = Name.Type.OTHER;
+                 break;
++              case Token.CATCH:
++                isSet = true;
++                type = Name.Type.OTHER;
++                break;
+               default:
+                 if (NodeUtil.isAssignmentOp(parent) &&
+                     parent.getFirstChild() == n) {

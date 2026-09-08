@@ -1,0 +1,49 @@
+diff --git a/src/com/google/javascript/jscomp/MustBeReachingVariableDef.java b/src/com/google/javascript/jscomp/MustBeReachingVariableDef.java
+index 1487af3..c4bae01 100644
+--- a/src/com/google/javascript/jscomp/MustBeReachingVariableDef.java
++++ b/src/com/google/javascript/jscomp/MustBeReachingVariableDef.java
+@@ -69,6 +69,13 @@ final class MustBeReachingVariableDef extends
+     final Node node;
+     final Set<Var> depends = Sets.newHashSet();
+ 
++    // True if the right hand side reads a name that could not be resolved
++    // to a variable in the scope being analyzed (e.g. an extern, or an
++    // otherwise undeclared global). Such names are not tracked by the data
++    // flow analysis at all, so we have to conservatively assume that they
++    // may be defined outside of this scope and could change at any time.
++    boolean dependsOnUnresolvedName = false;
++
+     Definition(Node node) {
+       this.node = node;
+     }
+@@ -393,9 +400,17 @@ final class MustBeReachingVariableDef extends
+         new AbstractCfgNodeTraversalCallback() {
+       @Override
+       public void visit(NodeTraversal t, Node n, Node parent) {
+-        if (n.isName() && jsScope.isDeclared(n.getString(), true)) {
+-          Var dep = jsScope.getVar(n.getString());
++        if (n.isName()) {
++          if (jsScope.isDeclared(n.getString(), true)) {
++            Var dep = jsScope.getVar(n.getString());
+             def.depends.add(dep);
++          } else {
++            // The name could not be resolved to a variable known to this
++            // scope (for example it is declared in the externs). We must
++            // be conservative and assume it may change between the
++            // definition and any of its uses.
++            def.dependsOnUnresolvedName = true;
++          }
+         }
+       }
+     });
+@@ -428,6 +443,10 @@ final class MustBeReachingVariableDef extends
+     FlowState<MustDef> state = n.getAnnotation();
+     Definition def = state.getIn().reachingDef.get(jsScope.getVar(name));
+ 
++    if (def.dependsOnUnresolvedName) {
++      return true;
++    }
++
+     for (Var s : def.depends) {
+       if (s.scope != jsScope) {
+         return true;

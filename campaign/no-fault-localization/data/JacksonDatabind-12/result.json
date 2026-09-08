@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 12,
+  "id": "JacksonDatabind-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 8855,
+  "finished_at": "2026-09-08T00:46:42Z",
+  "wallclock_s": 330,
+  "agent_s": 215,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 182415,
+  "total_cost_usd": 0.5351034,
+  "session_id": "11e53624-352b-43bf-a203-3a94c6a0d363",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 13621,
+  "cache_read_input_tokens": 1063672,
+  "cache_creation_input_tokens": 45931,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.TestCustomDeserializers::testCustomMapValueDeser735"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/MapDeserializer.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

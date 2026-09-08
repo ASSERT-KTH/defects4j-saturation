@@ -1,0 +1,41 @@
+{
+  "project": "JxPath",
+  "bug": 21,
+  "id": "JxPath-21",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 7483,
+  "finished_at": "2026-09-08T06:17:28Z",
+  "wallclock_s": 224,
+  "agent_s": 198,
+  "agent_rc": 0,
+  "num_turns": 41,
+  "api_duration_ms": 185500,
+  "total_cost_usd": 0.7248274,
+  "session_id": "def370fa-2b30-4a62-9970-622fce5b5ecd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 80,
+  "output_tokens": 12907,
+  "cache_read_input_tokens": 1827242,
+  "cache_creation_input_tokens": 56685,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.JXPath151Test::testMapValueEquality",
+    "org.apache.commons.jxpath.ri.model.MixedModelTest::testNull"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/beans/PropertyPointer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

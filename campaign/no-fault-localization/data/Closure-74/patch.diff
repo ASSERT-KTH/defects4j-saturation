@@ -1,0 +1,45 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+index a61bb6c..ede6db8 100644
+--- a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
++++ b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+@@ -917,6 +917,7 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+         }
+         break;
+ 
++      case Token.NOT:
+       case Token.NULL:
+       case Token.TRUE:
+       case Token.FALSE:
+@@ -926,18 +927,29 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+         }
+         if (rhType != Token.TRUE &&
+             rhType != Token.FALSE &&
+-            rhType != Token.NULL) {
++            rhType != Token.NULL &&
++            rhType != Token.NOT) {
+           return n;
+         }
+         switch (op) {
+           case Token.SHEQ:
+           case Token.EQ:
+-            result = lhType == rhType;
++            if (lhType == Token.NULL || rhType == Token.NULL) {
++              result = lhType == rhType;
++            } else {
++              result = NodeUtil.getPureBooleanValue(left).toBoolean(true)
++                  == NodeUtil.getPureBooleanValue(right).toBoolean(true);
++            }
+             break;
+ 
+           case Token.SHNE:
+           case Token.NE:
+-            result = lhType != rhType;
++            if (lhType == Token.NULL || rhType == Token.NULL) {
++              result = lhType != rhType;
++            } else {
++              result = NodeUtil.getPureBooleanValue(left).toBoolean(true)
++                  != NodeUtil.getPureBooleanValue(right).toBoolean(true);
++            }
+             break;
+ 
+           case Token.GE:

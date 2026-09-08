@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 27,
+  "id": "Closure-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 412,
+  "finished_at": "2026-09-07T16:28:27Z",
+  "wallclock_s": 322,
+  "agent_s": 109,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 33601,
+  "total_cost_usd": 0.14611320000000003,
+  "session_id": "cca198be-a675-444d-8cc0-c504d5894617",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2370,
+  "cache_read_input_tokens": 232436,
+  "cache_creation_input_tokens": 17900,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.rhino.IRTest::testIssue727_1",
+    "com.google.javascript.rhino.IRTest::testIssue727_2",
+    "com.google.javascript.rhino.IRTest::testIssue727_3"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/IR.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

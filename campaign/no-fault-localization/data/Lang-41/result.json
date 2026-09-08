@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 41,
+  "id": "Lang-41",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 717,
+  "finished_at": "2026-09-08T09:18:55Z",
+  "wallclock_s": 122,
+  "agent_s": 82,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 48746,
+  "total_cost_usd": 0.2095902,
+  "session_id": "bff0db6d-fc98-43b3-a844-5ab51869d5c9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3999,
+  "cache_read_input_tokens": 397491,
+  "cache_creation_input_tokens": 21691,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.ClassUtilsTest::test_getShortClassName_Class",
+    "org.apache.commons.lang.ClassUtilsTest::test_getPackageName_Class"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/ClassUtils.java"
+  ],
+  "patch_added_lines": 21,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

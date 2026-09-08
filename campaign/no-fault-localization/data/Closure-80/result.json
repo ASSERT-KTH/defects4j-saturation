@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 80,
+  "id": "Closure-80",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 245,
+  "finished_at": "2026-09-07T17:51:27Z",
+  "wallclock_s": 228,
+  "agent_s": 85,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 33618,
+  "total_cost_usd": 0.13595120000000002,
+  "session_id": "0642df2a-b58e-4003-a0ce-c22ee93eef7a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2049,
+  "cache_read_input_tokens": 237676,
+  "cache_creation_input_tokens": 16139,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.NodeUtilTest::testIsBooleanResult",
+    "com.google.javascript.jscomp.NodeUtilTest::testLocalValue1"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NodeUtil.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,36 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+index f777b1c..bd05fea 100644
+--- a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
++++ b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+@@ -1448,9 +1448,11 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+ 
+     Node current = left.getFirstChild();
+     Node elem = null;
+-    for (int i = 0; current != null && i < intIndex; i++) {
++    for (int i = 0; current != null; i++) {
++      if (i == intIndex) {
+         elem = current;
+-
++        break;
++      }
+       current = current.getNext();
+     }
+ 
+@@ -1459,6 +1461,17 @@ class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+       return n;
+     }
+ 
++    // Check for side-effects in the other elements of the array literal.
++    // Since the array literal creates the array first (evaluating all of
++    // its elements in order) before the index is applied, any side-effects
++    // from the elements we would discard must be preserved.
++    for (Node sibling = left.getFirstChild(); sibling != null;
++        sibling = sibling.getNext()) {
++      if (sibling != elem && mayHaveSideEffects(sibling)) {
++        return n;
++      }
++    }
++
+     if (elem.isEmpty()) {
+       elem = NodeUtil.newUndefinedNode(elem);
+     } else {

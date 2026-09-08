@@ -1,0 +1,40 @@
+{
+  "project": "JacksonXml",
+  "bug": 5,
+  "id": "JacksonXml-5",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 619,
+  "finished_at": "2026-09-08T05:05:48Z",
+  "wallclock_s": 106,
+  "agent_s": 36,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 26880,
+  "total_cost_usd": 0.123055,
+  "session_id": "49c04d5a-1a5d-42d2-80f7-b08207e5ce98",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1988,
+  "cache_read_input_tokens": 164260,
+  "cache_creation_input_tokens": 17011,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.dataformat.xml.MapperCopyTest::testCopyWith"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

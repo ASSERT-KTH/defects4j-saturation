@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 64,
+  "id": "Lang-64",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 355,
+  "finished_at": "2026-09-08T09:27:13Z",
+  "wallclock_s": 76,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 26925,
+  "total_cost_usd": 0.14718240000000002,
+  "session_id": "10d101f7-7082-4376-91bf-6240f9fccadb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1894,
+  "cache_read_input_tokens": 162182,
+  "cache_creation_input_tokens": 23395,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.enums.ValuedEnumTest::testCompareTo_otherEnumType"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/enums/ValuedEnum.java"
+  ],
+  "patch_added_lines": 21,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 9,
+  "id": "Lang-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5312,
+  "finished_at": "2026-09-08T06:37:52Z",
+  "wallclock_s": 216,
+  "agent_s": 129,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 94236,
+  "total_cost_usd": 0.2792238000000001,
+  "session_id": "f4892d94-3e95-4562-a230-19074fba1252",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 8219,
+  "cache_read_input_tokens": 413019,
+  "cache_creation_input_tokens": 27640,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.time.FastDateFormat_ParserTest::testLANG_832",
+    "org.apache.commons.lang3.time.FastDateParserTest::testLANG_832"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/time/FastDateParser.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

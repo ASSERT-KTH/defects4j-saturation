@@ -1,0 +1,43 @@
+{
+  "project": "JacksonCore",
+  "bug": 10,
+  "id": "JacksonCore-10",
+  "verdict": "TEST_FAIL",
+  "note": "3 relevant test(s) still failing",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 57286,
+  "finished_at": "2026-09-08T00:43:47Z",
+  "wallclock_s": 1833,
+  "agent_s": 1800,
+  "agent_rc": 124,
+  "num_turns": 61,
+  "api_duration_ms": 876920,
+  "total_cost_usd": 2.4912908000000002,
+  "session_id": "a8cc6918-5076-4cf2-9fd6-0e029d10f0f9",
+  "agent_subtype": "error_during_execution",
+  "agent_is_error": true,
+  "input_tokens": 118,
+  "output_tokens": 77862,
+  "cache_read_input_tokens": 5560779,
+  "cache_creation_input_tokens": 148656,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.sym.TestByteBasedSymbols::testIssue207",
+    "com.fasterxml.jackson.core.sym.TestSymbolTables::testCollisionsWithBytesNew187b",
+    "com.fasterxml.jackson.core.sym.TestSymbolTables::testSyntheticWithBytesNew",
+    "com.fasterxml.jackson.core.sym.TestSymbolTables::testShortNameCollisionsDirectNew"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 3,
+  "failing_full_after": null,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/sym/ByteQuadsCanonicalizer.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

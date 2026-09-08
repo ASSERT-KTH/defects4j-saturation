@@ -1,0 +1,42 @@
+{
+  "project": "Jsoup",
+  "bug": 83,
+  "id": "Jsoup-83",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 9620,
+  "finished_at": "2026-09-08T05:56:40Z",
+  "wallclock_s": 203,
+  "agent_s": 177,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 164329,
+  "total_cost_usd": 0.42710619999999994,
+  "session_id": "0e18d721-7af5-4895-a80a-3d2fd2ebd1f4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 15107,
+  "cache_read_input_tokens": 707591,
+  "cache_creation_input_tokens": 32666,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::parsesQuiteRoughAttributes",
+    "org.jsoup.parser.TokeniserStateTest::handlesLessInTagThanAsNewTag"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java",
+    "src/main/java/org/jsoup/parser/TokeniserState.java"
+  ],
+  "patch_added_lines": 15,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

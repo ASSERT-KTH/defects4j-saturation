@@ -1,0 +1,51 @@
+diff --git a/src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java b/src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
+index a2cc169..fbaf25a 100644
+--- a/src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
++++ b/src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java
+@@ -77,6 +77,7 @@ public class ExtendedMessageFormat extends MessageFormat {
+     private static final char END_FE = '}';
+     private static final char START_FE = '{';
+     private static final char QUOTE = '\'';
++    private static final int HASH_SEED = 31;
+ 
+     private String toPattern;
+     private final Map<String, ? extends FormatFactory> registry;
+@@ -260,12 +261,38 @@ public class ExtendedMessageFormat extends MessageFormat {
+      * @param obj the object to compare to
+      * @return true if this object equals the other, otherwise false
+      */
++    @Override
++    public boolean equals(Object obj) {
++        if (this == obj) {
++            return true;
++        }
++        if (!super.equals(obj)) {
++            return false;
++        }
++        if (getClass() != obj.getClass()) {
++            return false;
++        }
++        ExtendedMessageFormat rhs = (ExtendedMessageFormat) obj;
++        if (!ObjectUtils.equals(toPattern, rhs.toPattern)) {
++            return false;
++        }
++        if (!ObjectUtils.equals(registry, rhs.registry)) {
++            return false;
++        }
++        return true;
++    }
+ 
+     /**
+      * Return the hashcode.
+      *
+      * @return the hashcode
+      */
++    @Override
++    public int hashCode() {
++        int result = super.hashCode();
++        result = HASH_SEED * result + ObjectUtils.hashCode(registry);
++        return result;
++    }
+ 
+     /**
+      * Get a custom format from a format description.

@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 14,
+  "id": "Collections-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1036,
+  "finished_at": "2026-09-07T23:30:52Z",
+  "wallclock_s": 96,
+  "agent_s": 63,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 46461,
+  "total_cost_usd": 0.09845900000000002,
+  "session_id": "5f92fffe-58e9-4130-bb1d-064b6d3aadd8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 2360,
+  "cache_read_input_tokens": 137925,
+  "cache_creation_input_tokens": 11257,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.map.TestCaseInsensitiveMap::testLocaleIndependence"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/map/CaseInsensitiveMap.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

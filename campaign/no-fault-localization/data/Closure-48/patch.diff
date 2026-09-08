@@ -1,0 +1,23 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 3fb4813..08a697f 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -1421,6 +1421,18 @@ final class TypedScopeCreator implements ScopeCreator {
+       String propName = n.getLastChild().getString();
+       Preconditions.checkArgument(qName != null && ownerName != null);
+ 
++      // A qualified name rooted at "this" inside a function does not refer to
++      // a single well-known object (it depends on how the function is
++      // invoked), so it cannot be declared globally by name here. Such names
++      // are handled separately (see CollectProperties), relative to the
++      // actual type of "this" for the enclosing function. At the top level,
++      // "this" refers to the global object, which is a stable, well-known
++      // object, so it is still handled here.
++      if (t.getEnclosingFunction() != null &&
++          NodeUtil.getRootOfQualifiedName(n).isThis()) {
++        return;
++      }
++
+       // Precedence of type information on GETPROPs:
+       // 1) @type annnotation / @enum annotation
+       // 2) ASSIGN to FUNCTION literal

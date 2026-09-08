@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 174,
+  "id": "Closure-174",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 23800,
+  "finished_at": "2026-09-07T20:52:10Z",
+  "wallclock_s": 727,
+  "agent_s": 503,
+  "agent_rc": 0,
+  "num_turns": 50,
+  "api_duration_ms": 414196,
+  "total_cost_usd": 1.147166,
+  "session_id": "3ad109ba-1865-4ec5-a50d-6d225ebe7959",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 100,
+  "output_tokens": 35307,
+  "cache_read_input_tokens": 2485765,
+  "cache_creation_input_tokens": 72808,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ScopedAliasesTest::testIssue1103a",
+    "com.google.javascript.jscomp.ScopedAliasesTest::testIssue1103b",
+    "com.google.javascript.jscomp.ScopedAliasesTest::testIssue1103c"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NodeUtil.java",
+    "src/com/google/javascript/jscomp/ScopedAliases.java"
+  ],
+  "patch_added_lines": 22,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

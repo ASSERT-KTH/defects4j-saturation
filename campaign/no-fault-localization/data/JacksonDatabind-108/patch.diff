@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+index ae5f431..f0f052c 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ObjectReader.java
+@@ -1166,6 +1166,15 @@ public class ObjectReader
+     @SuppressWarnings("unchecked")
+     @Override
+     public <T extends TreeNode> T readTree(JsonParser p) throws IOException {
++        // Must check for EOF here before calling _bindAsTree(), since that
++        // otherwise returns "missing node" instead of `null`
++        JsonToken t = p.getCurrentToken();
++        if (t == null) {
++            t = p.nextToken();
++            if (t == null) {
++                return null;
++            }
++        }
+         return (T) _bindAsTree(p);
+     }
+ 

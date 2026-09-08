@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+index dfef458..bae0cde 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+@@ -160,9 +160,12 @@ public abstract class TypeDeserializerBase
+                 if (deser == null) {
+                     // 10-May-2016, tatu: We may get some help...
+                     JavaType actual = _handleUnknownTypeId(ctxt, typeId);
+-                    if (actual == null) { // what should this be taken to mean?
+-                        // 17-Jan-2019, tatu: As per [databind#2221], better NOT return `null` but...
+-                        return null;
++                    if (actual == null) {
++                        // 17-Jan-2019, tatu: As per [databind#2221], must not return `null`
++                        //    (since it means "unknown deserializer") but a deserializer
++                        //    that just returns `null` (indicating handler chose to map
++                        //    unresolved id into "no content")
++                        return NullifyingDeserializer.instance;
+                     }
+                     // ... would this actually work?
+                     deser = ctxt.findContextualValueDeserializer(actual, _property);

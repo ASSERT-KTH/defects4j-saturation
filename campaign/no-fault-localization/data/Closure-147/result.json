@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 147,
+  "id": "Closure-147",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3244,
+  "finished_at": "2026-09-07T19:47:56Z",
+  "wallclock_s": 240,
+  "agent_s": 179,
+  "agent_rc": 0,
+  "num_turns": 34,
+  "api_duration_ms": 137468,
+  "total_cost_usd": 0.5061656000000001,
+  "session_id": "79b155d3-696f-484b-aa62-a89c9ad4edad",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 68,
+  "output_tokens": 10002,
+  "cache_read_input_tokens": 1235888,
+  "cache_creation_input_tokens": 38319,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckGlobalThisTest::testIssue182a",
+    "com.google.javascript.jscomp.CheckGlobalThisTest::testIssue182b",
+    "com.google.javascript.jscomp.RuntimeTypeCheckTest::testValueWithInnerFn"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CheckGlobalThis.java",
+    "src/com/google/javascript/jscomp/RuntimeTypeCheck.java"
+  ],
+  "patch_added_lines": 15,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

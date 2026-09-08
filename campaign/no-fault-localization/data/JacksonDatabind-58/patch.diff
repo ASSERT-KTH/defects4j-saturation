@@ -1,0 +1,49 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBuilder.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBuilder.java
+index 6975148..9f4b373 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBuilder.java
+@@ -279,6 +279,13 @@ public class BeanDeserializerBuilder
+     public SettableAnyProperty getAnySetter() {
+         return _anySetter;
+     }
++
++    /**
++     * @since 2.5
++     */
++    public Set<String> getIgnorableProperties() {
++        return _ignorableProps;
++    }
+     
+     public ValueInstantiator getValueInstantiator() {
+         return _valueInstantiator;
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+index df86121..c3b72b3 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+@@ -361,6 +361,9 @@ public class BeanDeserializerFactory
+         BeanDeserializerBuilder builder = constructBeanDeserializerBuilder(ctxt, beanDesc);
+         builder.setValueInstantiator(findValueInstantiator(ctxt, beanDesc));
+ 
++        // [databind#877]: avoid forcing access to `cause` field of `Throwable`,
++        // since it is never actually used (`initCause()` is used instead, below)
++        builder.addIgnorable("cause");
+         addBeanProps(ctxt, beanDesc, builder);
+         // (and assume there won't be any back references)
+ 
+@@ -457,7 +460,15 @@ public class BeanDeserializerFactory
+             }
+         }
+         // Or explicit/implicit definitions?
+-        Set<String> ignored = ArrayBuilders.arrayToSet(intr.findPropertiesToIgnore(beanDesc.getClassInfo(), false));        
++        Set<String> ignored = ArrayBuilders.arrayToSet(intr.findPropertiesToIgnore(beanDesc.getClassInfo(), false));
++        // 22-May-2015, tatu: Also, some properties may have been marked as ignorable
++        //    on `builder` already (for example, [databind#877]); need to also skip
++        //    those, to avoid pointless (and possibly failing) property construction
++        Set<String> preIgnored = builder.getIgnorableProperties();
++        if (preIgnored != null) {
++            ignored = new HashSet<String>(ignored);
++            ignored.addAll(preIgnored);
++        }
+         for (String propName : ignored) {
+             builder.addIgnorable(propName);
+         }

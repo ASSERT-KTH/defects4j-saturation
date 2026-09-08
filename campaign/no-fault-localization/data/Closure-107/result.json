@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 107,
+  "id": "Closure-107",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 23483,
+  "finished_at": "2026-09-07T18:32:45Z",
+  "wallclock_s": 558,
+  "agent_s": 419,
+  "agent_rc": 0,
+  "num_turns": 42,
+  "api_duration_ms": 334794,
+  "total_cost_usd": 1.0869248,
+  "session_id": "32fffd3e-584b-472b-b9b0-33cfe49605c6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 29297,
+  "cache_read_input_tokens": 2387289,
+  "cache_creation_input_tokens": 78463,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testGetMsgWiringNoWarnings"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CommandLineRunner.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

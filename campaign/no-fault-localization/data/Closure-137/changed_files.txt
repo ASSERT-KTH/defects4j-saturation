@@ -1,0 +1,2 @@
+M	src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+M	src/com/google/javascript/jscomp/Normalize.java

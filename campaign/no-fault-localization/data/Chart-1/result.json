@@ -1,0 +1,40 @@
+{
+  "project": "Chart",
+  "bug": 1,
+  "id": "Chart-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 47,
+  "finished_at": "2026-09-07T15:17:37Z",
+  "wallclock_s": 87,
+  "agent_s": 27,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 15669,
+  "total_cost_usd": 0.08746000000000001,
+  "session_id": "72266062-67a4-4580-a7c6-3eb05b469200",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1027,
+  "cache_read_input_tokens": 128470,
+  "cache_creation_input_tokens": 12301,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.renderer.category.junit.AbstractCategoryItemRendererTests::test2947660"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/renderer/category/AbstractCategoryItemRenderer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

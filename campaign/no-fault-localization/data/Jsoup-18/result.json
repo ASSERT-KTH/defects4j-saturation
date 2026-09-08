@@ -1,0 +1,42 @@
+{
+  "project": "Jsoup",
+  "bug": 18,
+  "id": "Jsoup-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 110,
+  "finished_at": "2026-09-08T05:17:26Z",
+  "wallclock_s": 54,
+  "agent_s": 31,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 23380,
+  "total_cost_usd": 0.12576940000000003,
+  "session_id": "31847384-592e-46d6-bff5-977253a81254",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1546,
+  "cache_read_input_tokens": 200407,
+  "cache_creation_input_tokens": 16305,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.CharacterReaderTest::handleCarriageReturnAsLineFeed",
+    "org.jsoup.parser.CharacterReaderTest::consumeToEnd",
+    "org.jsoup.parser.ParserTest::handlesNewlinesAndWhitespaceInTag"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

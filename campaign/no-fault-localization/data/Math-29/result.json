@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 29,
+  "id": "Math-29",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2886,
+  "finished_at": "2026-09-08T09:58:26Z",
+  "wallclock_s": 170,
+  "agent_s": 96,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 59089,
+  "total_cost_usd": 0.2000614,
+  "session_id": "16429362-f589-47aa-a9e7-4c111d9d6b01",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 5584,
+  "cache_read_input_tokens": 296212,
+  "cache_creation_input_tokens": 19917,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.linear.SparseRealVectorTest::testEbeDivideMixedTypes",
+    "org.apache.commons.math3.linear.SparseRealVectorTest::testEbeMultiplyMixedTypes",
+    "org.apache.commons.math3.linear.SparseRealVectorTest::testEbeMultiplySameType"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/linear/OpenMapRealVector.java"
+  ],
+  "patch_added_lines": 20,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

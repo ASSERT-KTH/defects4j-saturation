@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 77,
+  "id": "Closure-77",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 596,
+  "finished_at": "2026-09-07T17:48:32Z",
+  "wallclock_s": 235,
+  "agent_s": 88,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 38985,
+  "total_cost_usd": 0.12987139999999997,
+  "session_id": "43347a04-c91c-4622-9769-a68a47d97929",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 2420,
+  "cache_read_input_tokens": 250142,
+  "cache_creation_input_tokens": 13340,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CodePrinterTest::testZero"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CodeGenerator.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 61,
+  "id": "Math-61",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 178,
+  "finished_at": "2026-09-08T10:30:02Z",
+  "wallclock_s": 181,
+  "agent_s": 99,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 43405,
+  "total_cost_usd": 0.17699020000000001,
+  "session_id": "ca99c4c3-4ffc-4a0d-b56f-db6bce8ed846",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 3408,
+  "cache_read_input_tokens": 387891,
+  "cache_creation_input_tokens": 15751,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.distribution.PoissonDistributionTest::testMean"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/distribution/PoissonDistributionImpl.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 31,
+  "id": "Math-31",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 938,
+  "finished_at": "2026-09-08T10:00:20Z",
+  "wallclock_s": 132,
+  "agent_s": 62,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 28723,
+  "total_cost_usd": 0.1207154,
+  "session_id": "571e4770-2cc9-4874-b2ef-58aa20134130",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 2984,
+  "cache_read_input_tokens": 103362,
+  "cache_creation_input_tokens": 16540,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.distribution.BinomialDistributionTest::testMath718",
+    "org.apache.commons.math3.distribution.FDistributionTest::testMath785"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/util/ContinuedFraction.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 33,
+  "has_dev_patch": true
+}

@@ -1,0 +1,25 @@
+diff --git a/src/java/org/apache/commons/cli/PosixParser.java b/src/java/org/apache/commons/cli/PosixParser.java
+index 7998f07..7815077 100644
+--- a/src/java/org/apache/commons/cli/PosixParser.java
++++ b/src/java/org/apache/commons/cli/PosixParser.java
+@@ -111,10 +111,17 @@ public class PosixParser extends Parser {
+             // handle long option --foo or --foo=bar
+             if (token.startsWith("--"))
+             {
+-                if (token.indexOf('=') != -1)
++                int pos = token.indexOf('=');
++                String opt = pos == -1 ? token : token.substring(0, pos);
++
++                if (stopAtNonOption && !options.hasOption(opt))
++                {
++                    process(token);
++                }
++                else if (pos != -1)
+                 {
+-                    tokens.add(token.substring(0, token.indexOf('=')));
+-                    tokens.add(token.substring(token.indexOf('=') + 1, token.length()));
++                    tokens.add(opt);
++                    tokens.add(token.substring(pos + 1, token.length()));
+                 }
+                 else
+                 {

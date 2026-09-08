@@ -1,0 +1,159 @@
+diff --git a/src/com/google/javascript/jscomp/InlineVariables.java b/src/com/google/javascript/jscomp/InlineVariables.java
+index 18c9fbe..6449146 100644
+--- a/src/com/google/javascript/jscomp/InlineVariables.java
++++ b/src/com/google/javascript/jscomp/InlineVariables.java
+@@ -281,7 +281,8 @@ class InlineVariables implements CompilerPass {
+           if (aliasCandidates.containsKey(nameNode)) {
+             AliasCandidate candidate = aliasCandidates.get(nameNode);
+             if (!staleVars.contains(candidate.alias) &&
+-                !isVarInlineForbidden(candidate.alias)) {
++                !isVarInlineForbidden(candidate.alias) &&
++                !argumentsMayInvalidateAlias(v, candidate.refInfo.references)) {
+               Reference aliasInit;
+               aliasInit = candidate.refInfo.getInitializingReference();
+               Node value = aliasInit.getAssignedValue();
+@@ -296,6 +297,144 @@ class InlineVariables implements CompilerPass {
+       }
+     }
+ 
++    /**
++     * Determines whether it is unsound to replace all remaining references
++     * to {@code aliasRefs} with the value of {@code param}, a candidate
++     * function parameter. This is unsound if {@code param} may be changed
++     * indirectly through the enclosing function's "arguments" object
++     * (e.g. "arguments[0] = ..."), or if the "arguments" object of that
++     * function escapes to code we can't analyze while an element of it is
++     * used in place of the whole object at one of {@code aliasRefs}.
++     */
++    private boolean argumentsMayInvalidateAlias(
++        Var param, List<Reference> aliasRefs) {
++      Node paramNameNode = param.getNameNode();
++      Node lp = paramNameNode.getParent();
++      if (lp == null || lp.getType() != Token.LP) {
++        // Not a function parameter, so it can't be affected by the
++        // "arguments" object.
++        return false;
++      }
++      Node function = lp.getParent();
++      Node body = function.getLastChild();
++
++      Set<Node> targetCalls = Sets.newHashSet();
++      boolean targetUsesWholeArguments = false;
++      for (Reference ref : aliasRefs) {
++        if (ref.isDeclaration()) {
++          continue;
++        }
++        Node call = getEnclosingCall(ref.getNameNode());
++        if (call != null) {
++          targetCalls.add(call);
++          if (callHasWholeArgumentsArgument(call)) {
++            targetUsesWholeArguments = true;
++          }
++        }
++      }
++
++      if (hasArgumentsWriteOrEscape(body, targetCalls)) {
++        return true;
++      }
++      return targetUsesWholeArguments
++          && hasArgumentsElementEscape(body, targetCalls);
++    }
++
++    /**
++     * @return The CALL node that {@code nameNode} is the receiver of (e.g.
++     *     {@code nameNode.method(...)}), or that it is passed directly to,
++     *     or null if there isn't one.
++     */
++    private Node getEnclosingCall(Node nameNode) {
++      Node parent = nameNode.getParent();
++      if (parent != null && parent.getType() == Token.CALL) {
++        return parent;
++      }
++      Node grandparent = (parent == null) ? null : parent.getParent();
++      if (grandparent != null && grandparent.getType() == Token.CALL) {
++        return grandparent;
++      }
++      return null;
++    }
++
++    private boolean callHasWholeArgumentsArgument(Node call) {
++      for (Node arg = call.getFirstChild().getNext();
++           arg != null; arg = arg.getNext()) {
++        if (isArgumentsName(arg)) {
++          return true;
++        }
++      }
++      return false;
++    }
++
++    private boolean isArgumentsName(Node n) {
++      return n.getType() == Token.NAME && n.getString().equals("arguments");
++    }
++
++    /**
++     * @return Whether {@code n} is an argument (not the callee) of a CALL
++     *     or NEW node.
++     */
++    private boolean isCallOrNewArgument(Node n) {
++      Node parent = n.getParent();
++      return parent != null
++          && (parent.getType() == Token.CALL || parent.getType() == Token.NEW)
++          && parent.getFirstChild() != n;
++    }
++
++    /**
++     * @return Whether the "arguments" object is written to (e.g.
++     *     "arguments[0] = x"), or passed as a whole to a call or
++     *     constructor other than one of {@code excludedCalls}.
++     */
++    private boolean hasArgumentsWriteOrEscape(Node n, Set<Node> excludedCalls) {
++      if (n.getType() == Token.FUNCTION) {
++        return false;
++      }
++      if (n.getType() == Token.GETELEM
++          && isArgumentsName(n.getFirstChild())
++          && NodeUtil.isAssignmentOp(n.getParent())
++          && n.getParent().getFirstChild() == n) {
++        return true;
++      }
++      if (isArgumentsName(n)
++          && n.getParent().getType() != Token.GETELEM
++          && isCallOrNewArgument(n)
++          && !excludedCalls.contains(n.getParent())) {
++        return true;
++      }
++      for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++        if (hasArgumentsWriteOrEscape(c, excludedCalls)) {
++          return true;
++        }
++      }
++      return false;
++    }
++
++    /**
++     * @return Whether an element of the "arguments" object (e.g.
++     *     "arguments[0]") is passed to a call or constructor other than
++     *     one of {@code excludedCalls}.
++     */
++    private boolean hasArgumentsElementEscape(
++        Node n, Set<Node> excludedCalls) {
++      if (n.getType() == Token.FUNCTION) {
++        return false;
++      }
++      if (n.getType() == Token.GETELEM
++          && isArgumentsName(n.getFirstChild())
++          && isCallOrNewArgument(n)
++          && !excludedCalls.contains(n.getParent())) {
++        return true;
++      }
++      for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++        if (hasArgumentsElementEscape(c, excludedCalls)) {
++          return true;
++        }
++      }
++      return false;
++    }
++
+     /**
+      * If there are any variable references in the given node tree, blacklist
+      * them to prevent the pass from trying to inline the variable.

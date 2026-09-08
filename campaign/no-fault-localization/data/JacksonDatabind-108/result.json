@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 108,
+  "id": "JacksonDatabind-108",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 982,
+  "finished_at": "2026-09-08T04:54:58Z",
+  "wallclock_s": 308,
+  "agent_s": 110,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 53574,
+  "total_cost_usd": 0.20283719999999994,
+  "session_id": "cc7ead9b-c34d-42a1-8350-5c8d1ef42940",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3495,
+  "cache_read_input_tokens": 400476,
+  "cache_creation_input_tokens": 21357,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.node.EmptyContentAsTreeTest::testNullFromEOFWithParserAndReader"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ObjectReader.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

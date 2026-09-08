@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 16,
+  "id": "Collections-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2303,
+  "finished_at": "2026-09-07T23:32:16Z",
+  "wallclock_s": 99,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 50182,
+  "total_cost_usd": 0.1696678,
+  "session_id": "920546f1-f43f-4d75-a9d2-2e6d2f76ecea",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 3729,
+  "cache_read_input_tokens": 209359,
+  "cache_creation_input_tokens": 22059,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.list.TestSetUniqueList::testCollections307"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/list/SetUniqueList.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

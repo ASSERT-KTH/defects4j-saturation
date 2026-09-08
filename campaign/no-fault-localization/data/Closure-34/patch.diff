@@ -1,0 +1,97 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index f28378c..1663c34 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -26,6 +26,8 @@ import com.google.javascript.rhino.TokenStream;
+ import java.io.IOException;
+ import java.nio.charset.Charset;
+ import java.nio.charset.CharsetEncoder;
++import java.util.ArrayDeque;
++import java.util.Deque;
+ import java.util.Map;
+ 
+ /**
+@@ -99,29 +101,60 @@ class CodeGenerator {
+           childCount == 2,
+           "Bad binary operator \"%s\": expected 2 arguments but got %s",
+           opstr, childCount);
+-      int p = NodeUtil.precedence(type);
+-
+-      // For right-hand-side of operations, only pass context if it's
+-      // the IN_FOR_INIT_CLAUSE one.
+-      Context rhsContext = getContextForNoInOperator(context);
+-
+-      // Handle associativity.
+-      // e.g. if the parse tree is a * (b * c),
+-      // we can simply generate a * b * c.
+-      if (last.getType() == type &&
+-          NodeUtil.isAssociative(type)) {
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p, rhsContext);
+-      } else if (NodeUtil.isAssignmentOp(n) && NodeUtil.isAssignmentOp(last)) {
+-        // Assignments are the only right-associative binary operators
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p, rhsContext);
+-      } else {
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p + 1, rhsContext);
++      // Descend along the chain of left-hand ("first") children as long as
++      // they are themselves binary operators of no lower precedence, so
++      // that deeply left-nested expressions (e.g. "a+a+a+...+a") can be
++      // printed iteratively instead of blowing the stack with recursion.
++      Deque<Node> chain = new ArrayDeque<Node>();
++      Node current = n;
++      while (true) {
++        chain.push(current);
++        Node curFirst = current.getFirstChild();
++        String curFirstOpstr = NodeUtil.opToStr(curFirst.getType());
++        if (curFirstOpstr != null &&
++            curFirst.getFirstChild() != curFirst.getLastChild() &&
++            NodeUtil.precedence(curFirst.getType()) >=
++                NodeUtil.precedence(current.getType()) &&
++            !(context == Context.IN_FOR_INIT_CLAUSE && curFirst.isIn())) {
++          Preconditions.checkState(
++              curFirst.getChildCount() == 2,
++              "Bad binary operator \"%s\": expected 2 arguments but got %s",
++              curFirstOpstr, curFirst.getChildCount());
++          current = curFirst;
++        } else {
++          break;
++        }
++      }
++
++      Node bottom = chain.peek();
++      addExpr(bottom.getFirstChild(),
++          NodeUtil.precedence(bottom.getType()), context);
++
++      while (!chain.isEmpty()) {
++        Node node = chain.pop();
++        Node nodeLast = node.getLastChild();
++        String nodeOpstr = NodeUtil.opToStr(node.getType());
++        int nodeP = NodeUtil.precedence(node.getType());
++
++        // For right-hand-side of operations, only pass context if it's
++        // the IN_FOR_INIT_CLAUSE one.
++        Context rhsContext = getContextForNoInOperator(context);
++
++        cc.addOp(nodeOpstr, true);
++
++        // Handle associativity.
++        // e.g. if the parse tree is a * (b * c),
++        // we can simply generate a * b * c.
++        if (nodeLast.getType() == node.getType() &&
++            NodeUtil.isAssociative(node.getType())) {
++          addExpr(nodeLast, nodeP, rhsContext);
++        } else if (NodeUtil.isAssignmentOp(node) &&
++            NodeUtil.isAssignmentOp(nodeLast)) {
++          // Assignments are the only right-associative binary operators
++          addExpr(nodeLast, nodeP, rhsContext);
++        } else {
++          addExpr(nodeLast, nodeP + 1, rhsContext);
++        }
+       }
+       return;
+     }

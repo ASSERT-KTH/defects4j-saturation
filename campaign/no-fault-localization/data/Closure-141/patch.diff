@@ -1,0 +1,96 @@
+diff --git a/src/com/google/javascript/jscomp/NodeUtil.java b/src/com/google/javascript/jscomp/NodeUtil.java
+index 044bdd9..27a196a 100644
+--- a/src/com/google/javascript/jscomp/NodeUtil.java
++++ b/src/com/google/javascript/jscomp/NodeUtil.java
+@@ -599,8 +599,10 @@ public final class NodeUtil {
+       case Token.GETELEM:
+         return true;
+ 
+-        // Anonymous functions definitions are not changed by side-effects,
+-        // and named functions are not part of expressions.
++      // Anonymous functions definitions are not changed by side-effects,
++      // and named functions are not part of expressions.
++      case Token.FUNCTION:
++        return false;
+     }
+ 
+     for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
+diff --git a/src/com/google/javascript/jscomp/PureFunctionIdentifier.java b/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
+index 55afa60..57435b2 100644
+--- a/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
++++ b/src/com/google/javascript/jscomp/PureFunctionIdentifier.java
+@@ -166,7 +166,7 @@ class PureFunctionIdentifier implements CompilerPass {
+    * correspond to a given qualified name subtree.  Return null if
+    * DefinitionProvider does not contain an entry for a given name,
+    * one or more of the values returned by getDeclarations is not
+-   * callable, or the "name" node is not a GETPROP or NAME.
++   * callable, or the "name" node is not a GETPROP, NAME, OR or HOOK.
+    *
+    * @param definitionProvider The name reference graph
+    * @param name Query node
+@@ -176,25 +176,50 @@ class PureFunctionIdentifier implements CompilerPass {
+       DefinitionProvider definitionProvider, Node name) {
+       List<Definition> result = Lists.newArrayList();
+ 
+-      if (!NodeUtil.isGetProp(name) && !NodeUtil.isName(name)) {
+-        return null;
+-      }
+-      Collection<Definition> decls =
+-          definitionProvider.getDefinitionsReferencedAt(name);
+-      if (decls == null) {
+-        return null;
+-      }
++      if (NodeUtil.isGetProp(name) || NodeUtil.isName(name)) {
++        Collection<Definition> decls =
++            definitionProvider.getDefinitionsReferencedAt(name);
++        if (decls == null) {
++          return null;
++        }
+ 
+-      for (Definition current : decls) {
+-        Node rValue = current.getRValue();
+-        if ((rValue != null) && NodeUtil.isFunction(rValue)) {
+-          result.add(current);
+-        } else {
++        for (Definition current : decls) {
++          Node rValue = current.getRValue();
++          if ((rValue != null) && NodeUtil.isFunction(rValue)) {
++            result.add(current);
++          } else {
++            return null;
++          }
++        }
++
++        return result;
++      } else if (name.getType() == Token.OR || name.getType() == Token.AND) {
++        Collection<Definition> lhs = getCallableDefinitions(
++            definitionProvider, name.getFirstChild());
++        Collection<Definition> rhs = getCallableDefinitions(
++            definitionProvider, name.getLastChild());
++        if (lhs == null || rhs == null) {
++          return null;
++        }
++
++        result.addAll(lhs);
++        result.addAll(rhs);
++        return result;
++      } else if (name.getType() == Token.HOOK) {
++        Collection<Definition> lhs = getCallableDefinitions(
++            definitionProvider, name.getChildAtIndex(1));
++        Collection<Definition> rhs = getCallableDefinitions(
++            definitionProvider, name.getLastChild());
++        if (lhs == null || rhs == null) {
+           return null;
+         }
+-      }
+ 
+-      return result;
++        result.addAll(lhs);
++        result.addAll(rhs);
++        return result;
++      } else {
++        return null;
++      }
+   }
+ 
+   /**

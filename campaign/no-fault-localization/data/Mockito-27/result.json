@@ -1,0 +1,40 @@
+{
+  "project": "Mockito",
+  "bug": 27,
+  "id": "Mockito-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 177,
+  "finished_at": "2026-09-08T14:19:21Z",
+  "wallclock_s": 193,
+  "agent_s": 86,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 36421,
+  "total_cost_usd": 0.13608240000000002,
+  "session_id": "5d735812-ffde-4227-8efa-da696aa56e22",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2317,
+  "cache_read_input_tokens": 228292,
+  "cache_creation_input_tokens": 16131,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.ListenersLostOnResetMockTest::listener"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/util/MockUtil.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

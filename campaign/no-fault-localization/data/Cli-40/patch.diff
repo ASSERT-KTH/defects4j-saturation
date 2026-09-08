@@ -1,0 +1,46 @@
+diff --git a/src/main/java/org/apache/commons/cli/TypeHandler.java b/src/main/java/org/apache/commons/cli/TypeHandler.java
+index 6bd84b0..64862b5 100644
+--- a/src/main/java/org/apache/commons/cli/TypeHandler.java
++++ b/src/main/java/org/apache/commons/cli/TypeHandler.java
+@@ -98,6 +98,10 @@ public class TypeHandler
+         {
+             return (T) createURL(str);
+         }
++        else if (Number.class.isAssignableFrom(clazz))
++        {
++            return (T) createNumber(str, clazz);
++        }
+         else
+         {
+             return null;
+@@ -158,6 +162,30 @@ public class TypeHandler
+         }
+     }
+ 
++    /**
++     * Create a number from a String using the given class, which must
++     * be a subclass of {@link Number}, and which must either provide
++     * a constructor which takes a single argument of type
++     * {@link String} or a <code>valueOf</code> factory method that
++     * takes a single argument of type <code>String</code>.
++     *
++     * @param str the value
++     * @param clazz the type of number to create
++     * @return the number represented by <code>str</code>
++     * @throws ParseException if <code>str</code> is not a number
++     */
++    private static Number createNumber(final String str, final Class<?> clazz) throws ParseException
++    {
++        try
++        {
++            return (Number) clazz.getConstructor(String.class).newInstance(str);
++        }
++        catch (final Exception e)
++        {
++            throw new ParseException(e.getClass().getName() + "; Unable to create a number of type " + clazz.getName() + " from " + str);
++        }
++    }
++
+     /**
+      * Returns the class whose name is <code>classname</code>.
+      *

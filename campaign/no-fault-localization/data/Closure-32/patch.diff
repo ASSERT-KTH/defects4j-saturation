@@ -1,0 +1,50 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+index f6a6400..2115442 100644
+--- a/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
++++ b/src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java
+@@ -1355,12 +1355,14 @@ public final class JsDocInfoParser {
+     // Track the start of the line to count whitespace that
+     // the tokenizer skipped. Because this case is rare, it's easier
+     // to do this here than in the tokenizer.
++    int lineStartChar = -1;
+ 
+     do {
+       switch (token) {
+         case STAR:
+           if (ignoreStar) {
+             // Mark the position after the star as the new start of the line.
++            lineStartChar = stream.getCharno() + 1;
+           } else {
+             // The star is part of the comment.
+             if (builder.length() > 0) {
+@@ -1379,10 +1381,12 @@ public final class JsDocInfoParser {
+           }
+ 
+           ignoreStar = true;
++          lineStartChar = 0;
+           token = next();
+           continue;
+ 
+         default:
++          boolean wasLineStart = ignoreStar;
+           ignoreStar = false;
+           state = State.SEARCHING_ANNOTATION;
+ 
+@@ -1412,7 +1416,16 @@ public final class JsDocInfoParser {
+           }
+ 
+           if (builder.length() > 0) {
+-            builder.append(' ');
++            if (option == WhitespaceOption.PRESERVE && wasLineStart) {
++              // Preserve the original whitespace/indentation of the line
++              // instead of collapsing it into a single space.
++              int spaces = stream.getCharno() - lineStartChar;
++              for (int i = 0; i < spaces; i++) {
++                builder.append(' ');
++              }
++            } else {
++              builder.append(' ');
++            }
+           }
+           builder.append(toString(token));
+ 

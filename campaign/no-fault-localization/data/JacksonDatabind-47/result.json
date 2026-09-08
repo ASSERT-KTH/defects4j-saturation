@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 47,
+  "id": "JacksonDatabind-47",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 827,
+  "finished_at": "2026-09-08T01:31:05Z",
+  "wallclock_s": 230,
+  "agent_s": 79,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 43011,
+  "total_cost_usd": 0.1905242,
+  "session_id": "11b4af2f-1885-4e89-8196-0b5a7dd8fc18",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 3402,
+  "cache_read_input_tokens": 304391,
+  "cache_creation_input_tokens": 22842,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.TestJsonSerialize::testBrokenAnnotation",
+    "com.fasterxml.jackson.databind.ser.TestJsonSerializeAs::testSpecializedAsIntermediate"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/AnnotationIntrospector.java"
+  ],
+  "patch_added_lines": 18,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

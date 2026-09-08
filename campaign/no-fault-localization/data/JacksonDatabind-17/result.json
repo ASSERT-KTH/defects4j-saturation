@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 17,
+  "id": "JacksonDatabind-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 912,
+  "finished_at": "2026-09-08T00:51:04Z",
+  "wallclock_s": 188,
+  "agent_s": 69,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 39238,
+  "total_cost_usd": 0.16613640000000005,
+  "session_id": "9467883a-2a26-48c1-9e0d-f224b0094a74",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3035,
+  "cache_read_input_tokens": 288702,
+  "cache_creation_input_tokens": 18841,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.node.TestJsonNode::testArrayWithDefaultTyping"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ObjectMapper.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

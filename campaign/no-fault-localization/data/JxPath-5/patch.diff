@@ -1,0 +1,21 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/NodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/NodePointer.java
+index 6ff8d5f..d054e5f 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/NodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/NodePointer.java
+@@ -662,9 +662,13 @@ public abstract class NodePointer implements Pointer {
+         }
+ 
+         if (depth1 == 1) {
+-            throw new JXPathException(
+-                    "Cannot compare pointers that do not belong to the same tree: '"
+-                            + p1 + "' and '" + p2 + "'");
++            // Can't find a common parent, the two pointers come from
++            // completely unrelated trees (e.g. a variable and a node
++            // from a different context). Since document order is
++            // undefined in that case, fall back on a stable, arbitrary
++            // total order based on the string representation of the
++            // pointers.
++            return p1.asPath().compareTo(p2.asPath());
+         }
+         int r = compareNodePointers(p1.parent, depth1 - 1, p2.parent, depth2 - 1);
+         if (r != 0) {

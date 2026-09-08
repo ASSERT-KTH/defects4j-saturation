@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 66,
+  "id": "Jsoup-66",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4449,
+  "finished_at": "2026-09-08T05:43:45Z",
+  "wallclock_s": 160,
+  "agent_s": 136,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 123530,
+  "total_cost_usd": 0.38699220000000006,
+  "session_id": "87348aa0-129f-4841-a9bc-8c22908e7eb2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 9632,
+  "cache_read_input_tokens": 849986,
+  "cache_creation_input_tokens": 29545,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::testNextElementSiblingAfterClone"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

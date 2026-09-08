@@ -1,0 +1,42 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 63,
+  "id": "JacksonDatabind-63",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 490,
+  "finished_at": "2026-09-08T01:55:48Z",
+  "wallclock_s": 310,
+  "agent_s": 126,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 28544,
+  "total_cost_usd": 0.12709979999999999,
+  "session_id": "f63c2ceb-cca2-4f1e-bfe6-70ba021c06b7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2214,
+  "cache_read_input_tokens": 192854,
+  "cache_creation_input_tokens": 15400,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.exc.ExceptionPathTest::testReferenceChainForInnerClass",
+    "com.fasterxml.jackson.databind.deser.exc.TestExceptionHandlingWithDefaultDeserialization::testShouldThrowJsonMappingExceptionWithPathReference",
+    "com.fasterxml.jackson.databind.deser.exc.TestExceptionHandlingWithJsonCreatorDeserialization::testShouldThrowJsonMappingExceptionWithPathReference"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/JsonMappingException.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

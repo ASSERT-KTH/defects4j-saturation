@@ -1,0 +1,23 @@
+diff --git a/src/com/google/javascript/jscomp/ProcessClosurePrimitives.java b/src/com/google/javascript/jscomp/ProcessClosurePrimitives.java
+index c929a36..889527e 100644
+--- a/src/com/google/javascript/jscomp/ProcessClosurePrimitives.java
++++ b/src/com/google/javascript/jscomp/ProcessClosurePrimitives.java
+@@ -786,15 +786,15 @@ class ProcessClosurePrimitives extends AbstractPostOrderCallback
+         } else {
+           // In this case, the name was implicitly provided by two independent
+           // modules. We need to move this code up to a common module.
+-          int indexOfDot = namespace.indexOf('.');
+-          if (indexOfDot == -1) {
++          int lastDot = namespace.lastIndexOf('.');
++          if (lastDot == -1) {
+             // Any old place is fine.
+             compiler.getNodeForCodeInsertion(minimumModule)
+                 .addChildToBack(replacementNode);
+           } else {
+             // Add it after the parent namespace.
+             ProvidedName parentName =
+-                providedNames.get(namespace.substring(0, indexOfDot));
++                providedNames.get(namespace.substring(0, lastDot));
+             Preconditions.checkNotNull(parentName);
+             Preconditions.checkNotNull(parentName.replacementNode);
+             parentName.replacementNode.getParent().addChildAfter(

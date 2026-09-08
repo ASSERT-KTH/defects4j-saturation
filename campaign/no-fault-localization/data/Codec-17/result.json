@@ -1,0 +1,40 @@
+{
+  "project": "Codec",
+  "bug": 17,
+  "id": "Codec-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 15,
+  "finished_at": "2026-09-08T14:54:51Z",
+  "wallclock_s": 56,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 12801,
+  "total_cost_usd": 0.0908674,
+  "session_id": "2d160a0e-eed8-4199-a9a7-eceeeaace6c0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 688,
+  "cache_read_input_tokens": 77627,
+  "cache_creation_input_tokens": 16506,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.codec.binary.StringUtilsTest::testNewStringNullInput_CODEC229"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/codec/binary/StringUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

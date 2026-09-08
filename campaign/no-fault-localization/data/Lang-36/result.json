@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 36,
+  "id": "Lang-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2349,
+  "finished_at": "2026-09-08T09:16:19Z",
+  "wallclock_s": 115,
+  "agent_s": 78,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 59773,
+  "total_cost_usd": 0.2068494,
+  "session_id": "fbc38404-3ec0-4fb7-9733-3665bd2e95cb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4602,
+  "cache_read_input_tokens": 355267,
+  "cache_creation_input_tokens": 21626,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang3.math.NumberUtilsTest::testCreateNumber",
+    "org.apache.commons.lang3.math.NumberUtilsTest::testIsNumber"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang3/math/NumberUtils.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

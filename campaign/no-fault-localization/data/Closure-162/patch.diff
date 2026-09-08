@@ -1,0 +1,24 @@
+diff --git a/src/com/google/javascript/jscomp/ScopedAliases.java b/src/com/google/javascript/jscomp/ScopedAliases.java
+index 5acf25a..746d303 100644
+--- a/src/com/google/javascript/jscomp/ScopedAliases.java
++++ b/src/com/google/javascript/jscomp/ScopedAliases.java
+@@ -223,6 +223,19 @@ class ScopedAliases implements HotSwapCompilerPass {
+       if (n != null && isCallToScopeMethod(n)) {
+         transformation = transformationHandler.logAliasTransformation(
+             n.getSourceFileName(), getSourceRegion(n));
++
++        // Pre-populate the alias map with all the aliases defined in this
++        // scope, so that forward references (e.g. in JSDoc that appears
++        // before the alias definition) are resolved correctly.
++        for (Var v : t.getScope().getAllSymbols()) {
++          Node nameNode = v.getNameNode();
++          if (nameNode != null && nameNode.getParent() != null &&
++              nameNode.getParent().getType() == Token.VAR &&
++              nameNode.hasChildren() &&
++              nameNode.getFirstChild().isQualifiedName()) {
++            aliases.put(v.getName(), v);
++          }
++        }
+       }
+     }
+ 

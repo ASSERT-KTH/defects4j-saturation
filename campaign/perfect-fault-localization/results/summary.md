@@ -1,4 +1,4 @@
-# Defects4J x Claude Code (Sonnet 5)
+# Defects4J x Claude Code (Sonnet 5) — perfect fault localization
 
 854 bugs attempted
 

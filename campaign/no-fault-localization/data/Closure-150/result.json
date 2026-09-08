@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 150,
+  "id": "Closure-150",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6649,
+  "finished_at": "2026-09-07T19:51:29Z",
+  "wallclock_s": 213,
+  "agent_s": 140,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 109347,
+  "total_cost_usd": 0.3165656,
+  "session_id": "86bf92df-be73-46fd-946a-8f57aee49cac",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 9529,
+  "cache_read_input_tokens": 465688,
+  "cache_creation_input_tokens": 31193,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypedScopeCreatorTest::testNamespacedFunctionStubLocal",
+    "com.google.javascript.jscomp.TypedScopeCreatorTest::testCollectedFunctionStubLocal"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypedScopeCreator.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 15,
+  "has_dev_patch": true
+}

@@ -1,0 +1,38 @@
+diff --git a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+index 1e6ccdc..1a07c99 100644
+--- a/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
++++ b/src/main/java/org/apache/commons/lang3/math/NumberUtils.java
+@@ -464,14 +464,30 @@ public class NumberUtils {
+             }
+         }
+         if (pfxLen > 0) { // we have a hex number
+-            final int hexDigits = str.length() - pfxLen;
++            final String digits = str.substring(pfxLen);
++            // leading zeros do not count towards the significant number of digits
++            int firstSignificant = 0;
++            while (firstSignificant < digits.length() - 1 && digits.charAt(firstSignificant) == '0') {
++                firstSignificant++;
++            }
++            final int hexDigits = digits.length() - firstSignificant;
+             if (hexDigits > 16) { // too many for Long
+                 return createBigInteger(str);
+             }
+             if (hexDigits > 8) { // too many for an int
+-                return createLong(str);
++                try {
++                    return createLong(str);
++                } catch (final NumberFormatException nfe) { // NOPMD
++                    // too big for a long, so try a BigInteger instead
++                }
++                return createBigInteger(str);
++            }
++            try {
++                return createInteger(str);
++            } catch (final NumberFormatException nfe) { // NOPMD
++                // too big for an int, so try a Long instead
+             }
+-            return createInteger(str);
++            return createLong(str);
+         }
+         final char lastChar = str.charAt(str.length() - 1);
+         String mant;

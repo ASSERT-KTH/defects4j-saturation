@@ -1,0 +1,53 @@
+diff --git a/src/main/java/org/apache/commons/cli/HelpFormatter.java b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+index 3322f76..1da6688 100644
+--- a/src/main/java/org/apache/commons/cli/HelpFormatter.java
++++ b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+@@ -727,7 +727,7 @@ public class HelpFormatter
+     {
+         StringBuffer sb = new StringBuffer(text.length());
+ 
+-        renderWrappedText(sb, width, nextLineTabStop, text);
++        renderWrappedTextBlock(sb, width, nextLineTabStop, text);
+         pw.println(sb.toString());
+     }
+ 
+@@ -896,9 +896,39 @@ public class HelpFormatter
+      * @param width The number of characters to display per line
+      * @param nextLineTabStop The position on the next line for the first tab.
+      * @param text The text to be rendered.
++     *
++     * @return the StringBuffer with the rendered Options contents.
+      */
++    protected StringBuffer renderWrappedTextBlock(StringBuffer sb, int width,
++                                                  int nextLineTabStop, String text)
++    {
++        try
++        {
++            BufferedReader in = new BufferedReader(new StringReader(text));
++            String line;
++            boolean firstLine = true;
++
++            while ((line = in.readLine()) != null)
++            {
++                if (!firstLine)
++                {
++                    sb.append(defaultNewLine);
++                }
++                else
++                {
++                    firstLine = false;
++                }
++
++                renderWrappedText(sb, width, nextLineTabStop, line);
++            }
++        }
++        catch (IOException e) //NOPMD
++        {
+             // cannot happen
++        }
+ 
++        return sb;
++    }
+ 
+     /**
+      * Finds the next text wrap position after <code>startPos</code> for the

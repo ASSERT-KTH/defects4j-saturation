@@ -1,0 +1,14 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+index 2019d1e..98a1142 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BasicDeserializerFactory.java
+@@ -1788,6 +1788,9 @@ nonAnnotatedParamIndex, ctor);
+         if (rawType == CLASS_STRING || rawType == CLASS_CHAR_SEQUENCE) {
+             return StringDeserializer.instance;
+         }
++        if (rawType == Void.class) {
++            return NullifyingDeserializer.instance;
++        }
+         if (rawType == CLASS_ITERABLE) {
+             // [databind#199]: Can and should 'upgrade' to a Collection type:
+             TypeFactory tf = ctxt.getTypeFactory();

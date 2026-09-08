@@ -1,0 +1,40 @@
+{
+  "project": "JacksonCore",
+  "bug": 14,
+  "id": "JacksonCore-14",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 471,
+  "finished_at": "2026-09-08T00:15:48Z",
+  "wallclock_s": 56,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 20746,
+  "total_cost_usd": 0.10796359999999998,
+  "session_id": "81624e17-fc92-4cf3-a0c2-b9de6302a9ee",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1609,
+  "cache_read_input_tokens": 140313,
+  "cache_creation_input_tokens": 15386,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.io.TestIOContext::testAllocations"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/io/IOContext.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+diff --git a/src/main/java/org/apache/commons/math/geometry/Vector3D.java b/src/main/java/org/apache/commons/math/geometry/Vector3D.java
+index 3c741e9..4411684 100644
+--- a/src/main/java/org/apache/commons/math/geometry/Vector3D.java
++++ b/src/main/java/org/apache/commons/math/geometry/Vector3D.java
+@@ -456,9 +456,13 @@ public class Vector3D implements Serializable {
+    */
+   public static Vector3D crossProduct(final Vector3D v1, final Vector3D v2) {
+ 
+-
+       // rescale both vectors without losing precision,
+       // to ensure their norm are the same order of magnitude
++      final int deltaExp = (FastMath.getExponent(v1.getNormSq()) - FastMath.getExponent(v2.getNormSq())) / 4;
++      final double scale1 = FastMath.scalb(1.0, -deltaExp);
++      final double scale2 = FastMath.scalb(1.0, deltaExp);
++      final Vector3D v3 = new Vector3D(scale1 * v1.x, scale1 * v1.y, scale1 * v1.z);
++      final Vector3D v4 = new Vector3D(scale2 * v2.x, scale2 * v2.y, scale2 * v2.z);
+ 
+       // we reduce cancellation errors by preconditioning,
+       // we replace v1 by v3 = v1 - rho v2 with rho chosen in order to compute
+@@ -467,10 +471,15 @@ public class Vector3D implements Serializable {
+       // available at http://www.cs.berkeley.edu/~wkahan/MathH110/Cross.pdf
+ 
+       // compute rho as an 8 bits approximation of v1.v2 / v2.v2
++      final double ratio = dotProduct(v3, v4) / dotProduct(v4, v4);
++      final double rho = FastMath.rint(ratio * 256) / 256;
+ 
++      final double x3 = v3.x - rho * v4.x;
++      final double y3 = v3.y - rho * v4.y;
++      final double z3 = v3.z - rho * v4.z;
+ 
+-      // compute cross product from v3 and v2 instead of v1 and v2
+-      return new Vector3D(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
++      // compute cross product from v3 and v4 instead of v1 and v2
++      return new Vector3D(y3 * v4.z - z3 * v4.y, z3 * v4.x - x3 * v4.z, x3 * v4.y - y3 * v4.x);
+ 
+   }
+ 

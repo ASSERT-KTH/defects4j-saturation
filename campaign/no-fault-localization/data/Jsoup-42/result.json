@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 42,
+  "id": "Jsoup-42",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 519,
+  "finished_at": "2026-09-08T05:28:08Z",
+  "wallclock_s": 56,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 25068,
+  "total_cost_usd": 0.12278199999999999,
+  "session_id": "6156963b-668f-468e-9be0-9edcbde3d7fc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 2156,
+  "cache_read_input_tokens": 148980,
+  "cache_creation_input_tokens": 16930,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.FormElementTest::createsFormData",
+    "org.jsoup.nodes.FormElementTest::usesOnForCheckboxValueIfNoValueSet"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/FormElement.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

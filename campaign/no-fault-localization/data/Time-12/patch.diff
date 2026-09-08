@@ -1,0 +1,76 @@
+diff --git a/src/main/java/org/joda/time/LocalDate.java b/src/main/java/org/joda/time/LocalDate.java
+index 3868531..20148cb 100644
+--- a/src/main/java/org/joda/time/LocalDate.java
++++ b/src/main/java/org/joda/time/LocalDate.java
+@@ -209,7 +209,7 @@ public final class LocalDate
+         }
+         int yearOfEra = calendar.get(Calendar.YEAR);
+         return new LocalDate(
+-            yearOfEra,
++            (calendar.get(Calendar.ERA) == GregorianCalendar.BC ? 1 - yearOfEra : yearOfEra),
+             calendar.get(Calendar.MONTH) + 1,
+             calendar.get(Calendar.DAY_OF_MONTH)
+         );
+@@ -235,17 +235,15 @@ public final class LocalDate
+      * @throws IllegalArgumentException if the calendar is null
+      * @throws IllegalArgumentException if the date is invalid for the ISO chronology
+      */
+-    @SuppressWarnings("deprecation")
+     public static LocalDate fromDateFields(Date date) {
+         if (date == null) {
+             throw new IllegalArgumentException("The date must not be null");
+         }
+-            // handle years in era BC
+-        return new LocalDate(
+-            date.getYear() + 1900,
+-            date.getMonth() + 1,
+-            date.getDate()
+-        );
++        // Extract via a Calendar as the deprecated Date accessors cannot
++        // reliably distinguish years in era BC from years in era AD.
++        Calendar cal = new GregorianCalendar();
++        cal.setTime(date);
++        return fromCalendarFields(cal);
+     }
+ 
+     //-----------------------------------------------------------------------
+diff --git a/src/main/java/org/joda/time/LocalDateTime.java b/src/main/java/org/joda/time/LocalDateTime.java
+index f37db3e..f190362 100644
+--- a/src/main/java/org/joda/time/LocalDateTime.java
++++ b/src/main/java/org/joda/time/LocalDateTime.java
+@@ -198,7 +198,7 @@ public final class LocalDateTime
+         }
+         int yearOfEra = calendar.get(Calendar.YEAR);
+         return new LocalDateTime(
+-            yearOfEra,
++            (calendar.get(Calendar.ERA) == GregorianCalendar.BC ? 1 - yearOfEra : yearOfEra),
+             calendar.get(Calendar.MONTH) + 1,
+             calendar.get(Calendar.DAY_OF_MONTH),
+             calendar.get(Calendar.HOUR_OF_DAY),
+@@ -228,21 +228,15 @@ public final class LocalDateTime
+      * @throws IllegalArgumentException if the calendar is null
+      * @throws IllegalArgumentException if the date is invalid for the ISO chronology
+      */
+-    @SuppressWarnings("deprecation")
+     public static LocalDateTime fromDateFields(Date date) {
+         if (date == null) {
+             throw new IllegalArgumentException("The date must not be null");
+         }
+-            // handle years in era BC
+-        return new LocalDateTime(
+-            date.getYear() + 1900,
+-            date.getMonth() + 1,
+-            date.getDate(),
+-            date.getHours(),
+-            date.getMinutes(),
+-            date.getSeconds(),
+-            (((int) (date.getTime() % 1000)) + 1000) % 1000
+-        );
++        // Extract via a Calendar as the deprecated Date accessors cannot
++        // reliably distinguish years in era BC from years in era AD.
++        Calendar cal = new GregorianCalendar();
++        cal.setTime(date);
++        return fromCalendarFields(cal);
+     }
+ 
+     //-----------------------------------------------------------------------

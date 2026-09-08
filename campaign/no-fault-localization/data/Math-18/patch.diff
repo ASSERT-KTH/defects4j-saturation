@@ -1,0 +1,275 @@
+diff --git a/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java b/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
+index bc754a5..abb29d7 100644
+--- a/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
++++ b/src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java
+@@ -357,10 +357,11 @@ public class CMAESOptimizer
+          // -------------------- Initialization --------------------------------
+         isMinimize = getGoalType().equals(GoalType.MINIMIZE);
+         final FitnessFunction fitfun = new FitnessFunction();
+-        final double[] guess = fitfun.encode(getStartPoint());
++        final double[] startPoint = getStartPoint();
++        final double[] guess = fitfun.encode(startPoint);
+         // number of objective variables/problem dimension
+         dimension = guess.length;
+-        initializeCMA(guess);
++        initializeCMA(fitfun, startPoint, guess);
+         iterations = 0;
+         double bestValue = fitfun.value(guess);
+         push(fitnessHistory, bestValue);
+@@ -387,11 +388,10 @@ public class CMAESOptimizer
+                             arxk = xmean.add(times(diagD,arz.getColumnMatrix(k))
+                                     .scalarMultiply(sigma));
+                         }
+-                        if (i >= checkFeasableCount || fitfun.isFeasible(arxk.getColumn(0))) {
+-                            break;
+-                        }
+-                        // regenerate random arguments for row
+-                        arz.setColumn(k, randn(dimension));
++                        // The bounds transform in FitnessFunction always maps
++                        // into the feasible region, so every generated point
++                        // is feasible.
++                        break;
+                     }
+                     copyColumn(arxk, 0, arx, k);
+                     try {
+@@ -422,7 +422,7 @@ public class CMAESOptimizer
+                     bestValue = bestFitness;
+                     lastResult = optimum;
+                     optimum = new PointValuePair(
+-                            fitfun.repairAndDecode(bestArx.getColumn(0)),
++                            fitfun.decode(bestArx.getColumn(0)),
+                             isMinimize ? bestFitness : -bestFitness);
+                     if (getConvergenceChecker() != null && lastResult != null) {
+                         if (getConvergenceChecker().converged(iterations, optimum, lastResult)) {
+@@ -487,7 +487,6 @@ public class CMAESOptimizer
+                 }
+                 // store best in history
+                 push(fitnessHistory,bestFitness);
+-                fitfun.setValueRange(worstFitness-bestFitness);
+                 if (generateStatistics) {
+                     statisticsSigmaHistory.add(sigma);
+                     statisticsFitnessHistory.add(bestFitness);
+@@ -576,17 +575,30 @@ public class CMAESOptimizer
+     /**
+      * Initialization of the dynamic search parameters
+      *
+-     * @param guess Initial guess for the arguments of the fitness function.
++     * @param fitfun Objective function adapter, used to convert a step in the
++     * original (bounded) coordinates into the corresponding step in the
++     * internal, unconstrained coordinates.
++     * @param startPoint Initial guess for the arguments of the fitness
++     * function, in the original (bounded) coordinates.
++     * @param guess Initial guess for the arguments of the fitness function,
++     * in the internal, unconstrained coordinates.
+      */
+-    private void initializeCMA(double[] guess) {
++    private void initializeCMA(FitnessFunction fitfun, double[] startPoint, double[] guess) {
+         if (lambda <= 0) {
+             lambda = 4 + (int) (3. * Math.log(dimension));
+         }
+         // initialize sigma
+         double[][] sigmaArray = new double[guess.length][1];
+         for (int i = 0; i < guess.length; i++) {
+-            final double range = (boundaries == null) ? 1.0 : boundaries[1][i] - boundaries[0][i];
+-            sigmaArray[i][0] = ((inputSigma == null) ? 0.3 : inputSigma[i]) / range;
++            if (boundaries == null) {
++                sigmaArray[i][0] = (inputSigma == null) ? 0.3 : inputSigma[i];
++            } else {
++                final double step = (inputSigma == null) ? 0.3 : inputSigma[i];
++                final double[] shifted = startPoint.clone();
++                shifted[i] += step;
++                final double stepInternal = Math.abs(fitfun.encode(shifted)[i] - guess[i]);
++                sigmaArray[i][0] = stepInternal;
++            }
+         }
+         RealMatrix insigma = new Array2DRowRealMatrix(sigmaArray, false);
+         sigma = max(insigma); // overall standard deviation
+@@ -898,29 +910,27 @@ public class CMAESOptimizer
+     }
+ 
+     /**
+-     * Normalizes fitness values to the range [0,1]. Adds a penalty to the
+-     * fitness value if out of range. The penalty is adjusted by calling
+-     * setValueRange().
++     * Adapter for objective functions with boundaries.
++     * Objective variables are mapped through a bijective, differentiable
++     * function (based on {@code sin}) onto an unconstrained internal
++     * representation, so that the internal search is always feasible and
++     * does not lose precision close to the boundaries, however large the
++     * distance between the bounds may be.
++     * <p>
++     * To avoid loss of precision when one of the bounds is many orders of
++     * magnitude larger (in absolute value) than the other, the transform is
++     * always expressed relative to whichever bound is closest to zero, so
++     * that the objective variable is never combined with a bound of a much
++     * larger magnitude.
+      */
+     private class FitnessFunction {
+-        /** Determines the penalty for boundary violations */
+-        private double valueRange;
+-        /**
+-         * Flag indicating whether the objective variables are forced into their
+-         * bounds if defined
+-         */
+-        private boolean isRepairMode;
+-
+         /** Simple constructor.
+          */
+-        public FitnessFunction() {
+-            valueRange = 1.0;
+-            isRepairMode = true;
+-        }
++        public FitnessFunction() {}
+ 
+         /**
+          * @param x Original objective variables.
+-         * @return the normalized objective variables.
++         * @return the internal, unconstrained objective variables.
+          */
+         public double[] encode(final double[] x) {
+             if (boundaries == null) {
+@@ -928,24 +938,29 @@ public class CMAESOptimizer
+             }
+             double[] res = new double[x.length];
+             for (int i = 0; i < x.length; i++) {
+-                double diff = boundaries[1][i] - boundaries[0][i];
+-                res[i] = (x[i] - boundaries[0][i]) / diff;
++                final double lo = boundaries[0][i];
++                final double hi = boundaries[1][i];
++                final double diff = hi - lo;
++                double frac;
++                boolean referToLower = Math.abs(lo) <= Math.abs(hi);
++                if (referToLower) {
++                    frac = (x[i] - lo) / diff;
++                } else {
++                    frac = (hi - x[i]) / diff;
++                }
++                if (frac < 0) {
++                    frac = 0;
++                } else if (frac > 1) {
++                    frac = 1;
++                }
++                final double angle = 2 * Math.asin(Math.sqrt(frac));
++                res[i] = referToLower ? angle - 0.5 * Math.PI : 0.5 * Math.PI - angle;
+             }
+             return res;
+         }
+ 
+         /**
+-         * @param x Normalized objective variables.
+-         * @return the original objective variables, possibly repaired.
+-         */
+-        public double[] repairAndDecode(final double[] x) {
+-            return boundaries != null && isRepairMode ?
+-                decode(repair(x)) :
+-                decode(x);
+-        }
+-
+-        /**
+-         * @param x Normalized objective variables.
++         * @param x Internal, unconstrained objective variables.
+          * @return the original objective variables.
+          */
+         public double[] decode(final double[] x) {
+@@ -954,89 +969,27 @@ public class CMAESOptimizer
+             }
+             double[] res = new double[x.length];
+             for (int i = 0; i < x.length; i++) {
+-                double diff = boundaries[1][i] - boundaries[0][i];
+-                res[i] = diff * x[i] + boundaries[0][i];
++                final double lo = boundaries[0][i];
++                final double hi = boundaries[1][i];
++                final double diff = hi - lo;
++                boolean referToLower = Math.abs(lo) <= Math.abs(hi);
++                final double s = referToLower ?
++                    Math.sin(0.5 * x[i] + 0.25 * Math.PI) :
++                    Math.sin(0.25 * Math.PI - 0.5 * x[i]);
++                final double frac = s * s;
++                res[i] = referToLower ? lo + diff * frac : hi - diff * frac;
+             }
+             return res;
+         }
+ 
+         /**
+-         * @param point Normalized objective variables.
+-         * @return the objective value + penalty for violated bounds.
++         * @param point Internal, unconstrained objective variables.
++         * @return the objective value.
+          */
+         public double value(final double[] point) {
+-            double value;
+-            if (boundaries != null && isRepairMode) {
+-                double[] repaired = repair(point);
+-                value = CMAESOptimizer.this
+-                        .computeObjectiveValue(decode(repaired)) +
+-                        penalty(point, repaired);
+-            } else {
+-                value = CMAESOptimizer.this
+-                        .computeObjectiveValue(decode(point));
+-            }
++            final double value = CMAESOptimizer.this.computeObjectiveValue(decode(point));
+             return isMinimize ? value : -value;
+         }
+-
+-        /**
+-         * @param x Normalized objective variables.
+-         * @return {@code true} if in bounds.
+-         */
+-        public boolean isFeasible(final double[] x) {
+-            if (boundaries == null) {
+-                return true;
+-            }
+-
+-
+-            for (int i = 0; i < x.length; i++) {
+-                if (x[i] < 0) {
+-                    return false;
+-                }
+-                if (x[i] > 1.0) {
+-                    return false;
+-                }
+-            }
+-            return true;
+-        }
+-
+-        /**
+-         * @param valueRange Adjusts the penalty computation.
+-         */
+-        public void setValueRange(double valueRange) {
+-            this.valueRange = valueRange;
+-        }
+-
+-        /**
+-         * @param x Normalized objective variables.
+-         * @return the repaired objective variables - all in bounds.
+-         */
+-        private double[] repair(final double[] x) {
+-            double[] repaired = new double[x.length];
+-            for (int i = 0; i < x.length; i++) {
+-                if (x[i] < 0) {
+-                    repaired[i] = 0;
+-                } else if (x[i] > 1.0) {
+-                    repaired[i] = 1.0;
+-                } else {
+-                    repaired[i] = x[i];
+-                }
+-            }
+-            return repaired;
+-        }
+-
+-        /**
+-         * @param x Normalized objective variables.
+-         * @param repaired Repaired objective variables.
+-         * @return Penalty value according to the violation of the bounds.
+-         */
+-        private double penalty(final double[] x, final double[] repaired) {
+-            double penalty = 0;
+-            for (int i = 0; i < x.length; i++) {
+-                double diff = Math.abs(x[i] - repaired[i]);
+-                penalty += diff * valueRange;
+-            }
+-            return isMinimize ? penalty : -penalty;
+-        }
+     }
+ 
+     // -----Matrix utility functions similar to the Matlab build in functions------

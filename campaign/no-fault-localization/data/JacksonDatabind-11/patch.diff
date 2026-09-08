@@ -1,0 +1,27 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index a8bd240..b7b33be 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -889,17 +889,18 @@ public final class TypeFactory
+     protected JavaType _fromVariable(TypeVariable<?> type, TypeBindings context)
+     {
+         final String name = type.getName();
+-        // 19-Mar-2015: Without context, all we can check are bounds.
++        // 19-Mar-2015: Without context, all we can check are bounds; but we still
++        //   need a (fresh) context to guard against infinite loops with
++        //   recursive bounds (like "T extends Comparable<T>")
+         if (context == null) {
+-            // And to prevent infinite loops, now need this:
+-            return _unknownType();
++            context = new TypeBindings(this, (Class<?>) null);
+         } else {
+             // Ok: here's where context might come in handy!
+             /* 19-Mar-2015, tatu: As per [databind#609], may need to allow
+              *   unresolved type variables to handle some cases where bounds
+              *   are enough. Let's hope it does not hide real fail cases.
+              */
+-            JavaType actualType = context.findType(name);
++            JavaType actualType = context.findType(name, false);
+             if (actualType != null) {
+                 return actualType;
+             }

@@ -1,0 +1,42 @@
+{
+  "project": "Mockito",
+  "bug": 9,
+  "id": "Mockito-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1839,
+  "finished_at": "2026-09-08T11:49:37Z",
+  "wallclock_s": 762,
+  "agent_s": 389,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 70297,
+  "total_cost_usd": 0.35951799999999995,
+  "session_id": "b59aa872-3b50-4461-ab10-e722a484c5ed",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 50,
+  "output_tokens": 6062,
+  "cache_read_input_tokens": 819340,
+  "cache_creation_input_tokens": 32366,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.constructor.CreatingMocksWithConstructorTest::abstractMethodStubbed",
+    "org.mockitousage.constructor.CreatingMocksWithConstructorTest::testCallsRealInterfaceMethod",
+    "org.mockitousage.constructor.CreatingMocksWithConstructorTest::abstractMethodReturnsDefault"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/answers/CallsRealMethods.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 9,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 21,
+  "id": "Collections-21",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 84,
+  "finished_at": "2026-09-07T23:33:53Z",
+  "wallclock_s": 79,
+  "agent_s": 42,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 29329,
+  "total_cost_usd": 0.11867320000000002,
+  "session_id": "366511a6-e7bb-4a71-9b01-4b31da9e69bd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 2099,
+  "cache_read_input_tokens": 239761,
+  "cache_creation_input_tokens": 11866,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.list.SetUniqueListTest::testSubListIsUnmodifiable"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/list/SetUniqueList.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

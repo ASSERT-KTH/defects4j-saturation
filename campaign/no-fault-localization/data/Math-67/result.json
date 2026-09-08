@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 67,
+  "id": "Math-67",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 44943,
+  "finished_at": "2026-09-08T10:45:07Z",
+  "wallclock_s": 777,
+  "agent_s": 738,
+  "agent_rc": 0,
+  "num_turns": 59,
+  "api_duration_ms": 653383,
+  "total_cost_usd": 1.8643261999999996,
+  "session_id": "da46c55f-a6d6-4c86-8629-2ad3ee1834d5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 118,
+  "output_tokens": 57761,
+  "cache_read_input_tokens": 4250746,
+  "cache_creation_input_tokens": 108449,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.MultiStartUnivariateRealOptimizerTest::testQuinticMin"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/MultiStartUnivariateRealOptimizer.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

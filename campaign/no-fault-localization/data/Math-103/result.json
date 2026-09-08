@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 103,
+  "id": "Math-103",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1739,
+  "finished_at": "2026-09-08T11:19:54Z",
+  "wallclock_s": 79,
+  "agent_s": 46,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 37597,
+  "total_cost_usd": 0.1231778,
+  "session_id": "cb8aece3-6dd1-4b40-8849-ac40e79903de",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 3135,
+  "cache_read_input_tokens": 122639,
+  "cache_creation_input_tokens": 16259,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.distribution.NormalDistributionTest::testExtremeValues"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/special/Gamma.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

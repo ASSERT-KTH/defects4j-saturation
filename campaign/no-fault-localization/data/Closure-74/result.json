@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 74,
+  "id": "Closure-74",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 9931,
+  "finished_at": "2026-09-07T17:44:46Z",
+  "wallclock_s": 293,
+  "agent_s": 208,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 154111,
+  "total_cost_usd": 0.43097,
+  "session_id": "a8b1d1ec-72b8-46f4-aab4-f8f2ee9822c5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 13309,
+  "cache_read_input_tokens": 642255,
+  "cache_creation_input_tokens": 41060,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeFoldConstantsTest::testFoldComparison3",
+    "com.google.javascript.jscomp.PeepholeFoldConstantsTest::testInvertibleOperators",
+    "com.google.javascript.jscomp.PeepholeFoldConstantsTest::testCommutativeOperators"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/PeepholeFoldConstants.java"
+  ],
+  "patch_added_lines": 15,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

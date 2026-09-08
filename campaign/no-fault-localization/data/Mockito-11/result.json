@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 11,
+  "id": "Mockito-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 90,
+  "finished_at": "2026-09-08T11:52:31Z",
+  "wallclock_s": 544,
+  "agent_s": 208,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 21816,
+  "total_cost_usd": 0.10026020000000001,
+  "session_id": "615d1d76-ad3a-483d-a5ee-e1d4a55a9e5a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1264,
+  "cache_read_input_tokens": 157231,
+  "cache_creation_input_tokens": 13081,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.creation.DelegatingMethodTest::equals_should_return_true_when_equal",
+    "org.mockito.internal.creation.DelegatingMethodTest::equals_should_return_true_when_self"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/creation/DelegatingMethod.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

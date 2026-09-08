@@ -1,0 +1,27 @@
+diff --git a/src/org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java b/src/org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java
+index 9dc44e6..a2e8c44 100644
+--- a/src/org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java
++++ b/src/org/mockito/internal/creation/bytebuddy/ByteBuddyMockMaker.java
+@@ -31,7 +31,7 @@ public class ByteBuddyMockMaker implements MockMaker {
+         );
+         T mockInstance = null;
+         try {
+-            mockInstance = classInstantiator.instantiate(mockedProxyType);
++            mockInstance = instantiate(settings, mockedProxyType);
+             MockMethodInterceptor.MockAccess mockAccess = (MockMethodInterceptor.MockAccess) mockInstance;
+             mockAccess.setMockitoInterceptor(new MockMethodInterceptor(asInternalMockHandler(handler), settings));
+ 
+@@ -52,6 +52,13 @@ public class ByteBuddyMockMaker implements MockMaker {
+         }
+     }
+ 
++    private <T> T instantiate(MockCreationSettings<T> settings, Class<? extends T> mockedProxyType) {
++        if (settings.isUsingConstructor()) {
++            return new ConstructorInstantiator(settings.getOuterClassInstance()).newInstance(mockedProxyType);
++        }
++        return classInstantiator.instantiate(mockedProxyType);
++    }
++
+     private <T> T ensureMockIsAssignableToMockedType(MockCreationSettings<T> settings, T mock) {
+         // Force explicit cast to mocked type here, instead of
+         // relying on the JVM to implicitly cast on the client call site.

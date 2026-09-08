@@ -1,0 +1,37 @@
+diff --git a/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
+index 52fd176..54dc039 100644
+--- a/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/SemanticReverseAbstractInterpreter.java
+@@ -16,6 +16,7 @@
+ 
+ package com.google.javascript.jscomp;
+ 
++import static com.google.javascript.rhino.jstype.JSTypeNative.NO_TYPE;
+ import static com.google.javascript.rhino.jstype.JSTypeNative.UNKNOWN_TYPE;
+ 
+ import com.google.common.base.Function;
+@@ -290,14 +291,18 @@ class SemanticReverseAbstractInterpreter
+ 
+     // creating new scope
+     if (merged != null &&
+-        ((leftIsRefineable && merged.typeA != null) ||
+-         (rightIsRefineable && merged.typeB != null))) {
++        ((leftIsRefineable && !leftType.equals(merged.typeA)) ||
++         (rightIsRefineable && !rightType.equals(merged.typeB)))) {
+       FlowScope informed = blindScope.createChildFlowScope();
+-      if (leftIsRefineable && merged.typeA != null) {
+-        declareNameInScope(informed, left, merged.typeA);
++      if (leftIsRefineable) {
++        JSType narrowed = merged.typeA == null ?
++            getNativeType(NO_TYPE) : merged.typeA;
++        declareNameInScope(informed, left, narrowed);
+       }
+-      if (rightIsRefineable && merged.typeB != null) {
+-        declareNameInScope(informed, right, merged.typeB);
++      if (rightIsRefineable) {
++        JSType narrowed = merged.typeB == null ?
++            getNativeType(NO_TYPE) : merged.typeB;
++        declareNameInScope(informed, right, narrowed);
+       }
+       return informed;
+     }

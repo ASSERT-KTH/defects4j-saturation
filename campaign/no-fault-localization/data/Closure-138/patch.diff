@@ -1,0 +1,97 @@
+diff --git a/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
+index 720b60b..7bfbae5 100644
+--- a/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/ClosureReverseAbstractInterpreter.java
+@@ -205,7 +205,6 @@ class ClosureReverseAbstractInterpreter
+       Node param = condition.getLastChild();
+       if (callee.getType() == GETPROP && param.isQualifiedName()) {
+         JSType paramType =  getTypeIfRefinable(param, blindScope);
+-        if (paramType != null) {
+         Node left = callee.getFirstChild();
+         Node right = callee.getLastChild();
+         if (left.getType() == NAME && "goog".equals(left.getString()) &&
+@@ -215,7 +214,6 @@ class ClosureReverseAbstractInterpreter
+           if (restricter != null) {
+             return restrictParameter(param, paramType, blindScope, restricter,
+                 outcome);
+-            }
+           }
+         }
+       }
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index 1b3755d..5a558e8 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -139,10 +139,72 @@ class TypeInference
+       }
+     }
+ 
++    // A variable declared in an enclosing scope may be reassigned a literal
++    // value somewhere in this scope. Since this scope may be entered more
++    // than once (e.g. on a subsequent call of the enclosing function), a
++    // read of that variable preceding the reassignment must still see the
++    // widened type, not just the type known at the time this scope is
++    // first analyzed.
++    widenOuterVarsAssignedInScope(functionScope.getRootNode());
++
+     this.bottomScope = LinkedFlowScope.createEntryLattice(
+         new Scope(functionScope.getRootNode(), functionScope.getTypeOfThis()));
+   }
+ 
++  private void widenOuterVarsAssignedInScope(Node n) {
++    if (n.getType() == Token.FUNCTION && n != syntacticScope.getRootNode()) {
++      // Don't descend into nested functions; their own scope analysis will
++      // widen any outer variables they assign.
++      return;
++    }
++
++    if (n.getType() == Token.ASSIGN) {
++      Node lhs = n.getFirstChild();
++      if (lhs.getType() == Token.NAME) {
++        Var var = syntacticScope.getVar(lhs.getString());
++        if (var != null && var.getScope() != syntacticScope &&
++            var.isTypeInferred()) {
++          JSType assignedType = getLiteralType(n.getLastChild());
++          if (assignedType != null) {
++            JSType oldType = var.getType();
++            var.setType(oldType == null ?
++                assignedType : oldType.getLeastSupertype(assignedType));
++          }
++        }
++      }
++    }
++
++    for (Node child = n.getFirstChild(); child != null;
++         child = child.getNext()) {
++      widenOuterVarsAssignedInScope(child);
++    }
++  }
++
++  /**
++   * Returns the type of a simple literal expression, or {@code null} if
++   * {@code n} is not a simple literal.
++   */
++  private JSType getLiteralType(Node n) {
++    switch (n.getType()) {
++      case Token.NULL:
++        return getNativeType(NULL_TYPE);
++      case Token.VOID:
++        return getNativeType(VOID_TYPE);
++      case Token.TRUE:
++      case Token.FALSE:
++        return getNativeType(BOOLEAN_TYPE);
++      case Token.NUMBER:
++        return getNativeType(NUMBER_TYPE);
++      case Token.STRING:
++        return getNativeType(STRING_TYPE);
++      case Token.NAME:
++        return "undefined".equals(n.getString()) ?
++            getNativeType(VOID_TYPE) : null;
++      default:
++        return null;
++    }
++  }
++
+   @Override
+   FlowScope createInitialEstimateLattice() {
+     return bottomScope;

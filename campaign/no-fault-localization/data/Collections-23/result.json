@@ -1,0 +1,41 @@
+{
+  "project": "Collections",
+  "bug": 23,
+  "id": "Collections-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 137,
+  "finished_at": "2026-09-07T23:35:41Z",
+  "wallclock_s": 117,
+  "agent_s": 77,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 39945,
+  "total_cost_usd": 0.1770214,
+  "session_id": "33e6f4ec-cf99-4d82-97b8-2f2238333189",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 2043,
+  "cache_read_input_tokens": 324077,
+  "cache_creation_input_tokens": 21702,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.TrieUtilsTest::testUnmodifiableTrie",
+    "org.apache.commons.collections4.trie.UnmodifiableTrieTest::testDecorateFactory"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/trie/UnmodifiableTrie.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,48 @@
+diff --git a/src/main/java/org/jsoup/select/QueryParser.java b/src/main/java/org/jsoup/select/QueryParser.java
+index 9ff43ba..969cd2b 100644
+--- a/src/main/java/org/jsoup/select/QueryParser.java
++++ b/src/main/java/org/jsoup/select/QueryParser.java
+@@ -1,6 +1,7 @@
+ package org.jsoup.select;
+ 
+ import java.util.ArrayList;
++import java.util.Collections;
+ import java.util.List;
+ import java.util.regex.Pattern;
+ 
+@@ -55,15 +56,7 @@ class QueryParser {
+             // hierarchy and extras
+             boolean seenWhite = tq.consumeWhitespace();
+ 
+-            if (tq.matchChomp(",")) {
+-                CombiningEvaluator.Or or = new CombiningEvaluator.Or(evals);
+-                evals.clear();
+-                evals.add(or);
+-                while (!tq.isEmpty()) {
+-                    String subQuery = tq.chompTo(",");
+-                    or.add(parse(subQuery));
+-                }
+-            } else if (tq.matchesAny(combinators)) {
++            if (tq.matchesAny(combinators)) {
+                 combinator(tq.consume());
+             } else if (seenWhite) {
+                 combinator(' ');
+@@ -98,7 +91,17 @@ class QueryParser {
+             evals.add(new CombiningEvaluator.And(f, new StructuralEvaluator.ImmediatePreviousSibling(e)));
+         else if (combinator == '~')
+             evals.add(new CombiningEvaluator.And(f, new StructuralEvaluator.PreviousSibling(e)));
+-        else
++        else if (combinator == ',') {
++            CombiningEvaluator.Or or;
++            if (e instanceof CombiningEvaluator.Or) {
++                or = (CombiningEvaluator.Or) e;
++                or.add(f);
++            } else {
++                or = new CombiningEvaluator.Or(Collections.singletonList(e));
++                or.add(f);
++            }
++            evals.add(or);
++        } else
+             throw new Selector.SelectorParseException("Unknown combinator: " + combinator);
+     }
+ 

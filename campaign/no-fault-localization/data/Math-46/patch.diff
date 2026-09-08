@@ -1,0 +1,36 @@
+diff --git a/src/main/java/org/apache/commons/math/complex/Complex.java b/src/main/java/org/apache/commons/math/complex/Complex.java
+index d55c25a..78d73cc 100644
+--- a/src/main/java/org/apache/commons/math/complex/Complex.java
++++ b/src/main/java/org/apache/commons/math/complex/Complex.java
+@@ -225,10 +225,7 @@ public class Complex implements FieldElement<Complex>, Serializable  {
+      *  <li>If either {@code this} or {@code divisor} has a {@code NaN} value
+      *   in either part, {@link #NaN} is returned.
+      *  </li>
+-     *  <li>If {@code this} and {@code divisor} are both {@link #ZERO},
+-     *   {@link #NaN} is returned.
+-     *  </li>
+-     *  <li>If {@code divisor} equals {@link #ZERO}, {@link #INF} is returned.
++     *  <li>If {@code divisor} equals {@link #ZERO}, {@link #NaN} is returned.
+      *  </li>
+      *  <li>If {@code this} and {@code divisor} are both infinite,
+      *   {@link #NaN} is returned.
+@@ -256,8 +253,7 @@ public class Complex implements FieldElement<Complex>, Serializable  {
+         }
+ 
+         if (divisor.isZero) {
+-            // return isZero ? NaN : INF; // See MATH-657
+-            return isZero ? NaN : INF;
++            return NaN;
+         }
+ 
+         if (divisor.isInfinite() && !isInfinite()) {
+@@ -293,8 +289,7 @@ public class Complex implements FieldElement<Complex>, Serializable  {
+             return NaN;
+         }
+         if (divisor == 0d) {
+-            // return isZero ? NaN : INF; // See MATH-657
+-            return isZero ? NaN : INF;
++            return NaN;
+         }
+         if (Double.isInfinite(divisor)) {
+             return !isInfinite() ? ZERO : NaN;

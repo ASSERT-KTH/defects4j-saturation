@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 153,
+  "id": "Closure-153",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 12411,
+  "finished_at": "2026-09-07T19:59:29Z",
+  "wallclock_s": 419,
+  "agent_s": 300,
+  "agent_rc": 0,
+  "num_turns": 33,
+  "api_duration_ms": 211372,
+  "total_cost_usd": 0.7231307999999999,
+  "session_id": "39f91bf1-862a-4d2c-80a0-7c2bce9af946",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 66,
+  "output_tokens": 17811,
+  "cache_read_input_tokens": 1537684,
+  "cache_creation_input_tokens": 58330,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.NormalizeTest::testDuplicateVarInExterns",
+    "com.google.javascript.jscomp.NormalizeTest::testMakeLocalNamesUnique"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Normalize.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

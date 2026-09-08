@@ -1,0 +1,15 @@
+diff --git a/src/java/org/apache/commons/cli/HelpFormatter.java b/src/java/org/apache/commons/cli/HelpFormatter.java
+index 183cae3..51817ea 100644
+--- a/src/java/org/apache/commons/cli/HelpFormatter.java
++++ b/src/java/org/apache/commons/cli/HelpFormatter.java
+@@ -628,8 +628,8 @@ public class HelpFormatter {
+             buff.append("--").append(option.getLongOpt());
+         }
+ 
+-        // if the Option has a value
+-        if (option.hasArg() && (option.getArgName() != null))
++        // if the Option has a value and a non-empty argument name
++        if (option.hasArg() && option.hasArgName())
+         {
+             buff.append(" <").append(option.getArgName()).append(">");
+         }

@@ -1,0 +1,31 @@
+diff --git a/src/com/google/javascript/jscomp/ProcessCommonJSModules.java b/src/com/google/javascript/jscomp/ProcessCommonJSModules.java
+index 1744a58..dbf2bd4 100644
+--- a/src/com/google/javascript/jscomp/ProcessCommonJSModules.java
++++ b/src/com/google/javascript/jscomp/ProcessCommonJSModules.java
+@@ -125,6 +125,7 @@ public class ProcessCommonJSModules implements CompilerPass {
+       AbstractPostOrderCallback {
+ 
+     private int scriptNodeCount = 0;
++    private boolean hasModuleExports = false;
+ 
+     @Override
+     public void visit(NodeTraversal t, Node n, Node parent) {
+@@ -141,6 +142,7 @@ public class ProcessCommonJSModules implements CompilerPass {
+ 
+       if (n.isGetProp() &&
+           "module.exports".equals(n.getQualifiedName())) {
++        hasModuleExports = true;
+         visitModuleExports(n);
+       }
+     }
+@@ -188,7 +190,9 @@ public class ProcessCommonJSModules implements CompilerPass {
+           IR.call(IR.getprop(IR.name("goog"), IR.string("provide")),
+               IR.string(moduleName))).copyInformationFromForTree(script));
+ 
+-      emitOptionalModuleExportsOverride(script, moduleName);
++      if (hasModuleExports) {
++        emitOptionalModuleExportsOverride(script, moduleName);
++      }
+ 
+       // Rename vars to not conflict in global scope.
+       NodeTraversal.traverse(compiler, script, new SuffixVarsCallback(

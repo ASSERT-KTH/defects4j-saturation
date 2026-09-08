@@ -1,0 +1,43 @@
+{
+  "project": "Math",
+  "bug": 37,
+  "id": "Math-37",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3670,
+  "finished_at": "2026-09-08T10:05:38Z",
+  "wallclock_s": 162,
+  "agent_s": 101,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 65139,
+  "total_cost_usd": 0.21130080000000004,
+  "session_id": "5acde90a-8c88-44df-90db-dd7699729777",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 5843,
+  "cache_read_input_tokens": 266174,
+  "cache_creation_input_tokens": 23496,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.complex.ComplexTest::testTanhInf",
+    "org.apache.commons.math.complex.ComplexTest::testTan",
+    "org.apache.commons.math.complex.ComplexTest::testTanh",
+    "org.apache.commons.math.complex.ComplexTest::testTanInf"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/complex/Complex.java"
+  ],
+  "patch_added_lines": 14,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

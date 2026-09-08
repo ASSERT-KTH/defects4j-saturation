@@ -1,0 +1,45 @@
+diff --git a/src/com/google/javascript/jscomp/CheckAccessControls.java b/src/com/google/javascript/jscomp/CheckAccessControls.java
+index b23fd7a..a5d5aa0 100644
+--- a/src/com/google/javascript/jscomp/CheckAccessControls.java
++++ b/src/com/google/javascript/jscomp/CheckAccessControls.java
+@@ -413,9 +413,12 @@ class CheckAccessControls implements ScopedCallback, HotSwapCompilerPass {
+     if (objectType != null) {
+       // Is this a normal property access, or are we trying to override
+       // an existing property?
+-      boolean isOverride = t.inGlobalScope() &&
+-          parent.getType() == Token.ASSIGN &&
+-          parent.getFirstChild() == getprop;
++      boolean isOverride = parent.getType() == Token.ASSIGN &&
++          parent.getFirstChild() == getprop &&
++          (t.inGlobalScope() ||
++              (getprop.getFirstChild().getType() == Token.THIS &&
++                  currentClass != null &&
++                  !normalizeClassType(objectType).differsFrom(currentClass)));
+ 
+       // Find the lowest property defined on a class with visibility
+       // information.
+@@ -452,9 +455,21 @@ class CheckAccessControls implements ScopedCallback, HotSwapCompilerPass {
+         // (b) that the visibility of the override is the same as the
+         // visibility of the original property.
+         if (visibility == Visibility.PRIVATE && !sameInput) {
+-          compiler.report(
+-              t.makeError(getprop, PRIVATE_OVERRIDE,
+-                  objectType.toString()));
++          if (overridingInfo == null) {
++            // There's no JSDoc marking this as an intentional override, so
++            // treat this like any other illegal access to a private
++            // property from outside its file.
++            compiler.report(
++                t.makeError(getprop,
++                    BAD_PRIVATE_PROPERTY_ACCESS,
++                    propertyName,
++                    validator.getReadableJSTypeName(
++                        getprop.getFirstChild(), true)));
++          } else {
++            compiler.report(
++                t.makeError(getprop, PRIVATE_OVERRIDE,
++                    objectType.toString()));
++          }
+         } else if (overridingVisibility != Visibility.INHERITED &&
+             overridingVisibility != visibility) {
+           compiler.report(

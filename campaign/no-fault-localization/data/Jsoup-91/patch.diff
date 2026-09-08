@@ -1,0 +1,55 @@
+diff --git a/src/main/java/org/jsoup/parser/CharacterReader.java b/src/main/java/org/jsoup/parser/CharacterReader.java
+index 187f9e9..6f12a78 100644
+--- a/src/main/java/org/jsoup/parser/CharacterReader.java
++++ b/src/main/java/org/jsoup/parser/CharacterReader.java
+@@ -454,8 +454,20 @@ public final class CharacterReader {
+      *  Heuristic to determine if the current buffer looks like binary content. Reader will already hopefully be
+      *  decoded correctly, so a bunch of NULLs indicates a binary file
+      */
+-
+-
++    boolean isBinary() {
++        int size = Math.min(bufLength - bufPos, maxBufferLen);
++        if (size < 16) return false; // not enough content to make a call
++
++        int nullCount = 0;
++        for (int i = 0; i < size; i++) {
++            if (charBuf[bufPos + i] == '\u0000') {
++                nullCount++;
++                if (nullCount > 10) // a couple of NULs can turn up in odd but valid markup; a bunch means binary
++                    return true;
++            }
++        }
++        return false;
++    }
+ 
+     @Override
+     public String toString() {
+diff --git a/src/main/java/org/jsoup/parser/TreeBuilder.java b/src/main/java/org/jsoup/parser/TreeBuilder.java
+index 75dd91a..257634b 100644
+--- a/src/main/java/org/jsoup/parser/TreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/TreeBuilder.java
+@@ -1,11 +1,13 @@
+ package org.jsoup.parser;
+ 
++import org.jsoup.UncheckedIOException;
+ import org.jsoup.helper.Validate;
+ import org.jsoup.nodes.Attributes;
+ import org.jsoup.nodes.Document;
+ import org.jsoup.nodes.Element;
+ import org.jsoup.nodes.Node;
+ 
++import java.io.IOException;
+ import java.io.Reader;
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -51,6 +53,9 @@ abstract class TreeBuilder {
+     abstract List<Node> parseFragment(String inputFragment, Element context, String baseUri, Parser parser);
+ 
+     protected void runParser() {
++        if (reader.isBinary())
++            throw new UncheckedIOException(new IOException("Input is binary and unsupported"));
++
+         while (true) {
+             Token token = tokeniser.read();
+             process(token);

@@ -1,0 +1,193 @@
+diff --git a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+index b07e47f..9024ab2 100644
+--- a/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/HtmlTreeBuilder.java
+@@ -14,7 +14,9 @@ import org.jsoup.select.Elements;
+ import java.io.Reader;
+ import java.io.StringReader;
+ import java.util.ArrayList;
++import java.util.HashMap;
+ import java.util.List;
++import java.util.Map;
+ 
+ import static org.jsoup.helper.StringUtil.inSorted;
+ import static org.jsoup.helper.StringUtil.sort;
+@@ -55,6 +57,11 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     private boolean fosterInserts; // if next inserts should be fostered
+     private boolean fragmentParsing; // if parsing a fragment of html
+ 
++    // tracks how many elements of each tag name are currently on the open elements stack, so that scope checks
++    // (which otherwise have to walk the whole, potentially very deep, stack) can fast-path to false when a tag
++    // isn't present anywhere on the stack
++    private Map<String, Integer> stackTagCounts;
++
+     HtmlTreeBuilder() {}
+ 
+     ParseSettings defaultSettings() {
+@@ -75,6 +82,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         formattingElements = new ArrayList<>();
+         pendingTableCharacters = new ArrayList<>();
+         emptyEnd = new Token.EndTag();
++        stackTagCounts = new HashMap<>();
+         framesetOk = true;
+         fosterInserts = false;
+         fragmentParsing = false;
+@@ -110,6 +118,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+             root = new Element(Tag.valueOf("html", settings), baseUri);
+             doc.appendChild(root);
+             stack.add(root);
++            trackPush(root);
+             resetInsertionMode();
+ 
+             // setup form element to nearest form on context (up ancestor chain). ensures form controls are associated
+@@ -201,6 +210,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         if (startTag.isSelfClosing()) {
+             Element el = insertEmpty(startTag);
+             stack.add(el);
++            trackPush(el);
+             tokeniser.transition(TokeniserState.Data); // handles <script />, otherwise needs breakout steps from script data
+             tokeniser.emit(emptyEnd.reset().name(el.tagName()));  // ensure we get out of whatever state we are in. emitted for yielded processing
+             return el;
+@@ -220,6 +230,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     void insert(Element el) {
+         insertNode(el);
+         stack.add(el);
++        trackPush(el);
+     }
+ 
+     Element insertEmpty(Token.StartTag startTag) {
+@@ -242,8 +253,10 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         FormElement el = new FormElement(tag, baseUri, startTag.attributes);
+         setFormElement(el);
+         insertNode(el);
+-        if (onStack)
++        if (onStack) {
+             stack.add(el);
++            trackPush(el);
++        }
+         return el;
+     }
+ 
+@@ -281,17 +294,44 @@ public class HtmlTreeBuilder extends TreeBuilder {
+ 
+     Element pop() {
+         int size = stack.size();
+-        return stack.remove(size-1);
++        Element el = stack.remove(size-1);
++        trackPop(el);
++        return el;
+     }
+ 
+     void push(Element element) {
+         stack.add(element);
++        trackPush(element);
+     }
+ 
+     ArrayList<Element> getStack() {
+         return stack;
+     }
+ 
++    private void trackPush(Element el) {
++        String name = el.nodeName();
++        Integer count = stackTagCounts.get(name);
++        stackTagCounts.put(name, count == null ? 1 : count + 1);
++    }
++
++    private void trackPop(Element el) {
++        String name = el.nodeName();
++        Integer count = stackTagCounts.get(name);
++        if (count == null)
++            return;
++        if (count <= 1)
++            stackTagCounts.remove(name);
++        else
++            stackTagCounts.put(name, count - 1);
++    }
++
++    // fast check as to whether a tag name is present anywhere on the stack, so callers can avoid a full
++    // (potentially very deep) scan of the stack when it's known the tag can't be found
++    private boolean onStack(String elName) {
++        Integer count = stackTagCounts.get(elName);
++        return count != null && count > 0;
++    }
++
+     boolean onStack(Element el) {
+         return isElementInQueue(stack, el);
+     }
+@@ -321,6 +361,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+             Element next = stack.get(pos);
+             if (next == el) {
+                 stack.remove(pos);
++                trackPop(next);
+                 return true;
+             }
+         }
+@@ -331,6 +372,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         for (int pos = stack.size() -1; pos >= 0; pos--) {
+             Element next = stack.get(pos);
+             stack.remove(pos);
++            trackPop(next);
+             if (next.nodeName().equals(elName))
+                 break;
+         }
+@@ -341,6 +383,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         for (int pos = stack.size() -1; pos >= 0; pos--) {
+             Element next = stack.get(pos);
+             stack.remove(pos);
++            trackPop(next);
+             if (inSorted(next.nodeName(), elNames))
+                 break;
+         }
+@@ -353,6 +396,7 @@ public class HtmlTreeBuilder extends TreeBuilder {
+                 break;
+             } else {
+                 stack.remove(pos);
++                trackPop(next);
+             }
+         }
+     }
+@@ -374,8 +418,10 @@ public class HtmlTreeBuilder extends TreeBuilder {
+             Element next = stack.get(pos);
+             if (StringUtil.in(next.nodeName(), nodeNames) || next.nodeName().equals("html"))
+                 break;
+-            else
++            else {
+                 stack.remove(pos);
++                trackPop(next);
++            }
+         }
+     }
+ 
+@@ -394,10 +440,13 @@ public class HtmlTreeBuilder extends TreeBuilder {
+         int i = stack.lastIndexOf(after);
+         Validate.isTrue(i != -1);
+         stack.add(i+1, in);
++        trackPush(in);
+     }
+ 
+     void replaceOnStack(Element out, Element in) {
+         replaceInQueue(stack, out, in);
++        trackPop(out);
++        trackPush(in);
+     }
+ 
+     private void replaceInQueue(ArrayList<Element> queue, Element out, Element in) {
+@@ -464,6 +513,18 @@ public class HtmlTreeBuilder extends TreeBuilder {
+     }
+ 
+     private boolean inSpecificScope(String[] targetNames, String[] baseTypes, String[] extraTypes) {
++        // if none of the target names are anywhere on the stack, there's no need to walk it (which may be very
++        // deep) to find out
++        boolean maybePresent = false;
++        for (String targetName : targetNames) {
++            if (targetName != null && onStack(targetName)) {
++                maybePresent = true;
++                break;
++            }
++        }
++        if (!maybePresent)
++            return false;
++
+         int depth = stack.size() -1;
+         for (int pos = depth; pos >= 0; pos--) {
+             Element el = stack.get(pos);

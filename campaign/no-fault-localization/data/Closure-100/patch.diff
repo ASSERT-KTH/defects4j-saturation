@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/CheckGlobalThis.java b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+index 6390687..fc0565c 100644
+--- a/src/com/google/javascript/jscomp/CheckGlobalThis.java
++++ b/src/com/google/javascript/jscomp/CheckGlobalThis.java
+@@ -96,6 +96,12 @@ final class CheckGlobalThis implements Callback {
+       // var a = function() { }; // or
+       // function a() {} // or
+       // a.x = function() {};
++      if (!NodeUtil.isFunctionDeclaration(n)) {
++        int parentType = parent.getType();
++        if (parentType != Token.ASSIGN && parentType != Token.NAME) {
++          return false;
++        }
++      }
+     }
+ 
+     if (parent != null && parent.getType() == Token.ASSIGN) {
+@@ -143,6 +149,10 @@ final class CheckGlobalThis implements Callback {
+     }
+ 
+     // Also report a THIS with a property access.
++    if (parent.getType() == Token.GETPROP || parent.getType() == Token.GETELEM) {
++      return parent.getFirstChild() == n;
++    }
++
+     return false;
+   }
+ 

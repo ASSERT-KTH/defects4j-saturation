@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 43,
+  "id": "Lang-43",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 8035,
+  "finished_at": "2026-09-08T09:21:36Z",
+  "wallclock_s": 214,
+  "agent_s": 127,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 106916,
+  "total_cost_usd": 0.23767899999999997,
+  "session_id": "1cb97488-cef8-44b8-8a31-db2976ebaf01",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 9706,
+  "cache_read_input_tokens": 214905,
+  "cache_creation_input_tokens": 23865,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.text.ExtendedMessageFormatTest::testEscapedQuote_LANG_477"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/text/ExtendedMessageFormat.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 135,
+  "id": "Closure-135",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 22032,
+  "finished_at": "2026-09-07T19:26:49Z",
+  "wallclock_s": 499,
+  "agent_s": 419,
+  "agent_rc": 0,
+  "num_turns": 72,
+  "api_duration_ms": 382740,
+  "total_cost_usd": 1.4438598,
+  "session_id": "deec05c5-9aef-46ca-bc61-4206e9eba6ee",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 144,
+  "output_tokens": 32928,
+  "cache_read_input_tokens": 3888209,
+  "cache_creation_input_tokens": 83218,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.DevirtualizePrototypeMethodsTest::testRewritePrototypeMethods2",
+    "com.google.javascript.jscomp.TypeCheckTest::testGoodExtends9"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java",
+    "src/com/google/javascript/rhino/jstype/FunctionType.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,16 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dynamic/DynamicPropertyPointer.java b/src/java/org/apache/commons/jxpath/ri/model/dynamic/DynamicPropertyPointer.java
+index 3f3531a..42c451f 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dynamic/DynamicPropertyPointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dynamic/DynamicPropertyPointer.java
+@@ -222,6 +222,11 @@ public class DynamicPropertyPointer extends PropertyPointer {
+                     "Factory could not create an object for path: " + asPath());
+             }
+             collection = getBaseValue();
++            if (collection == null) {
++                throw new JXPathAbstractFactoryException(
++                    "Factory could not create an object for path: " + asPath()
++                        + ". The target object still doesn't exist.");
++            }
+         }
+ 
+         if (index != WHOLE_COLLECTION) {

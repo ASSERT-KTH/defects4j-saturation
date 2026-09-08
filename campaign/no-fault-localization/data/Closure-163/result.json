@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 163,
+  "id": "Closure-163",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 22434,
+  "finished_at": "2026-09-07T20:26:29Z",
+  "wallclock_s": 494,
+  "agent_s": 376,
+  "agent_rc": 0,
+  "num_turns": 23,
+  "api_duration_ms": 314430,
+  "total_cost_usd": 0.8341132000000001,
+  "session_id": "47edce51-11fb-466e-a792-0434e45ccff4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 46,
+  "output_tokens": 28172,
+  "cache_read_input_tokens": 1331011,
+  "cache_creation_input_tokens": 70340,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600b",
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600e",
+    "com.google.javascript.jscomp.CrossModuleMethodMotionTest::testIssue600"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java"
+  ],
+  "patch_added_lines": 66,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

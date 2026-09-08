@@ -1,0 +1,41 @@
+{
+  "project": "Cli",
+  "bug": 5,
+  "id": "Cli-5",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 12,
+  "finished_at": "2026-09-07T15:28:33Z",
+  "wallclock_s": 37,
+  "agent_s": 14,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 11560,
+  "total_cost_usd": 0.06568979999999999,
+  "session_id": "42e5ef34-07cf-4710-8f15-496b69b1bd0d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 635,
+  "cache_read_input_tokens": 67124,
+  "cache_creation_input_tokens": 10660,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.UtilTest::testStripLeadingHyphens",
+    "org.apache.commons.cli.bug.BugCLI133Test::testOrder"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/Util.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

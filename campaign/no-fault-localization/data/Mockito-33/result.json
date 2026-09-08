@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 33,
+  "id": "Mockito-33",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1954,
+  "finished_at": "2026-09-08T14:25:00Z",
+  "wallclock_s": 215,
+  "agent_s": 124,
+  "agent_rc": 0,
+  "num_turns": 19,
+  "api_duration_ms": 68645,
+  "total_cost_usd": 0.2543556,
+  "session_id": "9b8456d1-7c32-479d-bc97-b8c2275e6bbd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 4877,
+  "cache_read_input_tokens": 515083,
+  "cache_creation_input_tokens": 24579,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.InheritedGenericsPolimorphicCallTest::shouldStubbingWork",
+    "org.mockitousage.bugs.InheritedGenericsPolimorphicCallTest::shouldVerificationWorks"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/invocation/InvocationMatcher.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

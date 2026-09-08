@@ -34,10 +34,17 @@ stack traces, fix it.* Fault localization — a large part of the APR problem, a
 spectrum-based tools lose most of their accuracy — was not solved here. It was supplied.
 
 Perfect fault localization is a recognised configuration in the Defects4J literature, and
-this campaign is a clean instance of it. But **99.6% is a repair rate under perfect
-class-level FL, not a repair rate on Defects4J**, and the two should not be quoted
-interchangeably. The [`no-fault-localization`](../no-fault-localization) campaign exists to
-measure the gap; until it has run, the size of the effect here is unknown.
+this campaign is a clean instance of it. **99.6% is a repair rate under perfect class-level
+FL, not a repair rate on Defects4J**, and the two should not be quoted interchangeably.
+
+**The gap has since been measured, and it is nil.** The
+[`no-fault-localization`](../no-fault-localization) campaign re-ran all 854 bugs with those
+four lines removed and scored **851/853 (99.8%)**. No bug that this campaign solved became
+unsolvable without the class name; there were no localization failures; 94.8% of patches
+landed in the developer's class unaided. Withholding the location costs about 8% more
+wall-clock time and nothing else. So the disclosure below was a genuine methodological flaw
+that did not inflate the number -- which says Defects4J's triggering tests already point at
+the defect.
 
 Two things bound the disclosure without rescuing the framing: it was not a hard constraint
 (37 accepted patches went outside the named set and repaired a different class — `Chart-15`

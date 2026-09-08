@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 65,
+  "id": "Jsoup-65",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 48916,
+  "finished_at": "2026-09-08T05:52:01Z",
+  "wallclock_s": 728,
+  "agent_s": 702,
+  "agent_rc": 0,
+  "num_turns": 57,
+  "api_duration_ms": 691043,
+  "total_cost_usd": 1.7988972,
+  "session_id": "2ea68b88-41ec-47e6-9eb2-40c7b24d219d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 114,
+  "output_tokens": 61202,
+  "cache_read_input_tokens": 3728731,
+  "cache_creation_input_tokens": 109625,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::testTemplateInsideTable"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilder.java",
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilderState.java"
+  ],
+  "patch_added_lines": 111,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

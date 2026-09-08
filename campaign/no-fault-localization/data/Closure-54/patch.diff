@@ -1,0 +1,92 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index 8654ae6..c0def05 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -591,7 +591,25 @@ final class TypedScopeCreator implements ScopeCreator {
+       }
+ 
+       if (type == null) {
+-        type = typeRegistry.createAnonymousObjectType();
++        // If this object literal is being assigned to F.prototype, make sure
++        // its implicit prototype reflects whatever inheritance chain F has
++        // already established (e.g. via an @extends annotation), so that
++        // properties on this literal are checked against any properties
++        // inherited from F's superclass.
++        ObjectType inheritedPrototype = null;
++        if (lValueName != null && lValueName.endsWith(".prototype")) {
++          String ownerName = lValueName.substring(
++              0, lValueName.length() - ".prototype".length());
++          Var ownerVar = scope.getVar(ownerName);
++          FunctionType ownerFnType = ownerVar == null ? null :
++              JSType.toMaybeFunctionType(ownerVar.getType());
++          if (ownerFnType != null &&
++              (ownerFnType.isConstructor() || ownerFnType.isInterface())) {
++            inheritedPrototype =
++                ownerFnType.getPrototype().getImplicitPrototype();
++          }
++        }
++        type = typeRegistry.createAnonymousObjectType(inheritedPrototype);
+       }
+ 
+       setDeferredType(objectLit, type);
+@@ -1411,12 +1429,20 @@ final class TypedScopeCreator implements ScopeCreator {
+           // implicit prototype is set up appropriately. We just obey
+           // the @extends tag.
+           if (!qVar.isTypeInferred()) {
+-            // If the programmer has declared that F inherits from Super,
+-            // and they assign F.prototype to some arbitrary expression,
+-            // there's not much we can do. We just ignore the expression,
+-            // and hope they've annotated their code in a way to tell us
+-            // what props are going to be on that prototype.
+-            return;
++            if (rhsValue == null || rhsValue.getType() != Token.OBJECTLIT) {
++              // If the programmer has declared that F inherits from Super,
++              // and they assign F.prototype to some arbitrary expression,
++              // there's not much we can do. We just ignore the expression,
++              // and hope they've annotated their code in a way to tell us
++              // what props are going to be on that prototype.
++              return;
++            }
++            // Otherwise, the assigned value is an object literal, so we know
++            // exactly what properties it adds. Undeclare the qualified name
++            // below so that it does not shadow the new value: TypeInference
++            // will apply the object literal's properties to F's prototype
++            // later on, preserving F's existing inheritance chain when
++            // it does so.
+           }
+           if (qVar.getScope() == scope) {
+             scope.undeclare(qVar);
+diff --git a/src/com/google/javascript/rhino/jstype/FunctionType.java b/src/com/google/javascript/rhino/jstype/FunctionType.java
+index b65d8b1..7514e4b 100644
+--- a/src/com/google/javascript/rhino/jstype/FunctionType.java
++++ b/src/com/google/javascript/rhino/jstype/FunctionType.java
+@@ -338,7 +338,7 @@ public class FunctionType extends PrototypeObjectType {
+     //
+     // In the second case, we just use the anonymous object as the prototype.
+     if (baseType.hasReferenceName() ||
+-        baseType.isUnknownType() ||
++        baseType instanceof UnknownType ||
+         isNativeObjectType() ||
+         baseType.isFunctionPrototypeType() ||
+         !(baseType instanceof PrototypeObjectType)) {
+diff --git a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+index 4938193..e379dfe 100644
+--- a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
++++ b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+@@ -1293,8 +1293,15 @@ public class JSTypeRegistry implements Serializable {
+    * Create an anonymous object type.
+    */
+   public ObjectType createAnonymousObjectType() {
++    return createAnonymousObjectType(null);
++  }
++
++  /**
++   * Create an anonymous object type with the given implicit prototype.
++   */
++  public ObjectType createAnonymousObjectType(ObjectType implicitPrototype) {
+     PrototypeObjectType type =
+-        new PrototypeObjectType(this, null, null);
++        new PrototypeObjectType(this, null, implicitPrototype);
+     type.setPrettyPrint(true);
+     return type;
+   }

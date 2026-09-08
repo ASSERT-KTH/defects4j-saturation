@@ -1,0 +1,40 @@
+{
+  "project": "Cli",
+  "bug": 24,
+  "id": "Cli-24",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6856,
+  "finished_at": "2026-09-07T15:37:21Z",
+  "wallclock_s": 129,
+  "agent_s": 112,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 108653,
+  "total_cost_usd": 0.2555842,
+  "session_id": "3a50f30a-e7fd-4187-b2d6-da1a9c657d0d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 8461,
+  "cache_read_input_tokens": 326031,
+  "cache_creation_input_tokens": 25845,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.bug.BugCLI162Test::testLongLineChunkingIndentIgnored"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/HelpFormatter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

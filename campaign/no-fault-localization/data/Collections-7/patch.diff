@@ -1,0 +1,73 @@
+diff --git a/src/java/org/apache/commons/collections/ExtendedProperties.java b/src/java/org/apache/commons/collections/ExtendedProperties.java
+index dba80b8..63cb901 100644
+--- a/src/java/org/apache/commons/collections/ExtendedProperties.java
++++ b/src/java/org/apache/commons/collections/ExtendedProperties.java
+@@ -702,10 +702,6 @@ public class ExtendedProperties extends Hashtable {
+      * @param value  the decoded object to store
+      */
+     private void addPropertyDirect(String key, Object value) {
+-        // safety check
+-        if (!containsKey(key)) {
+-            keysAsListed.add(key);
+-        }
+         put(key, value);
+     }
+ 
+@@ -735,14 +731,38 @@ public class ExtendedProperties extends Hashtable {
+             ((List) current).add(value);
+             
+         } else {
+-            // brand new key - store in keysAsListed to retain order
+-            if (!containsKey(key)) {
+-                keysAsListed.add(key);
+-            }
++            // brand new key
+             put(key, value);
+         }
+     }
+ 
++    /**
++     * Adds a key/value pair to the map, maintaining the
++     * {@link #keysAsListed} list of keys in insertion order.
++     *
++     * @param key  the key to store at
++     * @param value  the value to store
++     * @return the previous value stored at the key, or null
++     */
++    public Object put(Object key, Object value) {
++        if (!containsKey(key)) {
++            keysAsListed.add(key);
++        }
++        return super.put(key, value);
++    }
++
++    /**
++     * Removes the key and its corresponding value from this
++     * map, keeping {@link #keysAsListed} consistent.
++     *
++     * @param key  the key to remove
++     * @return the value that was removed, or null
++     */
++    public Object remove(Object key) {
++        keysAsListed.remove(key);
++        return super.remove(key);
++    }
++
+     /**
+      * Set a property, this will replace any previously
+      * set values. Set values is implicitly a call
+@@ -824,14 +844,6 @@ public class ExtendedProperties extends Hashtable {
+      */
+     public void clearProperty(String key) {
+         if (containsKey(key)) {
+-            // we also need to rebuild the keysAsListed or else
+-            // things get *very* confusing
+-            for (int i = 0; i < keysAsListed.size(); i++) {
+-                if (( keysAsListed.get(i)).equals(key)) {
+-                    keysAsListed.remove(i);
+-                    break;
+-                }
+-            }
+             remove(key);
+         }
+     }

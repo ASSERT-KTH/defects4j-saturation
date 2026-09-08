@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 34,
+  "id": "JacksonDatabind-34",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 64,
+  "finished_at": "2026-09-08T01:17:23Z",
+  "wallclock_s": 211,
+  "agent_s": 51,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 16436,
+  "total_cost_usd": 0.0792456,
+  "session_id": "04736c8a-cfbc-4ac6-a430-bc0917db1460",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1031,
+  "cache_read_input_tokens": 105873,
+  "cache_creation_input_tokens": 11365,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.jsonschema.NewSchemaTest::testSimpleNumbers"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

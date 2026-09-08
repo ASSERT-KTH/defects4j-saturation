@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 16,
+  "id": "Jsoup-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 314,
+  "finished_at": "2026-09-08T05:16:32Z",
+  "wallclock_s": 51,
+  "agent_s": 32,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 26363,
+  "total_cost_usd": 0.1146548,
+  "session_id": "92266f83-7d72-4d60-9444-0e478298ec88",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2055,
+  "cache_read_input_tokens": 178924,
+  "cache_creation_input_tokens": 13718,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.DocumentTypeTest::outerHtmlGeneration",
+    "org.jsoup.nodes.DocumentTypeTest::constructorValidationThrowsExceptionOnBlankName"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/DocumentType.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

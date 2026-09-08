@@ -1,0 +1,17 @@
+diff --git a/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java b/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
+index ce6926f..d128c01 100644
+--- a/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
++++ b/src/main/java/org/apache/commons/collections/set/ListOrderedSet.java
+@@ -226,7 +226,11 @@ public class ListOrderedSet<E>
+ 
+     @Override
+     public boolean retainAll(Collection<?> coll) {
+-        boolean result = collection.retainAll(coll);
++        // use a Set for fast membership testing when the collection may not
++        // provide constant time contains(), e.g. a List, to avoid quadratic
++        // behaviour for large inputs
++        final Collection<?> retainedElements = (coll instanceof Set<?>) ? coll : new HashSet<Object>(coll);
++        boolean result = collection.retainAll(retainedElements);
+         if (result == false) {
+             return false;
+         }

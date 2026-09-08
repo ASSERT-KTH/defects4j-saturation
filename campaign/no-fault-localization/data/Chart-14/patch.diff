@@ -1,0 +1,73 @@
+diff --git a/source/org/jfree/chart/plot/CategoryPlot.java b/source/org/jfree/chart/plot/CategoryPlot.java
+index dc7d06b..9eb20e9 100644
+--- a/source/org/jfree/chart/plot/CategoryPlot.java
++++ b/source/org/jfree/chart/plot/CategoryPlot.java
+@@ -2163,13 +2163,16 @@ public class CategoryPlot extends Plot implements ValueAxisPlot,
+             markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                     index));
+         }
++        if (markers == null) {
++            return false;
++        }
+         boolean removed = markers.remove(marker);
+         if (removed && notify) {
+             fireChangeEvent();
+         }
+         return removed;
+     }
+-    
++
+     /**
+      * Adds a marker for display (in the foreground) against the range axis and
+      * sends a {@link PlotChangeEvent} to all registered listeners. Typically a 
+@@ -2445,6 +2448,9 @@ public class CategoryPlot extends Plot implements ValueAxisPlot,
+             markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                     index));
+         }
++        if (markers == null) {
++            return false;
++        }
+         boolean removed = markers.remove(marker);
+         if (removed && notify) {
+             fireChangeEvent();
+diff --git a/source/org/jfree/chart/plot/XYPlot.java b/source/org/jfree/chart/plot/XYPlot.java
+index 50cf416..064bc53 100644
+--- a/source/org/jfree/chart/plot/XYPlot.java
++++ b/source/org/jfree/chart/plot/XYPlot.java
+@@ -2290,13 +2290,16 @@ public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+             markers = (ArrayList) this.backgroundDomainMarkers.get(new Integer(
+                     index));
+         }
++        if (markers == null) {
++            return false;
++        }
+         boolean removed = markers.remove(marker);
+         if (removed && notify) {
+             fireChangeEvent();
+         }
+         return removed;
+     }
+-    
++
+     /**
+      * Adds a marker for the range axis and sends a {@link PlotChangeEvent} to
+      * all registered listeners.
+@@ -2526,6 +2529,9 @@ public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+             markers = (ArrayList) this.backgroundRangeMarkers.get(new Integer(
+                     index));
+         }
++        if (markers == null) {
++            return false;
++        }
+         boolean removed = markers.remove(marker);
+         if (removed && notify) {
+             fireChangeEvent();
+@@ -2534,7 +2540,7 @@ public class XYPlot extends Plot implements ValueAxisPlot, Zoomable,
+     }
+ 
+     /**
+-     * Adds an annotation to the plot and sends a {@link PlotChangeEvent} to 
++     * Adds an annotation to the plot and sends a {@link PlotChangeEvent} to
+      * all registered listeners.
+      *
+      * @param annotation  the annotation (<code>null</code> not permitted).

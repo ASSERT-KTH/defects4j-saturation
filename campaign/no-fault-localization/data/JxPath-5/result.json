@@ -1,0 +1,40 @@
+{
+  "project": "JxPath",
+  "bug": 5,
+  "id": "JxPath-5",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5959,
+  "finished_at": "2026-09-08T06:06:41Z",
+  "wallclock_s": 278,
+  "agent_s": 253,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 118665,
+  "total_cost_usd": 0.3031326,
+  "session_id": "d3673e1b-68e2-4b45-90a0-6a8b8298d06e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 8492,
+  "cache_read_input_tokens": 506543,
+  "cache_creation_input_tokens": 28576,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.VariableTest::testUnionOfVariableAndNode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/NodePointer.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

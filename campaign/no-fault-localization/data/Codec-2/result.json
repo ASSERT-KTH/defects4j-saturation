@@ -1,0 +1,41 @@
+{
+  "project": "Codec",
+  "bug": 2,
+  "id": "Codec-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 916,
+  "finished_at": "2026-09-07T23:11:47Z",
+  "wallclock_s": 42,
+  "agent_s": 32,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 29649,
+  "total_cost_usd": 0.21461019999999997,
+  "session_id": "6a2f9ab9-080f-4158-92e6-ecf61e7a9b2b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 2032,
+  "cache_read_input_tokens": 185026,
+  "cache_creation_input_tokens": 38470,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.codec.binary.Base64InputStreamTest::testBase64EmptyInputStream",
+    "org.apache.commons.codec.binary.Base64OutputStreamTest::testBase64EmptyOutputStream"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/codec/binary/Base64.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

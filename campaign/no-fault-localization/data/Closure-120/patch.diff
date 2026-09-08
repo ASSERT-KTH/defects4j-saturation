@@ -1,0 +1,20 @@
+diff --git a/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java b/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
+index cdacc5f..ac4559a 100644
+--- a/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
++++ b/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
+@@ -424,6 +424,15 @@ class ReferenceCollectingCallback implements ScopedCallback,
+         return false;
+       }
+ 
++      // If the assignment happens in a different (nested) scope than the
++      // variable's declaration, then it lives inside a function that could
++      // be invoked more than once (including recursively), so the "one and
++      // only" assignment may actually execute multiple times over the
++      // variable's lifetime.
++      if (ref.scope != ref.getSymbol().scope) {
++        return false;
++      }
++
+       // Make sure this assignment is not in a loop.
+       for (BasicBlock block = ref.getBasicBlock();
+            block != null; block = block.getParent()) {

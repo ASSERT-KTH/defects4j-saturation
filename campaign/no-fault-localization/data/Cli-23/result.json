@@ -1,0 +1,41 @@
+{
+  "project": "Cli",
+  "bug": 23,
+  "id": "Cli-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 935,
+  "finished_at": "2026-09-07T15:35:12Z",
+  "wallclock_s": 46,
+  "agent_s": 31,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 28741,
+  "total_cost_usd": 0.1139636,
+  "session_id": "18c14278-ca91-47c3-b08a-90b0a20cb44f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 2547,
+  "cache_read_input_tokens": 120493,
+  "cache_creation_input_tokens": 15201,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.bug.BugCLI162Test::testInfiniteLoop",
+    "org.apache.commons.cli.bug.BugCLI162Test::testPrintHelpLongLines"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/HelpFormatter.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

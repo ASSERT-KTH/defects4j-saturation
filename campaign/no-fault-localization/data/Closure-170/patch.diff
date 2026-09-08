@@ -1,0 +1,51 @@
+diff --git a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+index ecba09b..6171de2 100644
+--- a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
++++ b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+@@ -315,6 +315,46 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+         return false;
+       }
+ 
++      // The variable itself may be reassigned (possibly conditionally, e.g.
++      // inside a HOOK) somewhere to the left of the use within the same CFG
++      // node. Since the reaching definition of the use was computed from the
++      // state entering the CFG node, such a reassignment invalidates it.
++      // Example: var i = 0; return (1 ? (i = 5) : 0), i;
++      //
++      // We exclude the case where the reassignment is an ancestor of the use
++      // (e.g. "x = x + 1"): there the write only takes effect after the
++      // right hand side (which contains the use) is fully evaluated, so it
++      // does not actually happen before the use.
++      if (checkLeftOf(use, useCfgNode, new Predicate<Node>() {
++        @Override
++        public boolean apply(Node n) {
++          if (n == null) {
++            return false;
++          }
++          if (n.isName() && n.getString().equals(varName)
++              && NodeUtil.isLValue(n) && !isAncestorOfUse(n.getParent())) {
++            return true;
++          }
++          for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++            if (!ControlFlowGraph.isEnteringNewCfgNode(c) && apply(c)) {
++              return true;
++            }
++          }
++          return false;
++        }
++
++        private boolean isAncestorOfUse(Node maybeAncestor) {
++          for (Node p = use; p != null; p = p.getParent()) {
++            if (p == maybeAncestor) {
++              return true;
++            }
++          }
++          return false;
++        }
++      })) {
++        return false;
++      }
++
+       // TODO(user): Side-effect is OK sometimes. As long as there are no
+       // side-effect function down all paths to the use. Once we have all the
+       // side-effect analysis tool.

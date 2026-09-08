@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 59,
+  "id": "Math-59",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 22,
+  "finished_at": "2026-09-08T10:30:12Z",
+  "wallclock_s": 234,
+  "agent_s": 69,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 18816,
+  "total_cost_usd": 0.06384240000000001,
+  "session_id": "c5d39cc0-eb29-4735-9434-bead6a50ff4a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 712,
+  "cache_read_input_tokens": 81932,
+  "cache_creation_input_tokens": 9463,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.util.FastMathTest::testMinMaxFloat"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/util/FastMath.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

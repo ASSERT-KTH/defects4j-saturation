@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/GlobalNamespace.java b/src/com/google/javascript/jscomp/GlobalNamespace.java
+index d09219d..f232f43 100644
+--- a/src/com/google/javascript/jscomp/GlobalNamespace.java
++++ b/src/com/google/javascript/jscomp/GlobalNamespace.java
+@@ -259,6 +259,16 @@ class GlobalNamespace
+    * @return Whether the name reference is a global variable reference
+    */
+   private boolean isGlobalVarReference(String name, Scope s) {
++    // "arguments" is implicitly declared in every local scope, regardless
++    // of whether a global variable of the same name exists (e.g. because
++    // it's declared in the externs). A reference to "arguments" inside a
++    // local scope always refers to that local "arguments" object, never to
++    // an unrelated global variable, so it should never be treated as a
++    // global name reference.
++    if (s.isLocal() && "arguments".equals(name)) {
++      return false;
++    }
++
+     Scope.Var v = s.getVar(name);
+     if (v == null && externsScope != null) {
+       v = externsScope.getVar(name);

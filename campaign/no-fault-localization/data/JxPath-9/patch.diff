@@ -1,0 +1,144 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+index 26875b8..1bf9692 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+@@ -55,7 +55,30 @@ public abstract class CoreOperationCompare extends CoreOperation {
+     protected boolean equal(
+         EvalContext context,
+         Expression left,
+-        Expression right) 
++        Expression right)
++    {
++        return compute(context, left, right, false);
++    }
++
++    /**
++     * Compares two values for inequality. This is not simply the negation
++     * of {@link #equal(EvalContext, Expression, Expression)}: per the XPath
++     * specification, a comparison in which either operand is NaN is always
++     * false, regardless of whether the operator is "=" or "!=".
++     */
++    protected boolean notEqual(
++        EvalContext context,
++        Expression left,
++        Expression right)
++    {
++        return compute(context, left, right, true);
++    }
++
++    private boolean compute(
++        EvalContext context,
++        Expression left,
++        Expression right,
++        boolean invert)
+     {
+         Object l = left.compute(context);
+         Object r = right.compute(context);
+@@ -85,46 +108,41 @@ public abstract class CoreOperationCompare extends CoreOperation {
+         }
+ 
+         if (l instanceof Iterator && r instanceof Iterator) {
+-            return findMatch((Iterator) l, (Iterator) r);
++            return findMatch((Iterator) l, (Iterator) r, invert);
+         }
+         if (l instanceof Iterator) {
+-            return contains((Iterator) l, r);
++            return contains((Iterator) l, r, invert);
+         }
+         if (r instanceof Iterator) {
+-            return contains((Iterator) r, l);
++            return contains((Iterator) r, l, invert);
+         }
+-        return equal(l, r);
++        return equal(l, r, invert);
+     }
+ 
+-    protected boolean contains(Iterator it, Object value) {
++    private boolean contains(Iterator it, Object value, boolean invert) {
+         while (it.hasNext()) {
+             Object element = it.next();
+-            if (equal(element, value)) {
++            if (equal(element, value, invert)) {
+                 return true;
+             }
+         }
+         return false;
+     }
+ 
+-    protected boolean findMatch(Iterator lit, Iterator rit) {
++    private boolean findMatch(Iterator lit, Iterator rit, boolean invert) {
+         HashSet left = new HashSet();
+         while (lit.hasNext()) {
+             left.add(lit.next());
+         }
+         while (rit.hasNext()) {
+-            if (contains(left.iterator(), rit.next())) {
++            if (contains(left.iterator(), rit.next(), invert)) {
+                 return true;
+             }
+         }
+         return false;
+     }
+ 
+-    protected boolean equal(Object l, Object r) {
+-        if (l instanceof Pointer && r instanceof Pointer) {
+-            if (l.equals(r)) {
+-                return true;
+-            }
+-        }
++    private boolean equal(Object l, Object r, boolean invert) {
+         if (l instanceof Pointer) {
+             l = ((Pointer) l).getValue();
+         }
+@@ -133,21 +151,27 @@ public abstract class CoreOperationCompare extends CoreOperation {
+             r = ((Pointer) r).getValue();
+         }
+ 
+-        if (l == r) {
+-            return true;
+-        }
+         if (l instanceof Boolean || r instanceof Boolean) {
+-            return (InfoSetUtil.booleanValue(l) == InfoSetUtil.booleanValue(r));
+-            }
+-            //if either side is NaN, no comparison returns true:
++            boolean equal = InfoSetUtil.booleanValue(l) == InfoSetUtil.booleanValue(r);
++            return invert ? !equal : equal;
++        }
+         if (l instanceof Number || r instanceof Number) {
+-            return (InfoSetUtil.doubleValue(l) == InfoSetUtil.doubleValue(r));
++            double ld = InfoSetUtil.doubleValue(l);
++            double rd = InfoSetUtil.doubleValue(r);
++            // per the XPath spec, any comparison involving NaN is false,
++            // whether the operator is "=" or "!="
++            if (Double.isNaN(ld) || Double.isNaN(rd)) {
++                return false;
+             }
+-            if (l instanceof String || r instanceof String) {
+-            return (
+-                InfoSetUtil.stringValue(l).equals(InfoSetUtil.stringValue(r)));
++            return invert ? ld != rd : ld == rd;
++        }
++        if (l instanceof String || r instanceof String) {
++            boolean equal =
++                InfoSetUtil.stringValue(l).equals(InfoSetUtil.stringValue(r));
++            return invert ? !equal : equal;
+         }
+-        return l != null && l.equals(r);
++        boolean equal = l == r || (l != null && l.equals(r));
++        return invert ? !equal : equal;
+     }
+ 
+ }
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
+index 6754f46..32ad852 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java
+@@ -29,7 +29,7 @@ public class CoreOperationNotEqual extends CoreOperationCompare {
+     }
+ 
+     public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        return equal(context, args[0], args[1]) ? Boolean.FALSE : Boolean.TRUE;
++        return notEqual(context, args[0], args[1]) ? Boolean.TRUE : Boolean.FALSE;
+     }
+     public String getSymbol() {
+         return "!=";

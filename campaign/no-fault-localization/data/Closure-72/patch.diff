@@ -1,0 +1,60 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionToBlockMutator.java b/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
+index 64764c0..2294995 100644
+--- a/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
++++ b/src/com/google/javascript/jscomp/FunctionToBlockMutator.java
+@@ -149,6 +149,55 @@ class FunctionToBlockMutator {
+                 "inline_",
+                 isCallInLoop)));
+     // Make label names unique to this instance.
++    renameLabels(NodeUtil.getFunctionBody(fnNode),
++        Maps.<String, String>newHashMap(),
++        new LabelNameSupplier(idSupplier));
++  }
++
++  /**
++   * Rename every label declared within {@code n} (and the breaks/continues
++   * that refer to them) so that inlining the same function multiple times,
++   * or into a scope that already declares a label with the same name, can
++   * not introduce a duplicate label.
++   */
++  private static void renameLabels(
++      Node n, Map<String, String> labelNameMap, Supplier<String> idSupplier) {
++    if (n.getType() == Token.FUNCTION) {
++      // Don't recurse into nested functions, labels are scoped to the
++      // function in which they are declared.
++      return;
++    }
++
++    if (n.getType() == Token.LABEL) {
++      Node nameNode = n.getFirstChild();
++      String name = nameNode.getString();
++      String newName = idSupplier.get();
++      String previousMapping = labelNameMap.put(name, newName);
++      nameNode.setString(newName);
++
++      renameLabels(n.getLastChild(), labelNameMap, idSupplier);
++
++      if (previousMapping == null) {
++        labelNameMap.remove(name);
++      } else {
++        labelNameMap.put(name, previousMapping);
++      }
++      return;
++    }
++
++    if ((n.getType() == Token.BREAK || n.getType() == Token.CONTINUE)
++        && n.hasChildren()) {
++      Node nameNode = n.getFirstChild();
++      String newName = labelNameMap.get(nameNode.getString());
++      if (newName != null) {
++        nameNode.setString(newName);
++      }
++      return;
++    }
++
++    for (Node c = n.getFirstChild(); c != null; c = c.getNext()) {
++      renameLabels(c, labelNameMap, idSupplier);
++    }
+   }
+ 
+   static class LabelNameSupplier implements Supplier<String> {

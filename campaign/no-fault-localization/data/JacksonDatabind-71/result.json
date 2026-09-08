@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 71,
+  "id": "JacksonDatabind-71",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 115,
+  "finished_at": "2026-09-08T02:04:22Z",
+  "wallclock_s": 195,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 28249,
+  "total_cost_usd": 0.1374678,
+  "session_id": "94912f56-b632-4185-8b58-c9d379e23feb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 1846,
+  "cache_read_input_tokens": 254604,
+  "cache_creation_input_tokens": 16358,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.TestMapDeserialization::testcharSequenceKeyMap"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

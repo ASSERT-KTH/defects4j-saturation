@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 58,
+  "id": "Jsoup-58",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 11656,
+  "finished_at": "2026-09-08T05:39:52Z",
+  "wallclock_s": 272,
+  "agent_s": 244,
+  "agent_rc": 0,
+  "num_turns": 41,
+  "api_duration_ms": 229455,
+  "total_cost_usd": 0.7476537999999999,
+  "session_id": "e4cc4afa-72ce-4779-8e91-a9775250774d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 82,
+  "output_tokens": 18870,
+  "cache_read_input_tokens": 1709569,
+  "cache_creation_input_tokens": 53292,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.safety.CleanerTest::testIsValidBodyHtml",
+    "org.jsoup.safety.CleanerTest::testIsValidDocument"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/Jsoup.java",
+    "src/main/java/org/jsoup/parser/Parser.java",
+    "src/main/java/org/jsoup/safety/Cleaner.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

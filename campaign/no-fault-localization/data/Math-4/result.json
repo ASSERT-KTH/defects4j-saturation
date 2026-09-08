@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 4,
+  "id": "Math-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 28,
+  "finished_at": "2026-09-08T09:32:46Z",
+  "wallclock_s": 148,
+  "agent_s": 62,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 20631,
+  "total_cost_usd": 0.09349220000000001,
+  "session_id": "5a3ac1b9-70e3-4982-ac19-a0071b4a16e8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1421,
+  "cache_read_input_tokens": 114821,
+  "cache_creation_input_tokens": 13124,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.geometry.euclidean.threed.SubLineTest::testIntersectionNotIntersecting",
+    "org.apache.commons.math3.geometry.euclidean.twod.SubLineTest::testIntersectionParallel"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/SubLine.java",
+    "src/main/java/org/apache/commons/math3/geometry/euclidean/twod/SubLine.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

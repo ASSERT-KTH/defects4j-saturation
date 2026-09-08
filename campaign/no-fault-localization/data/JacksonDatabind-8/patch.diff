@@ -1,0 +1,33 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/CreatorCollector.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/CreatorCollector.java
+index 39514f6..0ae77cc 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/CreatorCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/CreatorCollector.java
+@@ -293,12 +293,22 @@ public class CreatorCollector
+             // one more thing: ok to override in sub-class
+             if (oldOne.getClass() == newOne.getClass()) {
+                 // [databind#667]: avoid one particular class of bogus problems
+-
+-                    throw new IllegalArgumentException("Conflicting "+TYPE_DESCS[typeIndex]
+-                            +" creators: already had explicitly marked "+oldOne+", encountered "+newOne);
+-                // otherwise, which one to choose?
+-                    // new type more generic, use old
+-                // new type more specific, use it
++                Class<?> oldType = oldOne.getRawParameterType(0);
++                Class<?> newType = newOne.getRawParameterType(0);
++                if (oldType != newType) {
++                    if (newType.isAssignableFrom(oldType)) {
++                        // new type more generic, use old
++                        return;
++                    }
++                    if (oldType.isAssignableFrom(newType)) {
++                        // new type more specific, use it
++                        _explicitCreators = explicit ? (_explicitCreators | mask) : (_explicitCreators & ~mask);
++                        _creators[typeIndex] = _fixAccess(newOne);
++                        return;
++                    }
++                }
++                throw new IllegalArgumentException("Conflicting "+TYPE_DESCS[typeIndex]
++                        +" creators: already had explicitly marked "+oldOne+", encountered "+newOne);
+             }
+         }
+         if (explicit) {

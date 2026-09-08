@@ -1,0 +1,26 @@
+diff --git a/src/main/java/org/apache/commons/compress/utils/ChecksumCalculatingInputStream.java b/src/main/java/org/apache/commons/compress/utils/ChecksumCalculatingInputStream.java
+index 10c7d68..ffc0117 100644
+--- a/src/main/java/org/apache/commons/compress/utils/ChecksumCalculatingInputStream.java
++++ b/src/main/java/org/apache/commons/compress/utils/ChecksumCalculatingInputStream.java
+@@ -19,6 +19,7 @@
+ 
+ import java.io.IOException;
+ import java.io.InputStream;
++import java.util.Objects;
+ import java.util.zip.Checksum;
+ 
+ /**
+@@ -31,11 +32,8 @@ public class ChecksumCalculatingInputStream extends InputStream {
+     private final Checksum checksum;
+ 
+     public ChecksumCalculatingInputStream(final Checksum checksum, final InputStream in) {
+-
+-
+-
+-        this.checksum = checksum;
+-        this.in = in;
++        this.checksum = Objects.requireNonNull(checksum, "checksum");
++        this.in = Objects.requireNonNull(in, "in");
+     }
+ 
+     /**

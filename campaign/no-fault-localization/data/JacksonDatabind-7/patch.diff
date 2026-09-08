@@ -1,0 +1,23 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+index 0d9af65..ee772b1 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializer.java
+@@ -117,10 +117,17 @@ public class BeanDeserializer
+             if (_vanillaProcessing) {
+                 return vanillaDeserialize(jp, ctxt, jp.nextToken());
+             }
+-            jp.nextToken();
+             if (_objectIdReader != null) {
++                jp.nextToken();
+                 return deserializeWithObjectId(jp, ctxt);
+             }
++            // delegate creators need to see the START_OBJECT token as well,
++            // so that they can consume the whole JSON Object (e.g. TokenBuffer)
++            if (_delegateDeserializer != null) {
++                return _valueInstantiator.createUsingDelegate(ctxt,
++                        _delegateDeserializer.deserialize(jp, ctxt));
++            }
++            jp.nextToken();
+             return deserializeFromObject(jp, ctxt);
+         }
+         return _deserializeOther(jp, ctxt, t);

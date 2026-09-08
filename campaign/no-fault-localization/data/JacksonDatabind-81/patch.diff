@@ -1,0 +1,78 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
+index df4c2a7..1633ece 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
+@@ -762,6 +762,8 @@ public class JacksonAnnotationIntrospector
+                     } else if (currRaw.isAssignableFrom(serClass)) { // specialization, ok as well
+                         type = tf.constructSpecializedType(type, serClass);
+                         // 27-Apr-2017, tatu: [databind#1592] ignore primitive<->wrapper refinements
++                    } else if (_isPrimitiveWrapperPair(currRaw, serClass)) {
++                        ;
+                     } else {
+                         throw new JsonMappingException(null,
+                                 String.format("Can not refine serialization type %s into %s; types not related",
+@@ -795,6 +797,8 @@ public class JacksonAnnotationIntrospector
+                         } else if (currRaw.isAssignableFrom(keyClass)) { // specialization, ok as well
+                             keyType = tf.constructSpecializedType(keyType, keyClass);
+                             // 27-Apr-2017, tatu: [databind#1592] ignore primitive<->wrapper refinements
++                        } else if (_isPrimitiveWrapperPair(currRaw, keyClass)) {
++                            ;
+                         } else {
+                             throw new JsonMappingException(null,
+                                     String.format("Can not refine serialization key type %s into %s; types not related",
+@@ -829,6 +833,8 @@ public class JacksonAnnotationIntrospector
+                        } else if (currRaw.isAssignableFrom(contentClass)) { // specialization, ok as well
+                            contentType = tf.constructSpecializedType(contentType, contentClass);
+                            // 27-Apr-2017, tatu: [databind#1592] ignore primitive<->wrapper refinements
++                       } else if (_isPrimitiveWrapperPair(currRaw, contentClass)) {
++                           ;
+                        } else {
+                            throw new JsonMappingException(null,
+                                    String.format("Can not refine serialization content type %s into %s; types not related",
+@@ -847,6 +853,22 @@ public class JacksonAnnotationIntrospector
+         return type;
+     }
+ 
++    /**
++     * Helper method used to allow "refinements" between primitive/wrapper pairs
++     * (like `int` and `Integer`) that are not sub/super-types of each other but
++     * are otherwise fully compatible: such refinements are simply ignored.
++     *
++     * @since 2.9 (see [databind#1592])
++     */
++    private static boolean _isPrimitiveWrapperPair(Class<?> type1, Class<?> type2)
++    {
++        if (type1.isPrimitive() == type2.isPrimitive()) {
++            return false;
++        }
++        Class<?> prim1 = ClassUtil.primitiveType(type1);
++        return (prim1 != null) && (prim1 == ClassUtil.primitiveType(type2));
++    }
++
+     @Override
+     @Deprecated // since 2.7
+     public Class<?> findSerializationType(Annotated am) {
+@@ -1117,13 +1139,16 @@ public class JacksonAnnotationIntrospector
+         // Ok: start by refining the main type itself; common to all types
+         final Class<?> valueClass = (jsonDeser == null) ? null : _classIfExplicit(jsonDeser.as());
+         if ((valueClass != null) && !type.hasRawClass(valueClass)) {
+-            try {
+-                type = tf.constructSpecializedType(type, valueClass);
+-            } catch (IllegalArgumentException iae) {
+-                throw new JsonMappingException(null,
+-                        String.format("Failed to narrow type %s with annotation (value %s), from '%s': %s",
+-                                type, valueClass.getName(), a.getName(), iae.getMessage()),
+-                                iae);
++            // 27-Apr-2017, tatu: [databind#1592] ignore primitive<->wrapper refinements
++            if (!_isPrimitiveWrapperPair(type.getRawClass(), valueClass)) {
++                try {
++                    type = tf.constructSpecializedType(type, valueClass);
++                } catch (IllegalArgumentException iae) {
++                    throw new JsonMappingException(null,
++                            String.format("Failed to narrow type %s with annotation (value %s), from '%s': %s",
++                                    type, valueClass.getName(), a.getName(), iae.getMessage()),
++                                    iae);
++                }
+             }
+         }
+         // Then further processing for container types

@@ -1,0 +1,27 @@
+diff --git a/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java b/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
+index ef33e4c..082737b 100644
+--- a/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
++++ b/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
+@@ -333,6 +333,22 @@ class DeadAssignmentsElimination extends AbstractPostOrderCallback implements
+       }
+     }
+ 
++    // For a simple assignment "x = rhs", the RHS is fully evaluated (and any
++    // read of "variable" within it takes effect) before the write to "x"
++    // happens. Check the RHS first so that a read there is not masked by the
++    // KILL that will be reported once we reach the LHS.
++    if (NodeUtil.isAssignmentOp(n) && NodeUtil.isName(n.getFirstChild())) {
++      Node lhs = n.getFirstChild();
++      Node rhs = lhs.getNext();
++      if (rhs != null) {
++        VariableLiveness state = isVariableReadBeforeKill(rhs, variable);
++        if (state != VariableLiveness.MAYBE_LIVE) {
++          return state;
++        }
++      }
++      return isVariableReadBeforeKill(lhs, variable);
++    }
++
+     // Expressions are evaluated left-right, depth first.
+     for (Node child = n.getFirstChild();
+         child != null; child = child.getNext()) {

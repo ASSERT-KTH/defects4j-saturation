@@ -1,0 +1,13 @@
+diff --git a/src/java/org/apache/commons/collections/buffer/UnboundedFifoBuffer.java b/src/java/org/apache/commons/collections/buffer/UnboundedFifoBuffer.java
+index 6efc142..eeac064 100644
+--- a/src/java/org/apache/commons/collections/buffer/UnboundedFifoBuffer.java
++++ b/src/java/org/apache/commons/collections/buffer/UnboundedFifoBuffer.java
+@@ -130,7 +130,7 @@ public class UnboundedFifoBuffer extends AbstractCollection implements Buffer, S
+     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+         in.defaultReadObject();
+         int size = in.readInt();
+-        buffer = new Object[size + 1];
++        buffer = new Object[Math.max(size, 1) + 1];
+         for (int i = 0; i < size; i++) {
+             buffer[i] = in.readObject();
+         }

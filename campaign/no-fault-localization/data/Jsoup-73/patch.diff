@@ -1,0 +1,54 @@
+diff --git a/src/main/java/org/jsoup/helper/W3CDom.java b/src/main/java/org/jsoup/helper/W3CDom.java
+index f58a925..8678dc1 100644
+--- a/src/main/java/org/jsoup/helper/W3CDom.java
++++ b/src/main/java/org/jsoup/helper/W3CDom.java
+@@ -71,6 +71,8 @@ public class W3CDom {
+ 
+         private final Document doc;
+         private final HashMap<String, String> namespaces = new HashMap<>();
++        // stores prefixes overridden by each element's own xmlns declarations, so they can be restored on tail
++        private final java.util.Stack<HashMap<String, String>> overrides = new java.util.Stack<>();
+         private Element dest;
+ 
+         public W3CBuilder(Document doc) {
+@@ -110,8 +112,18 @@ public class W3CDom {
+         }
+ 
+         public void tail(org.jsoup.nodes.Node source, int depth) {
+-            if (source instanceof org.jsoup.nodes.Element && dest.getParentNode() instanceof Element) {
+-                dest = (Element) dest.getParentNode(); // undescend. cromulent.
++            if (source instanceof org.jsoup.nodes.Element) {
++                // restore any namespace prefixes that this element's xmlns declarations shadowed
++                HashMap<String, String> restore = overrides.pop();
++                for (java.util.Map.Entry<String, String> entry : restore.entrySet()) {
++                    if (entry.getValue() == null)
++                        namespaces.remove(entry.getKey());
++                    else
++                        namespaces.put(entry.getKey(), entry.getValue());
++                }
++                if (dest.getParentNode() instanceof Element) {
++                    dest = (Element) dest.getParentNode(); // undescend. cromulent.
++                }
+             }
+         }
+ 
+@@ -130,6 +142,7 @@ public class W3CDom {
+         private String updateNamespaces(org.jsoup.nodes.Element el) {
+             // scan the element for namespace declarations
+             // like: xmlns="blah" or xmlns:prefix="blah"
++            HashMap<String, String> restore = new HashMap<>();
+             Attributes attributes = el.attributes();
+             for (Attribute attr : attributes) {
+                 String key = attr.getKey();
+@@ -141,8 +154,11 @@ public class W3CDom {
+                 } else {
+                     continue;
+                 }
++                if (!restore.containsKey(prefix))
++                    restore.put(prefix, namespaces.get(prefix)); // remember the previous binding (may be null), to restore on tail
+                 namespaces.put(prefix, attr.getValue());
+             }
++            overrides.push(restore);
+ 
+             // get the element prefix if any
+             int pos = el.tagName().indexOf(":");

@@ -1,0 +1,63 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java b/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
+index b4ce3e9..4f8920c 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
++++ b/src/main/java/com/fasterxml/jackson/databind/MappingIterator.java
+@@ -243,6 +243,17 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+         }
+         _hasNextChecked = false;
+ 
++        // 21-May-2015, tatu: To be able to resynchronize in case of a failure, we
++        //   need to know the parsing context we should return to, once the value
++        //   (possibly only partially read) has been skipped: this is the context
++        //   that contains the sequence of values we are iterating over, i.e. either
++        //   the root context (unwrapped sequence) or the surrounding Array context.
++        JsonToken t = _parser.getCurrentToken();
++        JsonStreamContext resyncContext = _parser.getParsingContext();
++        if (t == JsonToken.START_OBJECT || t == JsonToken.START_ARRAY) {
++            resyncContext = resyncContext.getParent();
++        }
++
+         try {
+             T value;
+             if (_updatedValue == null) {
+@@ -252,6 +263,9 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+                 value = _updatedValue;
+             }
+             return value;
++        } catch (IOException e) {
++            _resynchronize(resyncContext);
++            throw e;
+         } finally {
+             /* 24-Mar-2015, tatu: As per [#733], need to mark token consumed no
+              *   matter what, to avoid infinite loop for certain failure cases.
+@@ -261,6 +275,30 @@ public class MappingIterator<T> implements Iterator<T>, Closeable
+         }
+     }
+ 
++    /**
++     * Helper method called after a failure to read the current value, to try to
++     * skip whatever was left unconsumed of it, so that the parser is positioned
++     * back at the surrounding context ({@code resyncContext}), ready to locate
++     * the next value in sequence (if any) on a subsequent call.
++     */
++    protected void _resynchronize(JsonStreamContext resyncContext) throws IOException
++    {
++        if (_parser == null) {
++            return;
++        }
++        while (true) {
++            JsonToken t;
++            try {
++                t = _parser.nextToken();
++            } catch (IOException e) {
++                break;
++            }
++            if (t == null || _parser.getParsingContext() == resyncContext) {
++                break;
++            }
++        }
++    }
++
+     /**
+      * Convenience method for reading all entries accessible via
+      * this iterator; resulting container will be a {@link java.util.ArrayList}.

@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 13,
+  "id": "Math-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 78,
+  "finished_at": "2026-09-08T09:43:28Z",
+  "wallclock_s": 213,
+  "agent_s": 88,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 19344,
+  "total_cost_usd": 0.082788,
+  "session_id": "1fcccb4d-58fa-4e2a-b770-7cf9a282e2fe",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1428,
+  "cache_read_input_tokens": 121255,
+  "cache_creation_input_tokens": 10481,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.optimization.fitting.PolynomialFitterTest::testLargeSample"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/optimization/general/AbstractLeastSquaresOptimizer.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

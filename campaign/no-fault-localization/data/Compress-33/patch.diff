@@ -1,0 +1,33 @@
+diff --git a/src/main/java/org/apache/commons/compress/compressors/CompressorStreamFactory.java b/src/main/java/org/apache/commons/compress/compressors/CompressorStreamFactory.java
+index 935283a..4df76a0 100644
+--- a/src/main/java/org/apache/commons/compress/compressors/CompressorStreamFactory.java
++++ b/src/main/java/org/apache/commons/compress/compressors/CompressorStreamFactory.java
+@@ -248,6 +248,10 @@ public class CompressorStreamFactory {
+                 return new LZMACompressorInputStream(in);
+             }
+ 
++            if (DeflateCompressorInputStream.matches(signature, signatureLength)) {
++                return new DeflateCompressorInputStream(in);
++            }
++
+         } catch (IOException e) {
+             throw new CompressorException("Failed to detect Compressor from InputStream.", e);
+         }
+diff --git a/src/main/java/org/apache/commons/compress/compressors/deflate/DeflateCompressorInputStream.java b/src/main/java/org/apache/commons/compress/compressors/deflate/DeflateCompressorInputStream.java
+index 98d8ec1..5a73b41 100644
+--- a/src/main/java/org/apache/commons/compress/compressors/deflate/DeflateCompressorInputStream.java
++++ b/src/main/java/org/apache/commons/compress/compressors/deflate/DeflateCompressorInputStream.java
+@@ -100,7 +100,12 @@ public class DeflateCompressorInputStream extends CompressorInputStream {
+      *            the number of bytes to check
+      * @return true, if this stream is zlib / deflate compressed with a header
+      * stream, false otherwise
+-     * 
++     *
+      * @since 1.9
+      */
++    public static boolean matches(byte[] signature, int length) {
++        return length >= 2
++            && (signature[0] & 0x0f) == 8 // CM = 8 (deflate)
++            && ((signature[0] & 0xff) << 8 | (signature[1] & 0xff)) % 31 == 0;
++    }
+ }

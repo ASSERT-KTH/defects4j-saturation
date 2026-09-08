@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 19,
+  "id": "Math-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 740,
+  "finished_at": "2026-09-08T09:48:31Z",
+  "wallclock_s": 201,
+  "agent_s": 106,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 62215,
+  "total_cost_usd": 0.24825719999999998,
+  "session_id": "0bb83b46-3420-46e4-b075-bc8d8d9b2cc4",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2742,
+  "cache_read_input_tokens": 353586,
+  "cache_creation_input_tokens": 36798,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.optimization.direct.CMAESOptimizerTest::testBoundaryRangeTooLarge"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/optimization/direct/CMAESOptimizer.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

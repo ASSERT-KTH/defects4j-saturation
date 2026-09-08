@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 40,
+  "id": "Closure-40",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4489,
+  "finished_at": "2026-09-07T16:51:48Z",
+  "wallclock_s": 289,
+  "agent_s": 169,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 89733,
+  "total_cost_usd": 0.38306480000000004,
+  "session_id": "0da594b1-f847-44cb-bdfb-ac4a596d958d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 6834,
+  "cache_read_input_tokens": 556344,
+  "cache_creation_input_tokens": 49500,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testIssue284",
+    "com.google.javascript.jscomp.NameAnalyzerTest::testIssue284"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NameAnalyzer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

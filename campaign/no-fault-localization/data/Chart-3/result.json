@@ -1,0 +1,40 @@
+{
+  "project": "Chart",
+  "bug": 3,
+  "id": "Chart-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 413,
+  "finished_at": "2026-09-07T15:17:47Z",
+  "wallclock_s": 97,
+  "agent_s": 47,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 33337,
+  "total_cost_usd": 0.1270682,
+  "session_id": "cea3a97f-8d07-4871-8926-48f1930bfe36",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2235,
+  "cache_read_input_tokens": 204646,
+  "cache_creation_input_tokens": 15377,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.data.time.junit.TimeSeriesTests::testCreateCopy3"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/data/time/TimeSeries.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

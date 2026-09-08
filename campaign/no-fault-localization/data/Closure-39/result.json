@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 39,
+  "id": "Closure-39",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2801,
+  "finished_at": "2026-09-07T16:50:56Z",
+  "wallclock_s": 371,
+  "agent_s": 158,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 76855,
+  "total_cost_usd": 0.27704520000000005,
+  "session_id": "f89633b3-d2ff-49d2-bc41-f19355f6fded",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 6063,
+  "cache_read_input_tokens": 443526,
+  "cache_creation_input_tokens": 31085,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.rhino.jstype.RecordTypeTest::testRecursiveRecord",
+    "com.google.javascript.rhino.jstype.RecordTypeTest::testLongToString"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/PrototypeObjectType.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

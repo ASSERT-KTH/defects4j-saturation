@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsArrayTypeDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsArrayTypeDeserializer.java
+index 249adec..bb314ef 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsArrayTypeDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/AsArrayTypeDeserializer.java
+@@ -92,6 +92,15 @@ public class AsArrayTypeDeserializer
+         boolean hadStartArray = jp.isExpectedStartArrayToken();
+         String typeId = _locateTypeId(jp, ctxt);
+         JsonDeserializer<Object> deser = _findDeserializer(ctxt, typeId);
++        // 29-Sep-2015, tatu: As per [databind#942], nulls need special support
++        if (jp.getCurrentToken() == JsonToken.VALUE_NULL) {
++            Object value = deser.getNullValue(ctxt);
++            if (hadStartArray && jp.nextToken() != JsonToken.END_ARRAY) {
++                throw ctxt.wrongTokenException(jp, JsonToken.END_ARRAY,
++                        "expected closing END_ARRAY after type information and null value");
++            }
++            return value;
++        }
+         // Minor complication: we may need to merge type id in?
+         if (_typeIdVisible
+                 // 06-Oct-2014, tatu: To fix [databind#408], must distinguish between

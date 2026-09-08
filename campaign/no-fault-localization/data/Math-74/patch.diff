@@ -1,0 +1,26 @@
+diff --git a/src/main/java/org/apache/commons/math/ode/nonstiff/AdamsMoultonIntegrator.java b/src/main/java/org/apache/commons/math/ode/nonstiff/AdamsMoultonIntegrator.java
+index 27ade7b..262d5ec 100644
+--- a/src/main/java/org/apache/commons/math/ode/nonstiff/AdamsMoultonIntegrator.java
++++ b/src/main/java/org/apache/commons/math/ode/nonstiff/AdamsMoultonIntegrator.java
+@@ -175,6 +175,10 @@ public class AdamsMoultonIntegrator extends AdamsIntegrator {
+         throws IllegalArgumentException {
+         super("Adams-Moulton", nSteps, nSteps + 1, minStep, maxStep,
+               scalAbsoluteTolerance, scalRelativeTolerance);
++        // the Nordsieck vector sensitivity to step changes depends on nSteps
++        // (its dimension), not on the method order (nSteps + 1), so the
++        // inherited default max growth factor is too conservative here
++        setMaxGrowth(Math.pow(2.0, 1.0 / nSteps));
+     }
+ 
+     /**
+@@ -195,6 +199,10 @@ public class AdamsMoultonIntegrator extends AdamsIntegrator {
+         throws IllegalArgumentException {
+         super("Adams-Moulton", nSteps, nSteps + 1, minStep, maxStep,
+               vecAbsoluteTolerance, vecRelativeTolerance);
++        // the Nordsieck vector sensitivity to step changes depends on nSteps
++        // (its dimension), not on the method order (nSteps + 1), so the
++        // inherited default max growth factor is too conservative here
++        setMaxGrowth(Math.pow(2.0, 1.0 / nSteps));
+     }
+ 
+ 

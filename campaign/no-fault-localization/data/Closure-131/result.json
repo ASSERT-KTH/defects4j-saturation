@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 131,
+  "id": "Closure-131",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 673,
+  "finished_at": "2026-09-07T19:18:30Z",
+  "wallclock_s": 300,
+  "agent_s": 123,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 39624,
+  "total_cost_usd": 0.1610048,
+  "session_id": "9b86e03a-e256-4f9d-9063-06d1bc105c9b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 2953,
+  "cache_read_input_tokens": 310064,
+  "cache_creation_input_tokens": 16270,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ConvertToDottedPropertiesTest::testQuotedProps",
+    "com.google.javascript.jscomp.ConvertToDottedPropertiesTest::testDoNotConvert"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/TokenStream.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

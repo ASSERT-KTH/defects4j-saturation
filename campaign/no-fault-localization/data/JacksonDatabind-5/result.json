@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 5,
+  "id": "JacksonDatabind-5",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 7138,
+  "finished_at": "2026-09-08T00:35:41Z",
+  "wallclock_s": 259,
+  "agent_s": 136,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 105703,
+  "total_cost_usd": 0.3185258,
+  "session_id": "a6f68b70-b6c1-4e06-bcb2-b6ea9c10fed0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 9611,
+  "cache_read_input_tokens": 372189,
+  "cache_creation_input_tokens": 36371,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.introspect.TestMixinMerging::testDisappearingMixins515"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/introspect/AnnotatedClass.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

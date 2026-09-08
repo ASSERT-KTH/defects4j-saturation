@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 52,
+  "id": "Lang-52",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 142,
+  "finished_at": "2026-09-08T09:22:42Z",
+  "wallclock_s": 66,
+  "agent_s": 33,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 21084,
+  "total_cost_usd": 0.09429440000000003,
+  "session_id": "af48ffed-8690-4880-b25f-bd2363eff3e6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1465,
+  "cache_read_input_tokens": 159587,
+  "cache_creation_input_tokens": 11357,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.StringEscapeUtilsTest::testEscapeJavaScript"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/StringEscapeUtils.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

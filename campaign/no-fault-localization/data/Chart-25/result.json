@@ -1,0 +1,43 @@
+{
+  "project": "Chart",
+  "bug": 25,
+  "id": "Chart-25",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 92,
+  "finished_at": "2026-09-07T15:27:27Z",
+  "wallclock_s": 108,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 55719,
+  "total_cost_usd": 0.24190579999999998,
+  "session_id": "d81b8666-7bd9-4827-8ee8-b09f788a1962",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 5635,
+  "cache_read_input_tokens": 313519,
+  "cache_creation_input_tokens": 29316,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.renderer.category.junit.StatisticalBarRendererTests::testDrawWithNullMeanVertical",
+    "org.jfree.chart.renderer.category.junit.StatisticalBarRendererTests::testDrawWithNullDeviationVertical",
+    "org.jfree.chart.renderer.category.junit.StatisticalBarRendererTests::testDrawWithNullMeanHorizontal",
+    "org.jfree.chart.renderer.category.junit.StatisticalBarRendererTests::testDrawWithNullDeviationHorizontal"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/renderer/category/StatisticalBarRenderer.java"
+  ],
+  "patch_added_lines": 32,
+  "patch_removed_lines": 20,
+  "has_dev_patch": true
+}

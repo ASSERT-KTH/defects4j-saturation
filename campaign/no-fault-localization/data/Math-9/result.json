@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 9,
+  "id": "Math-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 427,
+  "finished_at": "2026-09-08T09:38:11Z",
+  "wallclock_s": 196,
+  "agent_s": 87,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 21474,
+  "total_cost_usd": 0.10290300000000002,
+  "session_id": "05b6adc6-9aac-47b4-8330-fd6392b68b48",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1560,
+  "cache_read_input_tokens": 154945,
+  "cache_creation_input_tokens": 13453,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.geometry.euclidean.threed.LineTest::testRevert"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/geometry/euclidean/threed/Line.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 16,
+  "id": "Closure-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2813,
+  "finished_at": "2026-09-07T16:02:53Z",
+  "wallclock_s": 227,
+  "agent_s": 133,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 75132,
+  "total_cost_usd": 0.20232340000000001,
+  "session_id": "58923a9c-2e86-4164-aa4e-66f1b63df602",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 5149,
+  "cache_read_input_tokens": 294787,
+  "cache_creation_input_tokens": 21983,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testIssue772",
+    "com.google.javascript.jscomp.ScopedAliasesTest::testIssue772"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ScopedAliases.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 9,
+  "has_dev_patch": true
+}

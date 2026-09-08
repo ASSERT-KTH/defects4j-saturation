@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 22,
+  "id": "Compress-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 11358,
+  "finished_at": "2026-09-07T23:48:09Z",
+  "wallclock_s": 201,
+  "agent_s": 173,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 168023,
+  "total_cost_usd": 0.38076980000000005,
+  "session_id": "7fb10484-532c-472d-9afb-7a4cae472d4a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 14028,
+  "cache_read_input_tokens": 380499,
+  "cache_creation_input_tokens": 40371,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.compressors.bzip2.PythonTruncatedBzip2Test::testPartialReadTruncatedData"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java"
+  ],
+  "patch_added_lines": 47,
+  "patch_removed_lines": 23,
+  "has_dev_patch": true
+}

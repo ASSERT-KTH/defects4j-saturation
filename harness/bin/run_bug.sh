@@ -148,10 +148,24 @@ PY
 # ------------------------------------------------------------- 6. run the agent
 log "launching claude (timeout ${AGENT_TIMEOUT}s)"
 AGENT_START=$(date +%s)
+# Deny the agent the local dependency caches: they hold released jars of the very
+# projects these bugs come from, and a post-fix version is ground truth. See
+# bin/sandbox_caches.sh. Opt out with SANDBOX_CACHES=0.
+SANDBOX=()
+if [ "${SANDBOX_CACHES:-1}" != 0 ]; then
+  if "$D4J_CLAUDE_ROOT/bin/sandbox_caches.sh" true 2>/dev/null; then
+    SANDBOX=("$D4J_CLAUDE_ROOT/bin/sandbox_caches.sh")
+  else
+    log "WARNING: cache sandbox unavailable, agent can reach ~/.m2"
+    echo "sandbox unavailable" > "$OUT/sandbox_warning"
+  fi
+fi
+echo "${SANDBOX_CACHES:-1}" > "$OUT/sandbox_caches"
+
 # SIGINT first, not SIGTERM: the CLI traps INT and flushes its final `result`
 # event (turns, cost, tokens). SIGKILL only after a 60 s grace period.
 ( cd "$WORK" && timeout --signal=INT --kill-after=60 "$AGENT_TIMEOUT" \
-    claude -p "$(cat "$OUT/task.md")" \
+    "${SANDBOX[@]}" claude -p "$(cat "$OUT/task.md")" \
       --model "$AGENT_MODEL" \
       --effort "$AGENT_EFFORT" \
       "${BUDGET_ARG[@]}" \

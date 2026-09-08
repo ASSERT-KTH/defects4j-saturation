@@ -1,0 +1,5 @@
+M	src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
+M	src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
+M	src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
+M	src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
+M	src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java

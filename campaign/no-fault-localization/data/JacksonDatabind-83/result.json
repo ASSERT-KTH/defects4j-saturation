@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 83,
+  "id": "JacksonDatabind-83",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 542,
+  "finished_at": "2026-09-08T04:20:03Z",
+  "wallclock_s": 205,
+  "agent_s": 86,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 41741,
+  "total_cost_usd": 0.17987560000000002,
+  "session_id": "113126c4-2dff-4998-b172-1f467404a681",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3294,
+  "cache_read_input_tokens": 326893,
+  "cache_creation_input_tokens": 19775,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.filter.ProblemHandlerTest::testWeirdStringHandling"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/FromStringDeserializer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "JacksonCore",
+  "bug": 12,
+  "id": "JacksonCore-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6774,
+  "finished_at": "2026-09-08T00:16:44Z",
+  "wallclock_s": 200,
+  "agent_s": 170,
+  "agent_rc": 0,
+  "num_turns": 32,
+  "api_duration_ms": 157422,
+  "total_cost_usd": 0.5910014000000002,
+  "session_id": "0bbcd991-fe6c-4839-961f-216d8e8291c7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 64,
+  "output_tokens": 14724,
+  "cache_read_input_tokens": 1261757,
+  "cache_creation_input_tokens": 47250,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.LocationInObjectTest::testOffsetWithObjectFieldsUsingReader"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

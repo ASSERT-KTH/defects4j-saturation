@@ -1,0 +1,89 @@
+diff --git a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+index c2150b1..7b8332a 100644
+--- a/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
++++ b/src/com/google/javascript/jscomp/UnreachableCodeElimination.java
+@@ -127,8 +127,23 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+    * @return The target of this jump. If the target is also useless jump,
+    *     the target of that useless jump recursively.
+    */
+-  @SuppressWarnings("fallthrough")
+   private Node tryRemoveUnconditionalBranching(Node n) {
++    return tryRemoveUnconditionalBranching(n, true);
++  }
++
++  /**
++   * @param topLevel Whether {@code n} is the node that was originally passed
++   *     to {@link #visit}, as opposed to a node discovered while resolving
++   *     the fall-through of some other jump statement. Only a top-level node
++   *     is actually removed here: if the fall-through of a jump statement
++   *     turns out to be another jump statement, that other statement is left
++   *     alone (it will be dealt with, if warranted, when the traversal visits
++   *     it directly). This pass is normally run to a fixed point by its
++   *     caller, so a chain of N useless jumps is cleaned up over N
++   *     applications, one link at a time.
++   */
++  @SuppressWarnings("fallthrough")
++  private Node tryRemoveUnconditionalBranching(Node n, boolean topLevel) {
+     /*
+      * For each of the unconditional branching control flow node, check to see
+      * if the ControlFlowAnalysis.computeFollowNode of that node is same as
+@@ -153,16 +168,18 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+     if (n.getParent() == null) {
+       List<DiGraphEdge<Node,Branch>> outEdges = gNode.getOutEdges();
+       if (outEdges.size() == 1) {
+-        return tryRemoveUnconditionalBranching(outEdges.get(0).getDestination().getValue());
++        return tryRemoveUnconditionalBranching(
++            outEdges.get(0).getDestination().getValue(), topLevel);
+       }
+     }
+     switch (n.getType()) {
+       case Token.BLOCK:
+         if (n.hasChildren()) {
+           Node first = n.getFirstChild();
+-          return tryRemoveUnconditionalBranching(first);
++          return tryRemoveUnconditionalBranching(first, topLevel);
+         } else {
+-          return tryRemoveUnconditionalBranching(ControlFlowAnalysis.computeFollowNode(n));
++          return tryRemoveUnconditionalBranching(
++              ControlFlowAnalysis.computeFollowNode(n), topLevel);
+         }
+       case Token.RETURN:
+         if (n.hasChildren()) {
+@@ -171,6 +188,15 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+       case Token.BREAK:
+       case Token.CONTINUE:
+ 
++        if (!topLevel) {
++          // n was discovered while resolving someone else's fall-through.
++          // Do not also try to remove it here; that would mean deciding to
++          // detach a node the traversal has not visited yet, which could be
++          // a node NodeTraversal has already cached as the "next" sibling of
++          // an ancestor it is still traversing.
++          return n;
++        }
++
+         // We are looking for a control flow changing statement that always
+         // branches to the same node. If removing it the control flow still
+         // branches to that same node. It is safe to remove it.
+@@ -180,7 +206,7 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+             (n.getNext() == null || n.getNext().getType() == Token.FUNCTION)) {
+ 
+           Preconditions.checkState(outEdges.get(0).getValue() == Branch.UNCOND);
+-          Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n));
++          Node fallThrough = tryRemoveUnconditionalBranching(computeFollowing(n), false);
+           Node nextCfgNode = outEdges.get(0).getDestination().getValue();
+           if (nextCfgNode == fallThrough) {
+             removeDeadExprStatementSafely(n);
+@@ -198,6 +224,12 @@ class UnreachableCodeElimination extends AbstractPostOrderCallback
+ 
+   private void removeDeadExprStatementSafely(Node n) {
+     Node parent = n.getParent();
++    if (parent == null) {
++      // n was already removed, e.g. as a result of a cascading removal
++      // triggered while processing a node that NodeTraversal had not yet
++      // visited but had already cached as an ancestor's next sibling.
++      return;
++    }
+     if (n.getType() == Token.EMPTY ||
+         (n.getType() == Token.BLOCK && !n.hasChildren())) {
+       // Not always trivial to remove, let FoldContants work its magic later.

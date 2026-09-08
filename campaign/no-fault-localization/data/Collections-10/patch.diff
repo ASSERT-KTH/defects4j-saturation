@@ -1,0 +1,29 @@
+diff --git a/src/java/org/apache/commons/collections/map/MultiValueMap.java b/src/java/org/apache/commons/collections/map/MultiValueMap.java
+index b312aa4..4400b86 100644
+--- a/src/java/org/apache/commons/collections/map/MultiValueMap.java
++++ b/src/java/org/apache/commons/collections/map/MultiValueMap.java
+@@ -66,9 +66,10 @@ import org.apache.commons.collections.iterators.IteratorChain;
+  * @version $Revision$ $Date$
+  * @since Commons Collections 3.2
+  */
+-public class MultiValueMap extends AbstractMapDecorator implements MultiMap {
++public class MultiValueMap extends AbstractMapDecorator implements MultiMap, Serializable {
+ 
+     /** Serialization version */
++    private static final long serialVersionUID = -2214159910087182007L;
+ 
+     /** The factory for creating value collections. */
+     private final Factory collectionFactory;
+@@ -457,7 +458,11 @@ public class MultiValueMap extends AbstractMapDecorator implements MultiMap {
+     /**
+      * Inner class that provides a simple reflection factory.
+      */
+-    private static class ReflectionFactory implements Factory {
++    private static class ReflectionFactory implements Factory, Serializable {
++
++        /** Serialization version */
++        private static final long serialVersionUID = 2986114157496788874L;
++
+         private final Class clazz;
+ 
+         public ReflectionFactory(Class clazz) {

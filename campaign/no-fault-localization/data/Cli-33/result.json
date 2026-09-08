@@ -1,0 +1,40 @@
+{
+  "project": "Cli",
+  "bug": 33,
+  "id": "Cli-33",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1916,
+  "finished_at": "2026-09-07T15:38:55Z",
+  "wallclock_s": 84,
+  "agent_s": 70,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 68068,
+  "total_cost_usd": 0.17865220000000004,
+  "session_id": "e4f231f3-7dc3-43be-bdc6-b7d5d876d448",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4445,
+  "cache_read_input_tokens": 305956,
+  "cache_creation_input_tokens": 17676,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.cli.HelpFormatterTest::testIndentedHeaderAndFooter"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/cli/HelpFormatter.java"
+  ],
+  "patch_added_lines": 31,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

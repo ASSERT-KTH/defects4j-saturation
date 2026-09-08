@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 23,
+  "id": "Lang-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2173,
+  "finished_at": "2026-09-08T15:15:25Z",
+  "wallclock_s": 248,
+  "agent_s": 205,
+  "agent_rc": 0,
+  "num_turns": 19,
+  "api_duration_ms": 64275,
+  "total_cost_usd": 0.2141324,
+  "session_id": "7961e0fa-291c-420c-8ae0-a7d2b55b9b4b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 5521,
+  "cache_read_input_tokens": 415542,
+  "cache_creation_input_tokens": 18373,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.text.ExtendedMessageFormatTest::testEqualsHashcode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/text/ExtendedMessageFormat.java"
+  ],
+  "patch_added_lines": 27,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

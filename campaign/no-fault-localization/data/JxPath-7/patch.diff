@@ -1,0 +1,180 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
+index 3a053d4..002f233 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThan.java
+@@ -28,10 +28,8 @@ public class CoreOperationGreaterThan extends CoreOperationRelationalExpression
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l > r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean compute(double l, double r) {
++        return l > r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
+index b9f156c..31f71c1 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationGreaterThanOrEqual.java
+@@ -29,10 +29,8 @@ public class CoreOperationGreaterThanOrEqual extends
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l >= r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean compute(double l, double r) {
++        return l >= r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
+index 374f772..a60f020 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThan.java
+@@ -28,10 +28,8 @@ public class CoreOperationLessThan extends CoreOperationRelationalExpression {
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l < r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean compute(double l, double r) {
++        return l < r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
+index db562d8..1dc1aa3 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationLessThanOrEqual.java
+@@ -29,10 +29,8 @@ public class CoreOperationLessThanOrEqual extends
+         super(new Expression[] { arg1, arg2 });
+     }
+ 
+-    public Object computeValue(org.apache.commons.jxpath.ri.EvalContext context) {
+-        double l = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[0].computeValue(context));
+-        double r = org.apache.commons.jxpath.ri.InfoSetUtil.doubleValue(args[1].computeValue(context));
+-        return l <= r ? Boolean.TRUE : Boolean.FALSE;
++    protected boolean compute(double l, double r) {
++        return l <= r;
+     }
+ 
+     public String getSymbol() {
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+index 4893dd6..5aeab93 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+@@ -16,7 +16,13 @@
+  */
+ package org.apache.commons.jxpath.ri.compiler;
+ 
++import java.util.Collection;
++import java.util.Iterator;
+ 
++import org.apache.commons.jxpath.ri.EvalContext;
++import org.apache.commons.jxpath.ri.InfoSetUtil;
++import org.apache.commons.jxpath.ri.axes.InitialContext;
++import org.apache.commons.jxpath.ri.axes.SelfContext;
+ 
+ /**
+  * Base implementation of Expression for the operations "&gt;", "&gt;=", "&lt;", "&lt;=".
+@@ -30,6 +36,93 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
+         super(args);
+     }
+ 
++    public Object computeValue(EvalContext context) {
++        return evaluateCompare(context, args[0], args[1])
++                ? Boolean.TRUE
++                : Boolean.FALSE;
++    }
++
++    /**
++     * Compares the values of the two operands, taking into account that
++     * either operand may be a node-set, in which case the comparison is
++     * true if it holds for any node in the node-set.
++     */
++    protected boolean evaluateCompare(
++        EvalContext context,
++        Expression left,
++        Expression right)
++    {
++        Object l = left.compute(context);
++        Object r = right.compute(context);
++
++        if (l instanceof InitialContext) {
++            ((EvalContext) l).reset();
++        }
++
++        if (l instanceof SelfContext) {
++            l = ((EvalContext) l).getSingleNodePointer();
++        }
++
++        if (r instanceof InitialContext) {
++            ((EvalContext) r).reset();
++        }
++
++        if (r instanceof SelfContext) {
++            r = ((EvalContext) r).getSingleNodePointer();
++        }
++
++        if (l instanceof Collection) {
++            l = ((Collection) l).iterator();
++        }
++
++        if (r instanceof Collection) {
++            r = ((Collection) r).iterator();
++        }
++
++        if ((l instanceof Iterator) && !(r instanceof Iterator)) {
++            double rd = InfoSetUtil.doubleValue(r);
++            Iterator lit = (Iterator) l;
++            while (lit.hasNext()) {
++                if (compute(InfoSetUtil.doubleValue(lit.next()), rd)) {
++                    return true;
++                }
++            }
++            return false;
++        }
++        if (!(l instanceof Iterator) && (r instanceof Iterator)) {
++            double ld = InfoSetUtil.doubleValue(l);
++            Iterator rit = (Iterator) r;
++            while (rit.hasNext()) {
++                if (compute(ld, InfoSetUtil.doubleValue(rit.next()))) {
++                    return true;
++                }
++            }
++            return false;
++        }
++        if (l instanceof Iterator && r instanceof Iterator) {
++            java.util.ArrayList rValues = new java.util.ArrayList();
++            Iterator rit = (Iterator) r;
++            while (rit.hasNext()) {
++                rValues.add(rit.next());
++            }
++            Iterator lit = (Iterator) l;
++            while (lit.hasNext()) {
++                double ld = InfoSetUtil.doubleValue(lit.next());
++                for (Iterator i = rValues.iterator(); i.hasNext();) {
++                    if (compute(ld, InfoSetUtil.doubleValue(i.next()))) {
++                        return true;
++                    }
++                }
++            }
++            return false;
++        }
++        return compute(InfoSetUtil.doubleValue(l), InfoSetUtil.doubleValue(r));
++    }
++
++    /**
++     * Performs the actual numeric comparison for this operation.
++     */
++    protected abstract boolean compute(double l, double r);
+ 
+     protected final int getPrecedence() {
+         return 3;

@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 36,
+  "id": "Math-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 561,
+  "finished_at": "2026-09-08T10:04:44Z",
+  "wallclock_s": 141,
+  "agent_s": 68,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 32588,
+  "total_cost_usd": 0.1291422,
+  "session_id": "a3120d78-687d-4d03-87ca-28e55918da0b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2492,
+  "cache_read_input_tokens": 208126,
+  "cache_creation_input_tokens": 14687,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.fraction.BigFractionTest::testFloatValueForLargeNumeratorAndDenominator",
+    "org.apache.commons.math.fraction.BigFractionTest::testDoubleValueForLargeNumeratorAndDenominator"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/fraction/BigFraction.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

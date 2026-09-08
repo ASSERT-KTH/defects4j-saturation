@@ -1,0 +1,43 @@
+{
+  "project": "Closure",
+  "bug": 103,
+  "id": "Closure-103",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 918,
+  "finished_at": "2026-09-07T18:22:34Z",
+  "wallclock_s": 156,
+  "agent_s": 93,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 52465,
+  "total_cost_usd": 0.22423220000000002,
+  "session_id": "c8c8a4cc-4c4a-4078-8294-a5b108795469",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 4077,
+  "cache_read_input_tokens": 452791,
+  "cache_creation_input_tokens": 21854,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckUnreachableCodeTest::testInstanceOfThrowsException",
+    "com.google.javascript.jscomp.ControlFlowAnalysisTest::testInstanceOf",
+    "com.google.javascript.jscomp.DisambiguatePropertiesTest::testSupertypeReferenceOfSubtypeProperty"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ControlFlowAnalysis.java",
+    "src/com/google/javascript/jscomp/DisambiguateProperties.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

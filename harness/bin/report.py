@@ -53,12 +53,25 @@ def main():
     if not recs:
         print("no results yet"); return
 
+    # A run whose ground truth leaked is not a result. Records carry
+    # "excluded" with a reason (see audit_own_artefact.py); drop them from the
+    # rates and say so, rather than quietly counting them.
+    excluded = {i: r for i, r in recs.items() if r.get("excluded")}
+    for i in excluded:
+        del recs[i]
+
     for r in recs.values():
         r["similarity"] = similarity(rundir / r["id"]) if r["verdict"] == "PLAUSIBLE" else ""
 
     projects = sorted({r["project"] for r in recs.values()})
     print(f"# Defects4J x Claude Code (Sonnet 5) — {rundir}\n")
     print(f"{len(recs)} bugs attempted\n")
+    if excluded:
+        print("Excluded from every figure below:\n")
+        for i, r in sorted(excluded.items()):
+            print(f"- **{i}** ({r['verdict']}) — {r.get('excluded')}: "
+                  f"{r.get('excluded_reason','')}")
+        print()
 
     hdr = ["project", "n", "plausible", "rate", "identical", "test_fail", "compile_fail",
            "no_patch", "other", "cost_usd", "med_turns", "med_min"]

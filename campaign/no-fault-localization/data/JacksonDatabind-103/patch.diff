@@ -1,0 +1,19 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+index c904c2e..43a947e 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+@@ -130,9 +130,13 @@ public class StdKeyDeserializer extends KeyDeserializer
+                 return result;
+             }
+         } catch (Exception re) {
++            // 25-May-2018, tatu: [databind#2128] Avoid appending same "location" info multiple
++            //    times, so use `getOriginalMessage()` for `JsonProcessingException`s
++            String msg = (re instanceof JsonProcessingException)
++                    ? ((JsonProcessingException) re).getOriginalMessage() : re.getMessage();
+             return ctxt.handleWeirdKey(_keyClass, key, "not a valid representation, problem: (%s) %s",
+                     re.getClass().getName(),
+-                    re.getMessage());
++                    msg);
+         }
+         if (_keyClass.isEnum() && ctxt.getConfig().isEnabled(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)) {
+             return null;

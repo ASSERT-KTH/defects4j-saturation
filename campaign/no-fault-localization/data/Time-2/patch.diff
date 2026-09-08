@@ -1,0 +1,21 @@
+diff --git a/src/main/java/org/joda/time/Partial.java b/src/main/java/org/joda/time/Partial.java
+index b9ec964..46ccbc0 100644
+--- a/src/main/java/org/joda/time/Partial.java
++++ b/src/main/java/org/joda/time/Partial.java
+@@ -214,7 +214,15 @@ public final class Partial
+             DateTimeFieldType loopType = types[i];
+             DurationField loopUnitField = loopType.getDurationType().getField(iChronology);
+             if (i > 0) {
+-                int compare = lastUnitField.compareTo(loopUnitField);
++                int compare;
++                if (lastUnitField.isSupported() == false) {
++                    // an unsupported unit field (eg. eras) always represents the
++                    // largest duration, so it is correctly ordered before any
++                    // other field unless the two are the same unsupported field
++                    compare = (loopUnitField.isSupported() == false ? 0 : 1);
++                } else {
++                    compare = lastUnitField.compareTo(loopUnitField);
++                }
+                 if (compare < 0 || (compare != 0 && loopUnitField.isSupported() == false)) {
+                     throw new IllegalArgumentException("Types array must be in order largest-smallest: " +
+                             types[i - 1].getName() + " < " + loopType.getName());

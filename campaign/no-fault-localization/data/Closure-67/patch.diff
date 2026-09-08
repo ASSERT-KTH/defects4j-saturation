@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+index 30b19e0..ec0bffa 100644
+--- a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
++++ b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+@@ -204,8 +204,15 @@ class AnalyzePrototypeProperties implements CompilerPass {
+ 
+     public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
+       if (isPrototypePropertyAssign(n)) {
++        String name = n.getFirstChild().getLastChild().getString();
++        if (parent.getType() != Token.EXPR_RESULT) {
++          // This assignment is itself used as a value (e.g. it's chained,
++          // as in "a.b = Foo.prototype.bar = function() {};"), so the
++          // property is referenced by whatever this value is assigned to.
++          addSymbolUse(name, t.getModule(), PROPERTY);
++        }
+         symbolStack.push(new NameContext(getNameInfoForName(
+-                n.getFirstChild().getLastChild().getString(), PROPERTY)));
++                name, PROPERTY)));
+       } else if (isGlobalFunctionDeclaration(t, n)) {
+         String name = parent.getType() == Token.NAME ?
+             parent.getString() /* VAR */ :

@@ -1,0 +1,24 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
+index 10954f5..b745f28 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/NumberDeserializers.java
+@@ -145,8 +145,17 @@ public class NumberDeserializers
+             return _nullValue;
+         }
+ 
+-            // [databind#1095]: Should not allow coercion from into null from Empty String
+-            // either, if `null` not allowed
++        // [databind#1095]: Should not allow coercion from into null from Empty String
++        // either, if `null` not allowed
++        @Override
++        public final T getEmptyValue(DeserializationContext ctxt) throws JsonMappingException {
++            if (_primitive && ctxt.isEnabled(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)) {
++                throw ctxt.mappingException(
++                        "Can not map Empty String as %s (set DeserializationConfig.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES to 'false' to allow)",
++                        handledType().toString());
++            }
++            return _nullValue;
++        }
+     }
+ 
+     /*

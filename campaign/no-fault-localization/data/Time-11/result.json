@@ -1,0 +1,40 @@
+{
+  "project": "Time",
+  "bug": 11,
+  "id": "Time-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1153,
+  "finished_at": "2026-09-08T14:35:02Z",
+  "wallclock_s": 106,
+  "agent_s": 75,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 60223,
+  "total_cost_usd": 0.2068724,
+  "session_id": "ca24b1b4-42d8-4755-b0a2-3f33f9da7dac",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 4289,
+  "cache_read_input_tokens": 383122,
+  "cache_creation_input_tokens": 21267,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.tz.TestCompiler::testDateTimeZoneBuilder"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/tz/ZoneInfoCompiler.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

@@ -1,0 +1,38 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
+index 624c08d..fd4dfe7 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java
+@@ -1,6 +1,7 @@
+ package com.fasterxml.jackson.databind.introspect;
+ 
+ import java.lang.annotation.Annotation;
++import java.lang.reflect.Field;
+ import java.util.*;
+ 
+ import com.fasterxml.jackson.annotation.*;
+@@ -695,6 +696,25 @@ public class JacksonAnnotationIntrospector
+         return (ann != null && ann.value());
+     }
+ 
++    @Override
++    public String findEnumValue(Enum<?> value) {
++        Class<?> enumClass = value.getDeclaringClass();
++        String enumName = value.name();
++        try {
++            Field field = enumClass.getField(enumName);
++            JsonProperty ann = field.getAnnotation(JsonProperty.class);
++            if (ann != null) {
++                String name = ann.value();
++                if (name.length() > 0) {
++                    return name;
++                }
++            }
++        } catch (SecurityException e) {
++        } catch (NoSuchFieldException e) {
++        }
++        return enumName;
++    }
++
+     /*
+     /**********************************************************
+     /* Deserialization: general annotations

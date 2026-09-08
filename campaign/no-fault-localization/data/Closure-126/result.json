@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 126,
+  "id": "Closure-126",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 175,
+  "finished_at": "2026-09-07T19:08:18Z",
+  "wallclock_s": 226,
+  "agent_s": 100,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 19684,
+  "total_cost_usd": 0.1216934,
+  "session_id": "f98649d3-4a83-48c3-9879-a66cecf2af96",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1390,
+  "cache_read_input_tokens": 157587,
+  "cache_creation_input_tokens": 17805,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.MinimizeExitPointsTest::testDontRemoveBreakInTryFinally",
+    "com.google.javascript.jscomp.MinimizeExitPointsTest::testFunctionReturnOptimization"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/MinimizeExitPoints.java"
+  ],
+  "patch_added_lines": 0,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

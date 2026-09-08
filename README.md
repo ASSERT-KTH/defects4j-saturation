@@ -13,38 +13,41 @@ across campaigns, so their numbers are directly comparable.
 | campaign | what the agent is told | result |
 |---|---|---|
 | [**perfect-fault-localization**](campaign/perfect-fault-localization) | failing tests, their output, **and the class the defect is in** | **851 / 854 (99.6%)** test-adequate |
-| [**no-fault-localization**](campaign/no-fault-localization) | failing tests and their output only | not yet run |
+| [**no-fault-localization**](campaign/no-fault-localization) | failing tests and their output only | **851 / 853 (99.8%)** test-adequate |
 
-### perfect-fault-localization — TL;DR
+The two differ by four lines of prompt and nothing else. Read them together: the headline
+is the same either way, and the interesting results only show up in the comparison.
 
-- **851 / 854 (99.6%)** patches pass the triggering tests and break no other developer
-  test. $319.13 at list prices, median 2.8 min and 12 turns per bug.
-- **The prompt names the buggy class**, from Defects4J's own `d4j.classes.modified` — one
-  class for 85% of bugs, a **36× median** reduction of the search space an APR tool with
-  real fault localization would face. So this is a repair rate *under perfect class-level
-  FL*, not a repair rate on Defects4J.
-- **Plausible is not correct.** 62.2% of accepted patches repair the same file a different
-  way than the developer did.
+### The short version
+
+- **Defects4J plausibility is saturated.** Both campaigns land at 99.6-99.8%, and every one
+  of the 854 bugs has a test-adequate patch from some run in this repository.
+- **Fault localization is not what this benchmark measures.** Naming the buggy class - one
+  class for 85% of bugs, a 36x median cut of the search space - changed the outcome on
+  **zero** bugs. Withholding it costs about 8% more wall-clock time and nothing else: no bug
+  became unsolvable, there were no localization failures, and 94.8% of patches landed in the
+  developer's class unaided. Defects4J's triggering tests already point at the defect.
+- **Plausible is not correct.** 62% of accepted patches repair the same file a different way
+  than the developer did.
 - **Memorisation is demonstrated, not merely possible.** On one bug the model reproduced the
   developer's fix *and the developer's comments*, byte for byte, from a checkout containing
   neither.
-- **A follow-up on the three failures** finds all three are solvable, that none was
-  budget-limited, and that a short wall-clock cap suppresses the agent's own signal that it
-  is stuck: zero honest failure reports in 854 runs at 30 min, four out of four at 4 h.
+- **The harness leaked, in a way five audited channels missed.** `~/.m2` holds released jars
+  of these same projects, and a post-fix version is ground truth. One session decompiled pre-
+  and post-fix bytecode of the class it was repairing; it is excluded. The agent now runs
+  with those caches masked.
+- **A short wall-clock cap suppresses the agent's own signal that it is stuck.** Zero honest
+  failure reports in 854 runs at 30 minutes; four out of four at a 4-hour cap.
 
-### no-fault-localization — planned
+### Findings in detail
 
-Identical in every respect except that the prompt omits the class list. The two templates
-differ by exactly four lines:
-
-```
-$ diff campaign/perfect-fault-localization/task.md.tmpl campaign/no-fault-localization/task.md.tmpl
-18,21d17
-< Classes the defect is known to be located in:
-<
-< __MODIFIED_CLASSES__
-<
-```
+| | |
+|---|---|
+| [Evidence of memorisation](campaign/perfect-fault-localization/results/contamination-evidence.md) | the developer's comments reproduced verbatim, plus a negative control |
+| [The sixth leakage channel](campaign/no-fault-localization/results/contamination-own-artefact.md) | the project's own published jars, and the bug excluded for reading them |
+| [Agent self-certification](campaign/perfect-fault-localization/results/self-certification.md) | 852 assertions of success, one false, zero failure reports |
+| [The three unsolved bugs](campaign/perfect-fault-localization/results/remaining3.md) | varying wall-clock cap and model; none of four pre-registered predictions held |
+| [Campaign comparison](campaign/no-fault-localization/results/comparison.md) | generated per-bug transition table and paired statistics |
 
 ## Protocol
 

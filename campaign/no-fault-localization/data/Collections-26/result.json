@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 26,
+  "id": "Collections-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 251,
+  "finished_at": "2026-09-07T23:36:40Z",
+  "wallclock_s": 82,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 19734,
+  "total_cost_usd": 0.09551700000000002,
+  "session_id": "affc795e-67fb-418a-8b1d-0920e68f8439",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1325,
+  "cache_read_input_tokens": 132240,
+  "cache_creation_input_tokens": 13380,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.keyvalue.MultiKeyTest::testEqualsAfterSerializationOfDerivedClass"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/keyvalue/MultiKey.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

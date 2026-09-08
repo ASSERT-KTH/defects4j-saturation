@@ -1,0 +1,4 @@
+M	src/com/google/javascript/jscomp/CodeGenerator.java
+M	src/com/google/javascript/jscomp/NodeUtil.java
+M	src/com/google/javascript/jscomp/RenamePrototypes.java
+M	src/com/google/javascript/jscomp/parsing/IRFactory.java

@@ -1,0 +1,31 @@
+diff --git a/src/com/google/javascript/jscomp/CommandLineRunner.java b/src/com/google/javascript/jscomp/CommandLineRunner.java
+index ebf4b51..51c82d5 100644
+--- a/src/com/google/javascript/jscomp/CommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/CommandLineRunner.java
+@@ -85,6 +85,10 @@ public class CommandLineRunner extends
+         usage = "Displays this message")
+     private boolean display_help = false;
+ 
++    @Option(name = "--version",
++        usage = "Prints the compiler version to stderr.")
++    private boolean version = false;
++
+     @Option(name = "--print_tree",
+         handler = BooleanOptionHandler.class,
+         usage = "Prints out the parse tree and exits")
+@@ -415,6 +419,15 @@ public class CommandLineRunner extends
+       isConfigValid = false;
+     }
+ 
++    if (flags.version) {
++      ResourceBundle config = ResourceBundle.getBundle(
++          "com.google.javascript.jscomp.parsing.ParserConfig");
++      err.println(
++          "Closure Compiler (http://code.google.com/p/closure/compiler)\n" +
++          "Version: " + config.getString("compiler.version") + "\n" +
++          "Built on: " + config.getString("compiler.date") + "\n" +
++          "Compiled by com.google.javascript.jscomp.CommandLineRunner.");
++    }
+ 
+     if (!isConfigValid || flags.display_help) {
+       isConfigValid = false;

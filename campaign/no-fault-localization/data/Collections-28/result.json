@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 28,
+  "id": "Collections-28",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 198,
+  "finished_at": "2026-09-07T23:37:13Z",
+  "wallclock_s": 81,
+  "agent_s": 41,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 23245,
+  "total_cost_usd": 0.10385340000000001,
+  "session_id": "e29a5894-04b4-454e-8aa8-d8bf5606aff1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1726,
+  "cache_read_input_tokens": 153062,
+  "cache_creation_input_tokens": 13421,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections4.trie.PatriciaTrieTest::testPrefixMapClear"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

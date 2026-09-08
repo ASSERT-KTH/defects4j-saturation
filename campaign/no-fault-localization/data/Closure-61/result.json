@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 61,
+  "id": "Closure-61",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1213,
+  "finished_at": "2026-09-07T17:25:17Z",
+  "wallclock_s": 329,
+  "agent_s": 146,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 45166,
+  "total_cost_usd": 0.2550528,
+  "session_id": "8070ff49-5173-43ee-ac34-daed8781e9d9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3064,
+  "cache_read_input_tokens": 444684,
+  "cache_creation_input_tokens": 32465,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeRemoveDeadCodeTest::testCall1",
+    "com.google.javascript.jscomp.PeepholeRemoveDeadCodeTest::testCall2",
+    "com.google.javascript.jscomp.PeepholeRemoveDeadCodeTest::testRemoveUselessOps"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NodeUtil.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

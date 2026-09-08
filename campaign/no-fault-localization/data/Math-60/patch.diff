@@ -1,0 +1,24 @@
+diff --git a/src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java b/src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java
+index 0e124d8..baa5ae2 100644
+--- a/src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java
++++ b/src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java
+@@ -19,9 +19,9 @@ package org.apache.commons.math.distribution;
+ 
+ import java.io.Serializable;
+ 
++import org.apache.commons.math.ConvergenceException;
+ import org.apache.commons.math.MathException;
+ import org.apache.commons.math.exception.NotStrictlyPositiveException;
+-import org.apache.commons.math.MaxIterationsExceededException;
+ import org.apache.commons.math.exception.util.LocalizedFormats;
+ import org.apache.commons.math.special.Erf;
+ import org.apache.commons.math.util.FastMath;
+@@ -126,7 +126,7 @@ public class NormalDistributionImpl extends AbstractContinuousDistribution
+         try {
+         return 0.5 * (1.0 + Erf.erf((dev) /
+                     (standardDeviation * FastMath.sqrt(2.0))));
+-        } catch (MaxIterationsExceededException ex) {
++        } catch (ConvergenceException ex) {
+             if (x < (mean - 20 * standardDeviation)) { // JDK 1.5 blows at 38
+                 return 0;
+             } else if (x > (mean + 20 * standardDeviation)) {

@@ -1,0 +1,97 @@
+diff --git a/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java b/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
+index 4f89e0e..576c86e 100644
+--- a/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
++++ b/src/main/java/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream.java
+@@ -65,6 +65,16 @@ public class BZip2CompressorInputStream extends CompressorInputStream implements
+     private final boolean decompressConcatenated;
+ 
+     private int currentChar = -1;
++
++    /**
++     * An exception that was encountered while looking ahead to determine
++     * whether more data follows the byte that is about to be returned by
++     * {@link #read0}. It gets thrown by the next call to {@link #read0} so
++     * that the byte that has already been decoded before the failed
++     * look-ahead is not lost.
++     */
++    private IOException lookAheadException;
++
+     private static final int EOF = 0;
+     private static final int START_BLOCK_STATE = 1;
+     private static final int RAND_PART_A_STATE = 2;
+@@ -196,38 +206,52 @@ public class BZip2CompressorInputStream extends CompressorInputStream implements
+     }
+ 
+     private int read0() throws IOException {
++        if (lookAheadException != null) {
++            IOException e = lookAheadException;
++            lookAheadException = null;
++            throw e;
++        }
++
+         final int retChar = this.currentChar;
+-        switch (currentState) {
+-        case EOF:
+-            return -1;
++        try {
++            switch (currentState) {
++            case EOF:
++                return -1;
+ 
+-        case START_BLOCK_STATE:
+-            throw new IllegalStateException();
++            case START_BLOCK_STATE:
++                throw new IllegalStateException();
+ 
+-        case RAND_PART_A_STATE:
+-            throw new IllegalStateException();
++            case RAND_PART_A_STATE:
++                throw new IllegalStateException();
+ 
+-        case RAND_PART_B_STATE:
+-            setupRandPartB();
+-            break;
++            case RAND_PART_B_STATE:
++                setupRandPartB();
++                break;
+ 
+-        case RAND_PART_C_STATE:
+-            setupRandPartC();
+-            break;
++            case RAND_PART_C_STATE:
++                setupRandPartC();
++                break;
+ 
+-        case NO_RAND_PART_A_STATE:
+-            throw new IllegalStateException();
++            case NO_RAND_PART_A_STATE:
++                throw new IllegalStateException();
+ 
+-        case NO_RAND_PART_B_STATE:
+-            setupNoRandPartB();
+-            break;
++            case NO_RAND_PART_B_STATE:
++                setupNoRandPartB();
++                break;
+ 
+-        case NO_RAND_PART_C_STATE:
+-            setupNoRandPartC();
+-            break;
++            case NO_RAND_PART_C_STATE:
++                setupNoRandPartC();
++                break;
+ 
+-        default:
+-            throw new IllegalStateException();
++            default:
++                throw new IllegalStateException();
++            }
++        } catch (IOException e) {
++            // the look-ahead performed by the setup*() methods to decide
++            // whether the block/stream continues failed - the byte that has
++            // already been decoded (retChar) is still valid and must be
++            // returned, the failure is reported on the next call instead.
++            lookAheadException = e;
+         }
+         return retChar;
+     }

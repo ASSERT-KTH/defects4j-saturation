@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 106,
+  "id": "JacksonDatabind-106",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3471,
+  "finished_at": "2026-09-08T05:06:44Z",
+  "wallclock_s": 1301,
+  "agent_s": 985,
+  "agent_rc": 0,
+  "num_turns": 48,
+  "api_duration_ms": 185198,
+  "total_cost_usd": 0.6874823999999999,
+  "session_id": "ee0fb418-1084-40f8-9c32-dce39cdcbb53",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 96,
+  "output_tokens": 10480,
+  "cache_read_input_tokens": 1923757,
+  "cache_creation_input_tokens": 48616,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.node.TestTreeTraversingParser::testNumberOverflowLong",
+    "com.fasterxml.jackson.databind.node.TestTreeTraversingParser::testNumberOverflowInt"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/node/TreeTraversingParser.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

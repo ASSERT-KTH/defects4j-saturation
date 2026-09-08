@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 64,
+  "id": "Math-64",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 13830,
+  "finished_at": "2026-09-08T10:35:19Z",
+  "wallclock_s": 317,
+  "agent_s": 285,
+  "agent_rc": 0,
+  "num_turns": 47,
+  "api_duration_ms": 257270,
+  "total_cost_usd": 1.1532134,
+  "session_id": "7d560916-59a2-4bfc-93ae-ef9e7b9d1d39",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 94,
+  "output_tokens": 22095,
+  "cache_read_input_tokens": 2958902,
+  "cache_creation_input_tokens": 84196,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.general.MinpackTest::testMinpackJennrichSampson",
+    "org.apache.commons.math.optimization.general.MinpackTest::testMinpackFreudensteinRoth"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

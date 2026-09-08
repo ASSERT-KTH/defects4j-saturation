@@ -1,0 +1,6 @@
+M	src/com/google/javascript/rhino/jstype/ArrowType.java
+A	src/com/google/javascript/rhino/jstype/EquivalenceMethod.java
+M	src/com/google/javascript/rhino/jstype/FunctionType.java
+M	src/com/google/javascript/rhino/jstype/JSType.java
+M	src/com/google/javascript/rhino/jstype/RecordType.java
+M	src/com/google/javascript/rhino/jstype/UnionType.java

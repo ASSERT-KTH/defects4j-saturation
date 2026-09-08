@@ -1,0 +1,64 @@
+diff --git a/src/com/google/javascript/jscomp/TypeCheck.java b/src/com/google/javascript/jscomp/TypeCheck.java
+index a752e76..b719bdb 100644
+--- a/src/com/google/javascript/jscomp/TypeCheck.java
++++ b/src/com/google/javascript/jscomp/TypeCheck.java
+@@ -836,6 +836,16 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+       JSType objectJsType = getJSType(object);
+       String property = lvalue.getLastChild().getString();
+ 
++      // this.property = ...; in the body of a constructor.
++      if (object.getType() == Token.THIS) {
++        ObjectType thisType = t.getScope().getTypeOfThis();
++        FunctionType ctorType = thisType == null ? null : thisType.getConstructor();
++        if (ctorType != null && ctorType.isConstructor()) {
++          checkPropertyTypeAgreesWithInterface(
++              t, assign, ctorType, property, getJSType(rvalue));
++        }
++      }
++
+       // the first name in this getprop refers to an interface
+       // we perform checks in addition to the ones below
+       if (object.getType() == Token.GETPROP) {
+@@ -1005,6 +1015,42 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+     return false;
+   }
+ 
++  /**
++   * Given a constructor type and a property declared on {@code this} inside
++   * the constructor (e.g. {@code this.propertyName = ...}), check that the
++   * property's type is consistent with the type of any property of the
++   * same name declared on an interface that the constructor implements.
++   */
++  private void checkPropertyTypeAgreesWithInterface(
++      NodeTraversal t, Node n, FunctionType ctorType, String propertyName,
++      JSType propertyType) {
++    // If the supertype doesn't resolve correctly, we've warned about this
++    // already.
++    if (hasUnknownOrEmptySupertype(ctorType)) {
++      return;
++    }
++
++    for (JSType implementedInterface : ctorType.getImplementedInterfaces()) {
++      if (implementedInterface.isUnknownType() ||
++          implementedInterface.isEmptyType()) {
++        continue;
++      }
++      FunctionType interfaceType =
++          implementedInterface.toObjectType().getConstructor();
++      Preconditions.checkNotNull(interfaceType);
++      if (interfaceType.getPrototype().hasProperty(propertyName)) {
++        JSType interfacePropType =
++            interfaceType.getPrototype().getPropertyType(propertyName);
++        if (!propertyType.canAssignTo(interfacePropType)) {
++          compiler.report(t.makeError(n,
++              HIDDEN_INTERFACE_PROPERTY_MISMATCH, propertyName,
++              interfaceType.getTopMostDefiningType(propertyName).toString(),
++              interfacePropType.toString(), propertyType.toString()));
++        }
++      }
++    }
++  }
++
+   /**
+    * Given a constructor type and a property name, check that the property has
+    * the JSDoc annotation @override iff the property is declared on a

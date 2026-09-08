@@ -1,0 +1,42 @@
+{
+  "project": "JxPath",
+  "bug": 1,
+  "id": "JxPath-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 13164,
+  "finished_at": "2026-09-08T06:03:36Z",
+  "wallclock_s": 335,
+  "agent_s": 297,
+  "agent_rc": 0,
+  "num_turns": 62,
+  "api_duration_ms": 270893,
+  "total_cost_usd": 1.1519057999999998,
+  "session_id": "276673bf-35f3-4a39-8f9c-4dceca2eb86d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 124,
+  "output_tokens": 22713,
+  "cache_read_input_tokens": 3172389,
+  "cache_creation_input_tokens": 71701,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testGetNode",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testGetNode"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java",
+    "src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMNodePointer.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,13 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+index e6558fd..ed91dd7 100644
+--- a/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
++++ b/src/main/java/com/fasterxml/jackson/core/filter/FilteringParserDelegate.java
+@@ -236,7 +236,7 @@ public class FilteringParserDelegate extends JsonParserDelegate
+         if (!_allowMultipleMatches && (_currToken != null) && (_exposedContext == null)) {
+             //if not scalar and ended successfully, and !includePath, then return null
+                 if (_currToken.isStructEnd()) {
+-                    if (_headContext.isStartHandled()) {
++                    if (_headContext.inRoot()) {
+                         return (_currToken = null);
+                     }
+                 } else if (_currToken.isScalarValue()) {

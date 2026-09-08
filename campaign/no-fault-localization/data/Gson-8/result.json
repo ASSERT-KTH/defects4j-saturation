@@ -1,0 +1,41 @@
+{
+  "project": "Gson",
+  "bug": 8,
+  "id": "Gson-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1055,
+  "finished_at": "2026-09-08T00:07:49Z",
+  "wallclock_s": 69,
+  "agent_s": 50,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 40980,
+  "total_cost_usd": 0.16104439999999998,
+  "session_id": "a6ac2c44-8c0d-4dc6-ae1a-d8442c91ceeb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 3679,
+  "cache_read_input_tokens": 268927,
+  "cache_creation_input_tokens": 16739,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.internal.UnsafeAllocatorInstantiationTest::testInterfaceInstantiation",
+    "com.google.gson.internal.UnsafeAllocatorInstantiationTest::testAbstractClassInstantiation"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/UnsafeAllocator.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

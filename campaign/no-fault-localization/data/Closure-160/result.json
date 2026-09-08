@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 160,
+  "id": "Closure-160",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2944,
+  "finished_at": "2026-09-07T20:18:21Z",
+  "wallclock_s": 301,
+  "agent_s": 132,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 76497,
+  "total_cost_usd": 0.26460320000000004,
+  "session_id": "8912951c-b84b-4395-914b-2382f45301f8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 6292,
+  "cache_read_input_tokens": 540286,
+  "cache_creation_input_tokens": 22796,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testCheckSymbolsOverrideForQuiet"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Compiler.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

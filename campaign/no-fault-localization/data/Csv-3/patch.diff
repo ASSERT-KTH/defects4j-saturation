@@ -1,0 +1,31 @@
+diff --git a/src/main/java/org/apache/commons/csv/Lexer.java b/src/main/java/org/apache/commons/csv/Lexer.java
+index 0a6a090..105e960 100644
+--- a/src/main/java/org/apache/commons/csv/Lexer.java
++++ b/src/main/java/org/apache/commons/csv/Lexer.java
+@@ -108,8 +108,11 @@ abstract class Lexer {
+             throw new IOException("EOF whilst processing escape sequence");
+         default:
+             // Now check for meta-characters
++            if (isMetaChar(c)) {
+                 return c;
++            }
+             // indicate unexpected char - available from in.getLastChar()
++            return END_OF_STREAM;
+         }
+     }
+ 
+@@ -178,4 +181,14 @@ abstract class Lexer {
+     boolean isCommentStart(final int c) {
+         return c == commmentStart;
+     }
++
++    /**
++     * @return true if the given character is a meta-character that may be escaped, i.e. the
++     *         delimiter, the escape character itself, or the quote character.
++     */
++    private boolean isMetaChar(final int c) {
++        return c == delimiter ||
++               c == escape ||
++               c == quoteChar;
++    }
+ }

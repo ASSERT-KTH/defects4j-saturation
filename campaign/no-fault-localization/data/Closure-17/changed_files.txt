@@ -1,0 +1,2 @@
+A	${OUTFILE}
+M	src/com/google/javascript/jscomp/TypedScopeCreator.java

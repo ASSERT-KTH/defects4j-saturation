@@ -1,0 +1,41 @@
+{
+  "project": "Time",
+  "bug": 7,
+  "id": "Time-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3307,
+  "finished_at": "2026-09-08T14:33:16Z",
+  "wallclock_s": 129,
+  "agent_s": 83,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 69129,
+  "total_cost_usd": 0.26771280000000003,
+  "session_id": "e001e984-cbbb-423f-8150-2746a8dfd1a0",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 5287,
+  "cache_read_input_tokens": 426044,
+  "cache_creation_input_tokens": 31483,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_feb29_newYork_startOfYear",
+    "org.joda.time.format.TestDateTimeFormatter::testParseInto_monthDay_feb29_tokyo_endOfYear"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/format/DateTimeFormatter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,42 @@
+{
+  "project": "JacksonCore",
+  "bug": 2,
+  "id": "JacksonCore-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6234,
+  "finished_at": "2026-09-08T00:13:23Z",
+  "wallclock_s": 187,
+  "agent_s": 159,
+  "agent_rc": 0,
+  "num_turns": 29,
+  "api_duration_ms": 146194,
+  "total_cost_usd": 0.5737402,
+  "session_id": "02b61811-a2c8-4abe-b441-055e20b89f56",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 58,
+  "output_tokens": 13948,
+  "cache_read_input_tokens": 1209136,
+  "cache_creation_input_tokens": 47238,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.core.json.TestParserErrorHandling::testMangledNumbersBytes",
+    "com.fasterxml.jackson.core.json.TestParserErrorHandling::testMangledNumbersChars"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/core/json/ReaderBasedJsonParser.java",
+    "src/main/java/com/fasterxml/jackson/core/json/UTF8StreamJsonParser.java"
+  ],
+  "patch_added_lines": 44,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

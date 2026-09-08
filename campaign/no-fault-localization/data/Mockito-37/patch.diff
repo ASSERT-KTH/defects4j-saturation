@@ -1,0 +1,39 @@
+diff --git a/src/org/mockito/internal/invocation/Invocation.java b/src/org/mockito/internal/invocation/Invocation.java
+index 94d4612..a7beb81 100644
+--- a/src/org/mockito/internal/invocation/Invocation.java
++++ b/src/org/mockito/internal/invocation/Invocation.java
+@@ -186,6 +186,10 @@ public class Invocation implements PrintableInvocation, InvocationOnMock, Printi
+         return method.getReturnType().isPrimitive();
+     }
+ 
++    public boolean isDeclaredOnInterface() {
++        return method.getDeclaringClass().isInterface();
++    }
++
+     public Location getLocation() {
+         return location;
+     }
+diff --git a/src/org/mockito/internal/stubbing/answers/AnswersValidator.java b/src/org/mockito/internal/stubbing/answers/AnswersValidator.java
+index 5d80578..abd0655 100644
+--- a/src/org/mockito/internal/stubbing/answers/AnswersValidator.java
++++ b/src/org/mockito/internal/stubbing/answers/AnswersValidator.java
+@@ -24,9 +24,18 @@ public class AnswersValidator {
+         if (answer instanceof DoesNothing) {
+             validateDoNothing((DoesNothing) answer, invocation);
+         }
+-        
++
++        if (answer instanceof CallsRealMethods) {
++            validateCallsRealMethods(invocation);
++        }
++
+     }
+ 
++    private void validateCallsRealMethods(Invocation invocation) {
++        if (invocation.isDeclaredOnInterface()) {
++            reporter.cannotCallRealMethodOnInterface();
++        }
++    }
+ 
+     private void validateDoNothing(DoesNothing answer, Invocation invocation) {
+         if (!invocation.isVoid()) {

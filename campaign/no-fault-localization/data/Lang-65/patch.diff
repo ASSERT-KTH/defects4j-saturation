@@ -1,0 +1,40 @@
+diff --git a/src/java/org/apache/commons/lang/time/DateUtils.java b/src/java/org/apache/commons/lang/time/DateUtils.java
+index 531e73f..b105381 100644
+--- a/src/java/org/apache/commons/lang/time/DateUtils.java
++++ b/src/java/org/apache/commons/lang/time/DateUtils.java
+@@ -706,7 +706,34 @@ public class DateUtils {
+                 roundUp = offset > ((max - min) / 2);
+             }
+             //We need to remove this field
+-                val.set(fields[i][0], val.get(fields[i][0]) - offset);
++            if (offset != 0) {
++                // Calendar.set() forces a recomputation of the internal time
++                // from fields, which can pick the wrong side of a DST
++                // transition when the local time is ambiguous (e.g. during
++                // the "fall back" hour). For fields whose unit is a fixed
++                // duration of real time, adjust the absolute time directly
++                // instead to avoid that ambiguity.
++                long unitMillis;
++                switch (fields[i][0]) {
++                    case Calendar.MILLISECOND:
++                        unitMillis = 1L;
++                        break;
++                    case Calendar.SECOND:
++                        unitMillis = 1000L;
++                        break;
++                    case Calendar.MINUTE:
++                        unitMillis = 60000L;
++                        break;
++                    default:
++                        unitMillis = 0L;
++                        break;
++                }
++                if (unitMillis != 0L) {
++                    val.setTimeInMillis(val.getTimeInMillis() - (offset * unitMillis));
++                } else {
++                    val.set(fields[i][0], val.get(fields[i][0]) - offset);
++                }
++            }
+         }
+         throw new IllegalArgumentException("The field " + field + " is not supported");
+ 

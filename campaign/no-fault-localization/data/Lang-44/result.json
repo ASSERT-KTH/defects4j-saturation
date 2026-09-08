@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 44,
+  "id": "Lang-44",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 426,
+  "finished_at": "2026-09-08T09:20:25Z",
+  "wallclock_s": 90,
+  "agent_s": 43,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 25687,
+  "total_cost_usd": 0.0999812,
+  "session_id": "0803d512-c059-44a2-88ba-f2f07e0a68ea",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1883,
+  "cache_read_input_tokens": 164371,
+  "cache_creation_input_tokens": 11510,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.NumberUtilsTest::testLang457"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/NumberUtils.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

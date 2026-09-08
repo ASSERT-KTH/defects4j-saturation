@@ -1,0 +1,27 @@
+diff --git a/src/main/java/org/apache/commons/math3/distribution/FDistribution.java b/src/main/java/org/apache/commons/math3/distribution/FDistribution.java
+index 8b0993c..52e9847 100644
+--- a/src/main/java/org/apache/commons/math3/distribution/FDistribution.java
++++ b/src/main/java/org/apache/commons/math3/distribution/FDistribution.java
+@@ -126,6 +126,9 @@ public class FDistribution extends AbstractRealDistribution {
+      * @since 2.1
+      */
+     public double density(double x) {
++        if (x <= 0) {
++            return 0;
++        }
+         final double nhalf = numeratorDegreesOfFreedom / 2;
+         final double mhalf = denominatorDegreesOfFreedom / 2;
+         final double logx = FastMath.log(x);
+diff --git a/src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java b/src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java
+index 5d32f6e..0d279de 100644
+--- a/src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java
++++ b/src/main/java/org/apache/commons/math3/distribution/UniformRealDistribution.java
+@@ -181,7 +181,7 @@ public class UniformRealDistribution extends AbstractRealDistribution {
+ 
+     /** {@inheritDoc} */
+     public boolean isSupportUpperBoundInclusive() {
+-        return false;
++        return true;
+     }
+ 
+     /**

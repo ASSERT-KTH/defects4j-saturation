@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 49,
+  "id": "Math-49",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1441,
+  "finished_at": "2026-09-08T10:17:39Z",
+  "wallclock_s": 208,
+  "agent_s": 118,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 54196,
+  "total_cost_usd": 0.17292939999999998,
+  "session_id": "cca133cf-3f98-4f2b-a2eb-25db164e5964",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 4479,
+  "cache_read_input_tokens": 263052,
+  "cache_creation_input_tokens": 18243,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.SparseRealVectorTest::testConcurrentModification"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/OpenMapRealVector.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

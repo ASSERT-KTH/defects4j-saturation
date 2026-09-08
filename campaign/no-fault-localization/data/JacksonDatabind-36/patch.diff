@@ -1,0 +1,39 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+index c788c62..a736435 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
++++ b/src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java
+@@ -258,6 +258,24 @@ public class StdDateFormat
+         return _lenient.booleanValue();
+     }
+ 
++    @Override // since 2.7
++    public void setLenient(boolean enabled) {
++        _lenient = enabled;
++        // propagate to already-instantiated (cached) sub-formats, if any
++        if (_formatPlain != null) {
++            _formatPlain.setLenient(enabled);
++        }
++        if (_formatISO8601 != null) {
++            _formatISO8601.setLenient(enabled);
++        }
++        if (_formatISO8601_z != null) {
++            _formatISO8601_z.setLenient(enabled);
++        }
++        if (_formatRFC1123 != null) {
++            _formatRFC1123.setLenient(enabled);
++        }
++    }
++
+     /*
+     /**********************************************************
+     /* Public API, parsing
+@@ -554,6 +572,9 @@ public class StdDateFormat
+                 df.setTimeZone(tz);
+             }
+         }
++        if (lenient != null) {
++            df.setLenient(lenient.booleanValue());
++        }
+         return df;
+     }
+ 

@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 49,
+  "id": "JacksonDatabind-49",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1636,
+  "finished_at": "2026-09-08T01:35:37Z",
+  "wallclock_s": 272,
+  "agent_s": 204,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 51129,
+  "total_cost_usd": 0.17933459999999996,
+  "session_id": "8141692d-9428-4315-a444-c6d7e8d20414",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 3927,
+  "cache_read_input_tokens": 325278,
+  "cache_creation_input_tokens": 18143,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.objectid.AlwaysAsReferenceFirstTest::testIssue1255"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/impl/WritableObjectId.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

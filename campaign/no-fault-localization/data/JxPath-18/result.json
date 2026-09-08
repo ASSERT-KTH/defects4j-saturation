@@ -1,0 +1,41 @@
+{
+  "project": "JxPath",
+  "bug": 18,
+  "id": "JxPath-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 587,
+  "finished_at": "2026-09-08T06:12:34Z",
+  "wallclock_s": 68,
+  "agent_s": 43,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 31953,
+  "total_cost_usd": 0.1419092,
+  "session_id": "8bf0eb21-376d-43fc-8aeb-97bab6e11c4d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2786,
+  "cache_read_input_tokens": 233446,
+  "cache_creation_input_tokens": 15971,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testAxisAttribute",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testAxisAttribute"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/axes/AttributeContext.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

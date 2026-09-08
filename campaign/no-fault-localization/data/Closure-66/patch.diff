@@ -1,0 +1,21 @@
+diff --git a/src/com/google/javascript/jscomp/TypeCheck.java b/src/com/google/javascript/jscomp/TypeCheck.java
+index edb7805..5ddf7b7 100644
+--- a/src/com/google/javascript/jscomp/TypeCheck.java
++++ b/src/com/google/javascript/jscomp/TypeCheck.java
+@@ -513,13 +513,16 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+         // Object literal keys are handled with OBJECTLIT
+         if (!NodeUtil.isObjectLitKey(n, n.getParent())) {
+           ensureTyped(t, n, STRING_TYPE);
++        } else {
+           // Object literal keys are not typeable
++          typeable = false;
+         }
+         break;
+ 
+       case Token.GET:
+       case Token.SET:
+         // Object literal keys are handled with OBJECTLIT
++        typeable = false;
+         break;
+ 
+       case Token.ARRAYLIT:

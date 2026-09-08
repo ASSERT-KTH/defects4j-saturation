@@ -1,0 +1,18 @@
+diff --git a/src/main/java/org/jsoup/helper/DataUtil.java b/src/main/java/org/jsoup/helper/DataUtil.java
+index dc12cb3..ed2ba93 100644
+--- a/src/main/java/org/jsoup/helper/DataUtil.java
++++ b/src/main/java/org/jsoup/helper/DataUtil.java
+@@ -167,8 +167,12 @@ public final class DataUtil {
+                 throw e.ioException();
+             }
+             Charset charset = Charset.forName(charsetName);
+-            doc.outputSettings().charset(charset);
++            if (charset.canEncode()) {
++                doc.outputSettings().charset(charset);
++            } else {
+                 // some charsets can read but not encode; switch to an encodable charset and update the meta el
++                doc.charset(Charset.forName(defaultCharset));
++            }
+         }
+         input.close();
+         return doc;

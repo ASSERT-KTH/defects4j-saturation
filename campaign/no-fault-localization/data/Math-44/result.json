@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 44,
+  "id": "Math-44",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 8658,
+  "finished_at": "2026-09-08T10:12:28Z",
+  "wallclock_s": 253,
+  "agent_s": 196,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 124938,
+  "total_cost_usd": 0.3681894,
+  "session_id": "b9b6b9a5-26a1-4589-aa3b-2f3b6c237d66",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 10829,
+  "cache_read_input_tokens": 500807,
+  "cache_creation_input_tokens": 39274,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.ode.events.EventStateTest::testIssue695"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/ode/AbstractIntegrator.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

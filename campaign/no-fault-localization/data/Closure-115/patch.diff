@@ -1,0 +1,62 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionArgumentInjector.java b/src/com/google/javascript/jscomp/FunctionArgumentInjector.java
+index 205471b..6a1b34e 100644
+--- a/src/com/google/javascript/jscomp/FunctionArgumentInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionArgumentInjector.java
+@@ -322,7 +322,7 @@ class FunctionArgumentInjector {
+    * @return The subset of parameters referenced after the first
+    *     seen non-local side-effect.
+    */
+-  private static Set<String> findParametersReferencedAfterSideEffect(
++  static Set<String> findParametersReferencedAfterSideEffect(
+       Set<String> parameters, Node root) {
+ 
+     // TODO(johnlenz): Consider using scope for this.
+diff --git a/src/com/google/javascript/jscomp/FunctionInjector.java b/src/com/google/javascript/jscomp/FunctionInjector.java
+index 73d6a4b..aca0eac 100644
+--- a/src/com/google/javascript/jscomp/FunctionInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionInjector.java
+@@ -25,6 +25,7 @@ import com.google.javascript.rhino.Node;
+ import com.google.javascript.rhino.Token;
+ 
+ import java.util.Collection;
++import java.util.Collections;
+ import java.util.Map;
+ import java.util.Set;
+ 
+@@ -694,12 +695,23 @@ class FunctionInjector {
+ 
+     Node block = fnNode.getLastChild();
+ 
+-    boolean hasSideEffects = false;
++    // Only parameters that are referenced after a side-effect occurs in the
++    // returned expression need to be treated with care: the order in which
++    // they would be evaluated at the call site (before the call) must match
++    // the order in which they are used relative to any side-effects in the
++    // body once inlined.
++    Set<String> namesAfterSideEffects = Collections.emptySet();
+     if (block.hasChildren()) {
+       Preconditions.checkState(block.hasOneChild());
+       Node stmt = block.getFirstChild();
+-      if (stmt.isReturn()) {
+-        hasSideEffects = NodeUtil.mayHaveSideEffects(stmt.getFirstChild(), compiler);
++      if (stmt.isReturn() && stmt.getFirstChild() != null) {
++        Set<String> parameters = Sets.newHashSet();
++        for (Node n : NodeUtil.getFunctionParameters(fnNode).children()) {
++          parameters.add(n.getString());
++        }
++        namesAfterSideEffects =
++            FunctionArgumentInjector.findParametersReferencedAfterSideEffect(
++                parameters, block);
+       }
+     }
+     // CALL NODE: [ NAME, ARG1, ARG2, ... ]
+@@ -727,7 +739,8 @@ class FunctionInjector {
+       // For each named parameter check if a mutable argument use more than one.
+       if (fnParam != null) {
+         if (cArg != null) {
+-          if (hasSideEffects && NodeUtil.canBeSideEffected(cArg)) {
++          if (namesAfterSideEffects.contains(fnParam.getString())
++              && NodeUtil.canBeSideEffected(cArg)) {
+             return CanInlineResult.NO;
+           }
+           // Check for arguments that are evaluated more than once.

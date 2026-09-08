@@ -1,0 +1,41 @@
+{
+  "project": "Cli",
+  "bug": 9,
+  "id": "Cli-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 23,
+  "finished_at": "2026-09-07T15:29:04Z",
+  "wallclock_s": 31,
+  "agent_s": 17,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 13193,
+  "total_cost_usd": 0.07016320000000001,
+  "session_id": "4ca4fe24-52ea-46ef-b625-b8b9dfaf3a6c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 632,
+  "cache_read_input_tokens": 86376,
+  "cache_creation_input_tokens": 10824,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.OptionsTest::testMissingOptionsException",
+    "org.apache.commons.cli.ParseRequiredTest::testMissingRequiredOptions"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/Parser.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

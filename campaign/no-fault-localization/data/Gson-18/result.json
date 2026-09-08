@@ -1,0 +1,40 @@
+{
+  "project": "Gson",
+  "bug": 18,
+  "id": "Gson-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1989,
+  "finished_at": "2026-09-08T00:11:14Z",
+  "wallclock_s": 89,
+  "agent_s": 65,
+  "agent_rc": 0,
+  "num_turns": 19,
+  "api_duration_ms": 59307,
+  "total_cost_usd": 0.2500468,
+  "session_id": "e1211a44-7741-42d4-8504-a1c7a2d6efac",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 38,
+  "output_tokens": 4856,
+  "cache_read_input_tokens": 482439,
+  "cache_creation_input_tokens": 25675,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.functional.CollectionTest::testIssue1107"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/$Gson$Types.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

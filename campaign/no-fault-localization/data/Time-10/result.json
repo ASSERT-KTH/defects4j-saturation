@@ -1,0 +1,41 @@
+{
+  "project": "Time",
+  "bug": 10,
+  "id": "Time-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4810,
+  "finished_at": "2026-09-08T14:35:41Z",
+  "wallclock_s": 153,
+  "agent_s": 119,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 104922,
+  "total_cost_usd": 0.2796798,
+  "session_id": "211ffec9-e54b-4cec-b170-0bb76ebbf6ee",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 8506,
+  "cache_read_input_tokens": 508144,
+  "cache_creation_input_tokens": 22348,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.TestDays::testFactory_daysBetween_RPartial_MonthDay",
+    "org.joda.time.TestMonths::testFactory_monthsBetween_RPartial_MonthDay"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

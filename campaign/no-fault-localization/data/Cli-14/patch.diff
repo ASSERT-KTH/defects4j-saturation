@@ -1,0 +1,23 @@
+diff --git a/src/java/org/apache/commons/cli2/option/GroupImpl.java b/src/java/org/apache/commons/cli2/option/GroupImpl.java
+index 781d0b6..daa7ae3 100644
+--- a/src/java/org/apache/commons/cli2/option/GroupImpl.java
++++ b/src/java/org/apache/commons/cli2/option/GroupImpl.java
+@@ -245,14 +245,16 @@ public class GroupImpl
+         for (final Iterator i = options.iterator(); i.hasNext();) {
+             final Option option = (Option) i.next();
+ 
++            final boolean isPresent = commandLine.hasOption(option);
++
+             // needs validation?
+-            boolean validate = option.isRequired() || option instanceof Group;
++            boolean validate = (option.isRequired() || option instanceof Group) && !isPresent;
+             if (validate) {
+                 option.validate(commandLine);
+             }
+ 
+             // if the child option is present then validate it
+-            if (commandLine.hasOption(option)) {
++            if (isPresent) {
+                 if (++present > maximum) {
+                     unexpected = option;
+ 

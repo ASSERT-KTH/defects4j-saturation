@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 4,
+  "id": "Jsoup-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2137,
+  "finished_at": "2026-09-08T05:08:24Z",
+  "wallclock_s": 97,
+  "agent_s": 63,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 55401,
+  "total_cost_usd": 0.3106466,
+  "session_id": "36d36b84-fee1-47e6-9f8c-b1907b42c534",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 4111,
+  "cache_read_input_tokens": 480188,
+  "cache_creation_input_tokens": 42434,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.EntitiesTest::escape",
+    "org.jsoup.nodes.EntitiesTest::caseSensitive"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Entities.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

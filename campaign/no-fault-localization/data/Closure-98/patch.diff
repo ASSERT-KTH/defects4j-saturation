@@ -1,0 +1,64 @@
+diff --git a/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java b/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
+index f053321..81759e2 100644
+--- a/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
++++ b/src/com/google/javascript/jscomp/ReferenceCollectingCallback.java
+@@ -357,7 +357,20 @@ class ReferenceCollectingCallback implements ScopedCallback, CompilerPass {
+         return false;
+       }
+ 
+-      // Make sure this assignment is not in a loop.
++      // Make sure this assignment is not in a loop, within the scope
++      // that this variable is declared in. Loops that only enclose the
++      // variable's declaration through some outer function call do not
++      // count, since a new instance of the variable is created on
++      // every call.
++      for (BasicBlock block = ref.getBasicBlock(); block != null;
++           block = block.getParent()) {
++        if (block.isLoop()) {
++          return false;
++        }
++        if (block.isFunction()) {
++          break;
++        }
++      }
+ 
+       return true;
+     }
+@@ -542,10 +555,12 @@ class ReferenceCollectingCallback implements ScopedCallback, CompilerPass {
+     /**
+      * Whether this block denotes a function scope.
+      */
++    private final boolean isFunction;
+ 
+     /**
+      * Whether this block denotes a loop.
+      */
++    private final boolean isLoop;
+ 
+     /**
+      * Creates a new block.
+@@ -558,7 +573,24 @@ class ReferenceCollectingCallback implements ScopedCallback, CompilerPass {
+       // only named functions may be hoisted.
+       this.isHoisted = NodeUtil.isHoistedFunctionDeclaration(root);
+ 
++      this.isFunction = root.getType() == Token.FUNCTION;
++
++      Node rootParent = root.getParent();
++      this.isLoop = rootParent != null && NodeUtil.isLoopStructure(rootParent);
++    }
++
++    /**
++     * @return Whether this block denotes a function scope.
++     */
++    boolean isFunction() {
++      return isFunction;
++    }
+ 
++    /**
++     * @return Whether this block is, or is nested within, a loop.
++     */
++    boolean isLoop() {
++      return isLoop;
+     }
+ 
+     BasicBlock getParent() {

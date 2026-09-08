@@ -1,0 +1,72 @@
+diff --git a/src/com/google/javascript/jscomp/CodeGenerator.java b/src/com/google/javascript/jscomp/CodeGenerator.java
+index 35a93af..d9ac019 100644
+--- a/src/com/google/javascript/jscomp/CodeGenerator.java
++++ b/src/com/google/javascript/jscomp/CodeGenerator.java
+@@ -127,12 +127,7 @@ class CodeGenerator {
+       // the IN_FOR_INIT_CLAUSE one.
+       Context rhsContext = getContextForNoInOperator(context);
+ 
+-      if (last.getType() == type &&
+-          NodeUtil.isAssociative(type)) {
+-        addExpr(first, p, context);
+-        cc.addOp(opstr, true);
+-        addExpr(last, p, rhsContext);
+-      } else if (NodeUtil.isAssignmentOp(n) && NodeUtil.isAssignmentOp(last)) {
++      if (NodeUtil.isAssignmentOp(n) && NodeUtil.isAssignmentOp(last)) {
+         // Assignments are the only right-associative binary operators
+         addExpr(first, p, context);
+         cc.addOp(opstr, true);
+diff --git a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+index 2c13724..f00b621 100644
+--- a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
++++ b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+@@ -99,12 +99,49 @@ class PeepholeSubstituteAlternateSyntax
+       case Token.ARRAYLIT:
+         return tryMinimizeArrayLiteral(node);
+ 
++      case Token.AND:
++      case Token.OR:
++      case Token.MUL:
++      case Token.BITOR:
++      case Token.BITXOR:
++      case Token.BITAND:
++        return late ? tryRotateAssociativeOperator(node) : node;
+ 
+       default:
+         return node; //Nothing changed
+     }
+   }
+ 
++  /**
++   * Rewrite "a op (b op c)" as "(a op b) op c" for associative operators so
++   * that the resulting expression trees are left-leaning, which is the
++   * natural order in which such expressions print without parentheses.
++   */
++  private Node tryRotateAssociativeOperator(Node n) {
++    Preconditions.checkState(NodeUtil.isAssociative(n.getType()));
++    Node right = n.getLastChild();
++    if (right.getType() != n.getType()) {
++      return n;
++    }
++
++    Node left = n.getFirstChild();
++    Node rightLeft = right.getFirstChild();
++    Node rightRight = right.getLastChild();
++
++    left.detachFromParent();
++    rightLeft.detachFromParent();
++    rightRight.detachFromParent();
++
++    Node newLeft = new Node(n.getType(), left, rightLeft)
++        .copyInformationFrom(n);
++    Node newRoot = new Node(n.getType(), newLeft, rightRight)
++        .copyInformationFrom(n);
++
++    n.getParent().replaceChild(n, newRoot);
++    reportCodeChange();
++    return newRoot;
++  }
++
+ 
+   private Node tryFoldSimpleFunctionCall(Node n) {
+     Preconditions.checkState(n.isCall());

@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 84,
+  "id": "Math-84",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4205,
+  "finished_at": "2026-09-08T11:11:11Z",
+  "wallclock_s": 126,
+  "agent_s": 82,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 71167,
+  "total_cost_usd": 0.248088,
+  "session_id": "de1ce5b8-f1e1-4555-bb28-093c7af01e59",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 6698,
+  "cache_read_input_tokens": 219265,
+  "cache_creation_input_tokens": 33355,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.direct.MultiDirectionalTest::testMinimizeMaximize",
+    "org.apache.commons.math.optimization.direct.MultiDirectionalTest::testMath283"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/direct/MultiDirectional.java"
+  ],
+  "patch_added_lines": 20,
+  "patch_removed_lines": 30,
+  "has_dev_patch": true
+}

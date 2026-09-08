@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 33,
+  "id": "Closure-33",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 7047,
+  "finished_at": "2026-09-07T16:40:00Z",
+  "wallclock_s": 419,
+  "agent_s": 245,
+  "agent_rc": 0,
+  "num_turns": 36,
+  "api_duration_ms": 158473,
+  "total_cost_usd": 0.48999839999999995,
+  "session_id": "96a9c8f0-7cc1-4bf8-88b5-6c7ccc204c99",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 72,
+  "output_tokens": 12287,
+  "cache_read_input_tokens": 1111172,
+  "cache_creation_input_tokens": 35600,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue700"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/PrototypeObjectType.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

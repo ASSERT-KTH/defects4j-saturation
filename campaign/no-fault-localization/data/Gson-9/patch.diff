@@ -1,0 +1,17 @@
+diff --git a/gson/src/main/java/com/google/gson/stream/JsonWriter.java b/gson/src/main/java/com/google/gson/stream/JsonWriter.java
+index a4178ee..0a596f1 100644
+--- a/gson/src/main/java/com/google/gson/stream/JsonWriter.java
++++ b/gson/src/main/java/com/google/gson/stream/JsonWriter.java
+@@ -473,6 +473,12 @@ public class JsonWriter implements Closeable, Flushable {
+    *
+    * @return this writer.
+    */
++  public JsonWriter value(Boolean value) throws IOException {
++    if (value == null) {
++      return nullValue();
++    }
++    return value(value.booleanValue());
++  }
+ 
+   /**
+    * Encodes {@code value}.

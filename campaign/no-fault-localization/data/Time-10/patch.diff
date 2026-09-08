@@ -1,0 +1,17 @@
+diff --git a/src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java b/src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java
+index 91b2c5c..7b082ce 100644
+--- a/src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java
++++ b/src/main/java/org/joda/time/base/BaseSingleFieldPeriod.java
+@@ -101,7 +101,11 @@ public abstract class BaseSingleFieldPeriod
+             throw new IllegalArgumentException("ReadablePartial objects must be contiguous");
+         }
+         Chronology chrono = DateTimeUtils.getChronology(start.getChronology()).withUTC();
+-        int[] values = chrono.get(zeroInstance, chrono.set(start, 0L), chrono.set(end, 0L));
++        // use a reference year that is a leap year so that fields such as
++        // February 29th can be set on the temporary instant without error
++        long zeroMillis = chrono.getDateTimeMillis(1972, 1, 1, 0);
++        int[] values = chrono.get(zeroInstance,
++                chrono.set(start, zeroMillis), chrono.set(end, zeroMillis));
+         return values[0];
+     }
+ 

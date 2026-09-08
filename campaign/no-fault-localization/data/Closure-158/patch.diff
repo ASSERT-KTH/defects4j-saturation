@@ -1,0 +1,187 @@
+diff --git a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+index 3a7f427..b516343 100644
+--- a/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/AbstractCommandLineRunner.java
+@@ -194,12 +194,9 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+       throws FlagUsageException, IOException {
+     DiagnosticGroups diagnosticGroups = getDiagnosticGroups();
+ 
+-    diagnosticGroups.setWarningLevels(
+-        options, config.jscompError, CheckLevel.ERROR);
+-    diagnosticGroups.setWarningLevels(
+-        options, config.jscompWarning, CheckLevel.WARNING);
+-    diagnosticGroups.setWarningLevels(
+-        options, config.jscompOff, CheckLevel.OFF);
++    for (FlagEntry<CheckLevel> entry : config.warningGuards) {
++      diagnosticGroups.setWarningLevel(options, entry.value, entry.flag);
++    }
+ 
+     createDefineOrTweakReplacements(config.define, options, false);
+ 
+@@ -1224,6 +1221,36 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+     }
+   }
+ 
++  /**
++   * A tuple of a flag and the value it was set to, in the order that it
++   * appeared on the command line. Used to preserve the relative ordering
++   * of repeated flags (e.g. --jscomp_error, --jscomp_warning, --jscomp_off)
++   * so that later flags can override earlier ones.
++   */
++  static class FlagEntry<T> {
++    private final T flag;
++    private final String value;
++
++    FlagEntry(T flag, String value) {
++      this.flag = flag;
++      this.value = value;
++    }
++
++    @Override
++    public boolean equals(Object other) {
++      if (other instanceof FlagEntry) {
++        FlagEntry<?> that = (FlagEntry<?>) other;
++        return that.flag.equals(this.flag) && that.value.equals(this.value);
++      }
++      return false;
++    }
++
++    @Override
++    public int hashCode() {
++      return flag.hashCode() + value.hashCode();
++    }
++  }
++
+   /**
+    * Configurations for the command line configs. Designed for easy
+    * building, so that we can decouple the flags-parsing library from
+@@ -1494,26 +1521,17 @@ abstract class AbstractCommandLineRunner<A extends Compiler,
+       return this;
+     }
+ 
+-    private final List<String> jscompError = Lists.newArrayList();
++    private final List<FlagEntry<CheckLevel>> warningGuards =
++        Lists.newArrayList();
+ 
+     /**
+-     * Add warning guards.
++     * Add warning guards, in the order that they appeared on the command
++     * line. Later guards take precedence over earlier guards for the same
++     * diagnostic group.
+      */
+-    CommandLineConfig setJscompError(List<String> jscompError) {
+-      this.jscompError.clear();
+-      this.jscompError.addAll(jscompError);
+-      return this;
+-    }
+-    private final List<String> jscompWarning = Lists.newArrayList();
+-    CommandLineConfig setJscompWarning(List<String> jscompWarning) {
+-      this.jscompWarning.clear();
+-      this.jscompWarning.addAll(jscompWarning);
+-      return this;
+-    }
+-    private final List<String> jscompOff = Lists.newArrayList();
+-    CommandLineConfig setJscompOff(List<String> jscompOff) {
+-      this.jscompOff.clear();
+-      this.jscompOff.addAll(jscompOff);
++    CommandLineConfig setWarningGuardSpec(List<FlagEntry<CheckLevel>> spec) {
++      this.warningGuards.clear();
++      this.warningGuards.addAll(spec);
+       return this;
+     }
+ 
+diff --git a/src/com/google/javascript/jscomp/CommandLineRunner.java b/src/com/google/javascript/jscomp/CommandLineRunner.java
+index d9a381b..ceb9f6d 100644
+--- a/src/com/google/javascript/jscomp/CommandLineRunner.java
++++ b/src/com/google/javascript/jscomp/CommandLineRunner.java
+@@ -242,6 +242,14 @@ public class CommandLineRunner extends
+         DiagnosticGroups.DIAGNOSTIC_GROUP_NAMES)
+     private List<String> jscomp_off = Lists.newArrayList();
+ 
++    // The order of the --jscomp_error, --jscomp_warning and --jscomp_off
++    // flags relative to each other on the command line matters: the last
++    // one wins for a given diagnostic group. Since args4j parses each of
++    // the above flags into its own list, we lose that ordering, so we
++    // reconstruct it here from the raw, processed argument list.
++    private final List<FlagEntry<CheckLevel>> warningGuardSpec =
++        Lists.newArrayList();
++
+     @Option(name = "--define",
+         aliases = {"--D", "-D"},
+         usage = "Override the value of a variable annotated @define. " +
+@@ -467,6 +475,30 @@ public class CommandLineRunner extends
+     return processedArgs;
+   }
+ 
++  /**
++   * Scans the already-processed (i.e. "--flag=value" split into separate
++   * "--flag" and "value" tokens) argument list for occurrences of
++   * --jscomp_error, --jscomp_warning and --jscomp_off, recording them in
++   * the order they appear so that later flags can override earlier ones
++   * for the same diagnostic group.
++   */
++  private void recordWarningGuardSpec(List<String> processedArgs) {
++    for (int i = 0; i < processedArgs.size() - 1; i++) {
++      String flagName = processedArgs.get(i);
++      String flagValue = processedArgs.get(i + 1);
++      if ("--jscomp_error".equals(flagName)) {
++        flags.warningGuardSpec.add(
++            new FlagEntry<CheckLevel>(CheckLevel.ERROR, flagValue));
++      } else if ("--jscomp_warning".equals(flagName)) {
++        flags.warningGuardSpec.add(
++            new FlagEntry<CheckLevel>(CheckLevel.WARNING, flagValue));
++      } else if ("--jscomp_off".equals(flagName)) {
++        flags.warningGuardSpec.add(
++            new FlagEntry<CheckLevel>(CheckLevel.OFF, flagValue));
++      }
++    }
++  }
++
+   private void processFlagFile(PrintStream err)
+             throws CmdLineException, IOException {
+     List<String> argsInFile = Lists.newArrayList();
+@@ -483,6 +515,7 @@ public class CommandLineRunner extends
+         = processArgs(argsInFile.toArray(new String[] {}));
+     CmdLineParser parserFileArgs = new CmdLineParser(flags);
+     parserFileArgs.parseArgument(processedFileArgs.toArray(new String[] {}));
++    recordWarningGuardSpec(processedFileArgs);
+ 
+     // Currently we are not supporting this (prevent direct/indirect loops)
+     if (!flags.flag_file.equals("")) {
+@@ -500,6 +533,7 @@ public class CommandLineRunner extends
+     isConfigValid = true;
+     try {
+       parser.parseArgument(processedArgs.toArray(new String[] {}));
++      recordWarningGuardSpec(processedArgs);
+       // For contains --flagfile flag
+       if (!flags.flag_file.equals("")) {
+         processFlagFile(err);
+@@ -549,9 +583,7 @@ public class CommandLineRunner extends
+           .setModuleWrapper(flags.module_wrapper)
+           .setModuleOutputPathPrefix(flags.module_output_path_prefix)
+           .setCreateSourceMap(flags.create_source_map)
+-          .setJscompError(flags.jscomp_error)
+-          .setJscompWarning(flags.jscomp_warning)
+-          .setJscompOff(flags.jscomp_off)
++          .setWarningGuardSpec(flags.warningGuardSpec)
+           .setDefine(flags.define)
+           .setCharset(flags.charset)
+           .setManageClosureDependencies(flags.manage_closure_dependencies)
+diff --git a/src/com/google/javascript/jscomp/DiagnosticGroups.java b/src/com/google/javascript/jscomp/DiagnosticGroups.java
+index d2d38c5..c0c9c7a 100644
+--- a/src/com/google/javascript/jscomp/DiagnosticGroups.java
++++ b/src/com/google/javascript/jscomp/DiagnosticGroups.java
+@@ -190,4 +190,13 @@ public class DiagnosticGroups {
+     options.setWarningLevel(group, level);
+     }
+   }
++
++  /**
++   * Adds a warning level by name.
++   */
++  void setWarningLevel(CompilerOptions options, String name, CheckLevel level) {
++    DiagnosticGroup group = forName(name);
++    Preconditions.checkNotNull(group, "No warning class for name: " + name);
++    options.setWarningLevel(group, level);
++  }
+ }

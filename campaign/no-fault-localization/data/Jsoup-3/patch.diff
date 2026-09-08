@@ -1,0 +1,125 @@
+diff --git a/src/main/java/org/jsoup/nodes/Element.java b/src/main/java/org/jsoup/nodes/Element.java
+index 12c68ca..67b807d 100644
+--- a/src/main/java/org/jsoup/nodes/Element.java
++++ b/src/main/java/org/jsoup/nodes/Element.java
+@@ -266,9 +266,9 @@ public class Element extends Node {
+      */
+     public Element append(String html) {
+         Validate.notNull(html);
+-        
+-        Element fragment = Parser.parseBodyFragment(html, baseUri).body();
+-        for (Node node : fragment.childNodes()) {
++
++        Element context = Parser.parseFragment(html, tag, baseUri).body().child(0);
++        for (Node node : context.childNodes()) {
+             node.parentNode = null;
+             appendChild(node);
+         }
+@@ -283,9 +283,9 @@ public class Element extends Node {
+      */
+     public Element prepend(String html) {
+         Validate.notNull(html);
+-        
+-        Element fragment = Parser.parseBodyFragment(html, baseUri).body();
+-        List<Node> nodes = fragment.childNodes();
++
++        Element context = Parser.parseFragment(html, tag, baseUri).body().child(0);
++        List<Node> nodes = context.childNodes();
+         for (int i = nodes.size() - 1; i >= 0; i--) {
+             Node node = nodes.get(i);
+             node.parentNode = null;
+diff --git a/src/main/java/org/jsoup/parser/Parser.java b/src/main/java/org/jsoup/parser/Parser.java
+index 0cedf8a..ab491cb 100644
+--- a/src/main/java/org/jsoup/parser/Parser.java
++++ b/src/main/java/org/jsoup/parser/Parser.java
+@@ -18,6 +18,8 @@ public class Parser {
+     private static final Tag bodyTag = Tag.valueOf("body");
+     private static final Tag titleTag = Tag.valueOf("title");
+     private static final Tag textareaTag = Tag.valueOf("textarea");
++    private static final Tag tableTag = Tag.valueOf("table");
++    private static final Tag trTag = Tag.valueOf("tr");
+ 
+     private final LinkedList<Element> stack;
+     private final TokenQueue tq;
+@@ -25,6 +27,10 @@ public class Parser {
+     private String baseUri;
+ 
+     private Parser(String html, String baseUri, boolean isBodyFragment) {
++        this(html, baseUri, isBodyFragment, null);
++    }
++
++    private Parser(String html, String baseUri, boolean isBodyFragment, Tag context) {
+         Validate.notNull(html);
+         Validate.notNull(baseUri);
+ 
+@@ -35,6 +41,13 @@ public class Parser {
+         if (isBodyFragment) {
+             doc = Document.createShell(baseUri);
+             stack.add(doc.body());
++            if (context != null) {
++                // seed the stack with the element the fragment will be inserted into, so implicit
++                // tag creation (e.g. tr needing a table ancestor) is aware of its real destination
++                Element contextEl = new Element(context, baseUri);
++                doc.body().appendChild(contextEl);
++                stack.add(contextEl);
++            }
+         } else {
+             doc = new Document(baseUri);
+             stack.add(doc);
+@@ -63,6 +76,20 @@ public class Parser {
+         return parser.parse();
+     }
+ 
++    /**
++     Parse a fragment of HTML into the {@code body} of a Document, in the context of the given tag. Supplying the
++     context allows implicit tags (e.g. a bare {@code tr}, which requires a {@code table} ancestor) to be created
++     as if the fragment were being inserted into an element of that tag, rather than directly into the body.
++     @param fragmentHtml fragment of HTML
++     @param context the tag of the element the parsed fragment will be inserted into
++     @param baseUri base URI of document (i.e. original fetch location), for resolving relative URLs.
++     @return Document, with empty head, and HTML parsed into a container element within the body
++     */
++    public static Document parseFragment(String fragmentHtml, Tag context, String baseUri) {
++        Parser parser = new Parser(fragmentHtml, baseUri, true, context);
++        return parser.parse();
++    }
++
+     /**
+      Parse a fragment of HTML into the {@code body} of a Document, with relaxed parsing enabled. Relaxed, in this
+      context, means that implicit tags are not automatically created when missing.
+@@ -252,12 +279,16 @@ public class Parser {
+ 
+ 
+         // otherwise, look up the stack for valid ancestors
++        boolean requiresRowInTableScope = trTag.equals(childTag.getImplicitParent());
+         for (int i = stack.size() -1; i >= 0; i--) {
+             Element el = stack.get(i);
+             Tag parent2 = el.tag();
+             if (parent2.isValidParent(childTag)) {
+                 return true;
+             }
++            // a table cell's row must be in the nearest enclosing table, not some outer table
++            if (requiresRowInTableScope && parent2.equals(tableTag))
++                break;
+         }
+         return false;
+     }
+diff --git a/src/main/java/org/jsoup/parser/Tag.java b/src/main/java/org/jsoup/parser/Tag.java
+index 6dff9e7..a1bda69 100644
+--- a/src/main/java/org/jsoup/parser/Tag.java
++++ b/src/main/java/org/jsoup/parser/Tag.java
+@@ -95,8 +95,13 @@ public class Tag {
+         if (this.tagName.equals("dd") && child.tagName.equals("dt"))
+             return false;
+ 
++        // a table row or cell can't directly hold another table row; a stray tr should break out to the
++        // enclosing table instead
++        if (child.tagName.equals("tr") && (this.tagName.equals("td") || this.tagName.equals("th") || this.tagName.equals("tr")))
++            return false;
++
+         // don't allow children to contain their parent (directly)
+-        
++
+         return true;
+     }
+ 

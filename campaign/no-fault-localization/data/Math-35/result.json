@@ -1,0 +1,43 @@
+{
+  "project": "Math",
+  "bug": 35,
+  "id": "Math-35",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 19,
+  "finished_at": "2026-09-08T10:03:36Z",
+  "wallclock_s": 126,
+  "agent_s": 52,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 15791,
+  "total_cost_usd": 0.1048164,
+  "session_id": "f394c9eb-a2c1-464a-8251-d4828568c635",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1027,
+  "cache_read_input_tokens": 147087,
+  "cache_creation_input_tokens": 14984,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.genetics.ElitisticListPopulationTest::testChromosomeListConstructorTooLow",
+    "org.apache.commons.math3.genetics.ElitisticListPopulationTest::testConstructorTooHigh",
+    "org.apache.commons.math3.genetics.ElitisticListPopulationTest::testConstructorTooLow",
+    "org.apache.commons.math3.genetics.ElitisticListPopulationTest::testChromosomeListConstructorTooHigh"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/genetics/ElitisticListPopulation.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

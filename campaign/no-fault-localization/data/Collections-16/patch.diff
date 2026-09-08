@@ -1,0 +1,21 @@
+diff --git a/src/java/org/apache/commons/collections/list/SetUniqueList.java b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+index 8ad3553..a283f3d 100644
+--- a/src/java/org/apache/commons/collections/list/SetUniqueList.java
++++ b/src/java/org/apache/commons/collections/list/SetUniqueList.java
+@@ -283,7 +283,15 @@ public class SetUniqueList extends AbstractSerializableListDecorator {
+     }
+ 
+     public List subList(int fromIndex, int toIndex) {
+-        return new SetUniqueList(super.subList(fromIndex, toIndex), set);
++        List superSubList = super.subList(fromIndex, toIndex);
++        return new SetUniqueList(superSubList, set) {
++            public boolean contains(Object object) {
++                return getCollection().contains(object);
++            }
++            public boolean containsAll(Collection coll) {
++                return getCollection().containsAll(coll);
++            }
++        };
+     }
+ 
+     //-----------------------------------------------------------------------

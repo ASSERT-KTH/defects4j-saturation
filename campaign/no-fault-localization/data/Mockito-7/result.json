@@ -1,0 +1,40 @@
+{
+  "project": "Mockito",
+  "bug": 7,
+  "id": "Mockito-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6296,
+  "finished_at": "2026-09-08T11:39:53Z",
+  "wallclock_s": 522,
+  "agent_s": 231,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 82279,
+  "total_cost_usd": 0.26546519999999996,
+  "session_id": "f3d619a6-4764-43b8-bf05-8e48fd199026",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 8165,
+  "cache_read_input_tokens": 277416,
+  "cache_creation_input_tokens": 31368,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.bugs.deepstubs.DeepStubFailingWhenGenricNestedAsRawTypeTest::discoverDeepMockingOfGenerics"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/util/reflection/GenericMetadataSupport.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,23 @@
+diff --git a/src/java/org/apache/commons/codec/binary/Base64.java b/src/java/org/apache/commons/codec/binary/Base64.java
+index 19a6959..25b3611 100644
+--- a/src/java/org/apache/commons/codec/binary/Base64.java
++++ b/src/java/org/apache/commons/codec/binary/Base64.java
+@@ -659,15 +659,15 @@ public class Base64 implements BinaryEncoder, BinaryDecoder {
+     }
+ 
+     /**
+-     * Encodes binary data using the base64 algorithm into 76 character blocks separated by CRLF.
++     * Encodes binary data using the base64 algorithm but does not chunk the output.
+      *
+      * @param binaryData
+      *            binary data to encode
+      * @return String containing Base64 characters.
+      * @since 1.4
+-     */    
++     */
+     public static String encodeBase64String(byte[] binaryData) {
+-        return StringUtils.newStringUtf8(encodeBase64(binaryData, true));
++        return StringUtils.newStringUtf8(encodeBase64(binaryData, false));
+     }
+     
+     /**

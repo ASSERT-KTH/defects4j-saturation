@@ -1,0 +1,2 @@
+M	src/com/google/javascript/jscomp/CoalesceVariableNames.java
+M	src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java

@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 95,
+  "id": "Closure-95",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 456,
+  "finished_at": "2026-09-07T18:13:28Z",
+  "wallclock_s": 143,
+  "agent_s": 66,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 35442,
+  "total_cost_usd": 0.1611366,
+  "session_id": "cbd01647-6d3c-41f4-9197-9e2a1c930a08",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2738,
+  "cache_read_input_tokens": 261648,
+  "cache_creation_input_tokens": 19500,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testQualifiedNameInference5",
+    "com.google.javascript.jscomp.TypedScopeCreatorTest::testGlobalQualifiedNameInLocalScope"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypedScopeCreator.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

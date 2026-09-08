@@ -1,0 +1,16 @@
+diff --git a/src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java b/src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java
+index 5091493..6ff57da 100644
+--- a/src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java
++++ b/src/main/java/org/apache/commons/math/optimization/general/LevenbergMarquardtOptimizer.java
+@@ -437,7 +437,10 @@ public class LevenbergMarquardtOptimizer extends AbstractLeastSquaresOptimizer {
+                         (preRed <= costRelativeTolerance) &&
+                         (ratio <= 2.0)) ||
+                        (delta <= parRelativeTolerance * xNorm)) {
+-                       return current;
++                       // the last evaluated point may have been a rejected
++                       // trial step, in which case the point/residuals were
++                       // reverted to the previous accepted values
++                       return (ratio >= 1.0e-4) ? current : previous;
+                    }
+                 } else {
+                     if (checker.converged(getIterations(), previous, current)) {

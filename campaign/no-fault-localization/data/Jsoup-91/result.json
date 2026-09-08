@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 91,
+  "id": "Jsoup-91",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 13222,
+  "finished_at": "2026-09-08T06:02:03Z",
+  "wallclock_s": 339,
+  "agent_s": 312,
+  "agent_rc": 0,
+  "num_turns": 60,
+  "api_duration_ms": 291913,
+  "total_cost_usd": 1.0759455999999998,
+  "session_id": "3c3c1fac-57e0-4942-91f1-79460b5aaecf",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 114,
+  "output_tokens": 25180,
+  "cache_read_input_tokens": 2772378,
+  "cache_creation_input_tokens": 66101,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.integration.ConnectTest::testBinaryThrowsExceptionWhenTypeIgnored",
+    "org.jsoup.integration.ConnectTest::testBinaryResultThrows",
+    "org.jsoup.integration.ParseTest::testBinaryThrowsException"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java",
+    "src/main/java/org/jsoup/parser/TreeBuilder.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

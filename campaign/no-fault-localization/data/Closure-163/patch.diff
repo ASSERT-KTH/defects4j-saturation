@@ -1,0 +1,114 @@
+diff --git a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+index 10989ec..c64bee4 100644
+--- a/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
++++ b/src/com/google/javascript/jscomp/AnalyzePrototypeProperties.java
+@@ -227,7 +227,13 @@ class AnalyzePrototypeProperties implements CompilerPass {
+             n.getFirstChild().getString() /* named function */;
+         symbolStack.push(new NameContext(getNameInfoForName(name, VAR)));
+       } else if (n.isFunction()) {
+-        symbolStack.push(new NameContext(anonymousNode));
++        String prototypeLiteralPropertyName = getPrototypeLiteralPropertyName(n);
++        if (prototypeLiteralPropertyName != null) {
++          symbolStack.push(new NameContext(
++              getNameInfoForName(prototypeLiteralPropertyName, PROPERTY)));
++        } else {
++          symbolStack.push(new NameContext(anonymousNode));
++        }
+       }
+       return true;
+     }
+@@ -373,6 +379,35 @@ class AnalyzePrototypeProperties implements CompilerPass {
+       return false;
+     }
+ 
++    /**
++     * If {@code fn} is a FUNCTION that is the value of a property in an
++     * object literal that is being assigned wholesale to some object's
++     * "prototype" (as in {@code Foo.prototype = {bar: function() {}}}),
++     * returns the name of that property. Otherwise, returns null.
++     */
++    private String getPrototypeLiteralPropertyName(Node fn) {
++      Node key = fn.getParent();
++      if (key == null || !key.isString()) {
++        return null;
++      }
++      Node objectLit = key.getParent();
++      if (objectLit == null || !objectLit.isObjectLit()) {
++        return null;
++      }
++      Node assign = objectLit.getParent();
++      if (assign == null || !assign.isAssign() ||
++          assign.getLastChild() != objectLit) {
++        return null;
++      }
++      Node lhs = assign.getFirstChild();
++      if (lhs.isGetProp() &&
++          lhs.getLastChild().isString() &&
++          lhs.getLastChild().getString().equals("prototype")) {
++        return key.getString();
++      }
++      return null;
++    }
++
+     /**
+      * Processes a NAME node to see if it's a global function declaration.
+      * If it is, record it and return true. Otherwise, return false.
+@@ -409,6 +444,13 @@ class AnalyzePrototypeProperties implements CompilerPass {
+      * @return True if a declaration was added.
+      */
+     private void processPrototypeParent(NodeTraversal t, Node n) {
++      // The owner of the "prototype" being assigned to/off of, e.g. "Foo"
++      // in "Foo.prototype.bar = ..." or "Foo.prototype = {...}". If this
++      // isn't reachable from the global scope (e.g. it's a local variable),
++      // then moving a property off of it into another module would leave
++      // a dangling reference, so any such property must be pinned in place.
++      boolean prototypeOwnerIsGlobal =
++          isGloballyReachable(t, n.getFirstChild().getFirstChild());
+ 
+       switch (n.getType()) {
+         // Foo.prototype.getBar = function() { ... }
+@@ -424,7 +466,11 @@ class AnalyzePrototypeProperties implements CompilerPass {
+             Property prop = new AssignmentProperty(
+                 grandParent,
+                 t.getModule());
+-            getNameInfoForName(name, PROPERTY).getDeclarations().add(prop);
++            NameInfo nameInfo = getNameInfoForName(name, PROPERTY);
++            nameInfo.getDeclarations().add(prop);
++            if (!prototypeOwnerIsGlobal) {
++              nameInfo.readClosureVariables = true;
++            }
+           }
+           break;
+ 
+@@ -439,13 +485,30 @@ class AnalyzePrototypeProperties implements CompilerPass {
+               Property prop = new LiteralProperty(
+                   key, key.getFirstChild(), map, n,
+                   t.getModule());
+-              getNameInfoForName(name, PROPERTY).getDeclarations().add(prop);
++              NameInfo nameInfo = getNameInfoForName(name, PROPERTY);
++              nameInfo.getDeclarations().add(prop);
++              if (!prototypeOwnerIsGlobal) {
++                nameInfo.readClosureVariables = true;
++              }
+             }
+           }
+           break;
+       }
+     }
+ 
++    /**
++     * Returns whether {@code n} refers to a name that is reachable from the
++     * global scope. Anything that isn't a simple NAME (e.g. THIS, or a more
++     * complex qualified name) is conservatively assumed to be reachable.
++     */
++    private boolean isGloballyReachable(NodeTraversal t, Node n) {
++      if (!n.isName()) {
++        return true;
++      }
++      Var var = t.getScope().getVar(n.getString());
++      return var == null || var.isGlobal();
++    }
++
+     private void addGlobalUseOfSymbol(String name, JSModule module,
+         SymbolType type) {
+       symbolGraph.connect(globalNode, module, getNameInfoForName(name, type));

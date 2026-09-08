@@ -1,0 +1,33 @@
+diff --git a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+index 88d3286..9a1a5cc 100644
+--- a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
++++ b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+@@ -24,6 +24,7 @@ import java.util.List;
+ import java.util.Map;
+ import java.util.Properties;
+ import java.util.Set;
++import java.util.regex.Pattern;
+ 
+ import org.apache.commons.cli2.Argument;
+ import org.apache.commons.cli2.Option;
+@@ -38,6 +39,7 @@ import org.apache.commons.cli2.resource.ResourceHelper;
+  */
+ public class WriteableCommandLineImpl
+     extends CommandLineImpl implements WriteableCommandLine {
++    private static final Pattern NEGATIVE_NUMBER = Pattern.compile("-\\d+(\\.\\d+)?");
+     private final Map optionToProperties = new HashMap();
+ //    private final Properties properties = new Properties();
+     private final List options = new ArrayList();
+@@ -233,6 +235,12 @@ public class WriteableCommandLineImpl
+     {
+             // this is a reentrant call
+ 
++            // arguments that look like negative numbers are not treated as
++            // options, since they are frequently valid argument values
++            if (NEGATIVE_NUMBER.matcher(trigger).matches()) {
++                return false;
++            }
++
+             for (final Iterator i = prefixes.iterator(); i.hasNext();)
+             {
+                 final String prefix = (String) i.next();

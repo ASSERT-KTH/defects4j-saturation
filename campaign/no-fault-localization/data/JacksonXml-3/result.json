@@ -1,0 +1,40 @@
+{
+  "project": "JacksonXml",
+  "bug": 3,
+  "id": "JacksonXml-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2277,
+  "finished_at": "2026-09-08T05:04:03Z",
+  "wallclock_s": 142,
+  "agent_s": 70,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 59835,
+  "total_cost_usd": 0.26202400000000003,
+  "session_id": "67c52237-91e4-4675-851e-92e26854a3ad",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 4636,
+  "cache_read_input_tokens": 415845,
+  "cache_creation_input_tokens": 32542,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.dataformat.xml.stream.XmlParserNextXxxTest::testXmlAttributesWithNextTextValue"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/dataformat/xml/deser/FromXmlParser.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

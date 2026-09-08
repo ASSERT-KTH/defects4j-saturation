@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 50,
+  "id": "Closure-50",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1008,
+  "finished_at": "2026-09-07T17:02:58Z",
+  "wallclock_s": 208,
+  "agent_s": 101,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 40485,
+  "total_cost_usd": 0.16124980000000003,
+  "session_id": "ef5579fb-39ad-4b82-a629-679703f165ab",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3097,
+  "cache_read_input_tokens": 259229,
+  "cache_creation_input_tokens": 18372,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeReplaceKnownMethodsTest::testStringJoinAdd",
+    "com.google.javascript.jscomp.PeepholeReplaceKnownMethodsTest::testNoStringJoin"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

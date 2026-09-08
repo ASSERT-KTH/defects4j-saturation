@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 82,
+  "id": "Jsoup-82",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 325,
+  "finished_at": "2026-09-08T05:54:26Z",
+  "wallclock_s": 71,
+  "agent_s": 48,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 38838,
+  "total_cost_usd": 0.17389939999999998,
+  "session_id": "21d7d25d-0d1c-41a4-9255-ed088e10285b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 2845,
+  "cache_read_input_tokens": 327487,
+  "cache_creation_input_tokens": 19368,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::fallbackToUtfIfCantEncode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/DataUtil.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "JxPath",
+  "bug": 9,
+  "id": "JxPath-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 11233,
+  "finished_at": "2026-09-08T06:11:26Z",
+  "wallclock_s": 321,
+  "agent_s": 297,
+  "agent_rc": 0,
+  "num_turns": 45,
+  "api_duration_ms": 265767,
+  "total_cost_usd": 0.8469714000000002,
+  "session_id": "3245f32b-d35a-4910-b29d-bb0ac6454f59",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 90,
+  "output_tokens": 21761,
+  "cache_read_input_tokens": 1916747,
+  "cache_creation_input_tokens": 60892,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.CoreOperationTest::testNan"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java",
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationNotEqual.java"
+  ],
+  "patch_added_lines": 51,
+  "patch_removed_lines": 27,
+  "has_dev_patch": true
+}

@@ -1,0 +1,119 @@
+diff --git a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+index 6c6fcd4..b05d042 100644
+--- a/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
++++ b/src/com/google/javascript/rhino/jstype/JSTypeRegistry.java
+@@ -695,6 +695,10 @@ public class JSTypeRegistry implements Serializable {
+         if (!greatestSubtype.isEmptyType()) {
+           // We've found a type with this property. Now we just have to make
+           // sure it's not a type used for internal bookkeeping.
++          RecordType maybeRecordType = greatestSubtype.toMaybeRecordType();
++          if (maybeRecordType != null && maybeRecordType.isSynthesized()) {
++            continue;
++          }
+ 
+           return true;
+         }
+diff --git a/src/com/google/javascript/rhino/jstype/RecordType.java b/src/com/google/javascript/rhino/jstype/RecordType.java
+index 7cc4890..6e69183 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordType.java
++++ b/src/com/google/javascript/rhino/jstype/RecordType.java
+@@ -66,6 +66,7 @@ class RecordType extends PrototypeObjectType {
+ 
+   private final SortedMap<String, JSType> properties = Maps.newTreeMap();
+   private boolean isFrozen = false;
++  private final boolean isSynthesized;
+ 
+ 
+   /**
+@@ -73,16 +74,31 @@ class RecordType extends PrototypeObjectType {
+    *
+    * @param registry The type registry under which this type lives.
+    * @param properties A map of all the properties of this record type.
+-   * @param declared Whether this is a declared or synthesized type.
+-   *     A synthesized record type is just used for bookkeeping
+-   *     in the type system. A declared record type was actually used in the
+-   *     user's program.
+    * @throws IllegalStateException if the {@code RecordProperty} associated
+    *         with a property is null.
+    */
+   RecordType(JSTypeRegistry registry, Map<String, RecordProperty> properties) {
++    this(registry, properties, false);
++  }
++
++  /**
++   * Creates a record type.
++   *
++   * @param registry The type registry under which this type lives.
++   * @param properties A map of all the properties of this record type.
++   * @param isSynthesized Whether this is a declared or synthesized type.
++   *     A synthesized record type is just used for bookkeeping
++   *     in the type system, e.g. as an intermediate result of computing
++   *     the greatest subtype of two record types. A declared record type
++   *     was actually used in the user's program.
++   * @throws IllegalStateException if the {@code RecordProperty} associated
++   *         with a property is null.
++   */
++  RecordType(JSTypeRegistry registry, Map<String, RecordProperty> properties,
++      boolean isSynthesized) {
+     super(registry, null, null);
+     setPrettyPrint(true);
++    this.isSynthesized = isSynthesized;
+ 
+     for (String property : properties.keySet()) {
+       RecordProperty prop = properties.get(property);
+@@ -99,6 +115,9 @@ class RecordType extends PrototypeObjectType {
+   }
+ 
+   /** @return Is this synthesized for internal bookkeeping? */
++  boolean isSynthesized() {
++    return isSynthesized;
++  }
+ 
+   @Override
+   public boolean isEquivalentTo(JSType other) {
+@@ -149,6 +168,7 @@ class RecordType extends PrototypeObjectType {
+     if (that.isRecordType()) {
+       RecordType thatRecord = that.toMaybeRecordType();
+       RecordTypeBuilder builder = new RecordTypeBuilder(registry);
++      builder.setSynthesized(true);
+ 
+       // The greatest subtype consists of those *unique* properties of both
+       // record types. If any property conflicts, then the NO_TYPE type
+diff --git a/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java b/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
+index 345795b..81bebc8 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
++++ b/src/com/google/javascript/rhino/jstype/RecordTypeBuilder.java
+@@ -53,12 +53,23 @@ public class RecordTypeBuilder {
+   private boolean isEmpty = true;
+   private final JSTypeRegistry registry;
+   private final HashMap<String, RecordProperty> properties = Maps.newHashMap();
++  private boolean synthesized = false;
+ 
+   public RecordTypeBuilder(JSTypeRegistry registry) {
+     this.registry = registry;
+   }
+ 
+-  /** See the comments on RecordType about synthetic types. */
++  /**
++   * Marks the record type built by this builder as synthesized, i.e.,
++   * used purely for internal bookkeeping in the type system (such as
++   * computing the greatest subtype of two record types) rather than
++   * corresponding to a type actually written or inferred in the user's
++   * program. See the comments on RecordType about synthetic types.
++   */
++  public RecordTypeBuilder setSynthesized(boolean synthesized) {
++    this.synthesized = synthesized;
++    return this;
++  }
+ 
+   /**
+    * Adds a property with the given name and type to the record type.
+@@ -89,7 +100,7 @@ public class RecordTypeBuilder {
+     }
+ 
+     return new RecordType(
+-        registry, Collections.unmodifiableMap(properties));
++        registry, Collections.unmodifiableMap(properties), synthesized);
+   }
+ 
+   static class RecordProperty {

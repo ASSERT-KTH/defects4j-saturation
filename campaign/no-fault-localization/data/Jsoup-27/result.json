@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 27,
+  "id": "Jsoup-27",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 680,
+  "finished_at": "2026-09-08T05:21:29Z",
+  "wallclock_s": 70,
+  "agent_s": 48,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 42406,
+  "total_cost_usd": 0.1731828,
+  "session_id": "b2f5b89f-8cf7-480a-ad9f-eb502f81012c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3140,
+  "cache_read_input_tokens": 326774,
+  "cache_creation_input_tokens": 18180,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.helper.DataUtilTest::testCharset",
+    "org.jsoup.helper.DataUtilTest::testQuotedCharset"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/DataUtil.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 12,
+  "id": "Math-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2554,
+  "finished_at": "2026-09-08T09:42:48Z",
+  "wallclock_s": 277,
+  "agent_s": 143,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 67392,
+  "total_cost_usd": 0.26326659999999996,
+  "session_id": "d28c4577-ceae-442c-8e3f-ffc39dabecd3",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 5563,
+  "cache_read_input_tokens": 460803,
+  "cache_creation_input_tokens": 27536,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.distribution.GammaDistributionTest::testDistributionClone",
+    "org.apache.commons.math3.distribution.LogNormalDistributionTest::testDistributionClone",
+    "org.apache.commons.math3.distribution.NormalDistributionTest::testDistributionClone"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/random/BitsStreamGenerator.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

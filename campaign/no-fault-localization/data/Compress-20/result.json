@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 20,
+  "id": "Compress-20",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3075,
+  "finished_at": "2026-09-07T23:47:05Z",
+  "wallclock_s": 160,
+  "agent_s": 140,
+  "agent_rc": 0,
+  "num_turns": 23,
+  "api_duration_ms": 132616,
+  "total_cost_usd": 0.3342004,
+  "session_id": "7acc1773-2ca9-40eb-94a9-5781ebabf6aa",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 46,
+  "output_tokens": 9833,
+  "cache_read_input_tokens": 613267,
+  "cache_creation_input_tokens": 27689,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.cpio.CpioArchiveInputStreamTest::testCpioUnarchiveCreatedByRedlineRpm"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/cpio/CpioArchiveInputStream.java"
+  ],
+  "patch_added_lines": 18,
+  "patch_removed_lines": 12,
+  "has_dev_patch": true
+}

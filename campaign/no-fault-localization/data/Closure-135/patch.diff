@@ -1,0 +1,27 @@
+diff --git a/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java b/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
+index a42dc34..e7cfc6d 100644
+--- a/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
++++ b/src/com/google/javascript/jscomp/DevirtualizePrototypeMethods.java
+@@ -359,6 +359,7 @@ class DevirtualizePrototypeMethods implements CompilerPass {
+     for (Node child : node.children()) {
+       if (NodeUtil.isThis(child)) {
+         Node newName = Node.newString(Token.NAME, name);
++        newName.setJSType(child.getJSType());
+         node.replaceChild(child, newName);
+       } else {
+         replaceReferencesToThis(child, name);
+diff --git a/src/com/google/javascript/rhino/jstype/FunctionType.java b/src/com/google/javascript/rhino/jstype/FunctionType.java
+index 3e8ab07..bb0785d 100644
+--- a/src/com/google/javascript/rhino/jstype/FunctionType.java
++++ b/src/com/google/javascript/rhino/jstype/FunctionType.java
+@@ -469,6 +469,10 @@ public class FunctionType extends PrototypeObjectType {
+     if ("prototype".equals(name)) {
+       ObjectType objType = type.toObjectType();
+       if (objType != null) {
++        if (objType == prototype) {
++          // Bail out, since setting this would make this into a self-loop.
++          return true;
++        }
+         return setPrototype(
+             new FunctionPrototypeType(
+                 registry, this, objType, isNativeObjectType()));

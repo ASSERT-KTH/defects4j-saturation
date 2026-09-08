@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 59,
+  "id": "Jsoup-59",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 170,
+  "finished_at": "2026-09-08T05:36:44Z",
+  "wallclock_s": 50,
+  "agent_s": 23,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 16473,
+  "total_cost_usd": 0.0914442,
+  "session_id": "43dc19cd-5fee-40cd-88c6-7d5c6f64d057",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1335,
+  "cache_read_input_tokens": 96616,
+  "cache_creation_input_tokens": 13630,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::handlesControlCodeInAttributeName",
+    "org.jsoup.safety.CleanerTest::handlesControlCharactersAfterTagName"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/Token.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

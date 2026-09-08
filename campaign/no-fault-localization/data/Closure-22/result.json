@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 22,
+  "id": "Closure-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 15069,
+  "finished_at": "2026-09-07T16:25:40Z",
+  "wallclock_s": 630,
+  "agent_s": 404,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 198169,
+  "total_cost_usd": 0.4107772,
+  "session_id": "d06dd606-a915-47b2-872b-40ad10ed9787",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 17614,
+  "cache_read_input_tokens": 460656,
+  "cache_creation_input_tokens": 35017,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CheckSideEffectsTest::testUselessCode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CheckSideEffects.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

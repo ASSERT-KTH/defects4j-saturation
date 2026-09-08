@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 28,
+  "id": "Closure-28",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1231,
+  "finished_at": "2026-09-07T16:29:16Z",
+  "wallclock_s": 257,
+  "agent_s": 127,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 48886,
+  "total_cost_usd": 0.17495000000000002,
+  "session_id": "597a929b-c4df-46ea-b247-2ac639ed2a80",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3161,
+  "cache_read_input_tokens": 310805,
+  "cache_creation_input_tokens": 18981,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.InlineCostEstimatorTest::testCost",
+    "com.google.javascript.jscomp.InlineFunctionsTest::testIssue728"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/InlineCostEstimator.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

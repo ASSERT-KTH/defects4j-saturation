@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 22,
+  "id": "Jsoup-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 166,
+  "finished_at": "2026-09-08T05:19:48Z",
+  "wallclock_s": 88,
+  "agent_s": 67,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 52954,
+  "total_cost_usd": 0.24539020000000003,
+  "session_id": "962956e3-9b8c-47f1-aae0-f701ef8e8fc2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 3931,
+  "cache_read_input_tokens": 544886,
+  "cache_creation_input_tokens": 23012,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::elementIsNotASiblingOfItself",
+    "org.jsoup.nodes.NodeTest::nodeIsNotASiblingOfItself",
+    "org.jsoup.nodes.NodeTest::orphanNodeReturnsNullForSiblingElements"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java",
+    "src/main/java/org/jsoup/nodes/Node.java"
+  ],
+  "patch_added_lines": 24,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

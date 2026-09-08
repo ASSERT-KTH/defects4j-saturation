@@ -1,0 +1,25 @@
+diff --git a/src/main/java/org/joda/time/DateTimeZone.java b/src/main/java/org/joda/time/DateTimeZone.java
+index a320022..03d7efa 100644
+--- a/src/main/java/org/joda/time/DateTimeZone.java
++++ b/src/main/java/org/joda/time/DateTimeZone.java
+@@ -896,6 +896,20 @@ public abstract class DateTimeZone implements Serializable {
+                     return offsetLocal;
+                 }
+             }
++        } else {
++            // the offsets agree, but this may be because the estimate landed on
++            // the second (later) reading of an overlap caused by clocks going back
++            // check whether the previous offset also produces a valid mapping for
++            // this local time, and if so prefer it, so as to always favour the
++            // earlier instant during an overlap
++            long prevTransition = previousTransition(instantAdjusted);
++            if (prevTransition < instantAdjusted) {
++                int offsetPrev = getOffset(prevTransition);
++                int diff = offsetPrev - offsetAdjusted;
++                if (diff > 0 && instantAdjusted - (prevTransition + 1) < diff) {
++                    return offsetPrev;
++                }
++            }
+         }
+         return offsetAdjusted;
+     }

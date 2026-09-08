@@ -1,0 +1,89 @@
+diff --git a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+index 627271f..0dbcdde 100644
+--- a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
++++ b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+@@ -60,6 +60,15 @@ class MakeDeclaredNamesUnique
+   private Deque<Renamer> nameStack = new ArrayDeque<Renamer>();
+   private final Renamer rootRenamer;
+ 
++  // The name of a function expression is resolved using the function's own
++  // "recursive name" scope, which is different from (and a parent of) the
++  // scope holding its parameters and body variables. Such names are renamed
++  // as soon as they are declared, in shouldTraverse below, and are recorded
++  // here so that the later generic NAME handling in visit() (which would
++  // incorrectly resolve the name using the function's inner scope) skips
++  // them.
++  private final Set<Node> handledFunctionNames = Sets.newIdentityHashSet();
++
+   MakeDeclaredNamesUnique() {
+     this(new ContextualRenamer());
+   }
+@@ -121,10 +130,23 @@ class MakeDeclaredNamesUnique
+           Renamer renamer = nameStack.peek().forChildScope();
+ 
+           // If needed, add the function recursive name.
+-          String name = n.getFirstChild().getString();
++          Node nameNode = n.getFirstChild();
++          String name = nameNode.getString();
+           if (name != null && !name.isEmpty() && parent != null
+               && !NodeUtil.isFunctionDeclaration(n)) {
+             renamer.addDeclaredName(name);
++            // Rename the function's own name node now, while this renamer
++            // (and not the function's inner parameter/body scope) is used
++            // to resolve it.
++            String newName = renamer.getReplacementName(name);
++            if (newName != null) {
++              if (renamer.stripConstIfReplaced()) {
++                nameNode.removeProp(Node.IS_CONSTANT_NAME);
++              }
++              nameNode.setString(newName);
++              t.getCompiler().reportCodeChange();
++            }
++            handledFunctionNames.add(nameNode);
+           }
+ 
+ 
+@@ -156,6 +178,9 @@ class MakeDeclaredNamesUnique
+   public void visit(NodeTraversal t, Node n, Node parent) {
+     switch (n.getType()) {
+       case Token.NAME:
++        if (handledFunctionNames.remove(n)) {
++          break;
++        }
+         String newName = getReplacementName(n.getString());
+         if (newName != null) {
+           Renamer renamer = nameStack.peek();
+diff --git a/src/com/google/javascript/jscomp/NodeTraversal.java b/src/com/google/javascript/jscomp/NodeTraversal.java
+index f36ab49..966f22d 100644
+--- a/src/com/google/javascript/jscomp/NodeTraversal.java
++++ b/src/com/google/javascript/jscomp/NodeTraversal.java
+@@ -274,7 +274,28 @@ public class NodeTraversal {
+       sourceName = "";
+       curNode = root;
+       pushScope(root);
+-      traverseBranch(root, null);
++
++      if (root.getType() == Token.FUNCTION) {
++        // The scope for the function was just pushed above, so avoid
++        // re-entering it a second time by calling traverseBranch (which
++        // would dispatch to traverseFunction and push the scope again).
++        // Instead, traverse the function's name, parameters, and body
++        // directly, while still invoking the callback for the function
++        // node itself.
++        if (callback.shouldTraverse(this, root, null)) {
++          Node fnName = root.getFirstChild();
++          Node args = fnName.getNext();
++          Node body = args.getNext();
++          traverseBranch(fnName, root);
++          traverseBranch(args, root);
++          traverseBranch(body, root);
++          curNode = root;
++          callback.visit(this, root, null);
++        }
++      } else {
++        traverseBranch(root, null);
++      }
++
+       popScope();
+     } catch (Exception unexpectedException) {
+       throwUnexpectedException(unexpectedException);

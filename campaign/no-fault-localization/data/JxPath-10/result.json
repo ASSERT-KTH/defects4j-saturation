@@ -1,0 +1,40 @@
+{
+  "project": "JxPath",
+  "bug": 10,
+  "id": "JxPath-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2998,
+  "finished_at": "2026-09-08T06:08:27Z",
+  "wallclock_s": 116,
+  "agent_s": 98,
+  "agent_rc": 0,
+  "num_turns": 28,
+  "api_duration_ms": 89270,
+  "total_cost_usd": 0.3801874,
+  "session_id": "d2485525-7110-4a2d-9f92-b9231f6358d5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 54,
+  "output_tokens": 6682,
+  "cache_read_input_tokens": 861422,
+  "cache_creation_input_tokens": 34674,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.compiler.CoreOperationTest::testEmptyNodeSetOperations"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

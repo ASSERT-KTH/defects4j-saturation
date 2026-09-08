@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 31,
+  "id": "Closure-31",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1898,
+  "finished_at": "2026-09-07T16:33:01Z",
+  "wallclock_s": 274,
+  "agent_s": 114,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 69468,
+  "total_cost_usd": 0.24718579999999998,
+  "session_id": "b3697f20-fd0d-4f47-80d8-1a06926a3459",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 4608,
+  "cache_read_input_tokens": 505159,
+  "cache_creation_input_tokens": 24148,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testDependencySortingWhitespaceMode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Compiler.java"
+  ],
+  "patch_added_lines": 0,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

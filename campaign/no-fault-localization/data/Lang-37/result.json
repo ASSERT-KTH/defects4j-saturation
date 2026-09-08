@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 37,
+  "id": "Lang-37",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 64,
+  "finished_at": "2026-09-08T09:16:53Z",
+  "wallclock_s": 71,
+  "agent_s": 37,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 23989,
+  "total_cost_usd": 0.0960424,
+  "session_id": "0d7b13f4-ed56-4507-bed9-508fe4c7f472",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1692,
+  "cache_read_input_tokens": 157922,
+  "cache_creation_input_tokens": 11323,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang3.ArrayUtilsAddTest::testJira567"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang3/ArrayUtils.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

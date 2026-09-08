@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index 4da4085..3566cbc 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -663,10 +663,20 @@ class IRFactory {
+       }
+       node.addChildToBack(lp);
+ 
+-      Node bodyNode = transform(functionNode.getBody());
++      AstNode rhinoBody = functionNode.getBody();
++      Node bodyNode = transformBlock(rhinoBody);
++      if (rhinoBody instanceof ReturnStatement) {
+         // When in ideMode Rhino tries to parse some constructs the compiler
+-        // doesn't support, repair it here. see Rhino's
+-        // Parser#parseFunctionBodyExpr.
++        // doesn't support, such as an expression closure (a function body
++        // without braces). An error has already been reported for this;
++        // discard the bogus content and give the AST an empty body instead.
++        // See Rhino's Parser#parseFunctionBodyExpr.
++        Node emptyBody = newNode(Token.BLOCK);
++        emptyBody.setWasEmptyNode(true);
++        emptyBody.setLineno(bodyNode.getLineno());
++        emptyBody.setCharno(bodyNode.getCharno());
++        bodyNode = emptyBody;
++      }
+       parseDirectives(bodyNode);
+       node.addChildToBack(bodyNode);
+      return node;

@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 22,
+  "id": "Lang-22",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2317,
+  "finished_at": "2026-09-08T06:43:40Z",
+  "wallclock_s": 104,
+  "agent_s": 65,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 50197,
+  "total_cost_usd": 0.180392,
+  "session_id": "22a850a2-97f1-4fcf-a482-853a7020e86c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 4078,
+  "cache_read_input_tokens": 291875,
+  "cache_creation_input_tokens": 19451,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.math.FractionTest::testReducedFactory_int_int",
+    "org.apache.commons.lang3.math.FractionTest::testReduce"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/math/Fraction.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

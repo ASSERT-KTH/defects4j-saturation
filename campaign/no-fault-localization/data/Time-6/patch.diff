@@ -1,0 +1,46 @@
+diff --git a/src/main/java/org/joda/time/chrono/GJChronology.java b/src/main/java/org/joda/time/chrono/GJChronology.java
+index b970403..53b3070 100644
+--- a/src/main/java/org/joda/time/chrono/GJChronology.java
++++ b/src/main/java/org/joda/time/chrono/GJChronology.java
+@@ -490,6 +490,13 @@ public final class GJChronology extends AssembledChronology {
+             throw new IllegalArgumentException();
+         }
+ 
++        // The rest of this class assumes the cutover is after year zero,
++        // allowing the Gregorian side to be solely responsible for
++        // representing year zero (which the Julian calendar lacks).
++        if (gregorian.year().get(iCutoverMillis) <= 0) {
++            throw new IllegalArgumentException("Cutover too early. Must be on or after 0001-01-01.");
++        }
++
+         // Compute difference between the chronologies at the cutover instant
+         iGapDuration = iCutoverMillis - julianToGregorianByYear(iCutoverMillis);
+ 
+@@ -976,6 +983,13 @@ public final class GJChronology extends AssembledChronology {
+                 if (instant < iCutover) {
+                     // Only adjust if gap fully crossed.
+                     if (instant + iGapDuration < iCutover) {
++                        // The Gregorian field just computed a value at or
++                        // before zero, which the Julian calendar has no
++                        // representation for. Skip over the missing year
++                        // zero, as the whole cutover chronology has none.
++                        if (iGregorianField.get(instant) <= 0) {
++                            instant = iGregorianField.add(instant, -1);
++                        }
+                         instant = gregorianToJulian(instant);
+                     }
+                 }
+@@ -998,6 +1012,13 @@ public final class GJChronology extends AssembledChronology {
+                 if (instant < iCutover) {
+                     // Only adjust if gap fully crossed.
+                     if (instant + iGapDuration < iCutover) {
++                        // The Gregorian field just computed a value at or
++                        // before zero, which the Julian calendar has no
++                        // representation for. Skip over the missing year
++                        // zero, as the whole cutover chronology has none.
++                        if (iGregorianField.get(instant) <= 0) {
++                            instant = iGregorianField.add(instant, -1);
++                        }
+                         instant = gregorianToJulian(instant);
+                     }
+                 }

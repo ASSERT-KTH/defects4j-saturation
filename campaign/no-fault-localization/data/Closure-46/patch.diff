@@ -1,0 +1,31 @@
+diff --git a/src/com/google/javascript/rhino/jstype/RecordType.java b/src/com/google/javascript/rhino/jstype/RecordType.java
+index 7289803..a6f567c 100755
+--- a/src/com/google/javascript/rhino/jstype/RecordType.java
++++ b/src/com/google/javascript/rhino/jstype/RecordType.java
+@@ -142,16 +142,17 @@ class RecordType extends PrototypeObjectType {
+     if (!that.isRecordType()) {
+       return super.getLeastSupertype(that);
+     }
+-    RecordTypeBuilder builder = new RecordTypeBuilder(registry);
+-    for (String property : properties.keySet()) {
+-      if (that.toMaybeRecordType().hasProperty(property) &&
+-          that.toMaybeRecordType().getPropertyType(property).isEquivalentTo(
+-              getPropertyType(property))) {
+-        builder.addProperty(property, getPropertyType(property),
+-            getPropertyNode(property));
+-      }
++
++    // The least supertype of two record types is the more general of the
++    // two, if one is a subtype of the other. Otherwise, the only common
++    // supertype is the union of the two types.
++    if (this.isSubtype(that)) {
++      return that;
++    } else if (that.isSubtype(this)) {
++      return this;
+     }
+-    return builder.build();
++
++    return registry.createUnionType(this, that);
+   }
+   JSType getGreatestSubtypeHelper(JSType that) {
+     if (that.isRecordType()) {

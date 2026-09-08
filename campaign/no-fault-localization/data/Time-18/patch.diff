@@ -1,0 +1,47 @@
+diff --git a/src/main/java/org/joda/time/chrono/GJChronology.java b/src/main/java/org/joda/time/chrono/GJChronology.java
+index 29e559d..b6517f4 100644
+--- a/src/main/java/org/joda/time/chrono/GJChronology.java
++++ b/src/main/java/org/joda/time/chrono/GJChronology.java
+@@ -333,8 +333,19 @@ public final class GJChronology extends AssembledChronology {
+         }
+ 
+         // Assume date is Gregorian.
+-        long instant = iGregorianChronology.getDateTimeMillis
+-            (year, monthOfYear, dayOfMonth, millisOfDay);
++        long instant;
++        try {
++            instant = iGregorianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth, millisOfDay);
++        } catch (IllegalFieldValueException ex) {
++            // Maybe it's Julian, which has different leap year rules.
++            instant = iJulianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth, millisOfDay);
++            if (instant >= iCutoverMillis) {
++                throw ex;
++            }
++            return instant;
++        }
+         if (instant < iCutoverMillis) {
+             // Maybe it's Julian.
+             instant = iJulianChronology.getDateTimeMillis
+@@ -361,9 +372,20 @@ public final class GJChronology extends AssembledChronology {
+ 
+         // Assume date is Gregorian.
+         long instant;
++        try {
+             instant = iGregorianChronology.getDateTimeMillis
+                 (year, monthOfYear, dayOfMonth,
+                  hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);
++        } catch (IllegalFieldValueException ex) {
++            // Maybe it's Julian, which has different leap year rules.
++            instant = iJulianChronology.getDateTimeMillis
++                (year, monthOfYear, dayOfMonth,
++                 hourOfDay, minuteOfHour, secondOfMinute, millisOfSecond);
++            if (instant >= iCutoverMillis) {
++                throw ex;
++            }
++            return instant;
++        }
+         if (instant < iCutoverMillis) {
+             // Maybe it's Julian.
+             instant = iJulianChronology.getDateTimeMillis

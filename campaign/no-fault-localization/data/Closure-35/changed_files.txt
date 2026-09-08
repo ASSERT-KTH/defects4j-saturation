@@ -1,0 +1,3 @@
+M	src/com/google/javascript/rhino/jstype/JSType.java
+M	src/com/google/javascript/rhino/jstype/RecordType.java
+M	src/com/google/javascript/rhino/jstype/UnionType.java

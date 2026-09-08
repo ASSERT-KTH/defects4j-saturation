@@ -1,0 +1,45 @@
+diff --git a/src/com/google/javascript/jscomp/ScopedAliases.java b/src/com/google/javascript/jscomp/ScopedAliases.java
+index 26fb230..f3bdeb5 100644
+--- a/src/com/google/javascript/jscomp/ScopedAliases.java
++++ b/src/com/google/javascript/jscomp/ScopedAliases.java
+@@ -457,15 +457,9 @@ class ScopedAliases implements HotSwapCompilerPass {
+     private void fixTypeNode(Node typeNode) {
+       if (typeNode.isString()) {
+         String name = typeNode.getString();
+-        int endIndex = name.indexOf('.');
+-        if (endIndex == -1) {
+-          endIndex = name.length();
+-        }
+-        String baseName = name.substring(0, endIndex);
+-        Var aliasVar = aliases.get(baseName);
+-        if (aliasVar != null) {
+-          Node aliasedNode = aliasVar.getInitialValue();
+-          aliasUsages.add(new AliasedTypeNode(typeNode, aliasedNode.getQualifiedName() + name.substring(endIndex)));
++        String replacement = resolveAlias(name);
++        if (!replacement.equals(name)) {
++          aliasUsages.add(new AliasedTypeNode(typeNode, replacement));
+         }
+       }
+ 
+@@ -474,5 +468,21 @@ class ScopedAliases implements HotSwapCompilerPass {
+         fixTypeNode(child);
+       }
+     }
++
++    /**
++     * Resolves a (possibly qualified) name against the current aliases,
++     * following chains of aliases (e.g. {@code var b = a.b; var c = b.c;}).
++     */
++    private String resolveAlias(String name) {
++      int endIndex = name.indexOf('.');
++      String baseName = endIndex == -1 ? name : name.substring(0, endIndex);
++      Var aliasVar = aliases.get(baseName);
++      if (aliasVar == null) {
++        return name;
++      }
++      String rest = endIndex == -1 ? "" : name.substring(endIndex);
++      String qualifiedName = aliasVar.getInitialValue().getQualifiedName();
++      return resolveAlias(qualifiedName + rest);
++    }
+   }
+ }

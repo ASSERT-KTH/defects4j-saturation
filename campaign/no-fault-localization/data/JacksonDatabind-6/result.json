@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 6,
+  "id": "JacksonDatabind-6",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5826,
+  "finished_at": "2026-09-08T00:36:23Z",
+  "wallclock_s": 233,
+  "agent_s": 120,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 84433,
+  "total_cost_usd": 0.27215819999999996,
+  "session_id": "090f8a12-81b9-43e6-a338-ab9ec57e613e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 8682,
+  "cache_read_input_tokens": 329821,
+  "cache_creation_input_tokens": 28776,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.TestDateDeserialization::testISO8601MissingSeconds",
+    "com.fasterxml.jackson.databind.deser.TestDateDeserialization::testISO8601PartialMilliseconds"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/util/StdDateFormat.java"
+  ],
+  "patch_added_lines": 28,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

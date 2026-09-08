@@ -1,0 +1,23 @@
+diff --git a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+index a77221a..3aee701 100644
+--- a/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
++++ b/src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java
+@@ -292,6 +292,18 @@ class FlowSensitiveInlineVariables extends AbstractPostOrderCallback
+         }
+       }
+ 
++      // A definition that reads from a catch expression, directly or
++      // indirectly, cannot be inlined past the catch block: the exception
++      // variable's lifetime is narrower than this analysis assumes, so
++      // moving its value to a use outside the catch block would reference
++      // a variable that no longer holds it.
++      for (Var dependency : defMetadata.depends) {
++        Node dependencyParent = dependency.getParentNode();
++        if (dependencyParent != null && dependencyParent.isCatch()) {
++          return false;
++        }
++      }
++
+       getDefinition(getDefCfgNode(), null);
+       getNumUseInUseCfgNode(useCfgNode, null);
+ 

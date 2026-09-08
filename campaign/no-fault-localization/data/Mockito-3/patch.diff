@@ -1,0 +1,34 @@
+diff --git a/src/org/mockito/internal/invocation/InvocationMatcher.java b/src/org/mockito/internal/invocation/InvocationMatcher.java
+index a3a7c08..1f7f5bc 100644
+--- a/src/org/mockito/internal/invocation/InvocationMatcher.java
++++ b/src/org/mockito/internal/invocation/InvocationMatcher.java
+@@ -124,10 +124,25 @@ public class InvocationMatcher implements DescribedInvocation, CapturesArgumensF
+                     ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position, Object.class));
+                 }
+             }
+-            for (int position = indexOfVararg; position < matchers.size(); position++) {
+-                Matcher m = matchers.get(position);
+-                if (m instanceof CapturesArguments) {
+-                    ((CapturesArguments) m).captureFrom(invocation.getRawArguments()[position - indexOfVararg]);
++
++            int numberOfVarargMatchers = matchers.size() - indexOfVararg;
++            int numberOfActualVarargs = invocation.getArguments().length - indexOfVararg;
++            if (numberOfVarargMatchers == numberOfActualVarargs) {
++                //one matcher per actual vararg value, e.g. captor.capture(), captor.capture(), captor.capture()
++                for (int position = indexOfVararg; position < matchers.size(); position++) {
++                    Matcher m = matchers.get(position);
++                    if (m instanceof CapturesArguments) {
++                        ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position, Object.class));
++                    }
++                }
++            } else {
++                //a single matcher stands for all the actual vararg values, e.g. captor.capture() or anyVararg()
++                for (int position = indexOfVararg; position < invocation.getArguments().length; position++) {
++                    int matcherIndex = Math.min(position, matchers.size() - 1);
++                    Matcher m = matchers.get(matcherIndex);
++                    if (m instanceof CapturesArguments) {
++                        ((CapturesArguments) m).captureFrom(invocation.getArgumentAt(position, Object.class));
++                    }
+                 }
+             }
+         } else {

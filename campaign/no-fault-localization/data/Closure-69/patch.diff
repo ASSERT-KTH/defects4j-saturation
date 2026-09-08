@@ -1,0 +1,44 @@
+diff --git a/src/com/google/javascript/jscomp/TypeCheck.java b/src/com/google/javascript/jscomp/TypeCheck.java
+index f58418c..0e4f26f 100644
+--- a/src/com/google/javascript/jscomp/TypeCheck.java
++++ b/src/com/google/javascript/jscomp/TypeCheck.java
+@@ -1577,6 +1577,10 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+ 
+       // Functions with explcit 'this' types must be called in a GETPROP
+       // or GETELEM.
++      if (!functionType.isConstructor() &&
++          !isCallableWithThisType(t, child, functionType)) {
++        report(t, n, EXPECTED_THIS_TYPE, functionType.toString());
++      }
+ 
+       visitParameterList(t, n, functionType);
+       ensureTyped(t, n, functionType.getReturnType());
+@@ -1589,6 +1593,28 @@ public class TypeCheck implements NodeTraversal.Callback, CompilerPass {
+     // about the non-portability of the call or both.
+   }
+ 
++  /**
++   * Determines whether a function with an explicit {@code this} type may
++   * be invoked via the given callee expression. Functions that require a
++   * specific {@code this} type must be called as a method (i.e. through a
++   * GETPROP or GETELEM), unless the actual value of {@code this} at the
++   * call site (the global object, for calls that aren't method calls) is
++   * itself compatible with the required type.
++   */
++  private boolean isCallableWithThisType(
++      NodeTraversal t, Node callee, FunctionType functionType) {
++    int calleeType = callee.getType();
++    if (calleeType == Token.GETPROP || calleeType == Token.GETELEM) {
++      return true;
++    }
++    JSType typeOfThis = functionType.getTypeOfThis();
++    if (typeOfThis.isUnknownType()) {
++      return true;
++    }
++    JSType globalThis = getNativeType(JSTypeNative.GLOBAL_THIS);
++    return globalThis.isSubtype(typeOfThis);
++  }
++
+   /**
+    * Visits the parameters of a CALL or a NEW node.
+    */

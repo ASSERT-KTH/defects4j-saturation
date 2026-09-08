@@ -1,0 +1,42 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 19,
+  "id": "JacksonDatabind-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 445,
+  "finished_at": "2026-09-08T00:54:54Z",
+  "wallclock_s": 229,
+  "agent_s": 89,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 28927,
+  "total_cost_usd": 0.12955239999999998,
+  "session_id": "c5ae2e6f-c428-433f-a850-7fb22f4ab179",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2201,
+  "cache_read_input_tokens": 212462,
+  "cache_creation_input_tokens": 15151,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.convert.TestMapConversions::testMapToProperties",
+    "com.fasterxml.jackson.databind.deser.TestMapDeserialization::testReadProperties",
+    "com.fasterxml.jackson.databind.type.TestTypeFactory::testProperties"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

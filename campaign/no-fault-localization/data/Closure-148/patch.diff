@@ -1,0 +1,268 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+index 1df9098..f3d9583 100644
+--- a/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
++++ b/src/com/google/javascript/jscomp/PeepholeFoldConstants.java
+@@ -179,6 +179,9 @@ public class PeepholeFoldConstants extends AbstractPeepholeOptimization {
+       case Token.ARRAYLIT:
+         typeNameString = "object";
+         break;
++      case Token.VOID:
++        typeNameString = "undefined";
++        break;
+       case Token.NAME:
+         // We assume here that programs don't change the value of the
+         // keyword undefined to something other than the value undefined.
+diff --git a/src/com/google/javascript/jscomp/SourceMap.java b/src/com/google/javascript/jscomp/SourceMap.java
+index ff61bdd..d698a47 100644
+--- a/src/com/google/javascript/jscomp/SourceMap.java
++++ b/src/com/google/javascript/jscomp/SourceMap.java
+@@ -19,6 +19,7 @@ package com.google.javascript.jscomp;
+ import com.google.common.base.Preconditions;
+ import com.google.common.collect.Lists;
+ import com.google.javascript.rhino.Node;
++import com.google.javascript.rhino.Token;
+ 
+ import java.io.IOException;
+ import java.util.ArrayDeque;
+@@ -82,10 +83,7 @@ public class SourceMap {
+     /**
+      * Whether the mapping is actually used by the source map.
+      */
+-
+-    /**
+-     * Cache of escaped source file name.
+-     */
++    boolean used = false;
+ 
+     /**
+      * Appends the mapping to the given buffer.
+@@ -111,9 +109,6 @@ public class SourceMap {
+ 
+       out.append("]");
+     }
+-    /**
+-     * Add used mappings to the supplied Appendable.
+-     */
+   }
+ 
+   /**
+@@ -160,6 +155,13 @@ public class SourceMap {
+       return;
+     }
+ 
++    // Don't bother mapping the artificial node that wraps an entire
++    // source file: it never corresponds to any generated code of its
++    // own and would otherwise produce a redundant, misleading mapping.
++    if (node.getType() == Token.SCRIPT) {
++      return;
++    }
++
+     String escapedSourceFile;
+     if (lastSourceFile != sourceFile) {  // yes, "s1 != s2" not "!s1.equals(s2)"
+       lastSourceFile = sourceFile;
+@@ -168,7 +170,6 @@ public class SourceMap {
+     escapedSourceFile = lastSourceFileEscaped;
+     // Create the new mapping.
+     Mapping mapping = new Mapping();
+-    mapping.id = mappings.size();
+     mapping.sourceFile = escapedSourceFile;
+     mapping.originalPosition = new Position(node.getLineno(), node.getCharno());
+ 
+@@ -303,13 +304,21 @@ public class SourceMap {
+ 
+     int maxLine = findLastLine();
+ 
++    if (!mappings.isEmpty()) {
++      prepareMappings();
++    }
++
+     // Add the line character maps.
+     out.append("/** Begin line maps. **/{ \"file\" : ");
+     out.append(escapeString(name));
+     out.append(", \"count\": ");
+     out.append(String.valueOf(maxLine + 1));
+     out.append(" }\n");
+-    (new LineMapper(out)).appendLineMappings();
++    if (mappings.isEmpty()) {
++      out.append("[]\n");
++    } else {
++      (new LineMapper(out)).appendLineMappings();
++    }
+ 
+     // Add the source file maps.
+     out.append("/** Begin file information. **/\n");
+@@ -324,19 +333,55 @@ public class SourceMap {
+     out.append("/** Begin mapping definitions. **/\n");
+ 
+     for (Mapping mapping : mappings) {
+-      mapping.appendTo(out);
+-      out.append("\n");
++      if (mapping.used) {
++        mapping.appendTo(out);
++        out.append("\n");
++      }
+     }
+   }
+ 
+   /**
+-   * Assigns sequential ids to used mappings, and returns the last line mapped.
++   * A no-op sink used to determine, without producing any actual output,
++   * which mappings are used by the source map.
+    */
+-    // Mark any unused mappings.
++  private static final Appendable NULL_APPENDABLE = new Appendable() {
++    @Override
++    public Appendable append(CharSequence csq) {
++      return this;
++    }
+ 
+-    // Renumber used mappings and keep track of the last line.
++    @Override
++    public Appendable append(CharSequence csq, int start, int end) {
++      return this;
++    }
++
++    @Override
++    public Appendable append(char c) {
++      return this;
++    }
++  };
+ 
+-    // Adjust for the prefix.
++  /**
++   * Marks every mapping that is actually referenced by the generated line
++   * maps as "used" and assigns sequential ids to the used mappings only, so
++   * that mappings which never end up covering any generated code (e.g. a
++   * wrapper node whose position is entirely subsumed by one of its children)
++   * are dropped from the final output.
++   */
++  private void prepareMappings() throws IOException {
++    // Mark any used mappings by performing a dry run of the line mapping
++    // algorithm without producing any actual output.
++    (new LineMapper(NULL_APPENDABLE)).appendLineMappings();
++
++    // Renumber used mappings, in the original pre-order, so that the ids
++    // referenced by the (soon to be generated) line maps are contiguous.
++    int id = 0;
++    for (Mapping m : mappings) {
++      if (m.used) {
++        m.id = id++;
++      }
++    }
++  }
+ 
+   private class LineMapper {
+     // The destination.
+@@ -348,21 +393,10 @@ public class SourceMap {
+ 
+     private final static String UNMAPPED_STRING = "-1";
+ 
+-    private final static int UNMAPPED = -1;
+-
+     LineMapper(Appendable out) {
+       this.out = out;
+     }
+ 
+-    /**
+-     * As each segment is visited write out the appropriate line mapping.
+-     */
+-
+-        // Prevent the creation of unnecessary temporary stings for often
+-        // repeated values.
+-
+-
+-
+     // Append the line mapping entries.
+     void appendLineMappings() throws IOException {
+       Preconditions.checkState(!mappings.isEmpty());
+@@ -370,48 +404,6 @@ public class SourceMap {
+       // Start the first line.
+       openLine();
+ 
+-
+-      // And close the final line.
+-
+-    /**
+-     * Begin the entry for a new line.
+-     */
+-
+-    /**
+-     * End the entry for a line.
+-     */
+-
+-    /**
+-     * Add a new char position entry.
+-     * @param id The mapping id to record.
+-     */
+-
+-  /**
+-   * Mark any visited mapping as "used".
+-   */
+-    /**
+-     * @throws IOException
+-     */
+-
+-    /**
+-     * @param m The mapping for the current code segment. null if the segment
+-     *     is unmapped.
+-     * @param line The starting line for this code segment.
+-     * @param col The starting column for this code segment.
+-     * @param endLine The ending line
+-     * @param endCol The ending column
+-     * @throws IOException
+-     */
+-
+-  /**
+-   * Walk the mappings and visit each segment of the mappings, unmapped
+-   * segments are visited with a null mapping, unused mapping are not visited.
+-   */
+-    // The last line and column written
+-
+-
+-    // Append the line mapping entries.
+-
+       // The mapping list is ordered as a pre-order traversal.  The mapping
+       // positions give us enough information to rebuild the stack and this
+       // allows the building of the source map in O(n) time.
+@@ -499,7 +491,7 @@ public class SourceMap {
+       // If this anything remaining in this mapping beyond the
+       // current line and column position, write it out now.
+       if (line < nextLine || (line == nextLine && col < nextCol)) {
+-        writeCharsUpTo(nextLine, nextCol, m.id);
++        writeCharsUpTo(nextLine, nextCol, m);
+       }
+     }
+ 
+@@ -511,16 +503,16 @@ public class SourceMap {
+       int nextLine = getAdjustedLine(next.startPosition);
+       int nextCol = getAdjustedCol(next.startPosition);
+       // If the previous value is null, no mapping exists.
+-      int id = (prev != null) ? prev.id : UNMAPPED;
+-      writeCharsUpTo(nextLine, nextCol, id);
++      writeCharsUpTo(nextLine, nextCol, prev);
+     }
+ 
+     /**
+      * Write any entries needed between the current position the next position
+-     * and update the current position.
++     * and update the current position. Marks the given mapping (if any) as
++     * used, since it is the one that covers this range of generated code.
+      */
+     private void writeCharsUpTo(
+-        int nextLine, int nextCol, int id)
++        int nextLine, int nextCol, Mapping m)
+         throws IOException {
+       Preconditions.checkState(line <= nextLine, "");
+       Preconditions.checkState(line < nextLine || col <= nextCol);
+@@ -530,7 +522,10 @@ public class SourceMap {
+         return;
+       }
+ 
+-      String idString = (id == UNMAPPED) ? UNMAPPED_STRING : String.valueOf(id);
++      if (m != null) {
++        m.used = true;
++      }
++      String idString = (m == null) ? UNMAPPED_STRING : String.valueOf(m.id);
+       for (int i = line; i <= nextLine; i++) {
+         if (i == nextLine) {
+           for (int j = col; j < nextCol; j++) {

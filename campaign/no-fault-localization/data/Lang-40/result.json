@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 40,
+  "id": "Lang-40",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1726,
+  "finished_at": "2026-09-08T09:18:01Z",
+  "wallclock_s": 102,
+  "agent_s": 53,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 37118,
+  "total_cost_usd": 0.11363779999999998,
+  "session_id": "433dbe82-9cf8-481c-8b54-6e3db75d8655",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 3291,
+  "cache_read_input_tokens": 145439,
+  "cache_creation_input_tokens": 12338,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.StringUtilsEqualsIndexOfTest::testContainsIgnoreCase_LocaleIndependence"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/StringUtils.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

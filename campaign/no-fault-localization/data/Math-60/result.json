@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 60,
+  "id": "Math-60",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 490,
+  "finished_at": "2026-09-08T10:29:07Z",
+  "wallclock_s": 159,
+  "agent_s": 79,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 29455,
+  "total_cost_usd": 0.1380044,
+  "session_id": "4c094c7a-478e-4fe1-8546-c964c7c220f6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2388,
+  "cache_read_input_tokens": 238312,
+  "cache_creation_input_tokens": 16025,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.distribution.NormalDistributionTest::testExtremeValues"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/distribution/NormalDistributionImpl.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

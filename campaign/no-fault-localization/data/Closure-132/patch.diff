@@ -1,0 +1,27 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+index ae568e8..3d2c504 100644
+--- a/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
++++ b/src/com/google/javascript/jscomp/PeepholeSubstituteAlternateSyntax.java
+@@ -774,12 +774,21 @@ class PeepholeSubstituteAlternateSyntax
+         // if(x)a=1;else a=2; -> a=x?1:2;
+         if (NodeUtil.isAssignmentOp(thenOp)) {
+           Node lhs = thenOp.getFirstChild();
++          // A plain assignment to a simple name only moves the RHS into the
++          // hook, so it stays ordered after the condition, just as in the
++          // original if/else. Anything else (a compound assignment, which
++          // reads the current value of the LHS before the hook runs, or a
++          // computed LHS such as a GETELEM/GETPROP, whose subexpressions
++          // would now be evaluated before the condition) is only safe to
++          // merge if the condition itself cannot change that LHS's value.
++          boolean isSimpleAssignToName = thenOp.isAssign() && lhs.isName();
+           if (areNodesEqualForInlining(lhs, elseOp.getFirstChild()) &&
+               // if LHS has side effects, don't proceed [since the optimization
+               // evaluates LHS before cond]
+               // NOTE - there are some circumstances where we can
+               // proceed even if there are side effects...
+-              !mayEffectMutableState(lhs)) {
++              !mayEffectMutableState(lhs) &&
++              (isSimpleAssignToName || !mayHaveSideEffects(cond))) {
+ 
+             n.removeChild(cond);
+             Node assignName = thenOp.removeFirstChild();

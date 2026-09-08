@@ -1,0 +1,18 @@
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index c43a7d1..8db8512 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -548,6 +548,13 @@ class TypeInference
+         boolean isVarTypeBetter = !isVarDeclaration || var == null || var.isTypeInferred();
+             // Makes it easier to check for NPEs.
+ 
++        // Even for declared vars, an initializer that is exactly the null
++        // type should still narrow the flow-sensitive type, so that
++        // dereferences immediately following the declaration are checked.
++        if (!isVarTypeBetter && resultType.isNullType()) {
++          isVarTypeBetter = true;
++        }
++
+         // TODO(nicksantos): This might be a better check once we have
+         // back-inference of object/array constraints.  It will probably
+         // introduce more type warnings.  It uses the result type iff it's

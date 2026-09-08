@@ -1,0 +1,22 @@
+diff --git a/src/main/java/com/fasterxml/jackson/core/json/UTF8JsonGenerator.java b/src/main/java/com/fasterxml/jackson/core/json/UTF8JsonGenerator.java
+index 4f4394c..ff9d7e6 100644
+--- a/src/main/java/com/fasterxml/jackson/core/json/UTF8JsonGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/core/json/UTF8JsonGenerator.java
+@@ -533,9 +533,15 @@ public class UTF8JsonGenerator
+         while (len > 0) {
+             int len2 = Math.min(buf.length, len);
+             text.getChars(offset, offset+len2, buf, 0);
+-            writeRaw(buf, 0, len2);
+             // If this is NOT the last segment and if the last character looks like
+-            // split surrogate second half, drop it
++            // split surrogate first half, drop it, to be included with the next segment
++            if (len2 < len) {
++                char ch = buf[len2-1];
++                if (ch >= SURR1_FIRST && ch <= SURR1_LAST) {
++                    --len2;
++                }
++            }
++            writeRaw(buf, 0, len2);
+             offset += len2;
+             len -= len2;
+         }

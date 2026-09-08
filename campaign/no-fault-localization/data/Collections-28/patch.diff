@@ -1,0 +1,13 @@
+diff --git a/src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java b/src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java
+index 41f8535..8bd201a 100644
+--- a/src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java
++++ b/src/main/java/org/apache/commons/collections4/trie/AbstractPatriciaTrie.java
+@@ -2402,7 +2402,7 @@ abstract class AbstractPatriciaTrie<K, V> extends AbstractBitwiseTrie<K, V> {
+                 // If the subtree's bitIndex is less than the
+                 // length of our prefix, it's the last item
+                 // in the prefix tree.
+-                if (lengthInBits >= subtree.bitIndex) {
++                if (subtree == null || lengthInBits >= subtree.bitIndex) {
+                     lastOne = true;
+                 }
+             }

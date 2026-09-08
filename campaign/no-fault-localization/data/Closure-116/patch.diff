@@ -1,0 +1,24 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionInjector.java b/src/com/google/javascript/jscomp/FunctionInjector.java
+index c3fc14b..a84dc91 100644
+--- a/src/com/google/javascript/jscomp/FunctionInjector.java
++++ b/src/com/google/javascript/jscomp/FunctionInjector.java
+@@ -729,6 +729,19 @@ class FunctionInjector {
+                   block, fnParam.getString()) > 1) {
+             return CanInlineResult.NO;
+           }
++
++          // If the parameter value may be affected by side-effects, it isn't
++          // safe to move the parameter reference if the returned expression
++          // (which will now execute before the substituted value is used)
++          // may have side-effects.
++          if (NodeUtil.canBeSideEffected(cArg)) {
++            Node returnValue = block.hasChildren()
++                ? block.getFirstChild().getFirstChild() : null;
++            if (returnValue != null
++                && NodeUtil.mayHaveSideEffects(returnValue, compiler)) {
++              return CanInlineResult.NO;
++            }
++          }
+         }
+ 
+         // Move to the next name.

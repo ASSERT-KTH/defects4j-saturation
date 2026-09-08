@@ -1,0 +1,45 @@
+diff --git a/src/java/org/apache/commons/cli2/WriteableCommandLine.java b/src/java/org/apache/commons/cli2/WriteableCommandLine.java
+index 96ab589..a70c8d6 100644
+--- a/src/java/org/apache/commons/cli2/WriteableCommandLine.java
++++ b/src/java/org/apache/commons/cli2/WriteableCommandLine.java
+@@ -44,6 +44,7 @@ public interface WriteableCommandLine extends CommandLine {
+      * @param option the Option associated with the values
+      * @return a list of values or an empty List if none are found
+      */
++    List getUndefaultedValues(final Option option);
+ 
+     /**
+      * Sets the default values for an Option in the CommandLine
+diff --git a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+index b4e3a39..b7d2592 100644
+--- a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
++++ b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+@@ -106,6 +106,12 @@ public class WriteableCommandLineImpl
+         return (Option) nameToOption.get(trigger);
+     }
+ 
++    public List getUndefaultedValues(final Option option) {
++        final List valueList = (List) values.get(option);
++
++        return (valueList == null) ? Collections.EMPTY_LIST : valueList;
++    }
++
+     public List getValues(final Option option,
+                           final List defaultValues) {
+         // First grab the command line values
+diff --git a/src/java/org/apache/commons/cli2/option/ArgumentImpl.java b/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
+index 0b05ad7..76d72f9 100644
+--- a/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
++++ b/src/java/org/apache/commons/cli2/option/ArgumentImpl.java
+@@ -140,8 +140,9 @@ public class ArgumentImpl
+                               final ListIterator arguments,
+                               final Option option)
+         throws OptionException {
+-        // count of arguments processed for this option.
+-        int argumentCount = 0;
++        // count of arguments already processed for this option by previous
++        // calls to this method, so the maximum is enforced cumulatively
++        int argumentCount = commandLine.getUndefaultedValues(option).size();
+ 
+         while (arguments.hasNext() && (argumentCount < maximum)) {
+             final String allValuesQuoted = (String) arguments.next();

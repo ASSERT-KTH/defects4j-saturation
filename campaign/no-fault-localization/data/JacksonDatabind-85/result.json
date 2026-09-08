@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 85,
+  "id": "JacksonDatabind-85",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2964,
+  "finished_at": "2026-09-08T04:24:52Z",
+  "wallclock_s": 289,
+  "agent_s": 139,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 101505,
+  "total_cost_usd": 0.3578028000000001,
+  "session_id": "b483296c-d486-4183-9bd6-34265302bbec",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 8729,
+  "cache_read_input_tokens": 725509,
+  "cache_creation_input_tokens": 30758,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.DateSerializationTest::testFormatWithoutPattern"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/DateTimeSerializerBase.java"
+  ],
+  "patch_added_lines": 23,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

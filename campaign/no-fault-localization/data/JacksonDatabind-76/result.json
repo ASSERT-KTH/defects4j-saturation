@@ -1,0 +1,43 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 76,
+  "id": "JacksonDatabind-76",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 7086,
+  "finished_at": "2026-09-08T04:16:38Z",
+  "wallclock_s": 333,
+  "agent_s": 195,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 125269,
+  "total_cost_usd": 0.5449874000000001,
+  "session_id": "26820f8e-7794-4dc9-a1f5-680d78fd423d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 10555,
+  "cache_read_input_tokens": 950892,
+  "cache_creation_input_tokens": 60870,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.builder.BuilderWithUnwrappedTest::testWithUnwrappedAndCreatorSingleParameterAtBeginning",
+    "com.fasterxml.jackson.databind.deser.builder.BuilderWithUnwrappedTest::testWithUnwrappedAndCreatorMultipleParametersAtBeginning",
+    "com.fasterxml.jackson.databind.deser.builder.BuilderWithUnwrappedTest::testWithUnwrappedAndCreatorSingleParameterInMiddle",
+    "com.fasterxml.jackson.databind.deser.builder.BuilderWithUnwrappedTest::testWithUnwrappedAndCreatorMultipleParametersInMiddle"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BuilderBasedDeserializer.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

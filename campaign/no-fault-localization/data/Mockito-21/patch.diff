@@ -1,0 +1,26 @@
+diff --git a/src/org/mockito/internal/creation/instance/ConstructorInstantiator.java b/src/org/mockito/internal/creation/instance/ConstructorInstantiator.java
+index 0cc8226..86b678d 100644
+--- a/src/org/mockito/internal/creation/instance/ConstructorInstantiator.java
++++ b/src/org/mockito/internal/creation/instance/ConstructorInstantiator.java
+@@ -17,12 +17,19 @@ public class ConstructorInstantiator implements Instantiator {
+         return withOuterClass(cls);
+     }
+ 
++    @SuppressWarnings("unchecked")
+     private <T> T withOuterClass(Class<T> cls) {
+         try {
+             //this is kind of overengineered because we don't need to support more params
+             //however, I know we will be needing it :)
+-            Constructor<T> c = cls.getDeclaredConstructor(outerClassInstance.getClass());
+-            return c.newInstance(outerClassInstance);
++            Class<?> outerClass = outerClassInstance.getClass();
++            for (Constructor<?> constructor : cls.getDeclaredConstructors()) {
++                Class<?>[] paramTypes = constructor.getParameterTypes();
++                if (paramTypes.length == 1 && paramTypes[0].isAssignableFrom(outerClass)) {
++                    return (T) constructor.newInstance(outerClassInstance);
++                }
++            }
++            throw new NoSuchMethodException(cls.getName() + ".<init>(" + outerClass.getName() + ")");
+         } catch (Exception e) {
+             throw paramsException(cls, e);
+         }

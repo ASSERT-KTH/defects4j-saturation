@@ -1,0 +1,40 @@
+{
+  "project": "Cli",
+  "bug": 36,
+  "id": "Cli-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 139,
+  "finished_at": "2026-09-07T15:39:12Z",
+  "wallclock_s": 45,
+  "agent_s": 31,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 26482,
+  "total_cost_usd": 0.12391360000000003,
+  "session_id": "39f79516-a618-4b3e-b217-6187fa7b2d79",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1452,
+  "cache_read_input_tokens": 190828,
+  "cache_creation_input_tokens": 17191,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.cli.bug.BugCLI266Test::testOptionComparatorInsertedOrder"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/cli/OptionGroup.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

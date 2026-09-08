@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 92,
+  "id": "JacksonDatabind-92",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 54,
+  "finished_at": "2026-09-08T04:29:27Z",
+  "wallclock_s": 197,
+  "agent_s": 60,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 24207,
+  "total_cost_usd": 0.1102708,
+  "session_id": "86523166-e7bd-4beb-a7e8-d6bbaa9a7c06",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1557,
+  "cache_read_input_tokens": 193424,
+  "cache_creation_input_tokens": 13421,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.interop.IllegalTypesCheckTest::testJDKTypes1737"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 62,
+  "id": "Closure-62",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 82,
+  "finished_at": "2026-09-07T17:27:15Z",
+  "wallclock_s": 282,
+  "agent_s": 88,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 21780,
+  "total_cost_usd": 0.1052018,
+  "session_id": "526df1af-9f31-43c6-adfa-2334d7abc643",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1453,
+  "cache_read_input_tokens": 158729,
+  "cache_creation_input_tokens": 13880,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.LightweightMessageFormatterTest::testFormatErrorSpaceEndOfLine1",
+    "com.google.javascript.jscomp.LightweightMessageFormatterTest::testFormatErrorSpaceEndOfLine2"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/LightweightMessageFormatter.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

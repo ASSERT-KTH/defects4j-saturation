@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 10,
+  "id": "JacksonDatabind-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2229,
+  "finished_at": "2026-09-08T00:43:22Z",
+  "wallclock_s": 273,
+  "agent_s": 158,
+  "agent_rc": 0,
+  "num_turns": 29,
+  "api_duration_ms": 118877,
+  "total_cost_usd": 0.3668434000000002,
+  "session_id": "ec54e001-07e8-4b78-b28a-7ec78caf20a7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 58,
+  "output_tokens": 8653,
+  "cache_read_input_tokens": 815117,
+  "cache_creation_input_tokens": 28730,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.TestAnyGetter::testIssue705"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/AnyGetterWriter.java",
+    "src/main/java/com/fasterxml/jackson/databind/ser/BeanSerializerFactory.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 11,
+  "has_dev_patch": true
+}

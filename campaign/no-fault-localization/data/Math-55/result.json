@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 55,
+  "id": "Math-55",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2747,
+  "finished_at": "2026-09-08T10:26:18Z",
+  "wallclock_s": 317,
+  "agent_s": 230,
+  "agent_rc": 0,
+  "num_turns": 17,
+  "api_duration_ms": 79293,
+  "total_cost_usd": 0.26196880000000006,
+  "session_id": "30f16ce0-1b96-4d8c-a6cd-25a855953092",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 34,
+  "output_tokens": 6847,
+  "cache_read_input_tokens": 411079,
+  "cache_creation_input_tokens": 27184,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.geometry.Vector3DTest::testCrossProductCancellation"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/geometry/Vector3D.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 105,
+  "id": "Math-105",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 118,
+  "finished_at": "2026-09-08T11:20:03Z",
+  "wallclock_s": 57,
+  "agent_s": 27,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 20172,
+  "total_cost_usd": 0.07968199999999999,
+  "session_id": "6aa604c8-b71a-4662-9eb4-967a22af4437",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1271,
+  "cache_read_input_tokens": 119805,
+  "cache_creation_input_tokens": 10191,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.stat.regression.SimpleRegressionTest::testSSENonNegative"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/stat/regression/SimpleRegression.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

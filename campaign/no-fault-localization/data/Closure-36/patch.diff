@@ -1,0 +1,23 @@
+diff --git a/src/com/google/javascript/jscomp/ClosureCodingConvention.java b/src/com/google/javascript/jscomp/ClosureCodingConvention.java
+index eb92ebc..53a16b9 100644
+--- a/src/com/google/javascript/jscomp/ClosureCodingConvention.java
++++ b/src/com/google/javascript/jscomp/ClosureCodingConvention.java
+@@ -265,7 +265,17 @@ public class ClosureCodingConvention extends CodingConventions.Proxy {
+       return null;
+     }
+ 
+-    return callArg.getNext().getQualifiedName();
++    Node target = callArg.getNext();
++    String targetName = target.getQualifiedName();
++    if (targetName == null && target.isFunction()) {
++      // The target may have been inlined into an anonymous, but named
++      // (for the purposes of local recursion), function expression.
++      String functionName = target.getFirstChild().getString();
++      if (!functionName.isEmpty()) {
++        targetName = functionName;
++      }
++    }
++    return targetName;
+   }
+ 
+   @Override

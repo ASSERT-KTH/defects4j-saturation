@@ -1,0 +1,179 @@
+diff --git a/src/main/java/org/apache/commons/codec/net/QuotedPrintableCodec.java b/src/main/java/org/apache/commons/codec/net/QuotedPrintableCodec.java
+index 13291cd..0ca8929 100644
+--- a/src/main/java/org/apache/commons/codec/net/QuotedPrintableCodec.java
++++ b/src/main/java/org/apache/commons/codec/net/QuotedPrintableCodec.java
+@@ -67,9 +67,20 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
+ 
+     private static final byte SPACE = 32;
+ 
++    private static final byte CR = 13;
+ 
++    private static final byte LF = 10;
+ 
+     /** Safe line length for quoted printable encoded text. */
++    private static final int SAFE_LENGTH = 73;
++
++    /**
++     * Number of bytes that may still need to be encoded (worst case) for the
++     * last two octets of the data; used to reserve enough room on the current
++     * line so that note #3 (the '=' introducing an escape must not be the
++     * ultimate or penultimate character of a line) is never violated.
++     */
++    private static final int RESERVE_FOR_LAST_TWO_OCTETS = 6;
+ 
+     // Static initializer for printable chars collection
+     static {
+@@ -172,35 +183,111 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
+             printable = PRINTABLE_CHARS;
+         }
+         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+-        // encode up to buffer.length - 3, the last three octets will be treated
+-        // separately for simplification of note #3
+-                // up to this length it is safe to add any byte, encoded or not
+-        for (byte c : bytes) {
+-            int b = c;
+-            if (b < 0) {
+-                b = 256 + b;
+-            }
+-            if (printable.get(b)) {
+-                buffer.write(b);
+-            } else {
+-                // rule #3: whitespace at the end of a line *must* be encoded
+-
+-                // rule #5: soft line break
+-                encodeQuotedPrintable(b, buffer);
++        int n = bytes.length;
++        int position = 0;
++        if (n <= 3) {
++            for (int i = 0; i < n; i++) {
++                Integer next = i + 1 < n ? Integer.valueOf(unsigned(bytes[i + 1])) : null;
++                position = encodeWithLookahead(printable, buffer, position, unsigned(bytes[i]), next);
+             }
++            return buffer.toByteArray();
++        }
++        // encode up to bytes.length - 3, the last three octets will be treated
++        // separately for simplification of note #3
++        for (int i = 0; i < n - 3; i++) {
++            position = encodeWithLookahead(printable, buffer, position, unsigned(bytes[i]), unsigned(bytes[i + 1]));
+         }
+-
+-        // rule #3: whitespace at the end of a line *must* be encoded
+-        // if we would do a soft break line after this octet, encode whitespace
+ 
+         // note #3: '=' *must not* be the ultimate or penultimate character
+         // simplification: if < 6 bytes left, do a soft line break as we may need
+         //                 exactly 6 bytes space for the last 2 bytes
+-            // rule #3: trailing whitespace shall be encoded
++        position = encodeReservingSpace(printable, buffer, position, unsigned(bytes[n - 3]));
++        position = encodeWithLookahead(printable, buffer, position, unsigned(bytes[n - 2]), unsigned(bytes[n - 1]));
++        // rule #3: trailing whitespace shall be encoded
++        encodeWithLookahead(printable, buffer, position, unsigned(bytes[n - 1]), null);
+ 
+         return buffer.toByteArray();
+     }
+ 
++    private static final int unsigned(byte b) {
++        return b < 0 ? 256 + b : b;
++    }
++
++    /**
++     * Inserts a soft line break ("=\r\n") and returns the resulting (zero) line position.
++     */
++    private static final int softLineBreak(ByteArrayOutputStream buffer) {
++        buffer.write(ESCAPE_CHAR);
++        buffer.write(CR);
++        buffer.write(LF);
++        return 0;
++    }
++
++    /**
++     * Writes a single octet, encoding it if necessary, taking care of rule #5 (soft line
++     * breaks once the safe line length has been reached).
++     *
++     * @return the new line position, and whether the write itself triggered a soft break
++     */
++    private static final int writeOctet(ByteArrayOutputStream buffer, int position, int b, boolean escape) {
++        if (escape) {
++            encodeQuotedPrintable(b, buffer);
++            position += 3;
++            if (position > SAFE_LENGTH) {
++                position = softLineBreak(buffer);
++            }
++        } else {
++            if (position + 1 > SAFE_LENGTH) {
++                position = softLineBreak(buffer);
++            }
++            buffer.write(b);
++            position += 1;
++        }
++        return position;
++    }
++
++    /**
++     * Encodes a single octet using a one octet lookahead: whitespace (TAB/SPACE) that is
++     * the last octet of the data, or that would otherwise end up as the last character
++     * before a soft line break, must always be encoded (rule #3).
++     */
++    private static final int encodeWithLookahead(BitSet printable, ByteArrayOutputStream buffer, int position,
++            int b, Integer next) {
++        boolean escape = !printable.get(b);
++        if (!escape && (b == TAB || b == SPACE)) {
++            if (next == null) {
++                escape = true;
++            } else {
++                int nextCost = printable.get(next.intValue()) ? 1 : 3;
++                if (position + 1 + nextCost > SAFE_LENGTH) {
++                    escape = true;
++                }
++            }
++        }
++        return writeOctet(buffer, position, b, escape);
++    }
++
++    /**
++     * Encodes the third-from-last octet of the data. Reserves enough room on the current
++     * line for the worst case (both remaining octets needing to be escaped), breaking the
++     * line early if necessary; trailing whitespace right before such a break must be encoded.
++     */
++    private static final int encodeReservingSpace(BitSet printable, ByteArrayOutputStream buffer, int position,
++            int b) {
++        boolean escape = !printable.get(b);
++        boolean imminentBreak = SAFE_LENGTH - (position + 1) < RESERVE_FOR_LAST_TWO_OCTETS;
++        if (!escape && imminentBreak && (b == TAB || b == SPACE)) {
++            escape = true;
++        }
++        int before = position;
++        position = writeOctet(buffer, position, b, escape);
++        boolean brokeAlready = position < before;
++        if (imminentBreak && !brokeAlready) {
++            position = softLineBreak(buffer);
++        }
++        return position;
++    }
++
+     /**
+      * Decodes an array quoted-printable characters into an array of original bytes. Escaped characters are
+      * converted back to their original representation.
+@@ -226,13 +313,20 @@ public class QuotedPrintableCodec implements BinaryEncoder, BinaryDecoder, Strin
+             if (b == ESCAPE_CHAR) {
+                 try {
+                     // if the next octet is a CR we have found a soft line break
+-                    int u = Utils.digit16(bytes[++i]);
++                    byte next = bytes[++i];
++                    if (next == CR) {
++                        if (bytes[i + 1] == LF) {
++                            i++;
++                        }
++                        continue;
++                    }
++                    int u = Utils.digit16(next);
+                     int l = Utils.digit16(bytes[++i]);
+                     buffer.write((char) ((u << 4) + l));
+                 } catch (ArrayIndexOutOfBoundsException e) {
+                     throw new DecoderException("Invalid quoted-printable encoding", e);
+                 }
+-            } else {
++            } else if (b != CR && b != LF) {
+                 // every other octet is appended except for CR & LF
+                 buffer.write(b);
+             }

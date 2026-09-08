@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 77,
+  "id": "Math-77",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 450,
+  "finished_at": "2026-09-08T10:58:12Z",
+  "wallclock_s": 74,
+  "agent_s": 47,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 38791,
+  "total_cost_usd": 0.172441,
+  "session_id": "64ed4180-110b-4a14-bdff-0a143685c82d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3213,
+  "cache_read_input_tokens": 348450,
+  "cache_creation_input_tokens": 16806,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.ArrayRealVectorTest::testBasicFunctions",
+    "org.apache.commons.math.linear.SparseRealVectorTest::testBasicFunctions"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/ArrayRealVector.java",
+    "src/main/java/org/apache/commons/math/linear/OpenMapRealVector.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

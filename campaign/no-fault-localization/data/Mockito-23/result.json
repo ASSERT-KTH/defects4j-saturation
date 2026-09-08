@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 23,
+  "id": "Mockito-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6382,
+  "finished_at": "2026-09-08T14:20:15Z",
+  "wallclock_s": 550,
+  "agent_s": 359,
+  "agent_rc": 0,
+  "num_turns": 41,
+  "api_duration_ms": 169781,
+  "total_cost_usd": 0.7517932,
+  "session_id": "b30b89aa-9e19-45d2-9ce4-a5fac6b41984",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 82,
+  "output_tokens": 15183,
+  "cache_read_input_tokens": 1791716,
+  "cache_creation_input_tokens": 59390,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockitousage.stubbing.DeepStubsSerializableTest::should_serialize_and_deserialize_mock_created_by_deep_stubs"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java",
+    "src/org/mockito/internal/util/MockUtil.java"
+  ],
+  "patch_added_lines": 39,
+  "patch_removed_lines": 13,
+  "has_dev_patch": true
+}

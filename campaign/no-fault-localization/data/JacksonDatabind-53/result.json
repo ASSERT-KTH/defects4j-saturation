@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 53,
+  "id": "JacksonDatabind-53",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6338,
+  "finished_at": "2026-09-08T01:42:53Z",
+  "wallclock_s": 316,
+  "agent_s": 160,
+  "agent_rc": 0,
+  "num_turns": 22,
+  "api_duration_ms": 124925,
+  "total_cost_usd": 0.3942506,
+  "session_id": "c85cb694-d0a6-4cdb-a704-55ad07bd1c6e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 44,
+  "output_tokens": 10354,
+  "cache_read_input_tokens": 677763,
+  "cache_creation_input_tokens": 38055,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.jsontype.TypeRefinementForMap1215Test::testMapRefinement"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java"
+  ],
+  "patch_added_lines": 15,
+  "patch_removed_lines": 13,
+  "has_dev_patch": true
+}

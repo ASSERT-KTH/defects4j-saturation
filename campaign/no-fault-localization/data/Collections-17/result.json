@@ -1,0 +1,40 @@
+{
+  "project": "Collections",
+  "bug": 17,
+  "id": "Collections-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass (a flaky test failed on the first full run only)",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 489,
+  "finished_at": "2026-09-07T23:32:33Z",
+  "wallclock_s": 101,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 20867,
+  "total_cost_usd": 0.09786139999999999,
+  "session_id": "100f720a-b097-4786-b661-84a3f3b1107a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1571,
+  "cache_read_input_tokens": 131427,
+  "cache_creation_input_tokens": 13329,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.collections.functors.TestEqualPredicate::objectFactoryUsesEqualsForTest"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 1,
+  "patch_files": [
+    "src/main/java/org/apache/commons/collections/functors/EqualPredicate.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

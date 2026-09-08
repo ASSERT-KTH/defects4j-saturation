@@ -1,0 +1,48 @@
+diff --git a/src/java/org/apache/commons/collections/map/Flat3Map.java b/src/java/org/apache/commons/collections/map/Flat3Map.java
+index 8acc002..4505a23 100644
+--- a/src/java/org/apache/commons/collections/map/Flat3Map.java
++++ b/src/java/org/apache/commons/collections/map/Flat3Map.java
+@@ -649,16 +649,19 @@ public class Flat3Map implements IterableMap, Serializable, Cloneable {
+             }
+             Object old = getValue();
+             switch (nextIndex) {
+-                case 3: 
++                case 3:
+                     parent.value3 = value;
++                    break;
+                 case 2:
+                     parent.value2 = value;
++                    break;
+                 case 1:
+                     parent.value1 = value;
++                    break;
+             }
+             return old;
+         }
+-        
++
+         public void reset() {
+             nextIndex = 0;
+             canRemove = false;
+@@ -801,16 +804,19 @@ public class Flat3Map implements IterableMap, Serializable, Cloneable {
+             }
+             Object old = getValue();
+             switch (nextIndex) {
+-                case 3: 
++                case 3:
+                     parent.value3 = value;
++                    break;
+                 case 2:
+                     parent.value2 = value;
++                    break;
+                 case 1:
+                     parent.value1 = value;
++                    break;
+             }
+             return old;
+         }
+-        
++
+         public boolean equals(Object obj) {
+             if (canRemove == false) {
+                 return false;

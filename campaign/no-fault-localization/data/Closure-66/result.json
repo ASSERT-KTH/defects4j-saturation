@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 66,
+  "id": "Closure-66",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3110,
+  "finished_at": "2026-09-07T17:32:08Z",
+  "wallclock_s": 293,
+  "agent_s": 136,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 81684,
+  "total_cost_usd": 0.2563784,
+  "session_id": "780433ac-936c-4cbf-baed-a81e00261203",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 5967,
+  "cache_read_input_tokens": 474222,
+  "cache_creation_input_tokens": 24618,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testGetTypedPercent5",
+    "com.google.javascript.jscomp.TypeCheckTest::testGetTypedPercent6"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypeCheck.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

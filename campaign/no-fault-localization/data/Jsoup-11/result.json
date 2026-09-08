@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 11,
+  "id": "Jsoup-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 7784,
+  "finished_at": "2026-09-08T05:15:03Z",
+  "wallclock_s": 149,
+  "agent_s": 132,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 122804,
+  "total_cost_usd": 0.3657481999999999,
+  "session_id": "f7458e6b-1f3d-423e-aff5-a7b90e1791d7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 10946,
+  "cache_read_input_tokens": 562201,
+  "cache_creation_input_tokens": 34542,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.select.SelectorTest::notAll",
+    "org.jsoup.select.SelectorTest::testPseudoHas",
+    "org.jsoup.select.SelectorTest::notClass",
+    "org.jsoup.select.SelectorTest::notParas"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/select/Selector.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

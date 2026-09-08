@@ -1,0 +1,59 @@
+diff --git a/src/com/google/javascript/jscomp/ScopedAliases.java b/src/com/google/javascript/jscomp/ScopedAliases.java
+index 7e9c8b8..853f694 100644
+--- a/src/com/google/javascript/jscomp/ScopedAliases.java
++++ b/src/com/google/javascript/jscomp/ScopedAliases.java
+@@ -363,12 +363,10 @@ class ScopedAliases implements HotSwapCompilerPass {
+         } else if (parent.getType() == Token.LP) {
+           // Parameters of the scope function also get a BAD_PARAMETERS
+           // error.
+-        } else if (isVar) {
++        } else if (isVar || NodeUtil.isFunctionDeclaration(parent)) {
+           Node grandparent = parent.getParent();
+-          Node value = n.hasChildren() ?
+-              v.getInitialValue().detachFromParent() :
+-              null;
+-          Node varNode = parent;
++          Node value = null;
++          Node varNode = null;
+ 
+           String name = n.getString();
+           int nameCount = scopedAliasNames.count(name);
+@@ -378,8 +376,16 @@ class ScopedAliases implements HotSwapCompilerPass {
+ 
+           compiler.ensureLibraryInjected("base");
+ 
+-          // First, we need to free up the function expression (EXPR)
+-          // to be used in another expression.
++          if (isVar) {
++            // If this is a VAR, we can just detach the expression and
++            // the tree will still be valid.
++            value = n.hasChildren() ?
++                v.getInitialValue().detachFromParent() :
++                null;
++            varNode = parent;
++          } else {
++            // First, we need to free up the function expression (EXPR)
++            // to be used in another expression.
+             // Replace "function NAME() { ... }" with "var NAME;".
+ 
+             // We can't keep the local name on the function expression,
+@@ -389,9 +395,17 @@ class ScopedAliases implements HotSwapCompilerPass {
+             //
+             // This will only cause problems if this is a hoisted, recursive
+             // function, and the programmer is using the hoisting.
++            boolean isHoisted = NodeUtil.isHoistedFunctionDeclaration(parent);
++            Node beforeNode = isHoisted ? grandparent.getFirstChild() : parent;
++
++            n.detachFromParent();
++            parent.addChildToFront(IR.name("").useSourceInfoIfMissingFrom(n));
+ 
+-              // If this is a VAR, we can just detach the expression and
+-              // the tree will still be valid.
++            varNode = IR.var(n).useSourceInfoIfMissingFromForTree(n);
++            grandparent.addChildBefore(varNode, beforeNode);
++
++            value = parent.detachFromParent();
++          }
+ 
+           // Add $jscomp.scope.name = EXPR;
+           // Make sure we copy over all the jsdoc and debug info.

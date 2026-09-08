@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 26,
+  "id": "Lang-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 241,
+  "finished_at": "2026-09-08T09:12:32Z",
+  "wallclock_s": 87,
+  "agent_s": 44,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 28735,
+  "total_cost_usd": 0.12335580000000002,
+  "session_id": "fa7033c8-1d6f-441b-bac7-d5642d3dd907",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2142,
+  "cache_read_input_tokens": 205994,
+  "cache_creation_input_tokens": 14625,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.time.FastDateFormatTest::testLang645"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/time/FastDateFormat.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

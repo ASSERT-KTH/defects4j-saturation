@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 55,
+  "id": "JacksonDatabind-55",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2045,
+  "finished_at": "2026-09-08T01:43:08Z",
+  "wallclock_s": 215,
+  "agent_s": 133,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 85531,
+  "total_cost_usd": 0.3334170000000001,
+  "session_id": "79f3c0a8-826f-4ad7-a10e-624465e976ef",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 7042,
+  "cache_read_input_tokens": 730155,
+  "cache_creation_input_tokens": 28651,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.TestEnumSerialization::testEnumsWithJsonPropertyAsKey"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/StdKeySerializers.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

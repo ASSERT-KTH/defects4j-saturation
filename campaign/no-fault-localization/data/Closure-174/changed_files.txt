@@ -1,0 +1,2 @@
+M	src/com/google/javascript/jscomp/NodeUtil.java
+M	src/com/google/javascript/jscomp/ScopedAliases.java

@@ -1,0 +1,18 @@
+diff --git a/src/main/java/org/jsoup/helper/W3CDom.java b/src/main/java/org/jsoup/helper/W3CDom.java
+index 7b309a3..4dc4f78 100644
+--- a/src/main/java/org/jsoup/helper/W3CDom.java
++++ b/src/main/java/org/jsoup/helper/W3CDom.java
+@@ -88,7 +88,12 @@ public class W3CDom {
+                 String namespace = namespacesStack.peek().get(prefix);
+                 String tagName = sourceEl.tagName();
+ 
+-                Element el = 
++                // xml does not allow tags with a colon in the name if there's no namespace
++                // (as would be the case if the namespace prefix is not declared), so fall back to empty namespace
++                if (namespace == null && tagName.indexOf(":") > 0)
++                    namespace = "";
++
++                Element el =
+                     doc.createElementNS(namespace, tagName);
+                 copyAttributes(sourceEl, el);
+                 if (dest == null) { // sets up the root

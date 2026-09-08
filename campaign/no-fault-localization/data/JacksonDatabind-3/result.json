@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 3,
+  "id": "JacksonDatabind-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 23,
+  "finished_at": "2026-09-08T00:31:22Z",
+  "wallclock_s": 148,
+  "agent_s": 39,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 11261,
+  "total_cost_usd": 0.0680698,
+  "session_id": "56f1c280-9469-47b9-b2d1-a215e8491c10",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 723,
+  "cache_read_input_tokens": 66949,
+  "cache_creation_input_tokens": 11277,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.deser.TestArrayDeserialization::testStringArray"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/std/StringArrayDeserializer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

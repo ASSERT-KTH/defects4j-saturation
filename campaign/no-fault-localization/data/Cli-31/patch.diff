@@ -1,0 +1,13 @@
+diff --git a/src/main/java/org/apache/commons/cli/HelpFormatter.java b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+index 1debaf6..605ff6e 100644
+--- a/src/main/java/org/apache/commons/cli/HelpFormatter.java
++++ b/src/main/java/org/apache/commons/cli/HelpFormatter.java
+@@ -653,7 +653,7 @@ public class HelpFormatter
+         if (option.hasArg() && option.hasArgName())
+         {
+             buff.append(option.getOpt() == null ? longOptSeparator : " ");
+-            buff.append("<").append(option.getArgName()).append(">");
++            buff.append("<").append(DEFAULT_ARG_NAME.equals(option.getArgName()) ? getArgName() : option.getArgName()).append(">");
+         }
+         
+         // if the Option is not a required option

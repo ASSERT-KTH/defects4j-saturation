@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 106,
+  "id": "Math-106",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 323,
+  "finished_at": "2026-09-08T11:20:52Z",
+  "wallclock_s": 88,
+  "agent_s": 34,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 24350,
+  "total_cost_usd": 0.10843860000000002,
+  "session_id": "48be8822-0025-4db6-90ae-5e83573f0eb9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1875,
+  "cache_read_input_tokens": 171213,
+  "cache_creation_input_tokens": 13302,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.math.fraction.FractionFormatTest::testParseProperInvalidMinus"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/math/fraction/ProperFractionFormat.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

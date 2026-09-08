@@ -1,0 +1,62 @@
+diff --git a/src/com/google/javascript/jscomp/MethodCompilerPass.java b/src/com/google/javascript/jscomp/MethodCompilerPass.java
+index cd39b6e..2c171ca 100644
+--- a/src/com/google/javascript/jscomp/MethodCompilerPass.java
++++ b/src/com/google/javascript/jscomp/MethodCompilerPass.java
+@@ -96,33 +96,16 @@ abstract class MethodCompilerPass implements CompilerPass {
+ 
+   /**
+    * Adds a node that may represent a function signature (if it's a function
+-   * itself or the name of a function).
++   * itself). A property whose value is merely a reference to a function
++   * declared elsewhere (e.g. {@code Foo.prototype.bar = someName;}) is not
++   * reliable enough to check or inline: {@code someName} may be reused
++   * for other purposes, so it is treated as an unknown/non-method property.
+    */
+   private void addPossibleSignature(String name, Node node, NodeTraversal t) {
+-    boolean signatureAdded = false;
+     if (node.getType() == Token.FUNCTION) {
+       // The node we're looking at is a function, so we can add it directly
+       addSignature(name, node, t.getSourceName());
+-      signatureAdded = true;
+-    } else if (node.getType() == Token.NAME) {
+-      String functionName = node.getString();
+-      Scope.Var v = t.getScope().getVar(functionName);
+-      if (v == null) {
+-        if (compiler.isIdeMode()) {
+-          return;
+-        } else {
+-          throw new IllegalStateException(
+-              "VarCheck should have caught this undefined function");
+-        }
+-      }
+-      Node function = v.getInitialValue();
+-      if (function != null &&
+-          function.getType() == Token.FUNCTION) {
+-        addSignature(name, function, v.getInputName());
+-        signatureAdded = true;
+-      }
+-    }
+-    if (!signatureAdded) {
++    } else {
+       nonMethodProperties.add(name);
+     }
+   }
+diff --git a/src/com/google/javascript/jscomp/RenameVars.java b/src/com/google/javascript/jscomp/RenameVars.java
+index 29f4d7a..4b0df23 100644
+--- a/src/com/google/javascript/jscomp/RenameVars.java
++++ b/src/com/google/javascript/jscomp/RenameVars.java
+@@ -200,7 +200,13 @@ final class RenameVars implements CompilerPass {
+ 
+       // Check if we can rename this.
+       if (!okToRenameVar(name, local)) {
+-          // Blindly de-uniquify for the Prototype library for issue 103.
++        // Blindly de-uniquify for the Prototype library for issue 103.
++        String newName =
++            MakeDeclaredNamesUnique.ContextualRenameInverter.getOrginalName(
++                name);
++        if (!newName.equals(name)) {
++          n.setString(newName);
++        }
+         return;
+       }
+ 

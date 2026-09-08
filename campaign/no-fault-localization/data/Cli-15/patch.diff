@@ -1,0 +1,31 @@
+diff --git a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+index 3ca952d..9974ecf 100644
+--- a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
++++ b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+@@ -122,10 +122,22 @@ public class WriteableCommandLineImpl
+         if ((valueList == null) || valueList.isEmpty()) {
+             valueList = (List) this.defaultValues.get(option);
+         }
+-                // if there are more default values as specified, add them to
+-                // the list.
+-                    // copy the list first
+-        
++
++        // if fewer values were specified than the number of registered
++        // default values, pad the list out with the remaining defaults
++        final List optionDefaults = (List) this.defaultValues.get(option);
++
++        if ((optionDefaults != null) && (valueList != null)
++                && (valueList.size() < optionDefaults.size())) {
++            final List paddedList = new ArrayList(valueList);
++
++            for (int i = valueList.size(); i < optionDefaults.size(); ++i) {
++                paddedList.add(optionDefaults.get(i));
++            }
++
++            valueList = paddedList;
++        }
++
+         return valueList == null ? Collections.EMPTY_LIST : valueList;
+     }
+ 

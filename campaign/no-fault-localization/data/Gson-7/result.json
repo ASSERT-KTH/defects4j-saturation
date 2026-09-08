@@ -1,0 +1,42 @@
+{
+  "project": "Gson",
+  "bug": 7,
+  "id": "Gson-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 505,
+  "finished_at": "2026-09-08T00:07:58Z",
+  "wallclock_s": 84,
+  "agent_s": 62,
+  "agent_rc": 0,
+  "num_turns": 13,
+  "api_duration_ms": 54944,
+  "total_cost_usd": 0.20997719999999995,
+  "session_id": "83777856-f0eb-4ec2-a2d7-621b79a27833",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 26,
+  "output_tokens": 3962,
+  "cache_read_input_tokens": 347096,
+  "cache_creation_input_tokens": 23992,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.functional.MapTest::testMapDeserializationWithUnquotedLongKeys",
+    "com.google.gson.functional.MapTest::testMapDeserializationWithUnquotedIntegerKeys",
+    "com.google.gson.stream.JsonReaderTest::testPeekingUnquotedStringsPrefixedWithIntegers"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/stream/JsonReader.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

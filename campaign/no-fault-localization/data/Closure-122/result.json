@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 122,
+  "id": "Closure-122",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2325,
+  "finished_at": "2026-09-07T18:59:49Z",
+  "wallclock_s": 431,
+  "agent_s": 210,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 60552,
+  "total_cost_usd": 0.22472240000000002,
+  "session_id": "6e4de8d4-e7b9-4ca3-8452-9a02fa612c96",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 5165,
+  "cache_read_input_tokens": 389517,
+  "cache_creation_input_tokens": 22660,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.parsing.ParserTest::testSuspiciousBlockCommentWarning3",
+    "com.google.javascript.jscomp.parsing.ParserTest::testSuspiciousBlockCommentWarning4",
+    "com.google.javascript.jscomp.parsing.ParserTest::testSuspiciousBlockCommentWarning5"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/parsing/IRFactory.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

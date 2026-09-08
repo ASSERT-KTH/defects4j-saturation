@@ -1,0 +1,40 @@
+{
+  "project": "JacksonXml",
+  "bug": 4,
+  "id": "JacksonXml-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 98,
+  "finished_at": "2026-09-08T05:04:33Z",
+  "wallclock_s": 86,
+  "agent_s": 29,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 19622,
+  "total_cost_usd": 0.1092842,
+  "session_id": "f8073e19-5fea-4df6-a99e-76127dab03ab",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1276,
+  "cache_read_input_tokens": 141636,
+  "cache_creation_input_tokens": 16483,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.dataformat.xml.misc.RootNameTest::testDynamicRootName"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/dataformat/xml/ser/XmlSerializerProvider.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

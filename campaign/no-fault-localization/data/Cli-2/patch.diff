@@ -1,0 +1,19 @@
+diff --git a/src/java/org/apache/commons/cli/PosixParser.java b/src/java/org/apache/commons/cli/PosixParser.java
+index 2590de7..86796b6 100644
+--- a/src/java/org/apache/commons/cli/PosixParser.java
++++ b/src/java/org/apache/commons/cli/PosixParser.java
+@@ -139,6 +139,14 @@ public class PosixParser extends Parser {
+                 	tokens.add(token);
+                 }
+                 // requires bursting
++                else if ((currentOption != null) && currentOption.hasArg()
++                         && !options.hasOption(String.valueOf(token.charAt(1))))
++                {
++                    // the token cannot be interpreted as a burst of
++                    // Options, so treat it as the value of the pending
++                    // Option instead
++                    process(token);
++                }
+                 else
+                 {
+                     burstToken(token, stopAtNonOption);

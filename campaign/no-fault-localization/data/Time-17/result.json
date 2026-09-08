@@ -1,0 +1,40 @@
+{
+  "project": "Time",
+  "bug": 17,
+  "id": "Time-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6763,
+  "finished_at": "2026-09-08T14:41:22Z",
+  "wallclock_s": 164,
+  "agent_s": 123,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 105891,
+  "total_cost_usd": 0.28481419999999996,
+  "session_id": "b66af4c0-be22-4917-8201-590b2924eca9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 9863,
+  "cache_read_input_tokens": 386256,
+  "cache_creation_input_tokens": 26649,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.TestDateTimeZoneCutover::testBug3476684_adjustOffset"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/DateTimeZone.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

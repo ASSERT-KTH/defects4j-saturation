@@ -1,0 +1,41 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 58,
+  "id": "JacksonDatabind-58",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3076,
+  "finished_at": "2026-09-08T01:47:40Z",
+  "wallclock_s": 271,
+  "agent_s": 123,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 83917,
+  "total_cost_usd": 0.2960662,
+  "session_id": "4b270170-a5a5-4d0c-94a5-948b085ef93c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 6668,
+  "cache_read_input_tokens": 576786,
+  "cache_creation_input_tokens": 27729,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.misc.AccessFixTest::testCauseOfThrowableIgnoral"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerBuilder.java",
+    "src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java"
+  ],
+  "patch_added_lines": 19,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

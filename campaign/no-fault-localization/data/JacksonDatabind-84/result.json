@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 84,
+  "id": "JacksonDatabind-84",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 10701,
+  "finished_at": "2026-09-08T04:25:26Z",
+  "wallclock_s": 353,
+  "agent_s": 202,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 160543,
+  "total_cost_usd": 0.5559732,
+  "session_id": "deaaa583-d1be-4b6e-ac9c-d72a719db888",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 14263,
+  "cache_read_input_tokens": 970491,
+  "cache_creation_input_tokens": 54210,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.type.TestTypeFactoryWithRecursiveTypes::testBasePropertiesIncludedWhenSerializingSubWhenSubTypeLoadedAfterBaseType"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/ResolvedRecursiveType.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

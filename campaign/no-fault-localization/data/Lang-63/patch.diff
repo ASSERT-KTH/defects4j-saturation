@@ -1,0 +1,16 @@
+diff --git a/src/java/org/apache/commons/lang/time/DurationFormatUtils.java b/src/java/org/apache/commons/lang/time/DurationFormatUtils.java
+index 127b927..a12bc4d 100644
+--- a/src/java/org/apache/commons/lang/time/DurationFormatUtils.java
++++ b/src/java/org/apache/commons/lang/time/DurationFormatUtils.java
+@@ -320,7 +320,10 @@ public class DurationFormatUtils {
+         minutes -= reduceAndCorrect(start, end, Calendar.MINUTE, minutes);
+         hours -= reduceAndCorrect(start, end, Calendar.HOUR_OF_DAY, hours);
+         days -= reduceAndCorrect(start, end, Calendar.DAY_OF_MONTH, days);
+-        months -= reduceAndCorrect(start, end, Calendar.MONTH, months);
++        // months is not corrected the same way as days, because the number of
++        // months in a year is constant (unlike days in a month), so the value
++        // computed above cannot be thrown off by field-cardinality wrap-around
++        // the way the day-of-month value can.
+         years -= reduceAndCorrect(start, end, Calendar.YEAR, years);
+ 
+         // This next block of code adds in values that 

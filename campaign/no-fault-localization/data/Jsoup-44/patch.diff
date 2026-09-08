@@ -1,0 +1,26 @@
+diff --git a/src/main/java/org/jsoup/parser/TreeBuilder.java b/src/main/java/org/jsoup/parser/TreeBuilder.java
+index 3984e87..0c44485 100644
+--- a/src/main/java/org/jsoup/parser/TreeBuilder.java
++++ b/src/main/java/org/jsoup/parser/TreeBuilder.java
+@@ -58,7 +58,9 @@ abstract class TreeBuilder {
+     protected abstract boolean process(Token token);
+ 
+     protected boolean processStartTag(String name) {
+-        return process(start.reset().name(name));
++        // a new token is used (rather than the reused start field) so that this synthetic token
++        // survives being held across a nested call that also synthesises a start/end tag
++        return process(new Token.StartTag().name(name));
+     }
+ 
+     public boolean processStartTag(String name, Attributes attrs) {
+@@ -68,7 +70,9 @@ abstract class TreeBuilder {
+     }
+ 
+     protected boolean processEndTag(String name) {
+-        return process(end.reset().name(name));
++        // a new token is used (rather than the reused end field) so that this synthetic token
++        // survives being held across a nested call that also synthesises a start/end tag
++        return process(new Token.EndTag().name(name));
+     }
+ 
+ 

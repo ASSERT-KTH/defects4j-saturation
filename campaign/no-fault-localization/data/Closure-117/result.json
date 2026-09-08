@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 117,
+  "id": "Closure-117",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 10310,
+  "finished_at": "2026-09-07T18:52:38Z",
+  "wallclock_s": 531,
+  "agent_s": 268,
+  "agent_rc": 0,
+  "num_turns": 24,
+  "api_duration_ms": 170768,
+  "total_cost_usd": 0.5172116,
+  "session_id": "0e21df15-ef66-46bb-ba7e-21e158d73c73",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 48,
+  "output_tokens": 14752,
+  "cache_read_input_tokens": 882113,
+  "cache_creation_input_tokens": 47715,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue1047"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypeValidator.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 12,
+  "has_dev_patch": true
+}

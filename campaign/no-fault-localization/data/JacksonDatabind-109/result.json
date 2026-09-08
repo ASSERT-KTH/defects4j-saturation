@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 109,
+  "id": "JacksonDatabind-109",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1357,
+  "finished_at": "2026-09-08T04:57:58Z",
+  "wallclock_s": 457,
+  "agent_s": 252,
+  "agent_rc": 0,
+  "num_turns": 20,
+  "api_duration_ms": 62582,
+  "total_cost_usd": 0.22170519999999996,
+  "session_id": "692cde04-6c33-4f69-9344-0936469e09fc",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 40,
+  "output_tokens": 4993,
+  "cache_read_input_tokens": 460016,
+  "cache_creation_input_tokens": 19350,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.ser.jdk.BigDecimalPlain2230Test::testBigIntegerAsPlainTest"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/ser/std/NumberSerializer.java"
+  ],
+  "patch_added_lines": 30,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,47 @@
+diff --git a/source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java b/source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java
+index 7fd86f4..dc9db6b 100644
+--- a/source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java
++++ b/source/org/jfree/data/statistics/DefaultBoxAndWhiskerCategoryDataset.java
+@@ -738,7 +738,42 @@ public class DefaultBoxAndWhiskerCategoryDataset extends AbstractDataset
+      */
+     private void updateBounds() {
+         this.minimumRangeValue = Double.NaN;
++        this.minimumRangeValueRow = -1;
++        this.minimumRangeValueColumn = -1;
+         this.maximumRangeValue = Double.NaN;
++        this.maximumRangeValueRow = -1;
++        this.maximumRangeValueColumn = -1;
++        int rowCount = this.data.getRowCount();
++        int colCount = this.data.getColumnCount();
++        for (int r = 0; r < rowCount; r++) {
++            for (int c = 0; c < colCount; c++) {
++                BoxAndWhiskerItem item = (BoxAndWhiskerItem)
++                        this.data.getObject(r, c);
++                if (item == null) {
++                    continue;
++                }
++                double minval = Double.NaN;
++                if (item.getMinOutlier() != null) {
++                    minval = item.getMinOutlier().doubleValue();
++                }
++                double maxval = Double.NaN;
++                if (item.getMaxOutlier() != null) {
++                    maxval = item.getMaxOutlier().doubleValue();
++                }
++                if (Double.isNaN(this.maximumRangeValue)
++                        || maxval > this.maximumRangeValue) {
++                    this.maximumRangeValue = maxval;
++                    this.maximumRangeValueRow = r;
++                    this.maximumRangeValueColumn = c;
++                }
++                if (Double.isNaN(this.minimumRangeValue)
++                        || minval < this.minimumRangeValue) {
++                    this.minimumRangeValue = minval;
++                    this.minimumRangeValueRow = r;
++                    this.minimumRangeValueColumn = c;
++                }
++            }
++        }
+     }
+     
+     /**

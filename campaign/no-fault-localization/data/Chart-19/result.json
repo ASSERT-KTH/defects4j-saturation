@@ -1,0 +1,41 @@
+{
+  "project": "Chart",
+  "bug": 19,
+  "id": "Chart-19",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 220,
+  "finished_at": "2026-09-07T15:24:07Z",
+  "wallclock_s": 87,
+  "agent_s": 36,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 27437,
+  "total_cost_usd": 0.1284374,
+  "session_id": "3ce251da-e228-4910-b425-700680e83af8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1959,
+  "cache_read_input_tokens": 213432,
+  "cache_creation_input_tokens": 15710,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.plot.junit.CategoryPlotTests::testGetRangeAxisIndex",
+    "org.jfree.chart.plot.junit.CategoryPlotTests::testGetDomainAxisIndex"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/plot/CategoryPlot.java"
+  ],
+  "patch_added_lines": 15,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

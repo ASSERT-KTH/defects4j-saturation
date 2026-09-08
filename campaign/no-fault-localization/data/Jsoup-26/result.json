@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 26,
+  "id": "Jsoup-26",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1473,
+  "finished_at": "2026-09-08T05:21:00Z",
+  "wallclock_s": 72,
+  "agent_s": 52,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 47003,
+  "total_cost_usd": 0.21404540000000002,
+  "session_id": "abf16716-82ad-4892-a573-e2dd5b23c0ad",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 3580,
+  "cache_read_input_tokens": 373022,
+  "cache_creation_input_tokens": 25290,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.safety.CleanerTest::handlesFramesets"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/safety/Cleaner.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

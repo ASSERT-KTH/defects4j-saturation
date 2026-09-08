@@ -1,0 +1,24 @@
+diff --git a/src/java/org/apache/commons/lang/Entities.java b/src/java/org/apache/commons/lang/Entities.java
+index ef41e6a..ed67c17 100644
+--- a/src/java/org/apache/commons/lang/Entities.java
++++ b/src/java/org/apache/commons/lang/Entities.java
+@@ -829,8 +829,18 @@ class Entities {
+             String entityName = this.entityName(c);
+             if (entityName == null) {
+                 if (c > 0x7F) {
++                    int codepoint = c;
++                    // if this is a surrogate pair, consume the next character
++                    if (c >= Character.MIN_HIGH_SURROGATE && c <= Character.MAX_HIGH_SURROGATE
++                            && i + 1 < len) {
++                        char next = str.charAt(i + 1);
++                        if (Character.isLowSurrogate(next)) {
++                            codepoint = Character.toCodePoint(c, next);
++                            i++;
++                        }
++                    }
+                     writer.write("&#");
+-                    writer.write(Integer.toString(c, 10));
++                    writer.write(Integer.toString(codepoint, 10));
+                     writer.write(';');
+                 } else {
+                     writer.write(c);

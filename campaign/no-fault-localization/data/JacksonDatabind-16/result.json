@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 16,
+  "id": "JacksonDatabind-16",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6868,
+  "finished_at": "2026-09-08T00:58:00Z",
+  "wallclock_s": 678,
+  "agent_s": 554,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 135177,
+  "total_cost_usd": 0.4331616000000001,
+  "session_id": "23a29b1f-1b63-47b9-9b6f-d1841c78e002",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 11107,
+  "cache_read_input_tokens": 930728,
+  "cache_creation_input_tokens": 33388,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.mixins.MixinsWithBundlesTest::testMixinWithBundles"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/introspect/AnnotationMap.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

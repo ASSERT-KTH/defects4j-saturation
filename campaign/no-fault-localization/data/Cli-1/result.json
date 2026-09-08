@@ -1,0 +1,40 @@
+{
+  "project": "Cli",
+  "bug": 1,
+  "id": "Cli-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 194,
+  "finished_at": "2026-09-07T15:27:09Z",
+  "wallclock_s": 43,
+  "agent_s": 24,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 22029,
+  "total_cost_usd": 0.0982042,
+  "session_id": "a02e1311-7519-4249-8a30-83df858119fd",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1153,
+  "cache_read_input_tokens": 148161,
+  "cache_creation_input_tokens": 13702,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.bug.BugCLI13Test::testCLI13"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/CommandLine.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 51,
+  "id": "JacksonDatabind-51",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1302,
+  "finished_at": "2026-09-08T01:37:36Z",
+  "wallclock_s": 162,
+  "agent_s": 80,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 41434,
+  "total_cost_usd": 0.16070220000000002,
+  "session_id": "4767a8e4-f9ef-4619-bad4-7deed4301b2b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 3372,
+  "cache_read_input_tokens": 234046,
+  "cache_creation_input_tokens": 19223,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.jsontype.TestCustomTypeIdResolver::testPolymorphicTypeViaCustom"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

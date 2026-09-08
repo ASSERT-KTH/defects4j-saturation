@@ -1,0 +1,40 @@
+{
+  "project": "Codec",
+  "bug": 8,
+  "id": "Codec-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1769,
+  "finished_at": "2026-09-07T23:18:22Z",
+  "wallclock_s": 71,
+  "agent_s": 56,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 45330,
+  "total_cost_usd": 0.1685744,
+  "session_id": "438380db-3924-4011-8e95-2d74b30d036f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3624,
+  "cache_read_input_tokens": 257597,
+  "cache_creation_input_tokens": 19627,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.codec.binary.Base64InputStreamTest::testCodec105"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/codec/binary/Base64.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

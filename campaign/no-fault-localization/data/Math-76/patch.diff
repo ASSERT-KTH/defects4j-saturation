@@ -1,0 +1,88 @@
+diff --git a/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java b/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
+index 1436881..736c37b 100644
+--- a/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
++++ b/src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java
+@@ -72,6 +72,10 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+     /** Singular values. */
+     private double[] singularValues;
+ 
++    /** Number of eigenvectors that were actually requested from the eigen decomposition,
++     * i.e. min(max, number of eigenvalues), before discarding the trailing non positive ones. */
++    private int maxP;
++
+     /** Cached value of U. */
+     private RealMatrix cachedU;
+ 
+@@ -138,7 +142,8 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+             new EigenDecompositionImpl(mainTridiagonal, secondaryTridiagonal,
+                                        MathUtils.SAFE_MIN);
+         final double[] eigenValues = eigenDecomposition.getRealEigenvalues();
+-        int p = Math.min(max, eigenValues.length);
++        maxP = Math.min(max, eigenValues.length);
++        int p = maxP;
+         while ((p > 0) && (eigenValues[p - 1] <= 0)) {
+             --p;
+         }
+@@ -158,12 +163,16 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+             final int p = singularValues.length;
+             if (m >= n) {
+                 // the tridiagonal matrix is Bt.B, where B is upper bidiagonal
++                // use all the eigenvectors that were actually requested from the
++                // eigen decomposition (maxP), not only the ones finally retained
++                // as singular values (p), so the recurrence below is fed with the
++                // full-length eigenvectors it needs
+                 final RealMatrix e =
+-                    eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
++                    eigenDecomposition.getV().getSubMatrix(0, maxP - 1, 0, p - 1);
+                 final double[][] eData = e.getData();
+                 final double[][] wData = new double[m][p];
+                 double[] ei1 = eData[0];
+-                for (int i = 0; i < p - 1; ++i) {
++                for (int i = 0; i < maxP - 1; ++i) {
+                     // compute W = B.E.S^(-1) where E is the eigenvectors matrix
+                     final double mi = mainBidiagonal[i];
+                     final double[] ei0 = ei1;
+@@ -175,10 +184,10 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+                         }
+                 }
+                         for (int j = 0; j < p; ++j) {
+-                            wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
++                            wData[maxP - 1][j] = ei1[j] * mainBidiagonal[maxP - 1] / singularValues[j];
+                         }
+ 
+-                for (int i = p; i < m; ++i) {
++                for (int i = maxP; i < m; ++i) {
+                     wData[i] = new double[p];
+                 }
+                 cachedU =
+@@ -244,12 +253,16 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+             } else {
+                 // the tridiagonal matrix is B.Bt, where B is lower bidiagonal
+                 // compute W = Bt.E.S^(-1) where E is the eigenvectors matrix
++                // use all the eigenvectors that were actually requested from the
++                // eigen decomposition (maxP), not only the ones finally retained
++                // as singular values (p), so the recurrence below is fed with the
++                // full-length eigenvectors it needs
+                 final RealMatrix e =
+-                    eigenDecomposition.getV().getSubMatrix(0, p - 1, 0, p - 1);
++                    eigenDecomposition.getV().getSubMatrix(0, maxP - 1, 0, p - 1);
+                 final double[][] eData = e.getData();
+                 final double[][] wData = new double[n][p];
+                 double[] ei1 = eData[0];
+-                for (int i = 0; i < p - 1; ++i) {
++                for (int i = 0; i < maxP - 1; ++i) {
+                     final double mi = mainBidiagonal[i];
+                     final double[] ei0 = ei1;
+                     final double[] wi  = wData[i];
+@@ -260,9 +273,9 @@ public class SingularValueDecompositionImpl implements SingularValueDecompositio
+                         }
+                 }
+                         for (int j = 0; j < p; ++j) {
+-                            wData[p - 1][j] = ei1[j] * mainBidiagonal[p - 1] / singularValues[j];
++                            wData[maxP - 1][j] = ei1[j] * mainBidiagonal[maxP - 1] / singularValues[j];
+                         }
+-                for (int i = p; i < n; ++i) {
++                for (int i = maxP; i < n; ++i) {
+                     wData[i] = new double[p];
+                 }
+                 cachedV =

@@ -1,0 +1,43 @@
+{
+  "project": "Jsoup",
+  "bug": 63,
+  "id": "Jsoup-63",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 22358,
+  "finished_at": "2026-09-08T05:46:31Z",
+  "wallclock_s": 433,
+  "agent_s": 409,
+  "agent_rc": 0,
+  "num_turns": 57,
+  "api_duration_ms": 385498,
+  "total_cost_usd": 1.1804128,
+  "session_id": "da4291f5-df18-4cde-b7d6-bb406dd19199",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 114,
+  "output_tokens": 32005,
+  "cache_read_input_tokens": 2843349,
+  "cache_creation_input_tokens": 71609,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::selfClosingOnNonvoidIsError",
+    "org.jsoup.parser.HtmlParserTest::selfClosingVoidIsNotAnError",
+    "org.jsoup.parser.HtmlParserTest::tracksErrorsWhenRequested"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/HtmlTreeBuilder.java",
+    "src/main/java/org/jsoup/parser/Tokeniser.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

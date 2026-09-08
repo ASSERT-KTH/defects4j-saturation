@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 118,
+  "id": "Closure-118",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 574,
+  "finished_at": "2026-09-07T18:50:25Z",
+  "wallclock_s": 352,
+  "agent_s": 101,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 31195,
+  "total_cost_usd": 0.147267,
+  "session_id": "23f1c97e-af7d-4bb2-8cbf-318695bd4b51",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2265,
+  "cache_read_input_tokens": 254305,
+  "cache_creation_input_tokens": 17090,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.DisambiguatePropertiesTest::testOneType4",
+    "com.google.javascript.jscomp.DisambiguatePropertiesTest::testTwoTypes4"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/DisambiguateProperties.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

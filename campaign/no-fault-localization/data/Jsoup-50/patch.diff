@@ -1,0 +1,61 @@
+diff --git a/src/main/java/org/jsoup/helper/DataUtil.java b/src/main/java/org/jsoup/helper/DataUtil.java
+index 34880d8..fc61774 100644
+--- a/src/main/java/org/jsoup/helper/DataUtil.java
++++ b/src/main/java/org/jsoup/helper/DataUtil.java
+@@ -90,6 +90,9 @@ public final class DataUtil {
+         Document doc = null;
+ 
+         // look for BOM - overrides any other header or input
++        String bomCharset = detectCharsetFromBom(byteData);
++        if (bomCharset != null)
++            charsetName = bomCharset;
+ 
+         if (charsetName == null) { // determine from meta. safe parse as UTF-8
+             // look for <meta http-equiv="Content-Type" content="text/html;charset=gb2312"> or HTML5 <meta charset="gb2312">
+@@ -124,10 +127,9 @@ public final class DataUtil {
+             docData = Charset.forName(charsetName).decode(byteData).toString();
+         }
+         if (docData.length() > 0 && docData.charAt(0) == UNICODE_BOM) {
+-            byteData.rewind();
+-            docData = Charset.forName(defaultCharset).decode(byteData).toString();
+             docData = docData.substring(1);
+-            charsetName = defaultCharset;
++            if (charsetName == null)
++                charsetName = defaultCharset;
+             doc = null;
+         }
+         if (doc == null) {
+@@ -137,6 +139,33 @@ public final class DataUtil {
+         return doc;
+     }
+ 
++    /**
++     * Inspect the leading bytes of the buffer for a byte-order-mark, and if found, return the corresponding
++     * charset name. Does not consume the buffer.
++     * @param byteData the buffer to inspect
++     * @return the charset name if a BOM was found, or null if not
++     */
++    private static String detectCharsetFromBom(ByteBuffer byteData) {
++        byteData.mark();
++        byte[] bom = new byte[4];
++        int available = Math.min(byteData.remaining(), bom.length);
++        byteData.get(bom, 0, available);
++        byteData.reset();
++
++        if (available >= 4 && bom[0] == 0x00 && bom[1] == 0x00 && bom[2] == (byte) 0xFE && bom[3] == (byte) 0xFF) {
++            return "UTF-32BE";
++        } else if (available >= 4 && bom[0] == (byte) 0xFF && bom[1] == (byte) 0xFE && bom[2] == 0x00 && bom[3] == 0x00) {
++            return "UTF-32LE";
++        } else if (available >= 3 && bom[0] == (byte) 0xEF && bom[1] == (byte) 0xBB && bom[2] == (byte) 0xBF) {
++            return "UTF-8";
++        } else if (available >= 2 && bom[0] == (byte) 0xFE && bom[1] == (byte) 0xFF) {
++            return "UTF-16BE";
++        } else if (available >= 2 && bom[0] == (byte) 0xFF && bom[1] == (byte) 0xFE) {
++            return "UTF-16LE";
++        }
++        return null;
++    }
++
+     /**
+      * Read the input stream into a byte buffer.
+      * @param inStream the input stream to read from

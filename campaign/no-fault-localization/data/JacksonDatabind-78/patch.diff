@@ -1,0 +1,63 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+index 4a9d863..78a2707 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/BeanDeserializerFactory.java
+@@ -39,6 +39,21 @@ public class BeanDeserializerFactory
+ 
+     private final static Class<?>[] NO_VIEWS = new Class<?>[0];
+ 
++    /**
++     * Set of well-known "nasty classes", deserialization of which is considered dangerous
++     * and should (as of now) be blocked.
++     *
++     * @since 2.8.11
++     */
++    protected final static Set<String> DEFAULT_NO_DESER_CLASS_NAMES;
++    static {
++        Set<String> s = new HashSet<String>();
++        // Courtesy of [https://github.com/kantega/notsoserial]:
++        // (Note: catch instead of on-going effort to catch new gadgets)
++        s.add("com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl");
++        DEFAULT_NO_DESER_CLASS_NAMES = Collections.unmodifiableSet(s);
++    }
++
+     /**
+      * Set of well-known "nasty classes", deserialization of which is considered dangerous
+      * and should (and is) prevented by default.
+@@ -153,6 +168,7 @@ public class BeanDeserializerFactory
+             return null;
+         }
+         // For checks like [databind#1599]
++        checkIllegalTypes(ctxt, type, beanDesc);
+         // Use generic bean introspection to build deserializer
+         return buildBeanDeserializer(ctxt, type, beanDesc);
+     }
+@@ -205,6 +221,28 @@ public class BeanDeserializerFactory
+         return null;
+     }
+ 
++    /**
++     * Helper method called to check whether given raw type is one of
++     * types that are never considered to be Bean types, and consequently
++     * are not offered to registered {@link BeanDeserializerModifier}s.
++     * Currently this includes such well-known "nasty" types as those
++     * used by well-known "Java deserialization" gadgets/exploits.
++     *
++     * @since 2.8.11
++     */
++    protected void checkIllegalTypes(DeserializationContext ctxt, JavaType type,
++            BeanDescription beanDesc)
++        throws JsonMappingException
++    {
++        // There are certain nasty classes that could cause problems, mostly
++        // via default typing -- catch them here.
++        String full = type.getRawClass().getName();
++        if (DEFAULT_NO_DESER_CLASS_NAMES.contains(full)) {
++            throw JsonMappingException.from(ctxt.getParser(),
++                    String.format("Illegal type (%s) to deserialize: prevented for security reasons", full));
++        }
++    }
++
+     /*
+     /**********************************************************
+     /* Public construction method beyond DeserializerFactory API:

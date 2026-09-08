@@ -1,0 +1,20 @@
+diff --git a/src/com/google/javascript/rhino/jstype/PrototypeObjectType.java b/src/com/google/javascript/rhino/jstype/PrototypeObjectType.java
+index 3df8216..900289e 100644
+--- a/src/com/google/javascript/rhino/jstype/PrototypeObjectType.java
++++ b/src/com/google/javascript/rhino/jstype/PrototypeObjectType.java
+@@ -568,7 +568,14 @@ class PrototypeObjectType extends ObjectType {
+     // We want to modify the object literal to match the constraint, by
+     // taking any each property on the record and trying to match
+     // properties on this object.
+-    if (constraint.isRecordType()) {
++    if (constraint.isUnionType()) {
++      UnionType union = constraint.toMaybeUnionType();
++      for (JSType alternate : union.getAlternates()) {
++        if (alternate.isRecordType()) {
++          matchRecordTypeConstraint(alternate.toObjectType());
++        }
++      }
++    } else if (constraint.isRecordType()) {
+       matchRecordTypeConstraint(constraint.toObjectType());
+     }
+   }

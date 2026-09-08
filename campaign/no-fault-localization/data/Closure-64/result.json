@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 64,
+  "id": "Closure-64",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1030,
+  "finished_at": "2026-09-07T17:30:15Z",
+  "wallclock_s": 298,
+  "agent_s": 113,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 62188,
+  "total_cost_usd": 0.1918338,
+  "session_id": "9c032604-4b94-47fb-bbcb-cddfdccd8b6b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3983,
+  "cache_read_input_tokens": 360569,
+  "cache_creation_input_tokens": 19386,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CommandLineRunnerTest::testES5StrictUseStrictMultipleInputs"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/Compiler.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

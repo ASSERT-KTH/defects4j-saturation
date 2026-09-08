@@ -1,0 +1,42 @@
+{
+  "project": "JxPath",
+  "bug": 11,
+  "id": "JxPath-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 17103,
+  "finished_at": "2026-09-08T06:14:09Z",
+  "wallclock_s": 448,
+  "agent_s": 426,
+  "agent_rc": 0,
+  "num_turns": 44,
+  "api_duration_ms": 282779,
+  "total_cost_usd": 0.9299460000000002,
+  "session_id": "a40c912e-44db-460a-9ba2-6800abcc59c7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 88,
+  "output_tokens": 23127,
+  "cache_read_input_tokens": 2149230,
+  "cache_creation_input_tokens": 66305,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testNamespaceMapping",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testNamespaceMapping"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java",
+    "src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java"
+  ],
+  "patch_added_lines": 7,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

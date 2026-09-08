@@ -1,0 +1,16 @@
+diff --git a/src/com/google/javascript/jscomp/TypedScopeCreator.java b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+index d5a5947..c7cfc3b 100644
+--- a/src/com/google/javascript/jscomp/TypedScopeCreator.java
++++ b/src/com/google/javascript/jscomp/TypedScopeCreator.java
+@@ -1667,7 +1667,11 @@ final class TypedScopeCreator implements ScopeCreator {
+ 
+       // Prototypes of constructors and interfaces are always declared.
+       if (qName != null && qName.endsWith(".prototype")) {
++        ObjectType ownerType =
++            getObjectSlot(n.getFirstChild().getQualifiedName());
++        if (ownerType != null && ownerType.isFunctionType()) {
+           return false;
++        }
+       }
+ 
+       boolean inferred = true;

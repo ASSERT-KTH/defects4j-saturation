@@ -1,0 +1,2 @@
+M	gson/src/main/java/com/google/gson/ObjectNavigator.java
+M	gson/src/main/java/com/google/gson/TypeInfoFactory.java

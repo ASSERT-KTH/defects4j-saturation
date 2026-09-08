@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 6,
+  "id": "Closure-6",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 6604,
+  "finished_at": "2026-09-07T15:54:38Z",
+  "wallclock_s": 518,
+  "agent_s": 262,
+  "agent_rc": 0,
+  "num_turns": 38,
+  "api_duration_ms": 154391,
+  "total_cost_usd": 0.5788196000000001,
+  "session_id": "b9d58b3d-bdbe-4c6f-b9fe-c4c8ba1878ed",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 76,
+  "output_tokens": 12629,
+  "cache_read_input_tokens": 1383058,
+  "cache_creation_input_tokens": 42785,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.LooseTypeCheckTest::testTypeRedefinition",
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue635b",
+    "com.google.javascript.jscomp.TypeCheckTest::testTypeRedefinition"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypeValidator.java"
+  ],
+  "patch_added_lines": 0,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Codec",
+  "bug": 10,
+  "id": "Codec-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2281,
+  "finished_at": "2026-09-07T23:19:34Z",
+  "wallclock_s": 72,
+  "agent_s": 57,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 46562,
+  "total_cost_usd": 0.11615919999999999,
+  "session_id": "b6c36c19-f2cb-4be9-b8f3-9ef4e983a586",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 3247,
+  "cache_read_input_tokens": 110386,
+  "cache_creation_input_tokens": 14831,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.codec.language.CaverphoneTest::testEndMb"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/codec/language/Caverphone.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

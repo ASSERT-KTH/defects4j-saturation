@@ -1,0 +1,40 @@
+{
+  "project": "Csv",
+  "bug": 1,
+  "id": "Csv-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 327,
+  "finished_at": "2026-09-07T23:59:54Z",
+  "wallclock_s": 52,
+  "agent_s": 33,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 27753,
+  "total_cost_usd": 0.1256566,
+  "session_id": "d9ee98f7-6f10-4cc6-b8fe-531d393eadf2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2006,
+  "cache_read_input_tokens": 222828,
+  "cache_creation_input_tokens": 14638,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.csv.CSVParserTest::testGetLineNumberWithCR"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/csv/ExtendedBufferedReader.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,255 @@
+diff --git a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+index 79f2247..9b0496b 100644
+--- a/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
++++ b/src/com/google/javascript/jscomp/MakeDeclaredNamesUnique.java
+@@ -232,17 +232,10 @@ class MakeDeclaredNamesUnique
+   /**
+    * Inverts the transformation by {@link ContextualRenamer}, when possible.
+    */
+-  static class ContextualRenameInverter extends AbstractPostOrderCallback
+-      implements CompilerPass {
++  static class ContextualRenameInverter
++      implements NodeTraversal.ScopedCallback, CompilerPass {
+     private final AbstractCompiler compiler;
+ 
+-    // The set of names referenced in the current scope.
+-
+-    // Stack reference sets.
+-
+-    // Name are globally unique initially, so we don't need a per-scope map.
+-    private Map<Var, String> nameMap = Maps.newHashMap();
+-
+     private ContextualRenameInverter(AbstractCompiler compiler) {
+       this.compiler = compiler;
+     }
+@@ -260,88 +253,126 @@ class MakeDeclaredNamesUnique
+       return name.lastIndexOf(ContextualRenamer.UNIQUE_ID_SEPARATOR);
+     }
+ 
+-    private boolean containsSeparator(String name) {
++    private static boolean containsSeparator(String name) {
+       return name.indexOf(ContextualRenamer.UNIQUE_ID_SEPARATOR) != -1;
+     }
++
+     private static String getOrginalNameInternal(String name, int index) {
+       return name.substring(0, index);
+     }
+ 
+     /**
+-     * Prepare a set for the new scope.
++     * Bookkeeping for a single scope. Tracks the names that must not be
++     * used to invert a variable declared in this scope (either because
++     * they are directly referenced/declared here without a unique suffix,
++     * or because a nested scope has already claimed them for one if its
++     * own variables), as well as the variables declared in this scope
++     * (and every NAME node that refers to them) so that a rename decision
++     * can be made, for all of them at once, once the scope is fully
++     * traversed.
+      */
++    private static class ScopeState {
++      final Scope scope;
++      final Set<String> namesToAvoid = Sets.newHashSet();
++      final List<Var> declarationOrder = Lists.newArrayList();
++      final Map<Var, List<Node>> occurrences = Maps.newHashMap();
++
++      ScopeState(Scope scope) {
++        this.scope = scope;
++      }
++    }
++
++    private final Deque<ScopeState> scopeStack = new ArrayDeque<ScopeState>();
+ 
+-    private static String getNameSuffix(String name, int index) {
+-      return name.substring(
+-          index + ContextualRenamer.UNIQUE_ID_SEPARATOR.length(),
+-          name.length());
++    @Override
++    public boolean shouldTraverse(NodeTraversal t, Node n, Node parent) {
++      return true;
++    }
++
++    @Override
++    public void enterScope(NodeTraversal t) {
++      scopeStack.push(new ScopeState(t.getScope()));
+     }
+ 
+     /**
+-     * Rename vars for the current scope, and merge any referenced 
+-     * names into the parent scope reference set.
++     * A scope is fully traversed by this point, so it is now possible to
++     * determine, for each variable declared directly in it, whether it is
++     * possible to revert its name to its original form without
++     * conflicting with anything referenced or declared in this scope or
++     * one of its nested scopes.
+      */
+     @Override
+-    public void visit(NodeTraversal t, Node node, Node parent) {
+-      if (node.getType() == Token.NAME) {
+-        String oldName = node.getString();
+-        if (containsSeparator(oldName)) {
+-          Scope scope = t.getScope();
+-          Var var = t.getScope().getVar(oldName);
+-          if (var == null || var.isGlobal()) {
+-        return;
++    public void exitScope(NodeTraversal t) {
++      ScopeState state = scopeStack.pop();
++      for (Var var : state.declarationOrder) {
++        String oldName = var.getName();
++        int index = indexOfSeparator(oldName);
++        String newName = getOrginalNameInternal(oldName, index);
++
++        // Don't introduce new references to "arguments", it is special,
++        // and don't create an invalid identifier or one that conflicts
++        // with something already referenced or declared in this scope
++        // (or claimed by one of its nested scopes).
++        if (newName.equals("arguments")
++            || !TokenStream.isJSIdentifier(newName)
++            || state.namesToAvoid.contains(newName)) {
++          continue;
++        }
++
++        for (Node n : state.occurrences.get(var)) {
++          n.setString(newName);
++        }
++        compiler.reportCodeChange();
++        state.namesToAvoid.add(newName);
+       }
+ 
+-          if (nameMap.containsKey(var)) {
+-            node.setString(nameMap.get(var));
+-          } else {
+-            int index = indexOfSeparator(oldName);
+-            String newName = getOrginalNameInternal(oldName, index);
+-            String suffix = getNameSuffix(oldName, index);
+-
+-      // Merge any names that were referenced but not declared in the current
+-      // scope.
+-      // If there isn't anything left in the stack we will be going into the
+-      // global scope: don't try to build a set of referenced names for the
+-      // global scope.
+-            boolean recurseScopes = false;
+-            if (!suffix.matches("\\d+")) {
+-              recurseScopes = true;
+-            }
++      // Merge the names claimed in this scope into the parent scope so
++      // that it won't reuse them for one of its own variables. There is
++      // nothing to merge into once we leave the outermost (global) scope.
++      if (!scopeStack.isEmpty()) {
++        scopeStack.peek().namesToAvoid.addAll(state.namesToAvoid);
++      }
++    }
+ 
+-    /**
+-     * For the Var declared in the current scope determine if it is possible
+-     * to revert the name to its orginal form without conflicting with other
+-     * values.
+-     */
+-        // Check if the new name is valid and if it would cause conflicts.
+-            if (var.scope.isDeclared(newName, recurseScopes) ||
+-                !TokenStream.isJSIdentifier(newName)) {
+-              newName = oldName;
+-            } else {
+-              var.scope.declare(newName, var.nameNode, null, null);
+-          // Adding a reference to the new name to prevent either the parent
+-          // scopes or the current scope renaming another var to this new name.
+-              Node parentNode = var.getParentNode();
+-              if (parentNode.getType() == Token.FUNCTION &&
+-                  parentNode == var.scope.getRootNode()) {
+-                var.getNameNode().setString(newName);
+-              }
+-              node.setString(newName);
+-          compiler.reportCodeChange();
+-        }
++    @Override
++    public void visit(NodeTraversal t, Node node, Node parent) {
++      if (node.getType() != Token.NAME) {
++        return;
++      }
+ 
+-            nameMap.put(var, newName);
++      String name = node.getString();
++      if (!containsSeparator(name)) {
++        // A plain reference or declaration: reserve it so that no
++        // unique-suffixed variable visible from here is ever inverted to
++        // this name.
++        scopeStack.peek().namesToAvoid.add(name);
++        return;
++      }
+ 
++      Var var = t.getScope().getVar(name);
++      if (var == null || var.isGlobal()) {
++        return;
+       }
+ 
+-        // Add all referenced names to the set so it is possible to check for
+-        // conflicts.
+-        // Store only references to candidate names in the node map.
++      // Find the scope that owns this variable's declaration; that is
++      // where the rename decision will eventually be made.
++      ScopeState owner = null;
++      for (ScopeState candidate : scopeStack) {
++        if (candidate.scope == var.scope) {
++          owner = candidate;
++          break;
+         }
+       }
+-    }
++      Preconditions.checkNotNull(owner);
+ 
++      List<Node> occurrences = owner.occurrences.get(var);
++      if (occurrences == null) {
++        occurrences = Lists.newArrayList();
++        owner.occurrences.put(var, occurrences);
++        owner.declarationOrder.add(var);
++      }
++      occurrences.add(node);
++    }
+   }
+ 
+   /**
+@@ -393,14 +424,18 @@ class MakeDeclaredNamesUnique
+         } else {
+           // It hasn't been declared locally yet, so increment the count.
+           if (!declarations.containsKey(name)) {
+-            int id = incrementNameCount(name);
++            // "arguments" is special, it is declared in every local scope
++            // but can't be made unique.
+             String newName = null;
+-            if (id != 0) {
+-              newName = getUniqueName(name, id);
++            if (!name.equals("arguments")) {
++              int id = incrementNameCount(name);
++              if (id != 0) {
++                newName = getUniqueName(name, id);
++              }
++            }
++            declarations.put(name, newName);
+           }
+-          declarations.put(name, newName);
+         }
+-      }
+     }
+ 
+     @Override
+diff --git a/src/com/google/javascript/jscomp/Normalize.java b/src/com/google/javascript/jscomp/Normalize.java
+index a8526b5..35c929f 100644
+--- a/src/com/google/javascript/jscomp/Normalize.java
++++ b/src/com/google/javascript/jscomp/Normalize.java
+@@ -79,7 +79,6 @@ class Normalize implements CompilerPass {
+   public void process(Node externs, Node root) {
+     NodeTraversal.traverse(compiler, root,
+         new NormalizeStatements(compiler, assertOnChange));
+-    removeDuplicateDeclarations(root);
+     if (MAKE_LOCAL_NAMES_UNIQUE) {
+       MakeDeclaredNamesUnique renamer = new MakeDeclaredNamesUnique();
+       NodeTraversal t = new NodeTraversal(compiler, renamer);
+@@ -98,7 +97,8 @@ class Normalize implements CompilerPass {
+     //      var e = 1; // f scope 'e'
+     //   }
+     // otherwise 'var e = 1' would be rewritten as 'e = 1'.
+-    // TODO(johnlenz): Introduce a seperate scope for catch nodes. 
++    // TODO(johnlenz): Introduce a seperate scope for catch nodes.
++    removeDuplicateDeclarations(root);
+     new PropogateConstantAnnotations(compiler, assertOnChange)
+         .process(externs, root);
+   }

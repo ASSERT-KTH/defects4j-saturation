@@ -1,0 +1,40 @@
+diff --git a/gson/src/main/java/com/google/gson/Gson.java b/gson/src/main/java/com/google/gson/Gson.java
+index d3b172a..4ebd2f4 100644
+--- a/gson/src/main/java/com/google/gson/Gson.java
++++ b/gson/src/main/java/com/google/gson/Gson.java
+@@ -698,7 +698,16 @@ public final class Gson {
+    */
+   public <T> T fromJson(String json, Class<T> classOfT) throws JsonSyntaxException {
+     Object object = fromJson(json, (Type) classOfT);
+-    return Primitives.wrap(classOfT).cast(object);
++    return cast(classOfT, object);
++  }
++
++  private static <T> T cast(Class<T> classOfT, Object object) throws JsonSyntaxException {
++    try {
++      return Primitives.wrap(classOfT).cast(object);
++    } catch (ClassCastException e) {
++      throw new JsonSyntaxException("Expected a " + classOfT.getName() + " but was "
++          + object.getClass().getName(), e);
++    }
+   }
+ 
+   /**
+@@ -751,7 +760,7 @@ public final class Gson {
+     JsonReader jsonReader = new JsonReader(json);
+     Object object = fromJson(jsonReader, classOfT);
+     assertFullConsumption(object, jsonReader);
+-    return Primitives.wrap(classOfT).cast(object);
++    return cast(classOfT, object);
+   }
+ 
+   /**
+@@ -850,7 +859,7 @@ public final class Gson {
+    */
+   public <T> T fromJson(JsonElement json, Class<T> classOfT) throws JsonSyntaxException {
+     Object object = fromJson(json, (Type) classOfT);
+-    return Primitives.wrap(classOfT).cast(object);
++    return cast(classOfT, object);
+   }
+ 
+   /**

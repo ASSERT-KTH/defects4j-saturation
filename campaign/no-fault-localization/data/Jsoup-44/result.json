@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 44,
+  "id": "Jsoup-44",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 17802,
+  "finished_at": "2026-09-08T05:33:34Z",
+  "wallclock_s": 326,
+  "agent_s": 294,
+  "agent_rc": 0,
+  "num_turns": 38,
+  "api_duration_ms": 281800,
+  "total_cost_usd": 0.7463012,
+  "session_id": "208d2c0f-7ffd-4b49-a23b-55f9f8a62f99",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 76,
+  "output_tokens": 24087,
+  "cache_read_input_tokens": 1461051,
+  "cache_creation_input_tokens": 52669,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.HtmlParserTest::testInvalidTableContents"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/TreeBuilder.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

@@ -1,0 +1,37 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+index bcd35e2..b46f4ca 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
++++ b/src/main/java/com/fasterxml/jackson/databind/jsontype/impl/TypeDeserializerBase.java
+@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
+ import com.fasterxml.jackson.databind.deser.std.NullifyingDeserializer;
+ import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
+ import com.fasterxml.jackson.databind.jsontype.TypeIdResolver;
++import com.fasterxml.jackson.databind.type.TypeFactory;
+ import com.fasterxml.jackson.databind.util.ClassUtil;
+ 
+ /**
+@@ -78,15 +79,21 @@ public abstract class TypeDeserializerBase
+         _deserializers = new ConcurrentHashMap<String, JsonDeserializer<Object>>(16, 0.75f, 2);
+         if (defaultImpl == null) {
+             _defaultImpl = null;
++        } else if (ClassUtil.isBogusClass(defaultImpl)) {
++            // 06-Feb-2013, tatu: "Void" (or NoClass) means "serialize as null", and is not
++            //   an actual sub-type of the base type, so it can not be narrowed against it.
++            _defaultImpl = TypeFactory.defaultInstance().constructType(defaultImpl);
+         } else {
+             /* 16-Oct-2011, tatu: should call this via TypeFactory; this is
+              *    not entirely safe... however, since Collections/Maps are
+              *    seldom (if ever) base types, may be ok.
+              */
+             // 01-Nov-2015, tatu: Actually this is still exactly wrong. Should fix.
+-            // 15-Jan-2016, tatu: ... as witnessed by [databind#1083], patched, but
+-            //     fundamentally this call can't be made to work for all cases
+-            _defaultImpl = baseType.forcedNarrowBy(defaultImpl);
++            // 15-Jan-2016, tatu: ... as witnessed by [databind#1083], need to use
++            //    proper type resolution (via TypeFactory) so that super-type
++            //    hierarchy (and hence inherited properties) of default impl is
++            //    resolved correctly, instead of just forcing raw class.
++            _defaultImpl = TypeFactory.defaultInstance().constructSpecializedType(baseType, defaultImpl);
+         }
+         _property = null;
+     }

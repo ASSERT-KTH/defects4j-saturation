@@ -1,0 +1,41 @@
+{
+  "project": "Codec",
+  "bug": 7,
+  "id": "Codec-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5240,
+  "finished_at": "2026-09-07T23:18:01Z",
+  "wallclock_s": 150,
+  "agent_s": 122,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 117651,
+  "total_cost_usd": 0.36555760000000004,
+  "session_id": "5da6ff11-a41f-4c97-b2c0-bbfbb88d0322",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 8163,
+  "cache_read_input_tokens": 598218,
+  "cache_creation_input_tokens": 40230,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.codec.binary.Base64Test::testByteToStringVariations",
+    "org.apache.commons.codec.binary.Base64Test::testRfc4648Section10Encode"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/codec/binary/Base64.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

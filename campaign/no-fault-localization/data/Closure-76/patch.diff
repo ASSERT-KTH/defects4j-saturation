@@ -1,0 +1,79 @@
+diff --git a/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java b/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
+index 63a7f29..9cebf53 100644
+--- a/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
++++ b/src/com/google/javascript/jscomp/DeadAssignmentsElimination.java
+@@ -297,27 +297,43 @@ class DeadAssignmentsElimination extends AbstractPostOrderCallback implements
+           // If the currently node is the first child of
+           // AND/OR, be conservative only consider the READs
+           // of the second operand.
++          if (n.getParent().getFirstChild() == n) {
++            state = isVariableReadBeforeKill(n.getNext(), variable);
++            if (state == VariableLiveness.READ) {
++              return true;
++            }
++          }
++          break;
+ 
+         case Token.HOOK:
+           // If current node is the condition, check each following
+           // branch, otherwise it is a conditional branch and the
+           // other branch can be ignored.
++          if (n.getParent().getFirstChild() == n) {
++            Node trueCase = n.getNext();
++            Node falseCase = trueCase.getNext();
++            state = checkHookBranchReadBeforeKill(trueCase, falseCase, variable);
++            if (state == VariableLiveness.READ) {
++              return true;
++            }
++          }
++          break;
+ 
+         default:
+           for(Node sibling = n.getNext(); sibling != null;
+               sibling = sibling.getNext()) {
+             if (!ControlFlowGraph.isEnteringNewCfgNode(sibling)) {
+-            state = isVariableReadBeforeKill(sibling, variable);
+-
+-      // If we see a READ or KILL there is no need to continue.
+-      if (state == VariableLiveness.READ) {
+-        return true;
+-      } else if (state == VariableLiveness.KILL) {
+-        return false;
++              state = isVariableReadBeforeKill(sibling, variable);
++
++              // If we see a READ or KILL there is no need to continue.
++              if (state == VariableLiveness.READ) {
++                return true;
++              } else if (state == VariableLiveness.KILL) {
++                return false;
++              }
+             }
+           }
+       }
+-      }
+       n = n.getParent();
+     }
+     return false;
+@@ -358,9 +374,20 @@ class DeadAssignmentsElimination extends AbstractPostOrderCallback implements
+     switch (n.getType()) {
+       // Conditionals
+       case Token.OR:
+-      case Token.AND:
+-        // With a AND/OR the first branch always runs, but the second is
++      case Token.AND: {
++        // With a AND/OR the first branch always runs, but the second
+         // may not.
++        VariableLiveness first =
++            isVariableReadBeforeKill(n.getFirstChild(), variable);
++        if (first != VariableLiveness.MAYBE_LIVE) {
++          return first;
++        }
++        VariableLiveness second =
++            isVariableReadBeforeKill(n.getLastChild(), variable);
++        return second == VariableLiveness.READ ?
++            VariableLiveness.READ : VariableLiveness.MAYBE_LIVE;
++      }
++
+       case Token.HOOK:
+         return checkHookBranchReadBeforeKill(
+             n.getFirstChild().getNext(), n.getLastChild(), variable);

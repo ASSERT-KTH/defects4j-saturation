@@ -1,0 +1,42 @@
+{
+  "project": "Collections",
+  "bug": 7,
+  "id": "Collections-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1442,
+  "finished_at": "2026-09-08T15:04:50Z",
+  "wallclock_s": 112,
+  "agent_s": 73,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 52227,
+  "total_cost_usd": 0.1894928,
+  "session_id": "f74e468f-8928-4dc6-b305-f15d21e26d7b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4135,
+  "cache_read_input_tokens": 334139,
+  "cache_creation_input_tokens": 19260,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.TestExtendedProperties::testKeySet2",
+    "org.apache.commons.collections.TestExtendedProperties::testKeySet3",
+    "org.apache.commons.collections.TestExtendedProperties::testKeySet4"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/ExtendedProperties.java"
+  ],
+  "patch_added_lines": 28,
+  "patch_removed_lines": 16,
+  "has_dev_patch": true
+}

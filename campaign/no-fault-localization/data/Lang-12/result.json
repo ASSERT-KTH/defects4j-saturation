@@ -1,0 +1,41 @@
+{
+  "project": "Lang",
+  "bug": 12,
+  "id": "Lang-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 439,
+  "finished_at": "2026-09-08T06:38:45Z",
+  "wallclock_s": 126,
+  "agent_s": 72,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 40626,
+  "total_cost_usd": 0.11875740000000001,
+  "session_id": "4e8098a2-6caf-4838-bb22-302114587f1a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2096,
+  "cache_read_input_tokens": 184272,
+  "cache_creation_input_tokens": 14417,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.RandomStringUtilsTest::testExceptions",
+    "org.apache.commons.lang3.RandomStringUtilsTest::testLANG805"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/RandomStringUtils.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 6,
+  "has_dev_patch": true
+}

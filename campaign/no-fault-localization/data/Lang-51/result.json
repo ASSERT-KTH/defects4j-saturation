@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 51,
+  "id": "Lang-51",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 148,
+  "finished_at": "2026-09-08T09:22:39Z",
+  "wallclock_s": 66,
+  "agent_s": 30,
+  "agent_rc": 0,
+  "num_turns": 6,
+  "api_duration_ms": 16930,
+  "total_cost_usd": 0.08477860000000001,
+  "session_id": "60b926ab-23e2-4d0b-8f8f-6ecb39399e0b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 12,
+  "output_tokens": 1207,
+  "cache_read_input_tokens": 108553,
+  "cache_creation_input_tokens": 12179,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.lang.BooleanUtilsTest::test_toBoolean_String"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/lang/BooleanUtils.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

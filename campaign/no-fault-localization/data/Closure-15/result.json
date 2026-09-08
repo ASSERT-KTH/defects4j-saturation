@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 15,
+  "id": "Closure-15",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2089,
+  "finished_at": "2026-09-07T16:01:53Z",
+  "wallclock_s": 239,
+  "agent_s": 152,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 57116,
+  "total_cost_usd": 0.2251842,
+  "session_id": "3c14485e-ce29-4896-affb-f0c6ec17ec89",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 4735,
+  "cache_read_input_tokens": 402381,
+  "cache_creation_input_tokens": 23507,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testSimpleForIn"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

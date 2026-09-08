@@ -1,0 +1,42 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
+index 2a3fbaa..0f28238 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/impl/ExternalTypeHandler.java
+@@ -295,7 +295,11 @@ public class ExternalTypeHandler
+                 if ((typeProp != null) && (typeProp.getCreatorIndex() >= 0)) {
+                     // 31-May-2018, tatu: [databind#1328] if id is NOT plain `String`, need to
+                     //    apply deserializer... fun fun.
+-                    buffer.assignParameter(typeProp, typeId);
++                    Object actualTypeId = typeId;
++                    if (!typeProp.getType().hasRawClass(String.class)) {
++                        actualTypeId = _deserializeTypeId(p, ctxt, typeId, typeProp);
++                    }
++                    buffer.assignParameter(typeProp, actualTypeId);
+                 }
+             }
+         }
+@@ -310,6 +314,24 @@ public class ExternalTypeHandler
+         return bean;
+     }
+ 
++    /**
++     * Helper method used to deserialize a type id embedded as a {@link String}
++     * into whatever type the corresponding creator property actually expects
++     * (for example an {@code enum}), using its regular value deserializer.
++     *
++     * @since 2.9.6
++     */
++    @SuppressWarnings("resource")
++    protected final Object _deserializeTypeId(JsonParser p, DeserializationContext ctxt,
++            String typeId, SettableBeanProperty typeIdProp) throws IOException
++    {
++        TokenBuffer buf = new TokenBuffer(p, ctxt);
++        buf.writeString(typeId);
++        JsonParser p2 = buf.asParser(p);
++        p2.nextToken();
++        return typeIdProp.deserialize(p2, ctxt);
++    }
++
+     @SuppressWarnings("resource")
+     protected final Object _deserialize(JsonParser p, DeserializationContext ctxt,
+             int index, String typeId) throws IOException

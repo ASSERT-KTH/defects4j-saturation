@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 43,
+  "id": "Jsoup-43",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 79,
+  "finished_at": "2026-09-08T05:28:08Z",
+  "wallclock_s": 55,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 23133,
+  "total_cost_usd": 0.11913159999999999,
+  "session_id": "2351c1ff-020b-41c4-a165-024e0f30c3b9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 1599,
+  "cache_read_input_tokens": 190408,
+  "cache_creation_input_tokens": 15337,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.nodes.ElementTest::testElementSiblingIndexSameContent",
+    "org.jsoup.nodes.ElementTest::testGetSiblingsWithDuplicateContent"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/nodes/Element.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

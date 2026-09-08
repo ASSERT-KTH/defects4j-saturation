@@ -1,0 +1,32 @@
+diff --git a/src/org/mockito/exceptions/Reporter.java b/src/org/mockito/exceptions/Reporter.java
+index 9581a54..d637470 100644
+--- a/src/org/mockito/exceptions/Reporter.java
++++ b/src/org/mockito/exceptions/Reporter.java
+@@ -421,7 +421,7 @@ public class Reporter {
+         throw new NoInteractionsWanted(join(
+                 "No interactions wanted here:",
+                 new LocationImpl(),
+-                "But found this interaction on mock '" + undesired.getMock() + "':",
++                "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                 undesired.getLocation(),
+                 scenario
+         ));
+@@ -431,7 +431,7 @@ public class Reporter {
+         throw new VerificationInOrderFailure(join(
+                 "No interactions wanted here:",
+                 new LocationImpl(),
+-                "But found this interaction on mock '" + undesired.getMock() + "':",
++                "But found this interaction on mock '" + safelyGetMockName(undesired.getMock()) + "':",
+                 undesired.getLocation()
+         ));
+     }
+@@ -674,7 +674,8 @@ public class Reporter {
+     }
+ 
+     private String exceptionCauseMessageIfAvailable(Exception details) {
+-        return details.getCause().getMessage();
++        Throwable cause = details.getCause();
++        return cause == null ? details.getMessage() : cause.getMessage();
+     }
+ 
+     public void mockedTypeIsInconsistentWithDelegatedInstanceType(Class mockedType, Object delegatedInstance) {

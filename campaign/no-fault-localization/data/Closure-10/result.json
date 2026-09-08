@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 10,
+  "id": "Closure-10",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1803,
+  "finished_at": "2026-09-07T15:56:26Z",
+  "wallclock_s": 346,
+  "agent_s": 128,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 58687,
+  "total_cost_usd": 0.19466940000000002,
+  "session_id": "105f1dab-385d-4e89-9bcc-2b295b513f20",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 4198,
+  "cache_read_input_tokens": 331452,
+  "cache_creation_input_tokens": 20729,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.PeepholeFoldConstantsTest::testIssue821"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/NodeUtil.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

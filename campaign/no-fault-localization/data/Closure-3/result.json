@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 3,
+  "id": "Closure-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3801,
+  "finished_at": "2026-09-07T15:46:02Z",
+  "wallclock_s": 345,
+  "agent_s": 198,
+  "agent_rc": 0,
+  "num_turns": 18,
+  "api_duration_ms": 90773,
+  "total_cost_usd": 0.3584354,
+  "session_id": "e630634d-8412-4ac4-8b8f-fccf25587ddb",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 36,
+  "output_tokens": 6849,
+  "cache_read_input_tokens": 652197,
+  "cache_creation_input_tokens": 38562,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testDoNotInlineCatchExpression1a",
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testDoNotInlineCatchExpression1",
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testDoNotInlineCatchExpression3"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java"
+  ],
+  "patch_added_lines": 12,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

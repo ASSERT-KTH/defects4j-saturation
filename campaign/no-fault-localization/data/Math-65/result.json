@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 65,
+  "id": "Math-65",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1207,
+  "finished_at": "2026-09-08T10:31:32Z",
+  "wallclock_s": 80,
+  "agent_s": 44,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 33494,
+  "total_cost_usd": 0.1320332,
+  "session_id": "c4933b8f-54e6-480f-9b5a-424646c0f54b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 2276,
+  "cache_read_input_tokens": 172371,
+  "cache_creation_input_tokens": 18114,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.optimization.general.LevenbergMarquardtOptimizerTest::testCircleFitting"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/optimization/general/AbstractLeastSquaresOptimizer.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

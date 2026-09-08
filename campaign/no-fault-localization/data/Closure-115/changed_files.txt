@@ -1,0 +1,2 @@
+M	src/com/google/javascript/jscomp/FunctionArgumentInjector.java
+M	src/com/google/javascript/jscomp/FunctionInjector.java

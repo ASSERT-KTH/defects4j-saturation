@@ -1,0 +1,25 @@
+diff --git a/src/com/google/javascript/jscomp/parsing/IRFactory.java b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+index 709534b..0ea6481 100644
+--- a/src/com/google/javascript/jscomp/parsing/IRFactory.java
++++ b/src/com/google/javascript/jscomp/parsing/IRFactory.java
+@@ -96,6 +96,11 @@ class IRFactory {
+       "Non-JSDoc comment has annotations. " +
+       "Did you mean to start it with '/**'?";
+ 
++  // Matches a "/*" or a "*" at the start of a line (allowing for leading
++  // whitespace), optionally followed by whitespace, followed by an "@".
++  private static final Pattern SUSPICIOUS_ANNOTATION_PATTERN =
++      Pattern.compile("(?:/\\*|^\\s*\\*)\\s*@\\w+", Pattern.MULTILINE);
++
+   static final String MISPLACED_TYPE_ANNOTATION =
+       "Type annotations are not allowed here. Are you missing parentheses?";
+ 
+@@ -249,7 +254,7 @@ class IRFactory {
+    * Check to see if the given block comment looks like it should be JSDoc.
+    */
+   private void handleBlockComment(Comment comment) {
+-    if (comment.getValue().indexOf("/* @") != -1 || comment.getValue().indexOf("\n * @") != -1) {
++    if (SUSPICIOUS_ANNOTATION_PATTERN.matcher(comment.getValue()).find()) {
+       errorReporter.warning(
+           SUSPICIOUS_COMMENT_WARNING,
+           sourceName,

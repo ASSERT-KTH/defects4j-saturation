@@ -1,0 +1,40 @@
+{
+  "project": "Math",
+  "bug": 23,
+  "id": "Math-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4426,
+  "finished_at": "2026-09-08T09:51:56Z",
+  "wallclock_s": 205,
+  "agent_s": 122,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 80611,
+  "total_cost_usd": 0.192506,
+  "session_id": "22a49836-f1e0-4ca2-815b-bbfae0cb0a17",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 6201,
+  "cache_read_input_tokens": 240095,
+  "cache_creation_input_tokens": 20004,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math3.optimization.univariate.BrentOptimizerTest::testKeepInitIfBest"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math3/optimization/univariate/BrentOptimizer.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

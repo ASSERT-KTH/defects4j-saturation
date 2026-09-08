@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 7,
+  "id": "Closure-7",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2667,
+  "finished_at": "2026-09-07T15:53:29Z",
+  "wallclock_s": 447,
+  "agent_s": 183,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 62624,
+  "total_cost_usd": 0.31693040000000006,
+  "session_id": "23681cd4-8657-4850-9f66-8e7d6101fec6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 5062,
+  "cache_read_input_tokens": 543292,
+  "cache_creation_input_tokens": 38513,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ClosureReverseAbstractInterpreterTest::testGoogIsFunction2",
+    "com.google.javascript.jscomp.SemanticReverseAbstractInterpreterTest::testTypeof3"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/type/ChainableReverseAbstractInterpreter.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

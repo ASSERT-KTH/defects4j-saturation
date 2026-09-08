@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 46,
+  "id": "Math-46",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 5630,
+  "finished_at": "2026-09-08T10:16:00Z",
+  "wallclock_s": 271,
+  "agent_s": 170,
+  "agent_rc": 0,
+  "num_turns": 17,
+  "api_duration_ms": 102986,
+  "total_cost_usd": 0.30162140000000004,
+  "session_id": "1c8867ab-aef1-44af-ae9a-8b24312e4a07",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 34,
+  "output_tokens": 8415,
+  "cache_read_input_tokens": 484657,
+  "cache_creation_input_tokens": 29197,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.complex.ComplexTest::testAtanI",
+    "org.apache.commons.math.complex.ComplexTest::testDivideZero"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/complex/Complex.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 8,
+  "has_dev_patch": true
+}

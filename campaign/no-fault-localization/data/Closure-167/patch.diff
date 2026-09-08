@@ -1,0 +1,74 @@
+diff --git a/src/com/google/javascript/jscomp/type/SemanticReverseAbstractInterpreter.java b/src/com/google/javascript/jscomp/type/SemanticReverseAbstractInterpreter.java
+index 9e70279..e09c684 100644
+--- a/src/com/google/javascript/jscomp/type/SemanticReverseAbstractInterpreter.java
++++ b/src/com/google/javascript/jscomp/type/SemanticReverseAbstractInterpreter.java
+@@ -298,8 +298,8 @@ public class SemanticReverseAbstractInterpreter
+     if (merged != null) {
+       return maybeRestrictTwoNames(
+           blindScope,
+-          left, leftIsRefineable, merged.typeA,
+-          right, rightIsRefineable, merged.typeB);
++          left, leftType, leftIsRefineable, merged.typeA,
++          right, rightType, rightIsRefineable, merged.typeB);
+     }
+     return blindScope;
+   }
+@@ -345,8 +345,8 @@ public class SemanticReverseAbstractInterpreter
+       // creating new scope
+       return maybeRestrictTwoNames(
+           blindScope,
+-          left, leftIsRefineable, restrictedLeftType,
+-          right, rightIsRefineable, restrictedRightType);
++          left, leftType, leftIsRefineable, restrictedLeftType,
++          right, rightType, rightIsRefineable, restrictedRightType);
+     }
+     return blindScope;
+   }
+@@ -404,12 +404,16 @@ public class SemanticReverseAbstractInterpreter
+    */
+   private FlowScope maybeRestrictTwoNames(
+       FlowScope blindScope,
+-      Node left, boolean leftIsRefineable, JSType restrictedLeftType,
+-      Node right, boolean rightIsRefineable, JSType restrictedRightType) {
++      Node left, JSType originalLeftType,
++      boolean leftIsRefineable, JSType restrictedLeftType,
++      Node right, JSType originalRightType,
++      boolean rightIsRefineable, JSType restrictedRightType) {
+     boolean shouldRefineLeft =
+-        leftIsRefineable && restrictedLeftType != null;
++        leftIsRefineable && restrictedLeftType != null &&
++        !restrictedLeftType.equals(originalLeftType);
+     boolean shouldRefineRight =
+-        rightIsRefineable && restrictedRightType != null;
++        rightIsRefineable && restrictedRightType != null &&
++        !restrictedRightType.equals(originalRightType);
+     if (shouldRefineLeft || shouldRefineRight) {
+       FlowScope informed = blindScope.createChildFlowScope();
+       if (shouldRefineLeft) {
+@@ -429,9 +433,7 @@ public class SemanticReverseAbstractInterpreter
+     if (type != null) {
+       JSType restrictedType =
+           type.getRestrictedTypeGivenToBooleanOutcome(outcome);
+-      FlowScope informed = blindScope.createChildFlowScope();
+-      declareNameInScope(informed, name, restrictedType);
+-      return informed;
++      return maybeRestrictName(blindScope, name, type, restrictedType);
+     }
+     return blindScope;
+   }
+diff --git a/src/com/google/javascript/rhino/jstype/JSType.java b/src/com/google/javascript/rhino/jstype/JSType.java
+index 8f0a1f6..7e332c1 100644
+--- a/src/com/google/javascript/rhino/jstype/JSType.java
++++ b/src/com/google/javascript/rhino/jstype/JSType.java
+@@ -883,6 +883,11 @@ public abstract class JSType implements Serializable {
+ 
+     BooleanLiteralSet literals = getPossibleToBooleanOutcomes();
+     if (literals.contains(outcome)) {
++      if (outcome && isUnknownType()) {
++        // If the type is unknown and we know the outcome to be truthy,
++        // then we can consider it to be checked.
++        return getNativeType(JSTypeNative.CHECKED_UNKNOWN_TYPE);
++      }
+       return this;
+     } else {
+       return getNativeType(JSTypeNative.NO_TYPE);

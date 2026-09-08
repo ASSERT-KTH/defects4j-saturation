@@ -1,0 +1,14 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+index f22f825..7ecd286 100644
+--- a/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
++++ b/src/java/org/apache/commons/jxpath/ri/model/dom/DOMNodePointer.java
+@@ -413,6 +413,9 @@ public class DOMNodePointer extends NodePointer {
+         String prefix = name.getPrefix();
+         if (prefix != null) {
+             String ns = getNamespaceURI(prefix);
++            if (ns == null) {
++                ns = context.getNamespaceURI(prefix);
++            }
+             if (ns == null) {
+                 throw new JXPathException(
+                     "Unknown namespace prefix: " + prefix);

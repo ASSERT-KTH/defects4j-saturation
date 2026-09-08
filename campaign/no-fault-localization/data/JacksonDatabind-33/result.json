@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 33,
+  "id": "JacksonDatabind-33",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 376,
+  "finished_at": "2026-09-08T01:14:49Z",
+  "wallclock_s": 225,
+  "agent_s": 74,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 33783,
+  "total_cost_usd": 0.1321364,
+  "session_id": "2c96ce0e-926f-4550-805d-db8436a4f459",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 24,
+  "output_tokens": 2720,
+  "cache_read_input_tokens": 234607,
+  "cache_creation_input_tokens": 13884,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.struct.TestUnwrapped::testUnwrappedAsPropertyIndicator"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/introspect/JacksonAnnotationIntrospector.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

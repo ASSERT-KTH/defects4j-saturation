@@ -1,0 +1,43 @@
+{
+  "project": "Mockito",
+  "bug": 4,
+  "id": "Mockito-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 370,
+  "finished_at": "2026-09-08T11:31:10Z",
+  "wallclock_s": 618,
+  "agent_s": 276,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 58770,
+  "total_cost_usd": 0.21577040000000003,
+  "session_id": "0afec821-f918-4f72-8f5d-3883bd1306f9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 3125,
+  "cache_read_input_tokens": 423762,
+  "cache_creation_input_tokens": 23520,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.exceptions.ReporterTest::can_use_print_mock_name_even_when_mock_bogus_default_answer_and_when_reporting_no_more_interaction_wanted_in_order",
+    "org.mockito.exceptions.ReporterTest::can_use_print_mock_name_even_when_mock_bogus_default_answer_and_when_reporting_injection_failure",
+    "org.mockito.exceptions.ReporterTest::can_use_mock_name_even_when_mock_bogus_default_answer_and_when_reporting_no_more_interaction_wanted",
+    "org.mockitousage.bugs.ClassCastExOnVerifyZeroInteractionsTest::should_not_throw_a_ClassCastException"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/exceptions/Reporter.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

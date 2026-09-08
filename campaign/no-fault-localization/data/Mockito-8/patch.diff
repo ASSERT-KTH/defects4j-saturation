@@ -1,0 +1,17 @@
+diff --git a/src/org/mockito/internal/util/reflection/GenericMetadataSupport.java b/src/org/mockito/internal/util/reflection/GenericMetadataSupport.java
+index 152e942..976c35b 100644
+--- a/src/org/mockito/internal/util/reflection/GenericMetadataSupport.java
++++ b/src/org/mockito/internal/util/reflection/GenericMetadataSupport.java
+@@ -74,7 +74,11 @@ public abstract class GenericMetadataSupport {
+             TypeVariable typeParameter = typeParameters[i];
+             Type actualTypeArgument = actualTypeArguments[i];
+ 
+-            if (actualTypeArgument instanceof WildcardType) {
++            if (typeParameter == actualTypeArgument) {
++                // Self-referencing type variable, e.g. <T extends Comparable<T>> : registering the type variable
++                // itself as its own actual type argument would lead to infinite recursion when resolving it later.
++                registerTypeVariableIfNotPresent(typeParameter);
++            } else if (actualTypeArgument instanceof WildcardType) {
+                 contextualActualTypeParameters.put(typeParameter, boundsOf((WildcardType) actualTypeArgument));
+             } else {
+                 contextualActualTypeParameters.put(typeParameter, actualTypeArgument);

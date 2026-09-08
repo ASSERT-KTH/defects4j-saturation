@@ -1,0 +1,34 @@
+diff --git a/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java b/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
+index ffe47d3..49a6a06 100644
+--- a/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
++++ b/src/com/google/javascript/jscomp/PeepholeReplaceKnownMethods.java
+@@ -373,7 +373,7 @@ class PeepholeReplaceKnownMethods extends AbstractPeepholeOptimization{
+ 
+     Node right = callTarget.getNext();
+     if (right != null) {
+-      if (!NodeUtil.isImmutableValue(right)) {
++      if (right.getNext() != null || !NodeUtil.isImmutableValue(right)) {
+         return n;
+       }
+     }
+@@ -460,7 +460,9 @@ class PeepholeReplaceKnownMethods extends AbstractPeepholeOptimization{
+         }
+         int kJoinOverhead = "[].join()".length();
+         foldedSize += kJoinOverhead;
+-        foldedSize += (right != null) ? InlineCostEstimator.getCost(right) : 0;
++        boolean isDefaultJoinString = joinString.equals(",");
++        foldedSize += (right != null && !isDefaultJoinString)
++            ? InlineCostEstimator.getCost(right) : 0;
+         if (foldedSize > originalSize) {
+           return n;
+         }
+@@ -468,6 +470,9 @@ class PeepholeReplaceKnownMethods extends AbstractPeepholeOptimization{
+         for (Node node : arrayFoldedChildren) {
+           arrayNode.addChildToBack(node);
+         }
++        if (right != null && isDefaultJoinString) {
++          n.removeChild(right);
++        }
+         reportCodeChange();
+         break;
+     }

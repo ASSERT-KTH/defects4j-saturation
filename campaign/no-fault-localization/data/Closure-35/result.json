@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 35,
+  "id": "Closure-35",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 9089,
+  "finished_at": "2026-09-07T16:44:44Z",
+  "wallclock_s": 441,
+  "agent_s": 305,
+  "agent_rc": 0,
+  "num_turns": 43,
+  "api_duration_ms": 188555,
+  "total_cost_usd": 0.6383468,
+  "session_id": "1f635f6a-e30d-41f5-80ac-f8c632c85c20",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 86,
+  "output_tokens": 16255,
+  "cache_read_input_tokens": 1515504,
+  "cache_creation_input_tokens": 42546,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testIssue669"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/rhino/jstype/JSType.java",
+    "src/com/google/javascript/rhino/jstype/RecordType.java",
+    "src/com/google/javascript/rhino/jstype/UnionType.java"
+  ],
+  "patch_added_lines": 24,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,66 @@
+diff --git a/src/com/google/javascript/jscomp/Normalize.java b/src/com/google/javascript/jscomp/Normalize.java
+index 26655f1..e290dd0 100644
+--- a/src/com/google/javascript/jscomp/Normalize.java
++++ b/src/com/google/javascript/jscomp/Normalize.java
+@@ -306,12 +306,24 @@ class Normalize implements CompilerPass {
+      *         LP
+      *         BLOCK
+      */
++    private void rewriteFunctionDeclaration(Node n) {
+       // Prepare a spot for the function.
++      Node parent = n.getParent();
++      Node name = n.getFirstChild();
++      Node emptyName = Node.newString(Token.NAME, "");
++      emptyName.copyInformationFrom(name);
++      n.replaceChild(name, emptyName);
+ 
+       // Prepare the function
++      Node var = new Node(Token.VAR, name);
++      var.copyInformationFromForTree(n);
+ 
+       // Move the function
++      parent.replaceChild(n, var);
++      name.addChildToFront(n);
+ 
++      reportCodeChange("Function declaration");
++    }
+ 
+     /**
+      * Do normalizations that introduce new siblings or parents.
+@@ -336,6 +348,10 @@ class Normalize implements CompilerPass {
+ 
+       if (n.getType() == Token.FUNCTION) {
+         moveNamedFunctions(n.getLastChild());
++        if (NodeUtil.isFunctionDeclaration(n)
++            && !NodeUtil.isHoistedFunctionDeclaration(n)) {
++          rewriteFunctionDeclaration(n);
++        }
+       }
+     }
+ 
+@@ -523,6 +539,25 @@ class Normalize implements CompilerPass {
+         Preconditions.checkState(parent.hasOneChild());
+ 
+         replaceVarWithAssignment(n, parent, gramps);
++      } else if (parent.getType() == Token.FUNCTION) {
++        // The new declaration is a hoisted function declaration, which must
++        // remain a function declaration. If the existing declaration is a
++        // VAR, convert it to an assignment instead. Otherwise, both
++        // declarations are hoisted function declarations and can't be
++        // reconciled, so report an error.
++        Var origVar = s.getVar(name);
++        Node origParent = origVar.getParentNode();
++        if (origParent.getType() == Token.VAR) {
++          replaceVarWithAssignment(
++              origVar.getNameNode(), origParent, origParent.getParent());
++        } else {
++          compiler.report(JSError.make(
++              (String) nodeWithLineNumber.getProp(Node.SOURCENAME_PROP),
++              nodeWithLineNumber,
++              SyntacticScopeCreator.VAR_MULTIPLY_DECLARED_ERROR,
++              name,
++              (origVar.input != null ? origVar.input.getName() : "??")));
++        }
+       }
+     }
+ 

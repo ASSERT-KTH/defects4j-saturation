@@ -1,0 +1,15 @@
+diff --git a/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java b/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
+index 125503a..9c7e277 100644
+--- a/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
++++ b/src/main/java/org/apache/commons/codec/language/DoubleMetaphone.java
+@@ -241,7 +241,9 @@ public class DoubleMetaphone implements StringEncoder {
+      *          {@code false} otherwise.
+      */
+     public boolean isDoubleMetaphoneEqual(final String value1, final String value2, final boolean alternate) {
+-        return doubleMetaphone(value1, alternate).equals(doubleMetaphone(value2, alternate));
++        final String code1 = doubleMetaphone(value1, alternate);
++        final String code2 = doubleMetaphone(value2, alternate);
++        return code1 == null ? code2 == null : code1.equals(code2);
+     }
+ 
+     /**

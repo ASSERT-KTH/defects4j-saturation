@@ -1,0 +1,41 @@
+diff --git a/src/com/google/javascript/jscomp/ControlFlowAnalysis.java b/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
+index 3b67af3..6ef2548 100644
+--- a/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
++++ b/src/com/google/javascript/jscomp/ControlFlowAnalysis.java
+@@ -891,6 +891,7 @@ final class ControlFlowAnalysis implements Callback, CompilerPass {
+       case Token.ASSIGN:
+       case Token.INC:
+       case Token.DEC:
++      case Token.INSTANCEOF:
+         return true;
+       case Token.FUNCTION:
+         return false;
+diff --git a/src/com/google/javascript/jscomp/DisambiguateProperties.java b/src/com/google/javascript/jscomp/DisambiguateProperties.java
+index 4937879..2a08e1c 100644
+--- a/src/com/google/javascript/jscomp/DisambiguateProperties.java
++++ b/src/com/google/javascript/jscomp/DisambiguateProperties.java
+@@ -758,12 +758,20 @@ class DisambiguateProperties<T> implements CompilerPass {
+         }
+         objType = objType.getImplicitPrototype();
+       }
++      if (foundType != null) {
++        return foundType;
++      }
++
+       // If the property does not exist on the referenced type but the original
+       // type is an object type, see if any subtype has the property.
+-        // getGreatestSubtypeWithProperty does not guarantee that the property
+-        // is defined on the returned type, it just indicates that it might be,
+-        // so we have to double check.
+-      return foundType;
++      JSType subtype = registry.getGreatestSubtypeWithProperty(type, field);
++      // getGreatestSubtypeWithProperty does not guarantee that the property
++      // is defined on the returned type, it just indicates that it might be,
++      // so we have to double check.
++      if (subtype instanceof ObjectType && subtype.toObjectType().hasOwnProperty(field)) {
++        return subtype.toObjectType();
++      }
++      return null;
+     }
+ 
+     @Override public JSType getInstanceFromPrototype(JSType type) {

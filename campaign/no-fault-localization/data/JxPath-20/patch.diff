@@ -1,0 +1,37 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+index 65ed1ed..b8eda35 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationRelationalExpression.java
+@@ -85,7 +85,7 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
+             return containsMatch((Iterator) left, right);
+         }
+         if (right instanceof Iterator) {
+-            return containsMatch((Iterator) right, left);
++            return containsMatch((Iterator) right, left, true);
+         }
+         double ld = InfoSetUtil.doubleValue(left);
+         if (Double.isNaN(ld)) {
+@@ -120,9 +120,22 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
+      * @return whether a match was found
+      */
+     private boolean containsMatch(Iterator it, Object value) {
++        return containsMatch(it, value, false);
++    }
++
++    /**
++     * Learn whether any element returned from an Iterator matches a given value.
++     * @param it Iterator
++     * @param value to look for
++     * @param reverse whether value was originally the left operand and it the right,
++     *        so the comparison order can be preserved for asymmetric operators
++     * @return whether a match was found
++     */
++    private boolean containsMatch(Iterator it, Object value, boolean reverse) {
+         while (it.hasNext()) {
+             Object element = it.next();
+-            if (compute(element, value)) {
++            boolean matches = reverse ? compute(value, element) : compute(element, value);
++            if (matches) {
+                 return true;
+             }
+         }

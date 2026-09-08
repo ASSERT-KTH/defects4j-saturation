@@ -1,0 +1,40 @@
+{
+  "project": "Cli",
+  "bug": 18,
+  "id": "Cli-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1079,
+  "finished_at": "2026-09-07T15:32:52Z",
+  "wallclock_s": 45,
+  "agent_s": 28,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 25339,
+  "total_cost_usd": 0.10719499999999998,
+  "session_id": "149d9487-8e9f-4dca-86cc-895e981490aa",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 2075,
+  "cache_read_input_tokens": 95015,
+  "cache_creation_input_tokens": 16298,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.PosixParserTest::testStop2"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/PosixParser.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

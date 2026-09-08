@@ -1,0 +1,27 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/ser/PropertyBuilder.java b/src/main/java/com/fasterxml/jackson/databind/ser/PropertyBuilder.java
+index 2bd2405..50bccb5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/ser/PropertyBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/ser/PropertyBuilder.java
+@@ -159,7 +159,21 @@ public class PropertyBuilder
+                 if (prov.isEnabled(MapperFeature.CAN_OVERRIDE_ACCESS_MODIFIERS)) {
+                     am.fixAccess(_config.isEnabled(MapperFeature.OVERRIDE_PUBLIC_ACCESS_MODIFIERS));
+                 }
+-                valueToSuppress = getPropertyDefaultValue(propDef.getName(), am, actualType);
++                Object defaultBean = getDefaultBean();
++                if (defaultBean == null) {
++                    // 16-Oct-2016, tatu: means that we could not instantiate a "default"
++                    //   bean (no default constructor, or similar); fall back to
++                    //   type-default handling, and additionally suppress nulls too
++                    //   (as per [databind#1417])
++                    valueToSuppress = getDefaultValue(actualType);
++                    suppressNulls = true;
++                } else {
++                    try {
++                        valueToSuppress = am.getValue(defaultBean);
++                    } catch (Exception e) {
++                        valueToSuppress = _throwWrapped(e, propDef.getName(), defaultBean);
++                    }
++                }
+             } else {
+                 valueToSuppress = getDefaultValue(actualType);
+                 suppressNulls = true;

@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 20,
+  "id": "Jsoup-20",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 208,
+  "finished_at": "2026-09-08T05:18:20Z",
+  "wallclock_s": 53,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 30845,
+  "total_cost_usd": 0.12819360000000002,
+  "session_id": "a1acb772-2fe8-4d76-9e00-bcdeaa03d6af",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2009,
+  "cache_read_input_tokens": 206318,
+  "cache_creation_input_tokens": 16096,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.helper.DataUtilTest::discardsSpuriousByteOrderMark"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/helper/DataUtil.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

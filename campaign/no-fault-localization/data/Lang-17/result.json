@@ -1,0 +1,40 @@
+{
+  "project": "Lang",
+  "bug": 17,
+  "id": "Lang-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2298,
+  "finished_at": "2026-09-08T06:41:24Z",
+  "wallclock_s": 101,
+  "agent_s": 66,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 50596,
+  "total_cost_usd": 0.1304964,
+  "session_id": "fbfffe12-6d0d-4d7d-976e-da283c946768",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 4025,
+  "cache_read_input_tokens": 132307,
+  "cache_creation_input_tokens": 15381,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.lang3.StringEscapeUtilsTest::testLang720"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/lang3/text/translate/CharSequenceTranslator.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 11,
+  "has_dev_patch": true
+}

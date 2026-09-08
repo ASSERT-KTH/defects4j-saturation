@@ -1,0 +1,41 @@
+{
+  "project": "Math",
+  "bug": 76,
+  "id": "Math-76",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 70122,
+  "finished_at": "2026-09-08T11:09:38Z",
+  "wallclock_s": 1093,
+  "agent_s": 1057,
+  "agent_rc": 0,
+  "num_turns": 65,
+  "api_duration_ms": 1015061,
+  "total_cost_usd": 2.5251306000000002,
+  "session_id": "5051f5c3-8a64-481d-9851-21bb3f1de31d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 130,
+  "output_tokens": 88164,
+  "cache_read_input_tokens": 5381123,
+  "cache_creation_input_tokens": 140808,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.linear.SingularValueSolverTest::testMath320A",
+    "org.apache.commons.math.linear.SingularValueSolverTest::testMath320B"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/linear/SingularValueDecompositionImpl.java"
+  ],
+  "patch_added_lines": 22,
+  "patch_removed_lines": 9,
+  "has_dev_patch": true
+}

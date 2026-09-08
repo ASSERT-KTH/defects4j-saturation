@@ -1,0 +1,66 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 3d36b0f..4fee210 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -728,7 +728,10 @@ public class POJOPropertiesCollector
+         while (it.hasNext()) {
+             POJOPropertyBuilder prop = it.next();
+             // 26-Jan-2017, tatu: [databind#935]: need to denote removal of
+-            prop.removeNonVisible(inferMutators);
++            //    accessors for "read-only" (or "write-only") properties
++            if (!prop.removeNonVisible(inferMutators)) {
++                _collectIgnorals(prop.getName());
++            }
+         }
+     }
+ 
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+index 954f5dd..8928116 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+@@ -639,9 +639,13 @@ public class POJOPropertyBuilder
+ 
+     /**
+      * @param inferMutators Whether mutators can be "pulled in" by visible
+-     *    accessors or not. 
++     *    accessors or not.
++     *
++     * @return True if there are still any accessors remaining that are
++     *    usable in the current context (serialization or deserialization);
++     *    false if property has become useless (should be marked as ignored)
+      */
+-    public void removeNonVisible(boolean inferMutators)
++    public boolean removeNonVisible(boolean inferMutators)
+     {
+         /* 07-Jun-2015, tatu: With 2.6, we will allow optional definition
+          *  of explicit access type for property; if not "AUTO", it will
+@@ -658,6 +662,7 @@ public class POJOPropertyBuilder
+             _ctorParameters = null;
+             if (!_forSerialization) {
+                 _fields = null;
++                return false;
+             }
+             break;
+         case READ_WRITE:
+@@ -668,18 +673,20 @@ public class POJOPropertyBuilder
+             _getters = null;
+             if (_forSerialization) {
+                 _fields = null;
++                return false;
+             }
+             break;
+         default:
+         case AUTO: // the default case: base it on visibility
+             _getters = _removeNonVisible(_getters);
+             _ctorParameters = _removeNonVisible(_ctorParameters);
+-    
++
+             if (!inferMutators || (_getters == null)) {
+                 _fields = _removeNonVisible(_fields);
+                 _setters = _removeNonVisible(_setters);
+             }
+         }
++        return true;
+     }
+ 
+     /**

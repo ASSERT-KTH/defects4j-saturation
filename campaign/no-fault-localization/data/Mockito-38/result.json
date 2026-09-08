@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 38,
+  "id": "Mockito-38",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 53,
+  "finished_at": "2026-09-08T14:26:48Z",
+  "wallclock_s": 103,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 14829,
+  "total_cost_usd": 0.0785584,
+  "session_id": "a54f05cc-5a0f-4a50-bc56-58d61060bf7d",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 785,
+  "cache_read_input_tokens": 92152,
+  "cache_creation_input_tokens": 12035,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.verification.argumentmatching.ArgumentMatchingToolTest::shouldWorkFineWhenGivenArgIsNull",
+    "org.mockitousage.bugs.ActualInvocationHasNullArgumentNPEBugTest::shouldAllowPassingNullArgument"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/verification/argumentmatching/ArgumentMatchingTool.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

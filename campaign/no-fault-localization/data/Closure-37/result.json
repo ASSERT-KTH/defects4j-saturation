@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 37,
+  "id": "Closure-37",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 4844,
+  "finished_at": "2026-09-07T16:46:58Z",
+  "wallclock_s": 418,
+  "agent_s": 231,
+  "agent_rc": 0,
+  "num_turns": 33,
+  "api_duration_ms": 138276,
+  "total_cost_usd": 0.43264780000000014,
+  "session_id": "3394e28c-09f9-488c-ae31-bd06987e79ce",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 66,
+  "output_tokens": 10402,
+  "cache_read_input_tokens": 960744,
+  "cache_creation_input_tokens": 33328,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testIncompleteFunction"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/parsing/IRFactory.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 3,
+  "has_dev_patch": true
+}

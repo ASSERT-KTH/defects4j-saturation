@@ -1,0 +1,42 @@
+{
+  "project": "Cli",
+  "bug": 12,
+  "id": "Cli-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2553,
+  "finished_at": "2026-09-07T15:30:58Z",
+  "wallclock_s": 77,
+  "agent_s": 56,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 52757,
+  "total_cost_usd": 0.1822058,
+  "session_id": "bde026fc-0563-40f3-98b4-784d7a4fc650",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 4290,
+  "cache_read_input_tokens": 212534,
+  "cache_creation_input_tokens": 23102,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli.GnuParserTest::testShortWithEqual",
+    "org.apache.commons.cli.GnuParserTest::testLongWithEqualSingleDash",
+    "org.apache.commons.cli.GnuParserTest::testLongWithEqual"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli/GnuParser.java"
+  ],
+  "patch_added_lines": 8,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

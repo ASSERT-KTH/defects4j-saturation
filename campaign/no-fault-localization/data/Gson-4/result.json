@@ -1,0 +1,43 @@
+{
+  "project": "Gson",
+  "bug": 4,
+  "id": "Gson-4",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1761,
+  "finished_at": "2026-09-08T00:07:18Z",
+  "wallclock_s": 101,
+  "agent_s": 78,
+  "agent_rc": 0,
+  "num_turns": 21,
+  "api_duration_ms": 71100,
+  "total_cost_usd": 0.30254880000000006,
+  "session_id": "556ef142-6afc-441e-9efe-6cffb5467b71",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 42,
+  "output_tokens": 5476,
+  "cache_read_input_tokens": 616804,
+  "cache_creation_input_tokens": 29970,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.stream.JsonReaderTest::testTopLevelValueTypeWithSkipValue",
+    "com.google.gson.stream.JsonReaderTest::testTopLevelValueTypes",
+    "com.google.gson.stream.JsonWriterTest::testTopLevelValueTypes"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/stream/JsonReader.java",
+    "gson/src/main/java/com/google/gson/stream/JsonWriter.java"
+  ],
+  "patch_added_lines": 9,
+  "patch_removed_lines": 19,
+  "has_dev_patch": true
+}

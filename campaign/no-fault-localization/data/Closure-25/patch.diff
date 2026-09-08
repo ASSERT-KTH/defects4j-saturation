@@ -1,0 +1,18 @@
+diff --git a/src/com/google/javascript/jscomp/TypeInference.java b/src/com/google/javascript/jscomp/TypeInference.java
+index 7e218d8..29c3465 100644
+--- a/src/com/google/javascript/jscomp/TypeInference.java
++++ b/src/com/google/javascript/jscomp/TypeInference.java
+@@ -1059,6 +1059,13 @@ class TypeInference
+     for (Node arg = constructor.getNext(); arg != null; arg = arg.getNext()) {
+       scope = traverse(arg, scope);
+     }
++
++    FunctionType ct = constructorType == null ?
++        null : constructorType.toMaybeFunctionType();
++    if (ct != null && ct.isConstructor()) {
++      backwardsInferenceFromCallSite(n, ct);
++    }
++
+     return scope;
+   }
+ 

@@ -1,0 +1,20 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/JsonMappingException.java b/src/main/java/com/fasterxml/jackson/databind/JsonMappingException.java
+index 482622b..060d307 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/JsonMappingException.java
++++ b/src/main/java/com/fasterxml/jackson/databind/JsonMappingException.java
+@@ -126,13 +126,8 @@ public class JsonMappingException
+                     // Hmmh. Although Class.getName() is mostly ok, it does look
+                     // butt-ugly for arrays.
+                     // 06-Oct-2016, tatu: as per [databind#1403], `getSimpleName()` not so good
+-                    //   as it drops enclosing class. So let's try bit different approach
+-                    String pkgName = com.fasterxml.jackson.databind.util.ClassUtil.getPackageName(cls);
+-                    if (pkgName != null) {
+-                        sb.append(pkgName);
+-                        sb.append('.');
+-                    }
+-                    sb.append(cls.getSimpleName());
++                    //   as it drops enclosing class. So let's use full name instead.
++                    sb.append(com.fasterxml.jackson.databind.util.ClassUtil.getClassDescription(cls));
+                 }
+                 sb.append('[');
+                 if (_fieldName != null) {

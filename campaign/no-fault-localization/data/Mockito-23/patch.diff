@@ -1,0 +1,125 @@
+diff --git a/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java b/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+index c4384f7..ea6e282 100644
+--- a/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
++++ b/src/org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java
+@@ -41,15 +41,24 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+     
+     private static final long serialVersionUID = -7105341425736035847L;
+ 
+-    private MockitoCore mockitoCore = new MockitoCore();
++    // MockitoCore carries thread-local mocking state that cannot be serialized;
++    // it is stateless from this class' point of view so it is safe to recreate lazily.
++    private transient MockitoCore mockitoCore;
+     private ReturnsEmptyValues delegate = new ReturnsEmptyValues();
+ 
++    private MockitoCore mockitoCore() {
++        if (mockitoCore == null) {
++            mockitoCore = new MockitoCore();
++        }
++        return mockitoCore;
++    }
++
+     public Object answer(InvocationOnMock invocation) throws Throwable {
+         GenericMetadataSupport returnTypeGenericMetadata =
+                 actualParameterizedType(invocation.getMock()).resolveGenericReturnType(invocation.getMethod());
+ 
+         Class<?> rawType = returnTypeGenericMetadata.rawType();
+-        if (!mockitoCore.isTypeMockable(rawType)) {
++        if (!mockitoCore().isTypeMockable(rawType)) {
+             return delegate.returnValueFor(rawType);
+         }
+ 
+@@ -70,7 +79,8 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+ 		}
+ 
+         // deep stub
+-        return recordDeepStubMock(createNewDeepStubMock(returnTypeGenericMetadata), container);
++        CreationSettings parentMockSettings = (CreationSettings) handler.getMockSettings();
++        return recordDeepStubMock(createNewDeepStubMock(returnTypeGenericMetadata, parentMockSettings), container);
+     }
+ 
+     /**
+@@ -81,21 +91,26 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+      * {@link ReturnsDeepStubs} answer in which we will store the returned type generic metadata.
+      *
+      * @param returnTypeGenericMetadata The metadata to use to create the new mock.
++     * @param parentMockSettings The mock settings of the mock that is receiving this invocation.
+      * @return The mock
+      */
+-    private Object createNewDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata) {
+-        return mockitoCore.mock(
++    private Object createNewDeepStubMock(GenericMetadataSupport returnTypeGenericMetadata, CreationSettings parentMockSettings) {
++        return mockitoCore().mock(
+                 returnTypeGenericMetadata.rawType(),
+-                withSettingsUsing(returnTypeGenericMetadata)
++                withSettingsUsing(returnTypeGenericMetadata, parentMockSettings)
+         );
+     }
+ 
+-    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata) {
++    private MockSettings withSettingsUsing(GenericMetadataSupport returnTypeGenericMetadata, CreationSettings parentMockSettings) {
+         MockSettings mockSettings =
+                 returnTypeGenericMetadata.rawExtraInterfaces().length > 0 ?
+                 withSettings().extraInterfaces(returnTypeGenericMetadata.rawExtraInterfaces())
+                 : withSettings();
+ 
++        if (parentMockSettings.isSerializable()) {
++            mockSettings.serializable(parentMockSettings.getSerializableMode());
++        }
++
+         return mockSettings
+                 .defaultAnswer(returnsDeepStubsAnswerUsing(returnTypeGenericMetadata));
+     }
+@@ -111,11 +126,7 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+ 
+     private Object recordDeepStubMock(final Object mock, InvocationContainerImpl container) throws Throwable {
+ 
+-        container.addAnswer(new Answer<Object>() {
+-            public Object answer(InvocationOnMock invocation) throws Throwable {
+-                return mock;
+-            }
+-        }, false);
++        container.addAnswer(new ReturnsDeepStubAnswer(mock), false);
+ 
+         return mock;
+     }
+@@ -127,4 +138,18 @@ public class ReturnsDeepStubs implements Answer<Object>, Serializable {
+         CreationSettings mockSettings = (CreationSettings) new MockUtil().getMockHandler(mock).getMockSettings();
+         return GenericMetadataSupport.inferFrom(mockSettings.getTypeToMock());
+     }
++
++    private static class ReturnsDeepStubAnswer implements Answer<Object>, Serializable {
++        private static final long serialVersionUID = -5266243570075207990L;
++
++        private final Object mock;
++
++        public ReturnsDeepStubAnswer(Object mock) {
++            this.mock = mock;
++        }
++
++        public Object answer(InvocationOnMock invocation) throws Throwable {
++            return mock;
++        }
++    }
+ }
+diff --git a/src/org/mockito/internal/util/MockUtil.java b/src/org/mockito/internal/util/MockUtil.java
+index 809804c..ce25ede 100644
+--- a/src/org/mockito/internal/util/MockUtil.java
++++ b/src/org/mockito/internal/util/MockUtil.java
+@@ -4,6 +4,7 @@
+  */
+ package org.mockito.internal.util;
+ 
++import java.io.Serializable;
+ import java.lang.reflect.Modifier;
+ 
+ import org.mockito.exceptions.misusing.NotAMockException;
+@@ -18,7 +19,7 @@ import org.mockito.mock.MockName;
+ import org.mockito.plugins.MockMaker;
+ 
+ @SuppressWarnings("unchecked")
+-public class MockUtil {
++public class MockUtil implements Serializable {
+ 
+     private static final MockMaker mockMaker = ClassPathLoader.getMockMaker();
+ 

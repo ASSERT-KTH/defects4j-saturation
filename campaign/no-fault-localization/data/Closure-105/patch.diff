@@ -1,0 +1,37 @@
+diff --git a/src/com/google/javascript/jscomp/FoldConstants.java b/src/com/google/javascript/jscomp/FoldConstants.java
+index f6d6a27..0f809d2 100644
+--- a/src/com/google/javascript/jscomp/FoldConstants.java
++++ b/src/com/google/javascript/jscomp/FoldConstants.java
+@@ -1478,18 +1478,21 @@ class FoldConstants extends AbstractPostOrderCallback
+     int foldedSize = 0;
+     Node elem = arrayNode.getFirstChild();
+     // Merges adjacent String nodes.
++    boolean hasPendingString = false;
+     while (elem != null) {
+       if (NodeUtil.isImmutableValue(elem)) {
+-        if (sb.length() > 0) {
++        if (hasPendingString) {
+           sb.append(joinString);
+         }
+         sb.append(NodeUtil.getStringValue(elem));
++        hasPendingString = true;
+       } else {
+-        if (sb.length() > 0) {
++        if (hasPendingString) {
+           // + 2 for the quotes.
+           foldedSize += sb.length() + 2;
+           arrayFoldedChildren.add(Node.newString(sb.toString()));
+           sb = new StringBuilder();
++          hasPendingString = false;
+         }
+         foldedSize += InlineCostEstimator.getCost(elem);
+         arrayFoldedChildren.add(elem);
+@@ -1497,7 +1500,7 @@ class FoldConstants extends AbstractPostOrderCallback
+       elem = elem.getNext();
+     }
+ 
+-    if (sb.length() > 0) {
++    if (hasPendingString) {
+       // + 2 for the quotes.
+       foldedSize += sb.length() + 2;
+       arrayFoldedChildren.add(Node.newString(sb.toString()));

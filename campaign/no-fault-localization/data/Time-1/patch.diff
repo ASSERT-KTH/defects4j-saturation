@@ -1,0 +1,16 @@
+diff --git a/src/main/java/org/joda/time/field/BaseDurationField.java b/src/main/java/org/joda/time/field/BaseDurationField.java
+index 310d354..01cf46c 100644
+--- a/src/main/java/org/joda/time/field/BaseDurationField.java
++++ b/src/main/java/org/joda/time/field/BaseDurationField.java
+@@ -149,6 +149,11 @@ public abstract class BaseDurationField extends DurationField implements Seriali
+         if (thisMillis == otherMillis) {
+             return 0;
+         }
++        // unsupported fields (such as eras) are treated as larger than any
++        // supported field, matching UnsupportedDurationField.compareTo
++        if (!otherField.isSupported()) {
++            return -1;
++        }
+         if (thisMillis < otherMillis) {
+             return -1;
+         } else {

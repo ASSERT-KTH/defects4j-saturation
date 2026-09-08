@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 97,
+  "id": "JacksonDatabind-97",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 135,
+  "finished_at": "2026-09-08T04:36:34Z",
+  "wallclock_s": 280,
+  "agent_s": 78,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 23405,
+  "total_cost_usd": 0.1058808,
+  "session_id": "f465b534-5fb5-48e8-b314-722bce77a2e9",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1693,
+  "cache_read_input_tokens": 154449,
+  "cache_creation_input_tokens": 13936,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.node.POJONodeTest::testPOJONodeCustomSer"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/node/POJONode.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

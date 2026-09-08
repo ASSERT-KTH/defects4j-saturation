@@ -1,0 +1,42 @@
+{
+  "project": "JxPath",
+  "bug": 17,
+  "id": "JxPath-17",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 2883,
+  "finished_at": "2026-09-08T06:12:00Z",
+  "wallclock_s": 95,
+  "agent_s": 66,
+  "agent_rc": 0,
+  "num_turns": 12,
+  "api_duration_ms": 56909,
+  "total_cost_usd": 0.18410020000000005,
+  "session_id": "7a3dbb73-f1bf-446d-b4c6-bb6336d2be77",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 5149,
+  "cache_read_input_tokens": 259151,
+  "cache_creation_input_tokens": 19326,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.dom.DOMModelTest::testAxisAttribute",
+    "org.apache.commons.jxpath.ri.model.jdom.JDOMModelTest::testAxisAttribute"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dom/DOMAttributeIterator.java",
+    "src/java/org/apache/commons/jxpath/ri/model/jdom/JDOMAttributeIterator.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

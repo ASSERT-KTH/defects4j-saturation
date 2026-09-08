@@ -1,0 +1,43 @@
+{
+  "project": "Collections",
+  "bug": 1,
+  "id": "Collections-1",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 37,
+  "finished_at": "2026-09-08T14:56:07Z",
+  "wallclock_s": 76,
+  "agent_s": 35,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 21342,
+  "total_cost_usd": 0.1271044,
+  "session_id": "5391a31b-c30e-4332-ba22-b495e13773e2",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1556,
+  "cache_read_input_tokens": 180387,
+  "cache_creation_input_tokens": 17469,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.collections.map.TestFlat3Map::testEntryIteratorSetValue2",
+    "org.apache.commons.collections.map.TestFlat3Map::testEntryIteratorSetValue3",
+    "org.apache.commons.collections.map.TestFlat3Map::testMapIteratorSetValue2",
+    "org.apache.commons.collections.map.TestFlat3Map::testMapIteratorSetValue3"
+  ],
+  "failing_before": 4,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/collections/map/Flat3Map.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

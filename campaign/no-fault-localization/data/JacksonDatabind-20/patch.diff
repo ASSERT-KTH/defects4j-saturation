@@ -1,0 +1,64 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+index 6f4f275..f2e9a50 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertiesCollector.java
+@@ -799,13 +799,13 @@ public class POJOPropertiesCollector
+             if (!prop.isExplicitlyNamed()) {
+                 if (_forSerialization) {
+                     if (prop.hasGetter()) {
+-                        rename = naming.nameForGetterMethod(_config, prop.getGetter(), fullName.getSimpleName());
++                        rename = naming.nameForGetterMethod(_config, prop.getAnyGetter(), fullName.getSimpleName());
+                     } else if (prop.hasField()) {
+                         rename = naming.nameForField(_config, prop.getField(), fullName.getSimpleName());
+                     }
+                 } else {
+                     if (prop.hasSetter()) {
+-                        rename = naming.nameForSetterMethod(_config, prop.getSetter(), fullName.getSimpleName());
++                        rename = naming.nameForSetterMethod(_config, prop.getAnySetter(), fullName.getSimpleName());
+                     } else if (prop.hasConstructorParameter()) {
+                         rename = naming.nameForConstructorParameter(_config, prop.getConstructorParameter(), fullName.getSimpleName());
+                     } else if (prop.hasField()) {
+@@ -814,7 +814,7 @@ public class POJOPropertiesCollector
+                         /* Plus, when getter-as-setter is used, need to convert that too..
+                          * (should we verify that's enabled? For now, assume it's ok always)
+                          */
+-                        rename = naming.nameForGetterMethod(_config, prop.getGetter(), fullName.getSimpleName());
++                        rename = naming.nameForGetterMethod(_config, prop.getAnyGetter(), fullName.getSimpleName());
+                     }
+                 }
+             }
+diff --git a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+index ac170f4..abe1cd5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
++++ b/src/main/java/com/fasterxml/jackson/databind/introspect/POJOPropertyBuilder.java
+@@ -197,6 +197,30 @@ public class POJOPropertyBuilder
+         return (_getters != null) || (_fields != null);
+     }
+ 
++    /**
++     * Method used to find one arbitrary getter, without verifying that
++     * there is at most one such accessor (as {@link #getGetter} does).
++     * Used when caller only needs a representative accessor (for example
++     * for deriving a renamed property name), and where an actual conflict
++     * -- if any -- should only be reported when a definite accessor is
++     * needed (see {@link #getGetter}).
++     */
++    protected AnnotatedMethod getAnyGetter() {
++        return (_getters == null) ? null : _getters.value;
++    }
++
++    /**
++     * Method used to find one arbitrary setter, without verifying that
++     * there is at most one such accessor (as {@link #getSetter} does).
++     * Used when caller only needs a representative accessor (for example
++     * for deriving a renamed property name), and where an actual conflict
++     * -- if any -- should only be reported when a definite accessor is
++     * needed (see {@link #getSetter}).
++     */
++    protected AnnotatedMethod getAnySetter() {
++        return (_setters == null) ? null : _setters.value;
++    }
++
+     @Override
+     public AnnotatedMethod getGetter()
+     {

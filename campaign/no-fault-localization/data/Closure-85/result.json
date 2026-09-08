@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 85,
+  "id": "Closure-85",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 115703,
+  "finished_at": "2026-09-07T18:22:07Z",
+  "wallclock_s": 1521,
+  "agent_s": 1443,
+  "agent_rc": 0,
+  "num_turns": 49,
+  "api_duration_ms": 1379548,
+  "total_cost_usd": 3.026491600000001,
+  "session_id": "9a6c5d7a-7f22-40c9-be95-6fb219e178b6",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 98,
+  "output_tokens": 127881,
+  "cache_read_input_tokens": 5304698,
+  "cache_creation_input_tokens": 170466,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.UnreachableCodeEliminationTest::testCascadedRemovalOfUnlessUnconditonalJumps",
+    "com.google.javascript.jscomp.UnreachableCodeEliminationTest::testIssue311"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/UnreachableCodeElimination.java"
+  ],
+  "patch_added_lines": 37,
+  "patch_removed_lines": 5,
+  "has_dev_patch": true
+}

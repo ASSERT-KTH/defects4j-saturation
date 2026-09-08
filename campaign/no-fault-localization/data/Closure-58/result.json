@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 58,
+  "id": "Closure-58",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 856,
+  "finished_at": "2026-09-07T17:19:28Z",
+  "wallclock_s": 190,
+  "agent_s": 85,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 25327,
+  "total_cost_usd": 0.1036772,
+  "session_id": "cf2d6a54-d120-4037-9205-9d5a1f440aac",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 2223,
+  "cache_read_input_tokens": 133416,
+  "cache_creation_input_tokens": 13050,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.LiveVariableAnalysisTest::testExpressionInForIn"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/LiveVariablesAnalysis.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

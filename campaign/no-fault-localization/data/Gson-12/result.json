@@ -1,0 +1,41 @@
+{
+  "project": "Gson",
+  "bug": 12,
+  "id": "Gson-12",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1687,
+  "finished_at": "2026-09-08T00:08:59Z",
+  "wallclock_s": 61,
+  "agent_s": 43,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 36169,
+  "total_cost_usd": 0.1380782,
+  "session_id": "aecc3da7-2f61-42e3-94a0-e94110bef3ee",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 3122,
+  "cache_read_input_tokens": 157066,
+  "cache_creation_input_tokens": 18041,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.internal.bind.JsonTreeReaderTest::testSkipValue_filledJsonObject",
+    "com.google.gson.internal.bind.JsonTreeReaderTest::testSkipValue_emptyJsonObject"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/bind/JsonTreeReader.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

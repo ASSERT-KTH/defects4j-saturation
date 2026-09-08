@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 36,
+  "id": "Closure-36",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 27700,
+  "finished_at": "2026-09-07T16:49:13Z",
+  "wallclock_s": 681,
+  "agent_s": 556,
+  "agent_rc": 0,
+  "num_turns": 60,
+  "api_duration_ms": 458526,
+  "total_cost_usd": 1.4092672000000004,
+  "session_id": "bb1fa1ad-9fd4-4c6e-84a1-40b007749d7a",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 120,
+  "output_tokens": 38047,
+  "cache_read_input_tokens": 3480396,
+  "cache_creation_input_tokens": 82145,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.IntegrationTest::testSingletonGetter1"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ClosureCodingConvention.java"
+  ],
+  "patch_added_lines": 11,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

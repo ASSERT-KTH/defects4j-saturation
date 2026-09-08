@@ -1,0 +1,40 @@
+{
+  "project": "Time",
+  "bug": 18,
+  "id": "Time-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 270,
+  "finished_at": "2026-09-08T14:40:53Z",
+  "wallclock_s": 87,
+  "agent_s": 46,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 34890,
+  "total_cost_usd": 0.1361408,
+  "session_id": "78f49897-81fd-4a91-8d14-dae7f47dbec8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3157,
+  "cache_read_input_tokens": 221364,
+  "cache_creation_input_tokens": 14466,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.joda.time.chrono.TestGJChronology::testLeapYearRulesConstruction"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/joda/time/chrono/GJChronology.java"
+  ],
+  "patch_added_lines": 24,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

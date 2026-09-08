@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 45,
+  "id": "Closure-45",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3792,
+  "finished_at": "2026-09-07T16:59:18Z",
+  "wallclock_s": 271,
+  "agent_s": 137,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 62083,
+  "total_cost_usd": 0.2380268,
+  "session_id": "391c35d9-1f76-40b1-bc25-77e368a80e21",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 5445,
+  "cache_read_input_tokens": 294424,
+  "cache_creation_input_tokens": 30232,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.RemoveUnusedVarsTest::testIssue618_1"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/RemoveUnusedVars.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

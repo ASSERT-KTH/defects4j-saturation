@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 133,
+  "id": "Closure-133",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 46381,
+  "finished_at": "2026-09-07T19:32:30Z",
+  "wallclock_s": 979,
+  "agent_s": 818,
+  "agent_rc": 0,
+  "num_turns": 70,
+  "api_duration_ms": 675441,
+  "total_cost_usd": 1.8663772000000003,
+  "session_id": "5d2f9635-cc0e-481d-9458-7a1a12d12cf1",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 140,
+  "output_tokens": 57981,
+  "cache_read_input_tokens": 4321701,
+  "cache_creation_input_tokens": 104888,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testTextExtents"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

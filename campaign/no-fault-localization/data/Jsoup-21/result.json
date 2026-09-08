@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 21,
+  "id": "Jsoup-21",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 95692,
+  "finished_at": "2026-09-08T05:41:45Z",
+  "wallclock_s": 1448,
+  "agent_s": 1428,
+  "agent_rc": 0,
+  "num_turns": 68,
+  "api_duration_ms": 1259243,
+  "total_cost_usd": 3.0918474000000007,
+  "session_id": "535a2083-7a47-4fc8-816b-1799bd84ad8f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 136,
+  "output_tokens": 109780,
+  "cache_read_input_tokens": 6747642,
+  "cache_creation_input_tokens": 160058,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.select.SelectorTest::handlesCommasInSelector",
+    "org.jsoup.select.SelectorTest::mixCombinatorGroup"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/select/QueryParser.java"
+  ],
+  "patch_added_lines": 13,
+  "patch_removed_lines": 10,
+  "has_dev_patch": true
+}

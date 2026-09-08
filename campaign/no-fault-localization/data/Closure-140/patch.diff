@@ -1,0 +1,28 @@
+diff --git a/src/com/google/javascript/jscomp/Compiler.java b/src/com/google/javascript/jscomp/Compiler.java
+index d2524b4..014544e 100644
+--- a/src/com/google/javascript/jscomp/Compiler.java
++++ b/src/com/google/javascript/jscomp/Compiler.java
+@@ -275,6 +275,7 @@ public class Compiler extends AbstractCompiler {
+           e.getModule().getName(), e.getDependentModule().getName()));
+       return;
+     }
++    fillEmptyModules(modules);
+     this.inputs = getAllInputsFromModules();
+     initBasedOnOptions();
+ 
+@@ -325,7 +326,14 @@ public class Compiler extends AbstractCompiler {
+    * Fill any empty modules with a place holder file. It makes any cross module
+    * motion easier.
+    */
+-  
++  private static void fillEmptyModules(JSModule[] modules) {
++    for (JSModule module : modules) {
++      if (module.getInputs().isEmpty()) {
++        module.add(JSSourceFile.fromCode("[" + module.getName() + "]", ""));
++      }
++    }
++  }
++
+   static final DiagnosticType DUPLICATE_INPUT_IN_MODULES =
+       DiagnosticType.error("JSC_DUPLICATE_INPUT_IN_MODULES_ERROR",
+           "Two modules cannot contain the same input, but module {0} and {1} "

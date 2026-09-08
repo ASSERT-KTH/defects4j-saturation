@@ -1,0 +1,24 @@
+diff --git a/src/java/org/apache/commons/lang/Entities.java b/src/java/org/apache/commons/lang/Entities.java
+index 21df7ef..1a41607 100644
+--- a/src/java/org/apache/commons/lang/Entities.java
++++ b/src/java/org/apache/commons/lang/Entities.java
+@@ -850,6 +850,9 @@ class Entities {
+                         } catch (NumberFormatException ex) {
+                             entityValue = -1;
+                         }
++                        if (entityValue > 0xFFFF) {
++                            entityValue = -1;
++                        }
+                     }
+                 } else {
+                     entityValue = this.entityValue(entityName);
+@@ -924,6 +927,9 @@ class Entities {
+                                 }
+                             } catch (NumberFormatException e) {
+                             }
++                            if (entityValue > 0xFFFF) {
++                                entityValue = -1;
++                            }
+                         }
+                     } else { //escaped value content is an entity name
+                         entityValue = this.entityValue(entityContent);

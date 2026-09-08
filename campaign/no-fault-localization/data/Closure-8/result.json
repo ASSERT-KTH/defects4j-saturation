@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 8,
+  "id": "Closure-8",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 401,
+  "finished_at": "2026-09-07T15:50:40Z",
+  "wallclock_s": 220,
+  "agent_s": 99,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 40507,
+  "total_cost_usd": 0.1260436,
+  "session_id": "27dc3690-6285-4232-916f-a3072c6e37fe",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 1714,
+  "cache_read_input_tokens": 212323,
+  "cache_creation_input_tokens": 15786,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.CollapseVariableDeclarationsTest::testIssue820"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/CollapseVariableDeclarations.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

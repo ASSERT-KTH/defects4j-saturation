@@ -1,0 +1,41 @@
+{
+  "project": "Closure",
+  "bug": 109,
+  "id": "Closure-109",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 423,
+  "finished_at": "2026-09-07T18:33:17Z",
+  "wallclock_s": 307,
+  "agent_s": 113,
+  "agent_rc": 0,
+  "num_turns": 8,
+  "api_duration_ms": 23864,
+  "total_cost_usd": 0.12263779999999999,
+  "session_id": "8b918859-b75b-4d5d-8b05-b01ff4b3011c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 16,
+  "output_tokens": 1790,
+  "cache_read_input_tokens": 174579,
+  "cache_creation_input_tokens": 16272,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testStructuralConstructor2",
+    "com.google.javascript.jscomp.parsing.JsDocInfoParserTest::testStructuralConstructor3"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/parsing/JsDocInfoParser.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

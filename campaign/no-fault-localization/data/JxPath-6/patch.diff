@@ -1,0 +1,39 @@
+diff --git a/src/java/org/apache/commons/jxpath/ri/axes/InitialContext.java b/src/java/org/apache/commons/jxpath/ri/axes/InitialContext.java
+index 7eb3a0a..fac98de 100644
+--- a/src/java/org/apache/commons/jxpath/ri/axes/InitialContext.java
++++ b/src/java/org/apache/commons/jxpath/ri/axes/InitialContext.java
+@@ -47,6 +47,14 @@ public class InitialContext extends EvalContext {
+         return nodePointer;
+     }
+ 
++    /**
++     * Returns true if the wrapped node pointer represents a whole
++     * collection rather than a single node.
++     */
++    public boolean isCollection() {
++        return collection;
++    }
++
+     public NodePointer getCurrentNodePointer() {
+         return nodePointer;
+     }
+diff --git a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+index 5058dd2..3ac4322 100644
+--- a/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
++++ b/src/java/org/apache/commons/jxpath/ri/compiler/CoreOperationCompare.java
+@@ -54,11 +54,13 @@ public abstract class CoreOperationCompare extends CoreOperation {
+ //            (l == null ? "null" : l.getClass().getName()) + " " +
+ //            (r == null ? "null" : r.getClass().getName()));
+ 
+-        if (l instanceof InitialContext || l instanceof SelfContext) {
++        if (l instanceof SelfContext
++                || (l instanceof InitialContext && !((InitialContext) l).isCollection())) {
+             l = ((EvalContext) l).getSingleNodePointer();
+         }
+ 
+-        if (r instanceof InitialContext || r instanceof SelfContext) {
++        if (r instanceof SelfContext
++                || (r instanceof InitialContext && !((InitialContext) r).isCollection())) {
+             r = ((EvalContext) r).getSingleNodePointer();
+         }
+ 

@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 9,
+  "id": "Closure-9",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 744,
+  "finished_at": "2026-09-07T15:52:21Z",
+  "wallclock_s": 232,
+  "agent_s": 103,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 30990,
+  "total_cost_usd": 0.11357879999999998,
+  "session_id": "8feeabaa-af74-4c0b-8ab3-73b506242bed",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 2159,
+  "cache_read_input_tokens": 172409,
+  "cache_creation_input_tokens": 13814,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.ProcessCommonJSModulesTest::testGuessModuleName"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/ProcessCommonJSModules.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

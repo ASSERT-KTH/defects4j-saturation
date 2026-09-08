@@ -1,0 +1,40 @@
+{
+  "project": "JxPath",
+  "bug": 3,
+  "id": "JxPath-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1783,
+  "finished_at": "2026-09-08T06:02:56Z",
+  "wallclock_s": 103,
+  "agent_s": 84,
+  "agent_rc": 0,
+  "num_turns": 16,
+  "api_duration_ms": 71757,
+  "total_cost_usd": 0.1878044,
+  "session_id": "6c9324b1-52e5-4e8d-8545-0795a678cb37",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 32,
+  "output_tokens": 4177,
+  "cache_read_input_tokens": 342007,
+  "cache_creation_input_tokens": 18829,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.jxpath.ri.model.beans.BadlyImplementedFactoryTest::testBadFactoryImplementation"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/jxpath/ri/model/dynamic/DynamicPropertyPointer.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

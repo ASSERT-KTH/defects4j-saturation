@@ -1,0 +1,64 @@
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java
+index bb670f3..ab77a09 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java
+@@ -260,6 +260,8 @@ public class TarArchiveInputStream extends ArchiveInputStream {
+             hasHitEOF = true;
+         } else if (buffer.isEOFRecord(headerBuf)) {
+             hasHitEOF = true;
++        } else if (!TarUtils.verifyCheckSum(headerBuf)) {
++            throw new IOException("Header checksum is invalid");
+         }
+ 
+         return hasHitEOF ? null : headerBuf;
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarConstants.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarConstants.java
+index e77ce97..bb9b79f 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarConstants.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarConstants.java
+@@ -62,6 +62,11 @@ public interface TarConstants {
+      */
+     int    CHKSUMLEN = 8;
+ 
++    /**
++     * Offset of the checksum field within the header record.
++     */
++    int    CHKSUM_OFFSET = 148;
++
+     /**
+      * The length of the size field in a header buffer.
+      * Includes the trailing space or NUL.
+diff --git a/src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java b/src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java
+index 674fd22..128fcd2 100644
+--- a/src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java
++++ b/src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java
+@@ -383,4 +383,30 @@ public class TarUtils {
+ 
+         return sum;
+     }
++
++    /**
++     * Checks that a tar header record carries a genuine checksum.
++     *
++     * <p>A tar header's checksum field is computed with all of its bytes
++     * treated as spaces, so any real header contributes at least the sum
++     * of those 8 spaces (256) to its own checksum and can therefore never
++     * have a checksum of zero. A record whose checksum field is missing
++     * (i.e. made up of NULs, as {@link #parseOctal} treats an all-NUL
++     * field as 0) cannot be a valid tar header, even though its other
++     * fields may happen to parse without error - typically because the
++     * bytes past the actual content of a short, non-tar stream are
++     * zero-padded.</p>
++     *
++     * @param header The tar entry header buffer to check.
++     * @return {@code true} if the header carries a non-zero checksum,
++     * {@code false} otherwise.
++     */
++    public static boolean verifyCheckSum(final byte[] header) {
++        try {
++            return parseOctal(header, TarConstants.CHKSUM_OFFSET,
++                               TarConstants.CHKSUMLEN) != 0;
++        } catch (IllegalArgumentException e) {
++            return false;
++        }
++    }
+ }

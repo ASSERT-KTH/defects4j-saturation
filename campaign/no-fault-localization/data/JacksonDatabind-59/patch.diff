@@ -1,0 +1,63 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+index 8bf10e8..5c79cb5 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
++++ b/src/main/java/com/fasterxml/jackson/databind/type/TypeFactory.java
+@@ -425,6 +425,7 @@ public final class TypeFactory
+ 
+         // 25-Sep-2016, tatu: As per [databind#1384] also need to ensure handlers get
+         //   copied as well
++        newType = _copyHandlers(baseType, newType);
+         return newType;
+ 
+         // 20-Oct-2015, tatu: Old simplistic approach
+@@ -496,6 +497,50 @@ public final class TypeFactory
+         return TypeBindings.emptyBindings();
+     }
+ 
++    /**
++     * Helper method called to ensure that key and/or content (de)serializers
++     * that were configured on {@code baseType} (via annotations) are retained
++     * on {@code narrowedType}, since narrowing (via {@link #_fromClass}) may
++     * end up returning a cached instance that was resolved without any such
++     * handlers.
++     *
++     * @since 2.8
++     */
++    private JavaType _copyHandlers(JavaType baseType, JavaType narrowedType)
++    {
++        if (narrowedType == null) {
++            return narrowedType;
++        }
++        if (baseType.isContainerType()) {
++            JavaType keyType = baseType.getKeyType();
++            if (keyType != null) {
++                Object h = keyType.getValueHandler();
++                if ((h != null) && narrowedType.isMapLikeType()) {
++                    JavaType newKeyType = narrowedType.getKeyType();
++                    if ((newKeyType != null) && (newKeyType.getValueHandler() != h)) {
++                        narrowedType = ((MapLikeType) narrowedType).withKeyValueHandler(h);
++                    }
++                }
++            }
++            JavaType contentType = baseType.getContentType();
++            if (contentType != null) {
++                JavaType newContentType = narrowedType.getContentType();
++                if (newContentType != null) {
++                    Object h = contentType.getValueHandler();
++                    if ((h != null) && (newContentType.getValueHandler() != h)) {
++                        narrowedType = narrowedType.withContentValueHandler(h);
++                        newContentType = narrowedType.getContentType();
++                    }
++                    Object th = contentType.getTypeHandler();
++                    if ((th != null) && (newContentType.getTypeHandler() != th)) {
++                        narrowedType = narrowedType.withContentTypeHandler(th);
++                    }
++                }
++            }
++        }
++        return narrowedType;
++    }
++
+     /**
+      * Method similar to {@link #constructSpecializedType}, but that creates a
+      * less-specific type of given type. Usually this is as simple as simply

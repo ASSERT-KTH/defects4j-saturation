@@ -1,0 +1,73 @@
+diff --git a/src/java/org/apache/commons/cli2/Option.java b/src/java/org/apache/commons/cli2/Option.java
+index 2b53098..0a7bc66 100644
+--- a/src/java/org/apache/commons/cli2/Option.java
++++ b/src/java/org/apache/commons/cli2/Option.java
+@@ -203,6 +203,7 @@ public interface Option {
+      *
+      * @return the parent of this option
+      */
++    Option getParent();
+ 
+     /**
+      * Sets the parent of this option. This method is called when the option is
+@@ -213,4 +214,5 @@ public interface Option {
+      *
+      * @param parent the parent option
+      */
++    void setParent(final Option parent);
+ }
+diff --git a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+index 337eeb6..23a0243 100644
+--- a/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
++++ b/src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java
+@@ -71,6 +71,11 @@ public class WriteableCommandLineImpl
+         }
+ 
+         // ensure that all parent options are also added
++        for (Option parent = option.getParent();
++                (parent != null) && !options.contains(parent);
++                parent = parent.getParent()) {
++            options.add(parent);
++        }
+     }
+ 
+     public void addValue(final Option option,
+diff --git a/src/java/org/apache/commons/cli2/option/GroupImpl.java b/src/java/org/apache/commons/cli2/option/GroupImpl.java
+index e3b69f8..38fc6c2 100644
+--- a/src/java/org/apache/commons/cli2/option/GroupImpl.java
++++ b/src/java/org/apache/commons/cli2/option/GroupImpl.java
+@@ -89,6 +89,7 @@ public class GroupImpl
+         // process the options
+         for (final Iterator i = options.iterator(); i.hasNext();) {
+             final Option option = (Option) i.next();
++            option.setParent(this);
+ 
+             if (option instanceof Argument) {
+                 i.remove();
+diff --git a/src/java/org/apache/commons/cli2/option/OptionImpl.java b/src/java/org/apache/commons/cli2/option/OptionImpl.java
+index f75d470..dd03076 100644
+--- a/src/java/org/apache/commons/cli2/option/OptionImpl.java
++++ b/src/java/org/apache/commons/cli2/option/OptionImpl.java
+@@ -33,6 +33,7 @@ import org.apache.commons.cli2.resource.ResourceHelper;
+ public abstract class OptionImpl implements Option {
+     private final int id;
+     private final boolean required;
++    private Option parent = null;
+ 
+     /**
+      * Creates an OptionImpl with the specified id
+@@ -121,6 +122,14 @@ public abstract class OptionImpl implements Option {
+         return required;
+     }
+ 
++    public Option getParent() {
++        return parent;
++    }
++
++    public void setParent(final Option parent) {
++        this.parent = parent;
++    }
++
+     public void defaults(final WriteableCommandLine commandLine) {
+         // nothing to do normally
+     }

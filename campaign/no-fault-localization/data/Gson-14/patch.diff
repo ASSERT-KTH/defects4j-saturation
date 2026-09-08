@@ -1,0 +1,40 @@
+diff --git a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+index c2372c7..540228a 100644
+--- a/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
++++ b/gson/src/main/java/com/google/gson/internal/$Gson$Types.java
+@@ -75,8 +75,15 @@ public final class $Gson$Types {
+    * this returns {@code ?}, which is shorthand for {@code ? extends Object}.
+    */
+   public static WildcardType subtypeOf(Type bound) {
+-    Type[] upperBounds;
+-      upperBounds = new Type[] { bound };
++    if (bound instanceof WildcardType) {
++      WildcardType wildcard = (WildcardType) bound;
++      // "? extends (? extends X)" collapses to "? extends X"; "? extends (? super X)"
++      // collapses to the unbounded wildcard "?"
++      return wildcard.getLowerBounds().length == 0
++          ? wildcard
++          : new WildcardTypeImpl(new Type[] { Object.class }, EMPTY_TYPE_ARRAY);
++    }
++    Type[] upperBounds = new Type[] { bound };
+     return new WildcardTypeImpl(upperBounds, EMPTY_TYPE_ARRAY);
+   }
+ 
+@@ -86,8 +93,15 @@ public final class $Gson$Types {
+    * super String}.
+    */
+   public static WildcardType supertypeOf(Type bound) {
+-    Type[] lowerBounds;
+-      lowerBounds = new Type[] { bound };
++    if (bound instanceof WildcardType) {
++      WildcardType wildcard = (WildcardType) bound;
++      // "? super (? super X)" collapses to "? super X"; "? super (? extends X)"
++      // collapses to the unbounded wildcard "?"
++      return wildcard.getLowerBounds().length != 0
++          ? wildcard
++          : new WildcardTypeImpl(new Type[] { Object.class }, EMPTY_TYPE_ARRAY);
++    }
++    Type[] lowerBounds = new Type[] { bound };
+     return new WildcardTypeImpl(new Type[] { Object.class }, lowerBounds);
+   }
+ 

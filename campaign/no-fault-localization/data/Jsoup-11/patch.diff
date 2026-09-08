@@ -1,0 +1,45 @@
+diff --git a/src/main/java/org/jsoup/select/Selector.java b/src/main/java/org/jsoup/select/Selector.java
+index 13341ce..1433163 100644
+--- a/src/main/java/org/jsoup/select/Selector.java
++++ b/src/main/java/org/jsoup/select/Selector.java
+@@ -178,6 +178,8 @@ public class Selector {
+             return matches(false);
+         } else if (tq.matches(":matchesOwn(")) {
+             return matches(true);
++        } else if (tq.matches(":not(")) {
++            return not();
+         } else { // unhandled
+             throw new SelectorParseException("Could not parse query '%s': unexpected token at '%s'", query, tq.remainder());
+         }
+@@ -279,8 +281,9 @@ public class Selector {
+         tq.consume(":has");
+         String subQuery = tq.chompBalanced('(',')');
+         Validate.notEmpty(subQuery, ":has(el) subselect must not be empty");
++        Elements parents = elements.isEmpty() ? new Elements(root.getAllElements()) : new Elements(elements);
+ 
+-        return filterForParentsOfDescendants(elements, select(subQuery, elements));
++        return filterForParentsOfDescendants(parents, select(subQuery, parents));
+     }
+     
+     // pseudo selector :contains(text), containsOwn(text)
+@@ -302,7 +305,20 @@ public class Selector {
+     }
+ 
+     // :not(selector)
++    private Elements not() {
++        tq.consume(":not");
++        String subQuery = tq.chompBalanced('(', ')');
++        Validate.notEmpty(subQuery, ":not(selector) subselect must not be empty");
+ 
++        Elements candidates = elements.isEmpty() ? new Elements(root.getAllElements()) : new Elements(elements);
++        Elements excluded = select(subQuery, candidates);
++        Elements output = new Elements();
++        for (Element candidate : candidates) {
++            if (!excluded.contains(candidate))
++                output.add(candidate);
++        }
++        return output;
++    }
+ 
+     // direct child descendants
+     private static Elements filterForChildren(Collection<Element> parents, Collection<Element> candidates) {

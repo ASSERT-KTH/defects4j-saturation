@@ -1,0 +1,40 @@
+{
+  "project": "Chart",
+  "bug": 24,
+  "id": "Chart-24",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 18,
+  "finished_at": "2026-09-07T15:26:06Z",
+  "wallclock_s": 56,
+  "agent_s": 13,
+  "agent_rc": 0,
+  "num_turns": 4,
+  "api_duration_ms": 10537,
+  "total_cost_usd": 0.0656738,
+  "session_id": "17b28504-8e92-4d8f-acf1-0c18304638cf",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 8,
+  "output_tokens": 648,
+  "cache_read_input_tokens": 66209,
+  "cache_creation_input_tokens": 10922,
+  "src_dir": "source",
+  "test_dir": "tests",
+  "trigger_tests": [
+    "org.jfree.chart.renderer.junit.GrayPaintScaleTests::testGetPaint"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "source/org/jfree/chart/renderer/GrayPaintScale.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

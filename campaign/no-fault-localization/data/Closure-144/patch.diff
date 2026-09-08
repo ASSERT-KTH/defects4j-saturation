@@ -1,0 +1,96 @@
+diff --git a/src/com/google/javascript/jscomp/FunctionTypeBuilder.java b/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
+index 8ac4f11..0e7bf16 100644
+--- a/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
++++ b/src/com/google/javascript/jscomp/FunctionTypeBuilder.java
+@@ -21,6 +21,7 @@ import static com.google.javascript.rhino.jstype.JSTypeNative.FUNCTION_FUNCTION_
+ import static com.google.javascript.rhino.jstype.JSTypeNative.UNKNOWN_TYPE;
+ import static com.google.javascript.rhino.jstype.JSTypeNative.VOID_TYPE;
+ 
++import com.google.common.base.Predicate;
+ import com.google.common.base.Preconditions;
+ import com.google.common.collect.Iterables;
+ import com.google.common.collect.Lists;
+@@ -71,6 +72,7 @@ final class FunctionTypeBuilder {
+   private final Scope scope;
+ 
+   private JSType returnType = null;
++  private boolean returnTypeInferred = false;
+   private List<ObjectType> implementedInterfaces = null;
+   private ObjectType baseType = null;
+   private ObjectType thisType = null;
+@@ -196,9 +198,28 @@ final class FunctionTypeBuilder {
+    * Infer the return type from JSDocInfo.
+    */
+   FunctionTypeBuilder inferReturnType(@Nullable JSDocInfo info) {
+-    returnType = info != null && info.hasReturnType() ?
+-        info.getReturnType().evaluate(scope, typeRegistry) :
+-        typeRegistry.getNativeType(UNKNOWN_TYPE);
++    CompilerInput input = compiler.getInput(sourceName);
++    if (info != null && info.hasReturnType()) {
++      returnType = info.getReturnType().evaluate(scope, typeRegistry);
++      returnTypeInferred = false;
++    } else if (sourceNode != null && (input == null || !input.isExtern())) {
++      // No return type was declared, and we have the real body of the
++      // function to look at (as opposed to an extern stub, whose body
++      // is not a reliable indicator of what the function actually
++      // returns). If the body has no return statement that yields a
++      // value and never throws, then the function must always return
++      // {@code undefined}. Otherwise, leave the type unknown so it can
++      // be inferred later.
++      Node body = sourceNode.getLastChild();
++      returnType = NodeUtil.has(
++          body, new MatchReturnValueOrThrow(), new NodeUtil.MatchNotFunction()) ?
++          typeRegistry.getNativeType(UNKNOWN_TYPE) :
++          typeRegistry.getNativeType(VOID_TYPE);
++      returnTypeInferred = true;
++    } else {
++      returnType = typeRegistry.getNativeType(UNKNOWN_TYPE);
++      returnTypeInferred = false;
++    }
+     if (templateTypeName != null &&
+         returnType.restrictByNotNullOrUndefined().isTemplateType()) {
+       reportError(TEMPLATE_TYPE_EXPECTED, fnName);
+@@ -207,10 +228,17 @@ final class FunctionTypeBuilder {
+   }
+ 
+   /**
+-   * If we haven't found a return value yet, try to look at the "return"
+-   * statements in the function.
++   * Matches a RETURN node that yields a value (as opposed to a bare
++   * {@code return;}), or a THROW node, either of which means the
++   * function's return type can't be safely inferred as {@code undefined}.
+    */
+-
++  private static class MatchReturnValueOrThrow implements Predicate<Node> {
++    @Override
++    public boolean apply(Node n) {
++      return (n.getType() == Token.RETURN && n.hasChildren()) ||
++          n.getType() == Token.THROW;
++    }
++  }
+ 
+   /**
+    * Infer the role of the function (whether it's a constructor or interface)
+@@ -489,14 +517,18 @@ final class FunctionTypeBuilder {
+       }
+       maybeSetBaseType(fnType);
+     } else {
+-      fnType = new FunctionBuilder(typeRegistry)
++      FunctionBuilder builder = new FunctionBuilder(typeRegistry)
+           .withName(fnName)
+           .withSourceNode(sourceNode)
+           .withParamsNode(parametersNode)
+-          .withReturnType(returnType)
+           .withTypeOfThis(thisType)
+-          .withTemplateName(templateTypeName)
+-          .build();
++          .withTemplateName(templateTypeName);
++      if (returnTypeInferred) {
++        builder.withInferredReturnType(returnType);
++      } else {
++        builder.withReturnType(returnType);
++      }
++      fnType = builder.build();
+       maybeSetBaseType(fnType);
+     }
+ 

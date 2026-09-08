@@ -1,0 +1,43 @@
+diff --git a/src/com/google/debugging/sourcemap/SourceMapConsumerV3.java b/src/com/google/debugging/sourcemap/SourceMapConsumerV3.java
+index d67dc10..5b4188c 100644
+--- a/src/com/google/debugging/sourcemap/SourceMapConsumerV3.java
++++ b/src/com/google/debugging/sourcemap/SourceMapConsumerV3.java
+@@ -486,8 +486,8 @@ public class SourceMapConsumerV3 implements SourceMapConsumer,
+       // Adjust the line/column here to be start at 1.
+       Builder x = OriginalMapping.newBuilder()
+         .setOriginalFile(sources[entry.getSourceFileId()])
+-        .setLineNumber(entry.getSourceLine())
+-        .setColumnPosition(entry.getSourceColumn());
++        .setLineNumber(entry.getSourceLine() + 1)
++        .setColumnPosition(entry.getSourceColumn() + 1);
+       if (entry.getNameId() != UNMAPPED) {
+         x.setIdentifier(names[entry.getNameId()]);
+       }
+@@ -712,8 +712,10 @@ public class SourceMapConsumerV3 implements SourceMapConsumer,
+             sourceName = sources[entry.getSourceFileId()];
+             symbolName = (entry.getNameId() != UNMAPPED)
+                 ? names[entry.getNameId()] : null;
++            // The source map format stores lines zero-based, but mappings
++            // are expected to carry the one-based Rhino line convention.
+             sourceStartPosition = new FilePosition(
+-                entry.getSourceLine(), entry.getSourceColumn());
++                entry.getSourceLine() + 1, entry.getSourceColumn());
+             startPosition = new FilePosition(
+                 i, entry.getGeneratedColumn());
+           }
+diff --git a/src/com/google/debugging/sourcemap/SourceMapGeneratorV3.java b/src/com/google/debugging/sourcemap/SourceMapGeneratorV3.java
+index 1717afe..146d375 100644
+--- a/src/com/google/debugging/sourcemap/SourceMapGeneratorV3.java
++++ b/src/com/google/debugging/sourcemap/SourceMapGeneratorV3.java
+@@ -747,7 +747,10 @@ public class SourceMapGeneratorV3 implements SourceMapGenerator {
+         previousSourceFileId = sourceId;
+ 
+         // The relative source file line and column
+-        int srcline = m.originalPosition.getLine();
++        // The original position is stored one-based (matching the Rhino
++        // Node line numbering) but the source map format expects it
++        // zero-based.
++        int srcline = m.originalPosition.getLine() - 1;
+         int srcColumn = m.originalPosition.getColumn();
+         Base64VLQ.encode(out, srcline - previousSourceLine);
+         previousSourceLine = srcline;

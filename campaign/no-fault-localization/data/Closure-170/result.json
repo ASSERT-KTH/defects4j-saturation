@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 170,
+  "id": "Closure-170",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 22271,
+  "finished_at": "2026-09-07T20:40:03Z",
+  "wallclock_s": 603,
+  "agent_s": 476,
+  "agent_rc": 0,
+  "num_turns": 29,
+  "api_duration_ms": 315008,
+  "total_cost_usd": 0.804221,
+  "session_id": "40253e17-f2fe-46bf-a0ed-bfbcbcc9cc6b",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 58,
+  "output_tokens": 28254,
+  "cache_read_input_tokens": 1360445,
+  "cache_creation_input_tokens": 61576,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testVarAssinInsideHookIssue965"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/FlowSensitiveInlineVariables.java"
+  ],
+  "patch_added_lines": 40,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

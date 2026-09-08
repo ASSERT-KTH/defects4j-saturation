@@ -1,0 +1,24 @@
+diff --git a/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java b/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
+index e258c68..7270332 100644
+--- a/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
++++ b/src/main/java/org/apache/commons/math/analysis/solvers/BaseSecantSolver.java
+@@ -182,10 +182,17 @@ public abstract class BaseSecantSolver
+                 case PEGASUS:
+                     f0 *= f1 / (f1 + fx);
+                     break;
+-                        // Update formula cannot make any progress: Update the
+-                        // search interval.
++                case REGULA_FALSI:
++                    // Detect early that algorithm is stuck, instead of
++                    // waiting until the maximum number of iterations is
++                    // exceeded.
++                    if (x == x1) {
++                        f0 *= 0.5;
++                    }
++                    break;
+                 default:
+                     // Should never happen.
++                    throw new MathInternalError();
+                 }
+             }
+             // Update from [x0, x1] to [x0, x].

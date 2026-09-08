@@ -1,0 +1,2 @@
+M	src/com/google/javascript/rhino/jstype/FunctionType.java
+M	src/com/google/javascript/rhino/jstype/JSType.java

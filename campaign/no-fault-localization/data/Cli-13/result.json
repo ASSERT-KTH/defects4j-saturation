@@ -1,0 +1,42 @@
+{
+  "project": "Cli",
+  "bug": 13,
+  "id": "Cli-13",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 17866,
+  "finished_at": "2026-09-07T15:35:27Z",
+  "wallclock_s": 336,
+  "agent_s": 316,
+  "agent_rc": 0,
+  "num_turns": 42,
+  "api_duration_ms": 298851,
+  "total_cost_usd": 0.9977264,
+  "session_id": "605ecd5e-a444-48e0-922d-022e3b6d7228",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 24599,
+  "cache_read_input_tokens": 2209892,
+  "cache_creation_input_tokens": 76831,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli2.bug.BugLoopingOptionLookAlikeTest::testLoopingOptionLookAlike2"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli2/WriteableCommandLine.java",
+    "src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java",
+    "src/java/org/apache/commons/cli2/option/ArgumentImpl.java"
+  ],
+  "patch_added_lines": 10,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

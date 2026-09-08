@@ -1,0 +1,41 @@
+{
+  "project": "Jsoup",
+  "bug": 34,
+  "id": "Jsoup-34",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 525,
+  "finished_at": "2026-09-08T05:24:37Z",
+  "wallclock_s": 52,
+  "agent_s": 31,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 23891,
+  "total_cost_usd": 0.09907460000000001,
+  "session_id": "2dadce93-1099-4c3e-9bb7-113ea471ff7f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1704,
+  "cache_read_input_tokens": 135643,
+  "cache_creation_input_tokens": 12751,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.CharacterReaderTest::nextIndexOfUnmatched",
+    "org.jsoup.parser.HtmlParserTest::handlesUnclosedCdataAtEOF"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/CharacterReader.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 61,
+  "id": "JacksonDatabind-61",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1757,
+  "finished_at": "2026-09-08T01:52:45Z",
+  "wallclock_s": 305,
+  "agent_s": 160,
+  "agent_rc": 0,
+  "num_turns": 26,
+  "api_duration_ms": 83332,
+  "total_cost_usd": 0.32074920000000007,
+  "session_id": "070bbf21-d3c9-4901-89e2-28fef0dd5df8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 52,
+  "output_tokens": 6755,
+  "cache_read_input_tokens": 702911,
+  "cache_creation_input_tokens": 27260,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.jsontype.DefaultTypingWithPrimitivesTest::testDefaultTypingWithLong"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/jsontype/impl/StdTypeResolverBuilder.java"
+  ],
+  "patch_added_lines": 6,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

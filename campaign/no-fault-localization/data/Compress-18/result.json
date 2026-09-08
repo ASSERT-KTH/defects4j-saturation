@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 18,
+  "id": "Compress-18",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 627,
+  "finished_at": "2026-09-07T23:44:29Z",
+  "wallclock_s": 69,
+  "agent_s": 47,
+  "agent_rc": 0,
+  "num_turns": 10,
+  "api_duration_ms": 30504,
+  "total_cost_usd": 0.1305048,
+  "session_id": "e029951f-928a-46d5-b2f2-672ea1944a4c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 20,
+  "output_tokens": 2297,
+  "cache_read_input_tokens": 210809,
+  "cache_creation_input_tokens": 15747,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.tar.TarArchiveOutputStreamTest::testWriteNonAsciiDirectoryNamePosixMode"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveOutputStream.java"
+  ],
+  "patch_added_lines": 3,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

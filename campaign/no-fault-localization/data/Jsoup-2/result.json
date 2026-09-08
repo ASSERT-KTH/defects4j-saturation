@@ -1,0 +1,40 @@
+{
+  "project": "Jsoup",
+  "bug": 2,
+  "id": "Jsoup-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3528,
+  "finished_at": "2026-09-08T05:10:19Z",
+  "wallclock_s": 271,
+  "agent_s": 245,
+  "agent_rc": 0,
+  "num_turns": 28,
+  "api_duration_ms": 104680,
+  "total_cost_usd": 0.4058904000000001,
+  "session_id": "7095e93b-e4f5-4ae6-a911-7faea5ca95e5",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 56,
+  "output_tokens": 7844,
+  "cache_read_input_tokens": 919947,
+  "cache_creation_input_tokens": 35229,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.jsoup.parser.ParserTest::handlesTextAfterData"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/jsoup/parser/Parser.java"
+  ],
+  "patch_added_lines": 5,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

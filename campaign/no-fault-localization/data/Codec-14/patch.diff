@@ -1,0 +1,33 @@
+diff --git a/src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java b/src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java
+index 97cedb2..6a05480 100644
+--- a/src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java
++++ b/src/main/java/org/apache/commons/codec/language/bm/PhoneticEngine.java
+@@ -355,10 +355,26 @@ public class PhoneticEngine {
+                 i = rulesApplication.getI();
+             }
+ 
+-            // the phonemes map orders the phonemes only based on their text, but ignores the language set
++            // the phonemes set orders phonemes only based on their text, but ignores the language set
+             // when adding new phonemes, check for equal phonemes and merge their language set, otherwise
+             // phonemes with the same text but different language set get lost
+-            phonemes.addAll(subBuilder.getPhonemes());
++            for (final Rule.Phoneme newPhoneme : subBuilder.getPhonemes()) {
++                boolean found = false;
++                // linear search for a phoneme with same text
++                for (final Rule.Phoneme existingPhoneme : phonemes) {
++                    if (Rule.Phoneme.COMPARATOR.compare(existingPhoneme, newPhoneme) == 0) {
++                        final Rule.Phoneme mergedPhoneme = new Rule.Phoneme(existingPhoneme.getPhonemeText(),
++                                existingPhoneme.getLanguages().merge(newPhoneme.getLanguages()));
++                        phonemes.remove(existingPhoneme);
++                        phonemes.add(mergedPhoneme);
++                        found = true;
++                        break;
++                    }
++                }
++                if (!found) {
++                    phonemes.add(newPhoneme);
++                }
++            }
+         }
+ 
+         return new PhonemeBuilder(phonemes);

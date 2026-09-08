@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 46,
+  "id": "JacksonDatabind-46",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 661,
+  "finished_at": "2026-09-08T01:28:41Z",
+  "wallclock_s": 223,
+  "agent_s": 80,
+  "agent_rc": 0,
+  "num_turns": 15,
+  "api_duration_ms": 42407,
+  "total_cost_usd": 0.16141879999999997,
+  "session_id": "2443e43e-50ab-4a08-b942-916e04ae33f7",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 30,
+  "output_tokens": 3109,
+  "cache_read_input_tokens": 316114,
+  "cache_creation_input_tokens": 16199,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.type.TestJavaType::testGenericSignature1195"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/type/ReferenceType.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

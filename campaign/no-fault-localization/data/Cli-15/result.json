@@ -1,0 +1,41 @@
+{
+  "project": "Cli",
+  "bug": 15,
+  "id": "Cli-15",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1492,
+  "finished_at": "2026-09-07T15:32:07Z",
+  "wallclock_s": 69,
+  "agent_s": 51,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 46314,
+  "total_cost_usd": 0.1910596,
+  "session_id": "a2844cc8-4ce3-44bc-b7a2-9a8d8153d9e3",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3439,
+  "cache_read_input_tokens": 271698,
+  "cache_creation_input_tokens": 24741,
+  "src_dir": "src/java",
+  "test_dir": "src/test",
+  "trigger_tests": [
+    "org.apache.commons.cli2.bug.BugCLI158Test::testSingleOptionSingleArgument",
+    "org.apache.commons.cli2.bug.BugCLI158Test::testSingleOptionMaximumNumberOfArgument"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/java/org/apache/commons/cli2/commandline/WriteableCommandLineImpl.java"
+  ],
+  "patch_added_lines": 16,
+  "patch_removed_lines": 4,
+  "has_dev_patch": true
+}

@@ -1,0 +1,55 @@
+diff --git a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+index 63e42a1..ac16072 100644
+--- a/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
++++ b/src/main/java/com/fasterxml/jackson/dataformat/xml/ser/ToXmlGenerator.java
+@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.*;
+ import com.fasterxml.jackson.core.base.GeneratorBase;
+ import com.fasterxml.jackson.core.io.IOContext;
+ import com.fasterxml.jackson.core.json.JsonWriteContext;
++import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+ import com.fasterxml.jackson.dataformat.xml.XmlPrettyPrinter;
+ import com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter;
+ import com.fasterxml.jackson.dataformat.xml.util.StaxUtil;
+@@ -829,6 +830,8 @@ public final class ToXmlGenerator
+                     _xmlPrettyPrinter.writeLeafElement(_xmlWriter,
+                             _nextName.getNamespaceURI(), _nextName.getLocalPart(),
+                             data, offset, len);
++                } else if (len == 0) {
++                    _xmlWriter.writeEmptyElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                 } else {
+                     _xmlWriter.writeStartElement(_nextName.getNamespaceURI(), _nextName.getLocalPart());
+                     _xmlWriter.writeBinary(data, offset, len);
+@@ -840,16 +843,24 @@ public final class ToXmlGenerator
+         }
+     }
+ 
+-                // Stax2 API only has 'full buffer' write method:
+-              // should we consider pretty-printing or not?
+-
+-
+-
+-        // base64 encodes up to 3 bytes into a 4 bytes string
+-
+-        // we still have < 3 bytes in the buffer
++    @Override
++    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException
++    {
++        byte[] readBuffer = _ioContext.allocReadIOBuffer();
++        ByteArrayBuilder byteBuilder = new ByteArrayBuilder();
++        try {
++            int bytesRead;
++            while ((bytesRead = data.read(readBuffer)) > 0) {
++                byteBuilder.write(readBuffer, 0, bytesRead);
++            }
++        } finally {
++            _ioContext.releaseReadIOBuffer(readBuffer);
++        }
++        byte[] bytes = byteBuilder.toByteArray();
++        writeBinary(b64variant, bytes, 0, bytes.length);
++        return bytes.length;
++    }
+ 
+-    
+     private byte[] toFullBuffer(byte[] data, int offset, int len)
+     {
+         // might already be ok:

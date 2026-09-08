@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 23,
+  "id": "Compress-23",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 294,
+  "finished_at": "2026-09-07T23:47:00Z",
+  "wallclock_s": 63,
+  "agent_s": 42,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 21503,
+  "total_cost_usd": 0.08734320000000001,
+  "session_id": "5515ab20-6124-477f-ab31-982ceeb31d4c",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1581,
+  "cache_read_input_tokens": 124676,
+  "cache_creation_input_tokens": 11028,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.sevenz.SevenZFileTest::testCompressedHeaderWithNonDefaultDictionarySize"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/sevenz/Coders.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

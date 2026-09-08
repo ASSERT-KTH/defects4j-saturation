@@ -1,0 +1,41 @@
+{
+  "project": "Mockito",
+  "bug": 34,
+  "id": "Mockito-34",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 70,
+  "finished_at": "2026-09-08T14:25:05Z",
+  "wallclock_s": 131,
+  "agent_s": 42,
+  "agent_rc": 0,
+  "num_turns": 5,
+  "api_duration_ms": 16056,
+  "total_cost_usd": 0.081474,
+  "session_id": "ca850566-fa05-4c49-a3c2-804ad2310a25",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 10,
+  "output_tokens": 1037,
+  "cache_read_input_tokens": 91490,
+  "cache_creation_input_tokens": 12205,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "org.mockito.internal.invocation.InvocationMatcherTest::shouldMatchCaptureArgumentsWhenArgsCountDoesNOTMatch",
+    "org.mockitousage.basicapi.UsingVarargsTest::shouldMatchEasilyEmptyVararg"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/org/mockito/internal/invocation/InvocationMatcher.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

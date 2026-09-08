@@ -1,0 +1,41 @@
+{
+  "project": "Gson",
+  "bug": 3,
+  "id": "Gson-3",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 430,
+  "finished_at": "2026-09-08T00:05:51Z",
+  "wallclock_s": 66,
+  "agent_s": 40,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 31914,
+  "total_cost_usd": 0.13569959999999998,
+  "session_id": "04e1b668-0764-4b3a-a755-6e9eaaece9ac",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 2759,
+  "cache_read_input_tokens": 225203,
+  "cache_creation_input_tokens": 14948,
+  "src_dir": "gson/src/main/java",
+  "test_dir": "gson/src/test/java",
+  "trigger_tests": [
+    "com.google.gson.functional.MapTest::testConcurrentMap",
+    "com.google.gson.functional.MapTest::testConcurrentNavigableMap"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "gson/src/main/java/com/google/gson/internal/ConstructorConstructor.java"
+  ],
+  "patch_added_lines": 17,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

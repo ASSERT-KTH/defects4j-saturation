@@ -1,0 +1,34 @@
+diff --git a/src/main/java/org/joda/time/chrono/BaseChronology.java b/src/main/java/org/joda/time/chrono/BaseChronology.java
+index ac43706..10f4b74 100644
+--- a/src/main/java/org/joda/time/chrono/BaseChronology.java
++++ b/src/main/java/org/joda/time/chrono/BaseChronology.java
+@@ -18,6 +18,7 @@ package org.joda.time.chrono;
+ import java.io.Serializable;
+ 
+ import org.joda.time.Chronology;
++import org.joda.time.DateTimeConstants;
+ import org.joda.time.DateTimeField;
+ import org.joda.time.DateTimeFieldType;
+ import org.joda.time.DateTimeZone;
+@@ -275,11 +276,20 @@ public abstract class BaseChronology
+     public int[] get(ReadablePeriod period, long duration) {
+         int size = period.size();
+         int[] values = new int[size];
++        // A bare millisecond duration has no associated instant, so any
++        // field whose precision comes from the chronology's zone (rather
++        // than being precise everywhere, like hours or smaller) can only
++        // be trusted here when that zone is UTC. Otherwise, e.g. a fixed
++        // non-zero offset, the field is only "precise" relative to a real
++        // instant in that zone, which this duration does not have.
++        DateTimeZone zone = getZone();
++        boolean trustZoneDependentFields = (zone == null || zone == DateTimeZone.UTC);
+         if (duration != 0) {
+             long current = 0;
+             for (int i = 0; i < size; i++) {
+                 DurationField field = period.getFieldType(i).getField(this);
+-                if (field.isPrecise()) {
++                if (field.isPrecise() &&
++                        (trustZoneDependentFields || field.getUnitMillis() < DateTimeConstants.MILLIS_PER_HOUR * 12)) {
+                     int value = field.getDifference(duration, current);
+                     current = field.add(current, value);
+                     values[i] = value;

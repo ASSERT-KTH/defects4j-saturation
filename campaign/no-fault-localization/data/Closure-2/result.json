@@ -1,0 +1,40 @@
+{
+  "project": "Closure",
+  "bug": 2,
+  "id": "Closure-2",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 25,
+  "finished_at": "2026-09-07T15:45:59Z",
+  "wallclock_s": 372,
+  "agent_s": 99,
+  "agent_rc": 0,
+  "num_turns": 7,
+  "api_duration_ms": 21403,
+  "total_cost_usd": 0.0870584,
+  "session_id": "13c83764-31f4-4e7e-a3d1-265ed91a605e",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 14,
+  "output_tokens": 1326,
+  "cache_read_input_tokens": 127602,
+  "cache_creation_input_tokens": 11441,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.TypeCheckTest::testBadInterfaceExtendsNonExistentInterfaces"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/TypeCheck.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

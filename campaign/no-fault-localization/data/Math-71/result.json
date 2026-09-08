@@ -1,0 +1,42 @@
+{
+  "project": "Math",
+  "bug": 71,
+  "id": "Math-71",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 26818,
+  "finished_at": "2026-09-08T10:50:28Z",
+  "wallclock_s": 468,
+  "agent_s": 433,
+  "agent_rc": 0,
+  "num_turns": 42,
+  "api_duration_ms": 406942,
+  "total_cost_usd": 1.2306758,
+  "session_id": "467b4b83-0284-4f61-8916-3a4e53869a13",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 84,
+  "output_tokens": 35726,
+  "cache_read_input_tokens": 2638199,
+  "cache_creation_input_tokens": 85547,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.math.ode.nonstiff.ClassicalRungeKuttaIntegratorTest::testMissedEndEvent",
+    "org.apache.commons.math.ode.nonstiff.DormandPrince853IntegratorTest::testMissedEndEvent"
+  ],
+  "failing_before": 2,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/math/ode/nonstiff/EmbeddedRungeKuttaIntegrator.java",
+    "src/main/java/org/apache/commons/math/ode/nonstiff/RungeKuttaIntegrator.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

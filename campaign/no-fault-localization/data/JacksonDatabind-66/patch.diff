@@ -1,0 +1,41 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+index f827c31..41df965 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
++++ b/src/main/java/com/fasterxml/jackson/databind/deser/std/StdKeyDeserializer.java
+@@ -8,6 +8,7 @@ import java.net.URI;
+ import java.net.URL;
+ import java.util.*;
+ 
++import com.fasterxml.jackson.core.JsonParser;
+ import com.fasterxml.jackson.core.JsonProcessingException;
+ import com.fasterxml.jackson.core.io.NumberInput;
+ import com.fasterxml.jackson.databind.*;
+@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.annotation.JacksonStdImpl;
+ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
+ import com.fasterxml.jackson.databind.util.ClassUtil;
+ import com.fasterxml.jackson.databind.util.EnumResolver;
++import com.fasterxml.jackson.databind.util.TokenBuffer;
+ 
+ /**
+  * Default {@link KeyDeserializer} implementation used for most {@link java.util.Map}
+@@ -312,8 +314,18 @@ public class StdKeyDeserializer extends KeyDeserializer
+                 return null;
+             }
+             try {
+-                // Ugh... should not have to give parser which may or may not be correct one...
+-                Object result = _delegate.deserialize(ctxt.getParser(), ctxt);
++                // 08-Sep-2026: Cannot just reuse `ctxt.getParser()` as-is since its state
++                // (current token) may not correspond to the Map key being deserialized here
++                // -- for example, when the enclosing value is read via a buffered `TokenBuffer`
++                // (as happens with polymorphic/`@JsonTypeInfo`-annotated types). Instead
++                // construct a stand-alone parser that only exposes the key as a `VALUE_STRING`
++                // token, so delegate deserializer always sees consistent input.
++                JsonParser p0 = ctxt.getParser();
++                TokenBuffer tb = new TokenBuffer(p0, ctxt);
++                tb.writeString(key);
++                JsonParser p = tb.asParser(p0);
++                p.nextToken();
++                Object result = _delegate.deserialize(p, ctxt);
+                 if (result != null) {
+                     return result;
+                 }

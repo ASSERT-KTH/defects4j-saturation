@@ -1,0 +1,42 @@
+{
+  "project": "Closure",
+  "bug": 30,
+  "id": "Closure-30",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 25115,
+  "finished_at": "2026-09-07T16:37:23Z",
+  "wallclock_s": 555,
+  "agent_s": 437,
+  "agent_rc": 0,
+  "num_turns": 28,
+  "api_duration_ms": 354679,
+  "total_cost_usd": 0.8843886,
+  "session_id": "f92a08eb-10af-4e77-9af7-eb8f4cf54179",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 56,
+  "output_tokens": 29757,
+  "cache_read_input_tokens": 1494218,
+  "cache_creation_input_tokens": 70595,
+  "src_dir": "src",
+  "test_dir": "test",
+  "trigger_tests": [
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testInlineAcrossSideEffect1",
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testCanInlineAcrossNoSideEffect",
+    "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest::testIssue698"
+  ],
+  "failing_before": 3,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/com/google/javascript/jscomp/MustBeReachingVariableDef.java"
+  ],
+  "patch_added_lines": 21,
+  "patch_removed_lines": 2,
+  "has_dev_patch": true
+}

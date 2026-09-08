@@ -1,0 +1,40 @@
+{
+  "project": "JacksonDatabind",
+  "bug": 90,
+  "id": "JacksonDatabind-90",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 500,
+  "finished_at": "2026-09-08T04:29:19Z",
+  "wallclock_s": 232,
+  "agent_s": 77,
+  "agent_rc": 0,
+  "num_turns": 14,
+  "api_duration_ms": 39577,
+  "total_cost_usd": 0.18576179999999998,
+  "session_id": "6bfcce8f-55da-406f-90fa-c7fb8ae52f31",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 28,
+  "output_tokens": 2830,
+  "cache_read_input_tokens": 339099,
+  "cache_creation_input_tokens": 21778,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "com.fasterxml.jackson.databind.creators.DelegatingArrayCreator1804Test::testDelegatingArray1804"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/com/fasterxml/jackson/databind/deser/ValueInstantiator.java"
+  ],
+  "patch_added_lines": 1,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

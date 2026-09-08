@@ -1,0 +1,41 @@
+{
+  "project": "Compress",
+  "bug": 42,
+  "id": "Compress-42",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 1933,
+  "finished_at": "2026-09-07T23:57:07Z",
+  "wallclock_s": 90,
+  "agent_s": 58,
+  "agent_rc": 0,
+  "num_turns": 11,
+  "api_duration_ms": 46979,
+  "total_cost_usd": 0.14333760000000004,
+  "session_id": "79ee5085-47d8-4355-a4a8-b4ce668f5946",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 22,
+  "output_tokens": 3913,
+  "cache_read_input_tokens": 221383,
+  "cache_creation_input_tokens": 14349,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.zip.ZipArchiveEntryTest::isUnixSymlinkIsFalseIfMoreThanOneFlagIsSet"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/zip/UnixStat.java",
+    "src/main/java/org/apache/commons/compress/archivers/zip/ZipArchiveEntry.java"
+  ],
+  "patch_added_lines": 2,
+  "patch_removed_lines": 1,
+  "has_dev_patch": true
+}

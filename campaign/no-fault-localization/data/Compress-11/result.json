@@ -1,0 +1,42 @@
+{
+  "project": "Compress",
+  "bug": 11,
+  "id": "Compress-11",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 14246,
+  "finished_at": "2026-09-07T23:44:48Z",
+  "wallclock_s": 285,
+  "agent_s": 262,
+  "agent_rc": 0,
+  "num_turns": 31,
+  "api_duration_ms": 251347,
+  "total_cost_usd": 0.7272949999999999,
+  "session_id": "06311716-b355-47e9-a838-191b0bedba9f",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 62,
+  "output_tokens": 20841,
+  "cache_read_input_tokens": 1397285,
+  "cache_creation_input_tokens": 59222,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.ArchiveStreamFactoryTest::shortTextFilesAreNoTARs"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarArchiveInputStream.java",
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarConstants.java",
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java"
+  ],
+  "patch_added_lines": 33,
+  "patch_removed_lines": 0,
+  "has_dev_patch": true
+}

@@ -1,0 +1,40 @@
+{
+  "project": "Compress",
+  "bug": 24,
+  "id": "Compress-24",
+  "verdict": "PLAUSIBLE",
+  "note": "all developer tests pass",
+  "campaign": "no-fault-localization",
+  "model": "claude-sonnet-5",
+  "effort": "high",
+  "telemetry_source": "result_event",
+  "thinking_tokens": 3936,
+  "finished_at": "2026-09-07T23:48:53Z",
+  "wallclock_s": 113,
+  "agent_s": 79,
+  "agent_rc": 0,
+  "num_turns": 9,
+  "api_duration_ms": 60891,
+  "total_cost_usd": 0.16015500000000002,
+  "session_id": "16defe93-64ec-4124-b984-ba88a75ec1b8",
+  "agent_subtype": "success",
+  "agent_is_error": false,
+  "input_tokens": 18,
+  "output_tokens": 5721,
+  "cache_read_input_tokens": 180985,
+  "cache_creation_input_tokens": 16124,
+  "src_dir": "src/main/java",
+  "test_dir": "src/test/java",
+  "trigger_tests": [
+    "org.apache.commons.compress.archivers.tar.TarUtilsTest::testParseOctal"
+  ],
+  "failing_before": 1,
+  "failing_relevant_after": 0,
+  "failing_full_after": 0,
+  "patch_files": [
+    "src/main/java/org/apache/commons/compress/archivers/tar/TarUtils.java"
+  ],
+  "patch_added_lines": 4,
+  "patch_removed_lines": 7,
+  "has_dev_patch": true
+}

@@ -1,0 +1,19 @@
+diff --git a/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java b/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java
+index da192ee..e89f28d 100644
+--- a/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java
++++ b/src/main/java/com/fasterxml/jackson/databind/SerializationConfig.java
+@@ -871,6 +871,14 @@ public final class SerializationConfig
+         if (!isEnabled(MapperFeature.AUTO_DETECT_FIELDS)) {
+             vchecker = vchecker.withFieldVisibility(Visibility.NONE);
+         }
++        // 08-Sep-2016: although setters are not used for serialization, they are
++        // still considered when collecting properties (to allow merging of
++        // annotations with getters/fields); disabling auto-detection must
++        // prevent an otherwise-visible setter from making an otherwise
++        // unserializable property (no getter, no field) appear serializable
++        if (!isEnabled(MapperFeature.AUTO_DETECT_SETTERS)) {
++            vchecker = vchecker.withSetterVisibility(Visibility.NONE);
++        }
+         return vchecker;
+     }
+ 
