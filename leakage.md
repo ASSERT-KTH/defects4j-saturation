@@ -13,7 +13,7 @@ one that cannot be fenced off — the model's weights. Each of those is a channe
 | # | channel | kind | mitigation | read | located but not read |
 |---|---|---|---|---|---|
 | 0 | the model's training data | in-weights | **none possible** | **demonstrated** (1 bug) | n/a |
-| 1 | `framework/projects/<P>/patches/<N>.src.patch` | on-host | audit | 0 | 1 (`Math-81`) |
+| 1 | `framework/projects/<P>/patches/<N>.src.patch` | on-host | audit only — 20 copies on this host, 8,650 patches | 0 | 1 (`Math-81`) |
 | 2 | `project_repos/<own project>.git` | on-host | audit | 0 | 0 |
 | 3 | the moved-aside `.gitorig` | on-host | moved out of the workspace, audit | 0 | 0 |
 | 4 | `defects4j checkout -v <N>f` | on-host | audit | 0 | 0 |
@@ -107,20 +107,37 @@ use it, and the agent runs with unrestricted Bash.
 
 **What happened.** 0 reads in either campaign. One search (`Math-81`, above).
 
-**Residual surface, and it is larger than the harness controls.** This host
-carries **three** Defects4J installations, each with 864 readable reference
-patches — 2,592 copies of the ground truth:
+**Residual surface, and it dwarfs what the harness controls.** `Math-81`'s
+`find /` succeeded because this is a shared research host. Counted properly:
 
 ```
-/home/martin/cigar/defects4j        864 reference patches readable
-/home/martin/defects4j              864 reference patches readable
-/home/martin/defects4j-claude/d4j   864 reference patches readable   <- the harness's own
+$ find / -type d -name patches -path "*framework/projects*" 2>/dev/null \
+    | sed 's|/framework/projects/.*||' | sort -u | wc -l
+20                       # distinct Defects4J installations readable from this account
+                         #   12 belonging to this user, 8 to other users of the host
+                         #   all reference patches mode 664 -- world-readable
 ```
 
-`Math-81`'s `find /` located all three. The harness de-leaks its own checkout and
-its own install; it has no control over other copies on the machine. Anyone
-reproducing this should assume the same and rely on the audit, or run on a host
-with exactly one install.
+**8,650 readable `*.src.patch` files.** The harness de-leaks exactly one
+checkout and knows about exactly one install — its own. Everything else is a
+copy of the answer key sitting on the same filesystem, including other people's
+APR-benchmark working directories, which no amount of care inside this repository
+can fence off.
+
+(An earlier version of this document said three installations and 2,592 patches.
+That was extrapolated from a spot check of the paths this project happens to know
+about, and it was wrong by almost an order of magnitude. The command above is the
+measurement.)
+
+Two consequences worth stating plainly:
+
+- **Auditing is the only real control for this channel**, not de-leaking, because
+  the harness cannot enumerate the copies. `Math-81` shows the audit works, and
+  shows how close the margin is: one `find`, then a decision not to read.
+- **Anyone reproducing this should not assume their host is cleaner.** A machine
+  shared between APR researchers is close to a worst case, and it is also the
+  normal case. Run the audit; do not infer cleanliness from having been careful
+  inside one directory tree.
 
 ## Channel 2 — the upstream repository
 

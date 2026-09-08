@@ -35,7 +35,10 @@ is the same either way, and the interesting results only show up in the comparis
 - **The harness leaked, in a way five audited channels missed.** `~/.m2` holds released jars
   of these same projects, and a post-fix version is ground truth. One session decompiled pre-
   and post-fix bytecode of the class it was repairing; it is excluded. The agent now runs
-  with those caches masked. All six channels are documented in [`leakage.md`](leakage.md).
+  with those caches masked. And the host turns out to carry **20 readable Defects4J
+  installations, 8,650 reference patches** — de-leaking one checkout controls almost none of
+  the surface, so the audit is the real control. All six channels:
+  [`leakage.md`](leakage.md).
 - **A short wall-clock cap suppresses the agent's own signal that it is stuck.** Zero honest
   failure reports in 854 runs at 30 minutes; four out of four at a 4-hour cap.
 
