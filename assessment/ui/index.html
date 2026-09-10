@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Assessment</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Trajectory Assessment</h1>
+      <div id="campaign" class="muted"></div>
+      <div id="analysis-status" class="analysis-status hidden"></div>
+    </div>
+    <nav class="tabs" aria-label="Views">
+      <label class="model-picker">
+        <span>Ollama</span>
+        <select id="ollama-model"></select>
+      </label>
+      <button id="reload-data">Reload</button>
+      <button id="tab-traces" class="active">Traces</button>
+      <button id="tab-annotations">Annotations</button>
+    </nav>
+  </header>
+
+  <main id="trace-view" class="layout">
+    <aside class="sidebar">
+      <div class="search-row">
+        <label for="bug-search">Search</label>
+        <input id="bug-search" type="search" placeholder="Search bug, project, category">
+        <div id="bug-count" class="bug-count"></div>
+      </div>
+      <div class="filters">
+        <div class="filter-group">
+          <div class="filter-title">Review</div>
+          <label><input id="filter-open" type="checkbox"> marked</label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-title">Result</div>
+          <label class="wide">
+            <span>similarity</span>
+            <select id="filter-similarity">
+              <option value="">any</option>
+              <option value="identical">identical</option>
+              <option value="same-files">same files</option>
+              <option value="different">different</option>
+              <option value="missing">missing</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-group">
+          <div class="filter-title">Signals</div>
+          <label><input id="filter-binary" type="checkbox"> binary</label>
+          <label><input id="filter-cache" type="checkbox"> cache</label>
+        </div>
+      </div>
+      <div id="bug-list" class="bug-list"></div>
+    </aside>
+
+    <section class="detail">
+      <div id="bug-empty" class="empty">Select a bug to inspect its trace.</div>
+      <div id="bug-detail" class="hidden">
+        <div class="detail-head">
+          <div>
+            <h2 id="bug-title"></h2>
+            <div id="bug-meta" class="meta"></div>
+          </div>
+          <div class="actions">
+            <div class="view-mode" aria-label="Trace mode">
+              <button id="mode-trajectory" class="active" type="button">Trajectory</button>
+              <button id="mode-full" type="button">Full Trace</button>
+            </div>
+            <button id="clear-selection">Clear</button>
+            <button id="save-annotation" class="primary">Save Mark</button>
+          </div>
+        </div>
+
+        <div id="trace-mode-note" class="trace-mode-note"></div>
+        <div id="category-strip" class="category-strip"></div>
+
+        <section class="annotation-editor">
+          <div class="field small">
+            <label>Steps</label>
+            <div id="selected-range">none</div>
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select id="ann-status">
+              <option value="interesting">interesting</option>
+              <option value="suspicious">suspicious</option>
+              <option value="benign">benign</option>
+              <option value="unclear">unclear</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Label</label>
+            <input id="ann-label" list="labels" value="uncategorized">
+            <datalist id="labels">
+              <option value="external_artifact">
+              <option value="binary_inspection">
+              <option value="auxiliary_repro">
+              <option value="test_oracle_mining">
+              <option value="build_or_classpath_introspection">
+              <option value="long_search">
+              <option value="patch_test_loop">
+              <option value="benign">
+              <option value="unclear">
+            </datalist>
+          </div>
+          <div class="field grow">
+            <label>Note</label>
+            <input id="ann-note" placeholder="Short rationale">
+          </div>
+        </section>
+
+        <div id="bug-annotations" class="annotation-list"></div>
+        <div id="timeline" class="timeline"></div>
+      </div>
+    </section>
+  </main>
+
+  <main id="annotation-view" class="hidden annotation-page">
+    <div class="annotation-toolbar">
+      <input id="annotation-search" type="search" placeholder="Search annotations">
+      <button id="export-annotations">Export JSON</button>
+    </div>
+    <div id="annotation-index"></div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

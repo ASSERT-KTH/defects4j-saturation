@@ -1,0 +1,458 @@
+const state = {
+  bugs: [],
+  currentBug: null,
+  detail: null,
+  annotations: [],
+  selected: new Set(),
+  traceMode: "trajectory",
+};
+
+const $ = (id) => document.getElementById(id);
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...opts,
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    let message = text;
+    try {
+      const data = JSON.parse(text);
+      message = data.error || text;
+    } catch {
+      message = text;
+    }
+    throw new Error(message);
+  }
+  return res.json();
+}
+
+function actionClass(kind) {
+  if (kind === "OBSERVATION") return "obs";
+  if (kind.includes("EXTERNAL") || kind.includes("BINARY")) return "danger";
+  if (kind.includes("EDIT") || kind.includes("WRITE")) return "warn";
+  return "";
+}
+
+function visibleBugs() {
+  const q = $("bug-search").value.trim().toLowerCase();
+  const similarity = $("filter-similarity").value;
+  return state.bugs.filter(b => {
+    const sim = b.similarity || "";
+    const text = [b.id, b.project, b.verdict, b.excluded, sim, ...(b.categories || [])].join(" ").toLowerCase();
+    if (q && !text.includes(q)) return false;
+    if ($("filter-open").checked && !b.annotation_count) return false;
+    if ($("filter-binary").checked && !b.has_binary_inspection) return false;
+    if ($("filter-cache").checked && !b.has_cache_access) return false;
+    if (similarity === "missing" && sim) return false;
+    if (similarity && similarity !== "missing" && sim !== similarity) return false;
+    return true;
+  });
+}
+
+function similarityBadge(similarity) {
+  if (!similarity) return "";
+  const cls = similarity === "identical" ? "" : similarity === "same-files" ? "warn" : "danger";
+  const label = similarity === "same-files" ? "same files" : similarity;
+  return `<span class="badge ${cls}">${esc(label)}</span>`;
+}
+
+function renderBugList() {
+  const rows = visibleBugs();
+  $("bug-count").textContent = `${rows.length} / ${state.bugs.length} bugs`;
+  $("bug-list").innerHTML = rows.map(b => `
+    <div class="bug-item ${b.id === state.currentBug ? "selected" : ""}" data-bug="${esc(b.id)}">
+      <div>
+        <div class="bug-id">${esc(b.id)}</div>
+        <div class="bug-stats">${esc(b.verdict)} · ${b.num_actions} actions · ${b.num_searches} searches · ${b.num_test_runs} tests</div>
+      </div>
+      <div>
+        ${b.excluded ? `<span class="badge danger">${esc(b.excluded)}</span>` : ""}
+        ${similarityBadge(b.similarity)}
+        ${b.annotation_count ? `<span class="badge warn">${b.annotation_count} mark${b.annotation_count === 1 ? "" : "s"}</span>` : ""}
+        ${b.has_binary_inspection ? `<span class="badge danger">binary</span>` : ""}
+      </div>
+    </div>
+  `).join("");
+  document.querySelectorAll(".bug-item").forEach(el => {
+    el.addEventListener("click", () => loadBug(el.dataset.bug));
+  });
+}
+
+function annotationHits(step) {
+  return state.annotations.filter(a =>
+    a.bug_id === state.currentBug && step >= a.start_step && step <= a.end_step
+  );
+}
+
+function selectionRange() {
+  const xs = [...state.selected].sort((a, b) => a - b);
+  if (!xs.length) return null;
+  return { start: xs[0], end: xs[xs.length - 1] };
+}
+
+function renderSelection() {
+  const r = selectionRange();
+  $("selected-range").textContent = r ? `${r.start}..${r.end}` : "none";
+}
+
+function renderCategories() {
+  const cats = state.detail.categories || [];
+  $("category-strip").innerHTML = cats.slice(0, 8).map(c => `
+    <div class="category">
+      <strong>${esc((c.category || "").replaceAll("_", " "))}</strong>
+      <span class="muted">score ${esc(c.score)} · rank ${esc(c.rank)}</span>
+    </div>
+  `).join("");
+}
+
+function renderBugAnnotations() {
+  const anns = state.annotations.filter(a => a.bug_id === state.currentBug);
+  $("bug-annotations").innerHTML = anns.map(a => `
+    <div class="ann-chip">
+      <strong>${esc(a.status)}</strong>
+      <span>${esc(a.label)} ${a.start_step}..${a.end_step}</span>
+      <button data-jump="${esc(a.id)}">view</button>
+      <button data-delete="${esc(a.id)}">delete</button>
+    </div>
+  `).join("");
+  document.querySelectorAll("[data-delete]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      await api(`/api/annotations?id=${encodeURIComponent(btn.dataset.delete)}`, { method: "DELETE" });
+      await refreshAnnotations();
+      await loadBug(state.currentBug);
+    });
+  });
+  document.querySelectorAll("[data-jump]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const ann = state.annotations.find(a => a.id === btn.dataset.jump);
+      if (!ann) return;
+      state.selected = new Set();
+      for (let i = ann.start_step; i <= ann.end_step; i++) state.selected.add(i);
+      renderTimeline();
+      renderSelection();
+      const el = document.querySelector(`[data-step="${ann.start_step}"]`);
+      if (el) el.scrollIntoView({ block: "center" });
+    });
+  });
+}
+
+function visibleActions() {
+  const actions = state.detail.actions || [];
+  if (state.traceMode === "full") return actions.map((action, index) => ({ action, index }));
+  return actions
+    .map((action, index) => ({ action, index }))
+    .filter(row => row.action.kind !== "OBSERVATION");
+}
+
+function renderTraceMode() {
+  const actions = state.detail?.actions || [];
+  const hidden = state.traceMode === "trajectory"
+    ? actions.filter(a => a.kind === "OBSERVATION").length
+    : 0;
+  $("mode-trajectory").classList.toggle("active", state.traceMode === "trajectory");
+  $("mode-full").classList.toggle("active", state.traceMode === "full");
+  $("trace-mode-note").textContent = state.traceMode === "trajectory"
+    ? `Trajectory view: hiding ${hidden} observation step${hidden === 1 ? "" : "s"}.`
+    : `Full trace view: showing actions and observations.`;
+}
+
+function renderTimeline() {
+  renderTraceMode();
+  $("timeline").innerHTML = visibleActions().map(({ action: a, index: i }) => {
+    const anns = annotationHits(i);
+    const selected = state.selected.has(i);
+    const isObservation = a.kind === "OBSERVATION";
+    const cls = [
+      selected ? "selected" : "",
+      anns.length ? "annotated" : "",
+      isObservation ? "observation" : "",
+    ].join(" ");
+    const paths = (a.paths || []).slice(0, 3).join("\n");
+    const fullText = a.full_text || a.snippet || "";
+    const isTruncated = fullText && a.snippet && fullText.trim() !== a.snippet.trim();
+    return `
+      <div class="step ${cls}" data-step="${i}">
+        <div class="step-num">#${i}<br>L${esc(a.line)}</div>
+        <div class="step-kind">
+          <span class="badge ${actionClass(a.kind)}">${esc(a.kind)}</span>
+          ${a.tool ? `<div class="muted">${esc(a.tool)}</div>` : ""}
+          ${anns.length ? `<div class="badge warn">${anns.length} mark${anns.length === 1 ? "" : "s"}</div>` : ""}
+          <button class="explain-btn" data-explain="${i}" title="Explain this step">?</button>
+        </div>
+        <div>
+          ${isObservation ? `
+            <details class="step-full observation-full">
+              <summary>${esc(a.snippet || "tool result")}</summary>
+              <pre>${esc(fullText)}</pre>
+            </details>
+          ` : `
+            <div class="step-snippet">${esc(a.snippet)}</div>
+          `}
+          ${!isObservation && isTruncated ? `
+            <details class="step-full">
+              <summary>full text</summary>
+              <pre>${esc(fullText)}</pre>
+            </details>
+          ` : ""}
+          ${paths ? `<div class="step-paths">${esc(paths)}</div>` : ""}
+          <div id="explain-${i}" class="explanation hidden"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+  document.querySelectorAll("[data-explain]").forEach(btn => {
+    btn.addEventListener("click", async (ev) => {
+      ev.stopPropagation();
+      await explainStep(Number(btn.dataset.explain));
+    });
+  });
+  document.querySelectorAll(".step-full").forEach(el => {
+    el.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+    });
+  });
+  document.querySelectorAll(".step").forEach(el => {
+    el.addEventListener("click", (ev) => {
+      const step = Number(el.dataset.step);
+      if (ev.shiftKey && state.selected.size) {
+        const r = selectionRange();
+        const lo = Math.min(r.start, step);
+        const hi = Math.max(r.end, step);
+        state.selected = new Set();
+        for (let i = lo; i <= hi; i++) state.selected.add(i);
+      } else if (ev.metaKey || ev.ctrlKey) {
+        if (state.selected.has(step)) state.selected.delete(step);
+        else state.selected.add(step);
+      } else {
+        state.selected = new Set([step]);
+      }
+      renderTimeline();
+      renderSelection();
+    });
+  });
+}
+
+async function explainStep(stepIndex) {
+  const panel = $(`explain-${stepIndex}`);
+  panel.classList.remove("hidden");
+  panel.textContent = "Explaining with local LLM...";
+  try {
+    const data = await api("/api/explain", {
+      method: "POST",
+      body: JSON.stringify({
+        bug_id: state.currentBug,
+        step_index: stepIndex,
+        window: 3,
+      }),
+    });
+    const signals = data.detected_signals && data.detected_signals.length
+      ? `Detected signals:\n${data.detected_signals.map(s => `- ${s}`).join("\n")}\n\n`
+      : "";
+    panel.textContent = signals + (data.explanation || "No explanation returned.");
+  } catch (err) {
+    panel.textContent = `LLM explanation failed: ${err.message || err}`;
+  }
+}
+
+async function loadBug(bugId) {
+  state.currentBug = bugId;
+  state.detail = await api(`/api/bug/${encodeURIComponent(bugId)}`);
+  state.selected = new Set();
+  $("bug-empty").classList.add("hidden");
+  $("bug-detail").classList.remove("hidden");
+  $("bug-title").textContent = bugId;
+  const b = state.detail.bug || {};
+  $("bug-meta").innerHTML = `
+    <span>${esc(b.verdict || "")}</span>
+    ${similarityBadge(b.similarity)}
+    <span>${b.num_actions || 0} actions</span>
+    <span>${b.num_edits || 0} edits</span>
+    <span>${b.num_test_runs || 0} tests</span>
+    ${b.excluded ? `<span class="badge danger">excluded: ${esc(b.excluded)}</span>` : ""}
+  `;
+  renderBugList();
+  renderCategories();
+  renderBugAnnotations();
+  renderTimeline();
+  renderSelection();
+}
+
+async function refreshAnnotations() {
+  const data = await api("/api/annotations");
+  state.annotations = data.annotations || [];
+}
+
+async function saveAnnotation() {
+  const r = selectionRange();
+  if (!state.currentBug || !r) return;
+  const payload = {
+    bug_id: state.currentBug,
+    start_step: r.start,
+    end_step: r.end,
+    status: $("ann-status").value,
+    label: $("ann-label").value || "uncategorized",
+    note: $("ann-note").value || "",
+  };
+  await api("/api/annotations", { method: "POST", body: JSON.stringify(payload) });
+  $("ann-note").value = "";
+  await refreshAnnotations();
+  await loadBug(state.currentBug);
+}
+
+function renderAnnotationIndex() {
+  const q = $("annotation-search").value.trim().toLowerCase();
+  const rows = state.annotations.filter(a => {
+    const text = [a.bug_id, a.status, a.label, a.note].join(" ").toLowerCase();
+    return !q || text.includes(q);
+  });
+  $("annotation-index").innerHTML = rows.map(a => `
+    <div class="ann-row">
+      <strong>${esc(a.bug_id)}</strong>
+      <span class="badge ${a.status === "suspicious" ? "danger" : "warn"}">${esc(a.status)}</span>
+      <span>${esc(a.label)} · ${a.start_step}..${a.end_step}</span>
+      <span>${esc(a.note)}</span>
+      <button data-open-ann="${esc(a.id)}">open</button>
+    </div>
+  `).join("");
+  document.querySelectorAll("[data-open-ann]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const ann = state.annotations.find(a => a.id === btn.dataset.openAnn);
+      if (!ann) return;
+      showTraceView();
+      await loadBug(ann.bug_id);
+      state.selected = new Set();
+      for (let i = ann.start_step; i <= ann.end_step; i++) state.selected.add(i);
+      renderTimeline();
+      renderSelection();
+      const el = document.querySelector(`[data-step="${ann.start_step}"]`);
+      if (el) el.scrollIntoView({ block: "center" });
+    });
+  });
+}
+
+function showTraceView() {
+  $("trace-view").classList.remove("hidden");
+  $("annotation-view").classList.add("hidden");
+  $("tab-traces").classList.add("active");
+  $("tab-annotations").classList.remove("active");
+}
+
+function showAnnotationView() {
+  $("trace-view").classList.add("hidden");
+  $("annotation-view").classList.remove("hidden");
+  $("tab-traces").classList.remove("active");
+  $("tab-annotations").classList.add("active");
+  renderAnnotationIndex();
+}
+
+async function refreshBugs() {
+  const data = await api("/api/bugs");
+  state.bugs = data.bugs || [];
+  $("campaign").textContent = data.campaign || "";
+  const status = $("analysis-status");
+  if (data.analysis_done) {
+    status.classList.add("hidden");
+    status.textContent = "";
+  } else {
+    status.classList.remove("hidden");
+    status.textContent = "data analysis not done";
+  }
+  renderBugList();
+  if (state.currentBug && state.bugs.some(b => b.id === state.currentBug)) {
+    await loadBug(state.currentBug);
+  }
+}
+
+async function reloadData() {
+  await api("/api/reload", { method: "POST" });
+  await refreshAnnotations();
+  await refreshBugs();
+  if (!state.currentBug) {
+    const preferred = state.bugs.find(b => b.id === "Time-14") || state.bugs[0];
+    if (preferred) await loadBug(preferred.id);
+  }
+}
+
+async function loadOllamaModels() {
+  const select = $("ollama-model");
+  select.innerHTML = `<option value="">loading...</option>`;
+  try {
+    const data = await api("/api/ollama/models");
+    const models = data.models || [];
+    if (!models.length) {
+      select.innerHTML = `<option value="">no models found</option>`;
+      select.disabled = true;
+      return;
+    }
+    select.disabled = false;
+    select.innerHTML = models.map(m =>
+      `<option value="${esc(m)}" ${m === data.selected ? "selected" : ""}>${esc(m)}</option>`
+    ).join("");
+  } catch (err) {
+    select.innerHTML = `<option value="">ollama unavailable</option>`;
+    select.disabled = true;
+  }
+}
+
+async function changeOllamaModel() {
+  const model = $("ollama-model").value;
+  if (!model) return;
+  await api("/api/ollama/model", {
+    method: "POST",
+    body: JSON.stringify({ model }),
+  });
+}
+
+async function init() {
+  await refreshAnnotations();
+  await refreshBugs();
+  await loadOllamaModels();
+
+  ["bug-search", "filter-open", "filter-binary", "filter-cache", "filter-similarity"].forEach(id => {
+    $(id).addEventListener("input", renderBugList);
+    $(id).addEventListener("change", renderBugList);
+  });
+  $("clear-selection").addEventListener("click", () => {
+    state.selected = new Set();
+    renderTimeline();
+    renderSelection();
+  });
+  $("save-annotation").addEventListener("click", saveAnnotation);
+  $("reload-data").addEventListener("click", reloadData);
+  $("ollama-model").addEventListener("change", changeOllamaModel);
+  $("mode-trajectory").addEventListener("click", () => {
+    state.traceMode = "trajectory";
+    renderTimeline();
+  });
+  $("mode-full").addEventListener("click", () => {
+    state.traceMode = "full";
+    renderTimeline();
+  });
+  $("tab-traces").addEventListener("click", showTraceView);
+  $("tab-annotations").addEventListener("click", showAnnotationView);
+  $("annotation-search").addEventListener("input", renderAnnotationIndex);
+  $("export-annotations").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(state.annotations, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "trajectory_annotations.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const preferred = state.bugs.find(b => b.id === "Time-14") || state.bugs[0];
+  if (preferred) await loadBug(preferred.id);
+}
+
+init().catch(err => {
+  document.body.innerHTML = `<pre>${esc(err.stack || err)}</pre>`;
+});
