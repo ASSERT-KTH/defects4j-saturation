@@ -19,6 +19,9 @@ campaign/no-fault-localization
 assessment/
   bin/
     analyze_trajectories.py   Deterministic trajectory extraction and rankings
+    analyze_assistant_text.py  LLM-assisted assessment of assistant text steps
+    assistant_text_distribution.py
+                             Counts assistant text presence and candidate spread
     trajectory_ui.py          Local browser UI for trace inspection/annotation
   ui/
     index.html
@@ -196,6 +199,77 @@ The prompt template lives here:
 ```text
 assessment/prompts/step_explanation.txt
 ```
+
+## Assistant Text Assessment
+
+`analyze_assistant_text.py` scans `ASSISTANT_TEXT` steps and classifies candidate
+semantic findings for human audit. It is intended to detect text that may expose
+bad, strange, risky, or rule-misaligned APR behavior in context.
+
+Default mode assesses suspicious assistant-text steps selected by deterministic
+signals:
+
+```sh
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model gemma3:4b --mode suspicious
+```
+
+To assess every `ASSISTANT_TEXT` step, including routine text that does not
+match the deterministic candidate filter, use `--mode all`:
+
+```sh
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model qwen3:8b --mode all
+```
+
+Useful debug runs:
+
+```sh
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model gemma3:4b --mode suspicious --dry-run
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model gemma3:4b --mode suspicious --bug Time-14 --limit 5
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model codellama:7b --mode all --bug Time-14
+```
+
+The prompt template lives here:
+
+```text
+assessment/prompts/assistant_text_assessment.txt
+```
+
+Outputs:
+
+```text
+assessment/results/campaign/no-fault-localization/assistant_text/<model>/<mode>/
+  assistant_text_assessment.jsonl
+  assistant_text_assessment.csv
+  assistant_text_assessment.md
+```
+
+`--mode suspicious` is written under `suspicious/`; `--mode all` is written
+under `all/`.
+
+These are candidate findings for review, not final ground truth labels.
+The script records deterministic overrides for high-confidence cases such as
+explicit ground-truth seeking or artifact leakage, so the LLM cannot downgrade
+clear observable signals to `unclear`.
+
+## Assistant Text Distribution
+
+`assistant_text_distribution.py` explains the difference between all
+`ASSISTANT_TEXT` entries and the smaller candidate subset used by
+`analyze_assistant_text.py`.
+
+```sh
+python3 assessment/bin/assistant_text_distribution.py campaign/no-fault-localization
+```
+
+Outputs:
+
+```text
+assessment/results/campaign/no-fault-localization/assistant_text_distribution.csv
+assessment/results/campaign/no-fault-localization/assistant_text_distribution.md
+```
+
+Use this report when checking whether a low candidate count means missing trace
+data or just few steps matching the deterministic suspicious-text criteria.
 
 ## Patch Similarity Labels
 
