@@ -22,12 +22,16 @@ body {
 
 .topbar {
   height: 72px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
   padding: 12px 18px;
   border-bottom: 1px solid var(--line);
   background: var(--panel);
+}
+.topbar-title {
+  min-width: 0;
 }
 
 h1, h2 {
@@ -59,7 +63,23 @@ h2 { font-size: 22px; }
   align-items: center;
   margin-top: 4px;
 }
-.tabs {
+.primary-tabs {
+  display: inline-flex;
+  justify-self: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafbfc;
+}
+.primary-tabs button {
+  min-width: 118px;
+  border: 0;
+  border-radius: 0;
+}
+.primary-tabs button + button {
+  border-left: 1px solid var(--line);
+}
+.utility-tabs {
   display: flex;
   gap: 6px;
   align-items: center;
@@ -477,6 +497,19 @@ input, select {
 .hidden { display: none !important; }
 
 @media (max-width: 900px) {
+  .topbar {
+    height: auto;
+    grid-template-columns: 1fr;
+  }
+  .primary-tabs {
+    justify-self: stretch;
+  }
+  .primary-tabs button {
+    flex: 1;
+  }
+  .utility-tabs {
+    justify-content: flex-start;
+  }
   .layout { grid-template-columns: 1fr; height: auto; }
   .sidebar { height: 320px; border-right: 0; border-bottom: 1px solid var(--line); }
   .annotation-editor { grid-template-columns: 1fr; }

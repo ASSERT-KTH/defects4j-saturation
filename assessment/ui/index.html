@@ -8,20 +8,22 @@
 </head>
 <body>
   <header class="topbar">
-    <div>
+    <div class="topbar-title">
       <h1>Trajectory Assessment</h1>
       <div id="campaign" class="muted"></div>
       <div id="analysis-status" class="analysis-status hidden"></div>
     </div>
-    <nav class="tabs" aria-label="Views">
+    <nav class="primary-tabs" aria-label="Primary views">
+      <button id="tab-traces" class="active">Traces</button>
+      <button id="tab-assistant-text">Assistant Text</button>
+    </nav>
+    <nav class="utility-tabs" aria-label="Utilities">
+      <button id="tab-annotations">Annotations</button>
       <label class="model-picker">
         <span>Ollama</span>
         <select id="ollama-model"></select>
       </label>
       <button id="reload-data">Reload</button>
-      <button id="tab-traces" class="active">Traces</button>
-      <button id="tab-annotations">Annotations</button>
-      <button id="tab-assistant-text">Assistant Text</button>
     </nav>
   </header>
 
