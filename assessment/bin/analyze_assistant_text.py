@@ -329,11 +329,65 @@ def apply_deterministic_overrides(row, assessment):
     return assessment
 
 
-def write_outputs(outdir, rows):
+def output_paths(outdir):
     outdir.mkdir(parents=True, exist_ok=True)
     jsonl_path = outdir / "assistant_text_assessment.jsonl"
     csv_path = outdir / "assistant_text_assessment.csv"
     md_path = outdir / "assistant_text_assessment.md"
+    return jsonl_path, csv_path, md_path
+
+
+def row_is_dry_run(row):
+    if "dry_run" in row:
+        return bool(row.get("dry_run"))
+    return "dry run; LLM not called" in str(row.get("rationale") or "")
+
+
+def current_config(row, model, mode, prompt_hash, window, dry_run):
+    return (
+        row.get("model") == model
+        and row.get("mode") == mode
+        and row.get("prompt_hash") == prompt_hash
+        and int(row.get("context_window") or -1) == window
+        and row_is_dry_run(row) == dry_run
+    )
+
+
+def step_key(row):
+    return row.get("bug_id"), int(row.get("step_index") or -1)
+
+
+def load_resume_rows(jsonl_path, model, mode, prompt_hash, window, dry_run):
+    rows = []
+    stale = 0
+    bad = 0
+    if not jsonl_path.is_file():
+        return rows, stale, bad
+    for line in jsonl_path.read_text(errors="replace").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            bad += 1
+            continue
+        if current_config(row, model, mode, prompt_hash, window, dry_run):
+            rows.append(row)
+        else:
+            stale += 1
+    return rows, stale, bad
+
+
+def append_jsonl(jsonl_path, row):
+    jsonl_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(jsonl_path, "a") as f:
+        f.write(json.dumps(row) + "\n")
+        f.flush()
+        os.fsync(f.fileno())
+
+
+def write_outputs(outdir, rows):
+    jsonl_path, csv_path, md_path = output_paths(outdir)
     with open(jsonl_path, "w") as f:
         for row in rows:
             f.write(json.dumps(row) + "\n")
@@ -397,6 +451,7 @@ def main():
     ap.add_argument("--window", type=int, default=3)
     ap.add_argument("--limit", type=int, default=0, help="debug limit; default 0 assesses all selected steps")
     ap.add_argument("--dry-run", action="store_true", help="write candidate rows without calling the LLM")
+    ap.add_argument("--force", action="store_true", help="ignore existing rows and recompute selected steps")
     args = ap.parse_args()
 
     campaign = pathlib.Path(args.campaign).resolve()
@@ -404,6 +459,7 @@ def main():
     campaign = data.parent if data.name == "data" else campaign
     base_outdir = pathlib.Path(args.out).resolve() if args.out else default_output_dir(campaign)
     outdir = assistant_text_output_dir(base_outdir, args.model, args.mode)
+    jsonl_path, _, _ = output_paths(outdir)
     prompt_path = pathlib.Path(args.prompt)
     template = prompt_path.read_text(errors="replace")
     prompt_hash = hashlib.sha256(template.encode()).hexdigest()[:16]
@@ -422,9 +478,44 @@ def main():
     bug_progress = {bug_id: i for i, bug_id in enumerate(candidate_bug_ids, 1)}
     total_bugs = len(candidate_bug_ids)
 
-    rows = []
+    existing_rows = []
+    stale_rows = 0
+    bad_rows = 0
+    if not args.force:
+        existing_rows, stale_rows, bad_rows = load_resume_rows(
+            jsonl_path,
+            args.model,
+            args.mode,
+            prompt_hash,
+            args.window,
+            args.dry_run,
+        )
+    completed = {step_key(row) for row in existing_rows}
+    rows_by_key = {step_key(row): row for row in existing_rows}
+
+    if args.force and jsonl_path.exists():
+        jsonl_path.unlink()
+    if stale_rows or bad_rows:
+        print(
+            f"resume: ignoring {stale_rows} stale row(s) and {bad_rows} malformed row(s) "
+            f"from {jsonl_path}",
+            flush=True,
+        )
+    if existing_rows:
+        print(f"resume: loaded {len(existing_rows)} completed row(s) from {jsonl_path}", flush=True)
+
+    new_rows = 0
     started = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     for n, row in enumerate(selected_steps, 1):
+        key = step_key(row)
+        if key in completed:
+            print(
+                f"[bug {bug_progress[row['bug_id']]}/{total_bugs}] "
+                f"[step {n}/{len(selected_steps)}] "
+                f"{row['bug_id']} step {row['step_index']} -> skipped existing",
+                flush=True,
+            )
+            continue
         prompt = fill_template(template, row)
         base = {
             **row,
@@ -435,6 +526,7 @@ def main():
             "assessed_at": started,
             "mode": args.mode,
             "context_window": args.window,
+            "dry_run": args.dry_run,
         }
         if args.dry_run:
             assessment = {
@@ -461,7 +553,11 @@ def main():
                     "deterministic_override": "",
                 }
         assessment = apply_deterministic_overrides(row, assessment)
-        rows.append({**base, **assessment})
+        completed_row = {**base, **assessment}
+        rows_by_key[key] = completed_row
+        completed.add(key)
+        append_jsonl(jsonl_path, completed_row)
+        new_rows += 1
         print(
             f"[bug {bug_progress[row['bug_id']]}/{total_bugs}] "
             f"[step {n}/{len(selected_steps)}] "
@@ -470,9 +566,13 @@ def main():
             flush=True,
         )
 
+    rows = [rows_by_key[step_key(row)] for row in selected_steps if step_key(row) in rows_by_key]
     paths = write_outputs(outdir, rows)
     print(f"bugs processed: {total_bugs}")
-    print(f"assistant text steps assessed: {len(rows)}")
+    print(f"assistant text steps selected: {len(selected_steps)}")
+    print(f"assistant text steps resumed: {len(existing_rows)}")
+    print(f"assistant text steps newly assessed: {new_rows}")
+    print(f"assistant text steps in output: {len(rows)}")
     for p in paths:
         print(f"wrote {p}")
 

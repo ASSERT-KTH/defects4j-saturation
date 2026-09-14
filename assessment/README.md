@@ -136,6 +136,19 @@ rankings are unavailable. A banner is shown at the top.
 Use the `Reload` button after adding or deleting assessment result files while
 the server is running.
 
+## Assistant Text In The UI
+
+Assistant-text assessment is optional. If no assessment has been run, the Trace
+Inspector still works normally and the UI shows `assistant text assessment not
+done`.
+
+When assessment files exist under `assistant_text/<model>/<mode>/`, the selector
+in the `Assistant Text` tab lets you choose one active layer, such as
+`qwen3_8b / suspicious` or `qwen3_8b / all`. The UI does not merge layers. The
+trace view shows compact badges on assessed `ASSISTANT_TEXT` steps, and the
+`Assistant Text` tab lists the selected layer as findings that can jump back to
+the original trace step.
+
 ## Annotations
 
 Annotations are saved here:
@@ -245,6 +258,12 @@ assessment/results/campaign/no-fault-localization/assistant_text/<model>/<mode>/
 
 `--mode suspicious` is written under `suspicious/`; `--mode all` is written
 under `all/`.
+
+The JSONL file is written incrementally after each assessed step. By default,
+rerunning the same model/mode/prompt/window/dry-run configuration resumes from
+that JSONL and skips completed steps. The CSV and Markdown files are derived
+from the JSONL and regenerated when the command finishes. Use `--force` to
+ignore existing rows and recompute the selected steps.
 
 These are candidate findings for review, not final ground truth labels.
 The script records deterministic overrides for high-confidence cases such as
