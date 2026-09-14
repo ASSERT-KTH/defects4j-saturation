@@ -242,12 +242,23 @@ input, select {
   overflow: auto;
   padding: 16px;
 }
+.trace-sticky-head {
+  position: sticky;
+  top: -16px;
+  z-index: 10;
+  margin: -16px -16px 12px;
+  padding: 16px 16px 10px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(246, 247, 249, 0.96);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 16px rgba(23, 27, 34, 0.06);
+}
 .detail-head {
   display: flex;
   justify-content: space-between;
   gap: 12px;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 .trace-mode-note {
   color: var(--muted);
@@ -292,7 +303,7 @@ input, select {
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 .field label {
   display: block;

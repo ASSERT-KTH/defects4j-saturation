@@ -179,17 +179,25 @@ function availableStepKinds() {
   const rows = state.traceMode === "full"
     ? actions
     : actions.filter(a => a.kind !== "OBSERVATION");
-  return [...new Set(rows.map(a => a.kind).filter(Boolean))].sort();
+  const counts = new Map();
+  for (const action of rows) {
+    const kind = action.kind;
+    if (!kind) continue;
+    counts.set(kind, (counts.get(kind) || 0) + 1);
+  }
+  return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b));
 }
 
 function renderStepKindFilter() {
   const select = $("step-kind-filter");
   const kinds = availableStepKinds();
-  if (state.stepKindFilter && !kinds.includes(state.stepKindFilter)) {
+  const kindNames = kinds.map(([kind]) => kind);
+  if (state.stepKindFilter && !kindNames.includes(state.stepKindFilter)) {
     state.stepKindFilter = "";
   }
-  select.innerHTML = `<option value="">all</option>` + kinds.map(kind => `
-    <option value="${esc(kind)}" ${kind === state.stepKindFilter ? "selected" : ""}>${esc(kind)}</option>
+  const total = kinds.reduce((sum, [, count]) => sum + count, 0);
+  select.innerHTML = `<option value="">all (${total})</option>` + kinds.map(([kind, count]) => `
+    <option value="${esc(kind)}" ${kind === state.stepKindFilter ? "selected" : ""}>${esc(kind)} (${count})</option>
   `).join("");
 }
 

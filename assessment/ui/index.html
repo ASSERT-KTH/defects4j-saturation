@@ -64,70 +64,72 @@
     <section class="detail">
       <div id="bug-empty" class="empty">Select a bug to inspect its trace.</div>
       <div id="bug-detail" class="hidden">
-        <div class="detail-head">
-          <div>
-            <h2 id="bug-title"></h2>
-            <div id="bug-meta" class="meta"></div>
-          </div>
-          <div class="actions">
-            <div class="view-mode" aria-label="Trace mode">
-              <button id="mode-trajectory" class="active" type="button">Trajectory</button>
-              <button id="mode-full" type="button">Full Trace</button>
+        <div class="trace-sticky-head">
+          <div class="detail-head">
+            <div>
+              <h2 id="bug-title"></h2>
+              <div id="bug-meta" class="meta"></div>
             </div>
-            <label class="inline-field trace-kind-filter">
-              <span>Step type</span>
-              <select id="step-kind-filter">
-                <option value="">all</option>
+            <div class="actions">
+              <div class="view-mode" aria-label="Trace mode">
+                <button id="mode-trajectory" class="active" type="button">Trajectory</button>
+                <button id="mode-full" type="button">Full Trace</button>
+              </div>
+              <label class="inline-field trace-kind-filter">
+                <span>Step type</span>
+                <select id="step-kind-filter">
+                  <option value="">all</option>
+                </select>
+              </label>
+              <button id="back-assistant-text" class="hidden" type="button">Back to Assistant Text</button>
+              <button id="clear-selection">Clear</button>
+              <button id="save-annotation" class="primary">Save Mark</button>
+            </div>
+          </div>
+
+          <div id="assistant-return-strip" class="return-strip hidden">
+            <span>Opened from Assistant Text.</span>
+            <button id="back-assistant-text-strip" type="button">Back to Assistant Text</button>
+          </div>
+
+          <div id="trace-mode-note" class="trace-mode-note"></div>
+          <div id="category-strip" class="category-strip"></div>
+
+          <section class="annotation-editor">
+            <div class="field small">
+              <label>Steps</label>
+              <div id="selected-range">none</div>
+            </div>
+            <div class="field">
+              <label>Status</label>
+              <select id="ann-status">
+                <option value="interesting">interesting</option>
+                <option value="suspicious">suspicious</option>
+                <option value="benign">benign</option>
+                <option value="unclear">unclear</option>
               </select>
-            </label>
-            <button id="back-assistant-text" class="hidden" type="button">Back to Assistant Text</button>
-            <button id="clear-selection">Clear</button>
-            <button id="save-annotation" class="primary">Save Mark</button>
-          </div>
+            </div>
+            <div class="field">
+              <label>Label</label>
+              <input id="ann-label" list="labels" value="uncategorized">
+              <datalist id="labels">
+                <option value="external_artifact">
+                <option value="binary_inspection">
+                <option value="auxiliary_repro">
+                <option value="test_oracle_mining">
+                <option value="build_or_classpath_introspection">
+                <option value="long_search">
+                <option value="patch_test_loop">
+                <option value="benign">
+                <option value="unclear">
+              </datalist>
+            </div>
+            <div class="field grow">
+              <label>Note</label>
+              <input id="ann-note" placeholder="Short rationale">
+            </div>
+          </section>
         </div>
-
-        <div id="assistant-return-strip" class="return-strip hidden">
-          <span>Opened from Assistant Text.</span>
-          <button id="back-assistant-text-strip" type="button">Back to Assistant Text</button>
-        </div>
-
-        <div id="trace-mode-note" class="trace-mode-note"></div>
-        <div id="category-strip" class="category-strip"></div>
-
-        <section class="annotation-editor">
-          <div class="field small">
-            <label>Steps</label>
-            <div id="selected-range">none</div>
-          </div>
-          <div class="field">
-            <label>Status</label>
-            <select id="ann-status">
-              <option value="interesting">interesting</option>
-              <option value="suspicious">suspicious</option>
-              <option value="benign">benign</option>
-              <option value="unclear">unclear</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Label</label>
-            <input id="ann-label" list="labels" value="uncategorized">
-            <datalist id="labels">
-              <option value="external_artifact">
-              <option value="binary_inspection">
-              <option value="auxiliary_repro">
-              <option value="test_oracle_mining">
-              <option value="build_or_classpath_introspection">
-              <option value="long_search">
-              <option value="patch_test_loop">
-              <option value="benign">
-              <option value="unclear">
-            </datalist>
-          </div>
-          <div class="field grow">
-            <label>Note</label>
-            <input id="ann-note" placeholder="Short rationale">
-          </div>
-        </section>
 
         <div id="bug-annotations" class="annotation-list"></div>
         <div id="timeline" class="timeline"></div>
