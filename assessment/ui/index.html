@@ -21,6 +21,7 @@
       <button id="reload-data">Reload</button>
       <button id="tab-traces" class="active">Traces</button>
       <button id="tab-annotations">Annotations</button>
+      <button id="tab-assistant-text">Assistant Text</button>
     </nav>
   </header>
 
@@ -71,9 +72,21 @@
               <button id="mode-trajectory" class="active" type="button">Trajectory</button>
               <button id="mode-full" type="button">Full Trace</button>
             </div>
+            <label class="inline-field trace-kind-filter">
+              <span>Step type</span>
+              <select id="step-kind-filter">
+                <option value="">all</option>
+              </select>
+            </label>
+            <button id="back-assistant-text" class="hidden" type="button">Back to Assistant Text</button>
             <button id="clear-selection">Clear</button>
             <button id="save-annotation" class="primary">Save Mark</button>
           </div>
+        </div>
+
+        <div id="assistant-return-strip" class="return-strip hidden">
+          <span>Opened from Assistant Text.</span>
+          <button id="back-assistant-text-strip" type="button">Back to Assistant Text</button>
         </div>
 
         <div id="trace-mode-note" class="trace-mode-note"></div>
@@ -126,6 +139,28 @@
       <button id="export-annotations">Export JSON</button>
     </div>
     <div id="annotation-index"></div>
+  </main>
+
+  <main id="assistant-text-view" class="hidden annotation-page">
+    <div class="annotation-toolbar assistant-toolbar">
+      <label class="inline-field">
+        <span>Analysis</span>
+        <select id="assistant-layer"></select>
+      </label>
+      <input id="assistant-search" type="search" placeholder="Search assistant-text assessments">
+      <select id="assistant-category-filter">
+        <option value="">any category</option>
+      </select>
+      <select id="assistant-severity-filter">
+        <option value="">any severity</option>
+        <option value="high">high</option>
+        <option value="medium">medium</option>
+        <option value="low">low</option>
+        <option value="none">none</option>
+      </select>
+    </div>
+    <div id="assistant-text-status" class="analysis-status hidden"></div>
+    <div id="assistant-text-index"></div>
   </main>
 
   <script src="/app.js"></script>

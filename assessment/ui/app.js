@@ -3,8 +3,13 @@ const state = {
   currentBug: null,
   detail: null,
   annotations: [],
+  assistantLayers: [],
+  assistantLayer: "",
+  assistantRows: [],
+  assistantReturn: false,
   selected: new Set(),
   traceMode: "trajectory",
+  stepKindFilter: "",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -82,7 +87,10 @@ function renderBugList() {
     </div>
   `).join("");
   document.querySelectorAll(".bug-item").forEach(el => {
-    el.addEventListener("click", () => loadBug(el.dataset.bug));
+    el.addEventListener("click", () => {
+      state.assistantReturn = false;
+      loadBug(el.dataset.bug);
+    });
   });
 }
 
@@ -90,6 +98,17 @@ function annotationHits(step) {
   return state.annotations.filter(a =>
     a.bug_id === state.currentBug && step >= a.start_step && step <= a.end_step
   );
+}
+
+function assessmentForStep(step) {
+  const rows = state.detail?.assistant_text_assessments || {};
+  return rows[String(step)] || null;
+}
+
+function severityClass(severity) {
+  if (severity === "high") return "danger";
+  if (severity === "medium" || severity === "low") return "warn";
+  return "";
 }
 
 function selectionRange() {
@@ -146,14 +165,37 @@ function renderBugAnnotations() {
 
 function visibleActions() {
   const actions = state.detail.actions || [];
-  if (state.traceMode === "full") return actions.map((action, index) => ({ action, index }));
-  return actions
+  const rows = state.traceMode === "full"
+    ? actions.map((action, index) => ({ action, index }))
+    : actions
     .map((action, index) => ({ action, index }))
     .filter(row => row.action.kind !== "OBSERVATION");
+  if (!state.stepKindFilter) return rows;
+  return rows.filter(row => row.action.kind === state.stepKindFilter);
+}
+
+function availableStepKinds() {
+  const actions = state.detail?.actions || [];
+  const rows = state.traceMode === "full"
+    ? actions
+    : actions.filter(a => a.kind !== "OBSERVATION");
+  return [...new Set(rows.map(a => a.kind).filter(Boolean))].sort();
+}
+
+function renderStepKindFilter() {
+  const select = $("step-kind-filter");
+  const kinds = availableStepKinds();
+  if (state.stepKindFilter && !kinds.includes(state.stepKindFilter)) {
+    state.stepKindFilter = "";
+  }
+  select.innerHTML = `<option value="">all</option>` + kinds.map(kind => `
+    <option value="${esc(kind)}" ${kind === state.stepKindFilter ? "selected" : ""}>${esc(kind)}</option>
+  `).join("");
 }
 
 function renderTraceMode() {
   const actions = state.detail?.actions || [];
+  renderStepKindFilter();
   const hidden = state.traceMode === "trajectory"
     ? actions.filter(a => a.kind === "OBSERVATION").length
     : 0;
@@ -162,11 +204,18 @@ function renderTraceMode() {
   $("trace-mode-note").textContent = state.traceMode === "trajectory"
     ? `Trajectory view: hiding ${hidden} observation step${hidden === 1 ? "" : "s"}.`
     : `Full trace view: showing actions and observations.`;
+  $("back-assistant-text").classList.toggle("hidden", !state.assistantReturn);
+  $("assistant-return-strip").classList.toggle("hidden", !state.assistantReturn);
 }
 
 function renderTimeline() {
   renderTraceMode();
-  $("timeline").innerHTML = visibleActions().map(({ action: a, index: i }) => {
+  const rows = visibleActions();
+  if (!rows.length) {
+    $("timeline").innerHTML = `<div class="empty">No steps match the current trace filters.</div>`;
+    return;
+  }
+  $("timeline").innerHTML = rows.map(({ action: a, index: i }) => {
     const anns = annotationHits(i);
     const selected = state.selected.has(i);
     const isObservation = a.kind === "OBSERVATION";
@@ -178,6 +227,7 @@ function renderTimeline() {
     const paths = (a.paths || []).slice(0, 3).join("\n");
     const fullText = a.full_text || a.snippet || "";
     const isTruncated = fullText && a.snippet && fullText.trim() !== a.snippet.trim();
+    const assessment = assessmentForStep(i);
     return `
       <div class="step ${cls}" data-step="${i}">
         <div class="step-num">#${i}<br>L${esc(a.line)}</div>
@@ -185,6 +235,11 @@ function renderTimeline() {
           <span class="badge ${actionClass(a.kind)}">${esc(a.kind)}</span>
           ${a.tool ? `<div class="muted">${esc(a.tool)}</div>` : ""}
           ${anns.length ? `<div class="badge warn">${anns.length} mark${anns.length === 1 ? "" : "s"}</div>` : ""}
+          ${assessment ? `
+            <button class="assessment-badge badge ${severityClass(assessment.severity)}" data-assessment="${i}" title="Show assistant-text assessment">
+              ${esc(assessment.category || "unclear")} · ${esc(assessment.severity || "")}
+            </button>
+          ` : ""}
           <button class="explain-btn" data-explain="${i}" title="Explain this step">?</button>
         </div>
         <div>
@@ -203,11 +258,28 @@ function renderTimeline() {
             </details>
           ` : ""}
           ${paths ? `<div class="step-paths">${esc(paths)}</div>` : ""}
+          ${assessment ? `
+            <details id="assessment-${i}" class="assessment-detail">
+              <summary>assistant-text assessment</summary>
+              <div><strong>${esc(assessment.category)}</strong> · ${esc(assessment.severity)} · confidence ${esc(assessment.confidence)}</div>
+              <div class="muted">${esc(assessment.model)} · ${esc(assessment.mode)}</div>
+              <p>${esc(assessment.rationale || "")}</p>
+              ${assessment.evidence ? `<pre>${esc(assessment.evidence)}</pre>` : ""}
+              ${assessment.follow_through ? `<div class="muted">follow-through: ${esc(assessment.follow_through)}</div>` : ""}
+            </details>
+          ` : ""}
           <div id="explain-${i}" class="explanation hidden"></div>
         </div>
       </div>
     `;
   }).join("");
+  document.querySelectorAll("[data-assessment]").forEach(btn => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const detail = $(`assessment-${btn.dataset.assessment}`);
+      if (detail) detail.open = !detail.open;
+    });
+  });
   document.querySelectorAll("[data-explain]").forEach(btn => {
     btn.addEventListener("click", async (ev) => {
       ev.stopPropagation();
@@ -215,6 +287,11 @@ function renderTimeline() {
     });
   });
   document.querySelectorAll(".step-full").forEach(el => {
+    el.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+    });
+  });
+  document.querySelectorAll(".assessment-detail").forEach(el => {
     el.addEventListener("click", (ev) => {
       ev.stopPropagation();
     });
@@ -264,7 +341,8 @@ async function explainStep(stepIndex) {
 
 async function loadBug(bugId) {
   state.currentBug = bugId;
-  state.detail = await api(`/api/bug/${encodeURIComponent(bugId)}`);
+  const layer = state.assistantLayer ? `?assistant_text=${encodeURIComponent(state.assistantLayer)}` : "";
+  state.detail = await api(`/api/bug/${encodeURIComponent(bugId)}${layer}`);
   state.selected = new Set();
   $("bug-empty").classList.add("hidden");
   $("bug-detail").classList.remove("hidden");
@@ -283,6 +361,125 @@ async function loadBug(bugId) {
   renderBugAnnotations();
   renderTimeline();
   renderSelection();
+}
+
+async function loadAssistantLayers() {
+  const select = $("assistant-layer");
+  const data = await api("/api/assistant-text/layers");
+  state.assistantLayers = data.layers || [];
+  const previous = state.assistantLayer;
+  state.assistantLayer = previous && state.assistantLayers.some(l => l.key === previous)
+    ? previous
+    : (data.default?.key || "");
+  if (!state.assistantLayers.length) {
+    select.innerHTML = `<option value="">not done</option>`;
+    select.disabled = true;
+    state.assistantRows = [];
+    renderAssistantTextStatus();
+    return;
+  }
+  select.disabled = false;
+  select.innerHTML = state.assistantLayers.map(l => `
+    <option value="${esc(l.key)}" ${l.key === state.assistantLayer ? "selected" : ""}>
+      ${esc(l.model)} / ${esc(l.mode)} (${l.count})
+    </option>
+  `).join("");
+  await loadAssistantRows();
+}
+
+async function loadAssistantRows() {
+  if (!state.assistantLayer) {
+    state.assistantRows = [];
+    renderAssistantTextStatus();
+    renderAssistantTextIndex();
+    return;
+  }
+  const data = await api(`/api/assistant-text/results?key=${encodeURIComponent(state.assistantLayer)}`);
+  state.assistantRows = data.rows || [];
+  renderAssistantTextFilters();
+  renderAssistantTextStatus();
+  renderAssistantTextIndex();
+}
+
+function renderAssistantTextStatus() {
+  const status = $("assistant-text-status");
+  const layer = state.assistantLayers.find(l => l.key === state.assistantLayer);
+  if (!layer) {
+    status.classList.remove("hidden");
+    status.textContent = "assistant text assessment not done";
+    return;
+  }
+  if (layer.bad_rows) {
+    status.classList.remove("hidden");
+    status.textContent = `${layer.bad_rows} assessment row${layer.bad_rows === 1 ? "" : "s"} could not be loaded`;
+    return;
+  }
+  status.classList.add("hidden");
+  status.textContent = "";
+}
+
+function renderAssistantTextFilters() {
+  const current = $("assistant-category-filter").value;
+  const cats = [...new Set(state.assistantRows.map(r => r.category).filter(Boolean))].sort();
+  $("assistant-category-filter").innerHTML = `<option value="">any category</option>` + cats.map(c =>
+    `<option value="${esc(c)}" ${c === current ? "selected" : ""}>${esc(c)}</option>`
+  ).join("");
+}
+
+function filteredAssistantRows() {
+  const q = $("assistant-search").value.trim().toLowerCase();
+  const cat = $("assistant-category-filter").value;
+  const sev = $("assistant-severity-filter").value;
+  return state.assistantRows.filter(r => {
+    const text = [r.bug_id, r.category, r.severity, r.follow_through, r.rationale, r.evidence, r.selected_text].join(" ").toLowerCase();
+    if (q && !text.includes(q)) return false;
+    if (cat && r.category !== cat) return false;
+    if (sev && r.severity !== sev) return false;
+    return true;
+  });
+}
+
+function renderAssistantTextIndex() {
+  const rows = filteredAssistantRows();
+  const layer = state.assistantLayers.find(l => l.key === state.assistantLayer);
+  if (!layer) {
+    $("assistant-text-index").innerHTML = `<div class="empty">Assistant text assessment not done.</div>`;
+    return;
+  }
+  $("assistant-text-index").innerHTML = `
+    <div class="assistant-count">${rows.length} / ${state.assistantRows.length} findings · ${esc(layer.model)} / ${esc(layer.mode)}</div>
+    ${rows.map((r, idx) => `
+      <div class="assistant-row">
+        <div>
+          <strong>${esc(r.bug_id)}</strong>
+          <div class="muted">step ${esc(r.step_index)} · ${esc(r.follow_through || "")}</div>
+        </div>
+        <span class="badge ${severityClass(r.severity)}">${esc(r.category || "unclear")}</span>
+        <span class="badge ${severityClass(r.severity)}">${esc(r.severity || "")}</span>
+        <div>
+          <div class="assistant-selected">${esc(r.selected_text || "")}</div>
+          <div class="muted">${esc(r.rationale || "")}</div>
+        </div>
+        <button data-open-assistant="${idx}">open</button>
+      </div>
+    `).join("")}
+  `;
+  document.querySelectorAll("[data-open-assistant]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const row = rows[Number(btn.dataset.openAssistant)];
+      if (!row) return;
+      state.assistantReturn = true;
+      showTraceView();
+      await loadBug(row.bug_id);
+      state.selected = new Set([Number(row.step_index)]);
+      renderTimeline();
+      renderSelection();
+      const el = document.querySelector(`[data-step="${row.step_index}"]`);
+      if (el) el.scrollIntoView({ block: "center" });
+      const detail = $(`assessment-${row.step_index}`);
+      if (detail) detail.open = true;
+    });
+  });
 }
 
 async function refreshAnnotations() {
@@ -341,16 +538,35 @@ function renderAnnotationIndex() {
 function showTraceView() {
   $("trace-view").classList.remove("hidden");
   $("annotation-view").classList.add("hidden");
+  $("assistant-text-view").classList.add("hidden");
   $("tab-traces").classList.add("active");
   $("tab-annotations").classList.remove("active");
+  $("tab-assistant-text").classList.remove("active");
 }
 
 function showAnnotationView() {
   $("trace-view").classList.add("hidden");
   $("annotation-view").classList.remove("hidden");
+  $("assistant-text-view").classList.add("hidden");
   $("tab-traces").classList.remove("active");
   $("tab-annotations").classList.add("active");
+  $("tab-assistant-text").classList.remove("active");
   renderAnnotationIndex();
+}
+
+function showAssistantTextView() {
+  $("trace-view").classList.add("hidden");
+  $("annotation-view").classList.add("hidden");
+  $("assistant-text-view").classList.remove("hidden");
+  $("tab-traces").classList.remove("active");
+  $("tab-annotations").classList.remove("active");
+  $("tab-assistant-text").classList.add("active");
+  renderAssistantTextIndex();
+}
+
+function returnToAssistantTextView() {
+  state.assistantReturn = false;
+  showAssistantTextView();
 }
 
 async function refreshBugs() {
@@ -374,6 +590,7 @@ async function refreshBugs() {
 async function reloadData() {
   await api("/api/reload", { method: "POST" });
   await refreshAnnotations();
+  await loadAssistantLayers();
   await refreshBugs();
   if (!state.currentBug) {
     const preferred = state.bugs.find(b => b.id === "Time-14") || state.bugs[0];
@@ -413,6 +630,7 @@ async function changeOllamaModel() {
 
 async function init() {
   await refreshAnnotations();
+  await loadAssistantLayers();
   await refreshBugs();
   await loadOllamaModels();
 
@@ -436,8 +654,24 @@ async function init() {
     state.traceMode = "full";
     renderTimeline();
   });
+  $("step-kind-filter").addEventListener("change", () => {
+    state.stepKindFilter = $("step-kind-filter").value;
+    renderTimeline();
+  });
   $("tab-traces").addEventListener("click", showTraceView);
   $("tab-annotations").addEventListener("click", showAnnotationView);
+  $("tab-assistant-text").addEventListener("click", showAssistantTextView);
+  $("back-assistant-text").addEventListener("click", returnToAssistantTextView);
+  $("back-assistant-text-strip").addEventListener("click", returnToAssistantTextView);
+  $("assistant-layer").addEventListener("change", async () => {
+    state.assistantLayer = $("assistant-layer").value;
+    await loadAssistantRows();
+    if (state.currentBug) await loadBug(state.currentBug);
+  });
+  ["assistant-search", "assistant-category-filter", "assistant-severity-filter"].forEach(id => {
+    $(id).addEventListener("input", renderAssistantTextIndex);
+    $(id).addEventListener("change", renderAssistantTextIndex);
+  });
   $("annotation-search").addEventListener("input", renderAnnotationIndex);
   $("export-annotations").addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(state.annotations, null, 2)], { type: "application/json" });
