@@ -107,6 +107,8 @@ class Store:
         self.results = {}
         self.result_rows = {}
         self.categories = {}
+        self.assistant_text_layers = []
+        self.assistant_text_rows = {}
         self.analysis_done = False
         self.reload()
 
@@ -161,6 +163,64 @@ class Store:
                 "score": r.get("category_score"),
                 "fields": r.get("category_fields") or {},
             })
+        self.load_assistant_text_assessments()
+
+    def load_assistant_text_assessments(self):
+        self.assistant_text_layers = []
+        self.assistant_text_rows = {}
+        root = self.results_dir / "assistant_text"
+        if not root.is_dir():
+            return
+        for path in sorted(root.glob("*/*/assistant_text_assessment.jsonl")):
+            try:
+                rel = path.relative_to(root)
+            except ValueError:
+                continue
+            if len(rel.parts) != 3:
+                continue
+            model, mode = rel.parts[0], rel.parts[1]
+            if mode not in ("suspicious", "all"):
+                continue
+            rows = []
+            bad_rows = 0
+            for line in path.read_text(errors="replace").splitlines():
+                if not line.strip():
+                    continue
+                try:
+                    row = json.loads(line)
+                except json.JSONDecodeError:
+                    bad_rows += 1
+                    continue
+                rows.append(row)
+            key = f"{model}/{mode}"
+            self.assistant_text_rows[key] = rows
+            self.assistant_text_layers.append({
+                "key": key,
+                "model": model,
+                "mode": mode,
+                "count": len(rows),
+                "bad_rows": bad_rows,
+                "path": str(path),
+            })
+
+    def default_assistant_text_layer(self):
+        if not self.assistant_text_layers:
+            return None
+        suspicious = [l for l in self.assistant_text_layers if l["mode"] == "suspicious"]
+        return sorted(suspicious or self.assistant_text_layers, key=lambda l: (l["model"], l["mode"]))[0]
+
+    def assistant_text_index(self, key):
+        rows = self.assistant_text_rows.get(key) or []
+        by_bug = {}
+        for row in rows:
+            bug_id = row.get("bug_id")
+            if not bug_id:
+                continue
+            by_bug.setdefault(bug_id, {})[str(row.get("step_index"))] = row
+        return by_bug
+
+    def assistant_text_rows_for(self, key):
+        return self.assistant_text_rows.get(key) or []
 
     def load_raw_sessions(self):
         data = find_data_root(self.campaign)
@@ -235,10 +295,13 @@ class Store:
             })
         return bugs
 
-    def bug_detail(self, bug_id):
+    def bug_detail(self, bug_id, assistant_text_key=None):
         if bug_id not in self.actions:
             return None
         anns = [a for a in self.annotations() if a.get("bug_id") == bug_id]
+        assessment_by_step = {}
+        if assistant_text_key:
+            assessment_by_step = self.assistant_text_index(assistant_text_key).get(bug_id, {})
         return {
             "bug": self.bug_list_by_id().get(bug_id),
             "feature": self.features.get(bug_id, {}),
@@ -248,6 +311,7 @@ class Store:
             "session_file": self.actions[bug_id].get("session_file"),
             "actions": self.actions[bug_id].get("actions", []),
             "annotations": anns,
+            "assistant_text_assessments": assessment_by_step,
         }
 
     def bug_list_by_id(self):
@@ -406,6 +470,20 @@ def make_handler(store):
                     "assessment_results": str(store.results_dir),
                 })
                 return
+            if path == "/api/assistant-text/layers":
+                self.send_json({
+                    "layers": store.assistant_text_layers,
+                    "default": store.default_assistant_text_layer(),
+                })
+                return
+            if path == "/api/assistant-text/results":
+                q = parse_qs(parsed.query)
+                key = q.get("key", [""])[0]
+                self.send_json({
+                    "key": key,
+                    "rows": store.assistant_text_rows_for(key),
+                })
+                return
             if path == "/api/annotations":
                 self.send_json({"annotations": store.annotations()})
                 return
@@ -423,7 +501,9 @@ def make_handler(store):
                 return
             if path.startswith("/api/bug/"):
                 bug_id = path.rsplit("/", 1)[-1]
-                detail = store.bug_detail(bug_id)
+                q = parse_qs(parsed.query)
+                assessment_key = q.get("assistant_text", [""])[0]
+                detail = store.bug_detail(bug_id, assessment_key)
                 if detail is None:
                     self.send_json({"error": "unknown bug"}, 404)
                 else:
