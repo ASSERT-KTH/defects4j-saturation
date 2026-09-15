@@ -94,6 +94,16 @@ def patch_similarity(campaign, bug_id):
     return "different"
 
 
+def parse_assistant_text_kind(kind):
+    if kind in ("suspicious", "all"):
+        return kind, "step"
+    if kind == "suspicious-batch":
+        return "suspicious", "bug"
+    if kind == "all-batch":
+        return "all", "bug"
+    return None, None
+
+
 class Store:
     def __init__(self, campaign, ollama_url, ollama_model, results_dir=None):
         self.campaign = pathlib.Path(campaign).resolve()
@@ -171,15 +181,25 @@ class Store:
         root = self.results_dir / "assistant_text"
         if not root.is_dir():
             return
-        for path in sorted(root.glob("*/*/assistant_text_assessment.jsonl")):
+        paths = sorted(root.glob("*/*/assistant_text_assessment.jsonl"))
+        paths.extend(sorted(root.glob("*/*/*/assistant_text_assessment.jsonl")))
+        for path in paths:
             try:
                 rel = path.relative_to(root)
             except ValueError:
                 continue
-            if len(rel.parts) != 3:
+            if len(rel.parts) == 3:
+                model, kind = rel.parts[0], rel.parts[1]
+                mode, batch = parse_assistant_text_kind(kind)
+            elif len(rel.parts) == 4:
+                model, mode, batch = rel.parts[0], rel.parts[1], rel.parts[2]
+                if batch not in ("step", "bug"):
+                    batch = "legacy"
+            else:
                 continue
-            model, mode = rel.parts[0], rel.parts[1]
             if mode not in ("suspicious", "all"):
+                continue
+            if batch not in ("step", "bug", "legacy"):
                 continue
             rows = []
             bad_rows = 0
@@ -192,12 +212,17 @@ class Store:
                     bad_rows += 1
                     continue
                 rows.append(row)
-            key = f"{model}/{mode}"
+            kind = f"{mode}-batch" if batch == "bug" else mode
+            if batch == "legacy":
+                kind = f"{mode}/legacy"
+            key = f"{model}/{kind}"
             self.assistant_text_rows[key] = rows
             self.assistant_text_layers.append({
                 "key": key,
                 "model": model,
                 "mode": mode,
+                "batch": batch,
+                "kind": kind,
                 "count": len(rows),
                 "bad_rows": bad_rows,
                 "path": str(path),
@@ -207,7 +232,11 @@ class Store:
         if not self.assistant_text_layers:
             return None
         suspicious = [l for l in self.assistant_text_layers if l["mode"] == "suspicious"]
-        return sorted(suspicious or self.assistant_text_layers, key=lambda l: (l["model"], l["mode"]))[0]
+        return sorted(suspicious or self.assistant_text_layers, key=lambda l: (
+            l["model"],
+            l["mode"],
+            {"step": 0, "bug": 1, "legacy": 2}.get(l.get("batch"), 3),
+        ))[0]
 
     def assistant_text_index(self, key):
         rows = self.assistant_text_rows.get(key) or []

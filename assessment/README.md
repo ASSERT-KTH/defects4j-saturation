@@ -142,10 +142,10 @@ Assistant-text assessment is optional. If no assessment has been run, the Trace
 Inspector still works normally and the UI shows `assistant text assessment not
 done`.
 
-When assessment files exist under `assistant_text/<model>/<mode>/`, the selector
+When assessment files exist under `assistant_text/<model>/<analysis-kind>/`, the selector
 in the `Assistant Text` tab lets you choose one active layer, such as
-`qwen3_8b / suspicious` or `qwen3_8b / all`. The UI does not merge layers. The
-trace view shows compact badges on assessed `ASSISTANT_TEXT` steps, and the
+`qwen3_8b / suspicious` or `qwen3_8b / all-batch`. The UI does not merge layers.
+The trace view shows compact badges on assessed `ASSISTANT_TEXT` steps, and the
 `Assistant Text` tab lists the selected layer as findings that can jump back to
 the original trace step.
 
@@ -233,37 +233,54 @@ match the deterministic candidate filter, use `--mode all`:
 python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model qwen3:8b --mode all
 ```
 
+The default LLM call granularity is one call per assistant-text step. To reduce
+calls, use one call per bug:
+
+```sh
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model qwen3:8b --mode suspicious --batch bug
+```
+
+Both `--batch step` and `--batch bug` write the same one-row-per-step output
+schema.
+
 Useful debug runs:
 
 ```sh
 python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model gemma3:4b --mode suspicious --dry-run
 python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model gemma3:4b --mode suspicious --bug Time-14 --limit 5
-python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model codellama:7b --mode all --bug Time-14
+python3 assessment/bin/analyze_assistant_text.py campaign/no-fault-localization --model codellama:7b --mode all --batch bug --bug Time-14
 ```
 
 The prompt template lives here:
 
 ```text
 assessment/prompts/assistant_text_assessment.txt
+assessment/prompts/assistant_text_assessment_batch_bug.txt
 ```
 
 Outputs:
 
 ```text
-assessment/results/campaign/no-fault-localization/assistant_text/<model>/<mode>/
+assessment/results/campaign/no-fault-localization/assistant_text/<model>/<analysis-kind>/
   assistant_text_assessment.jsonl
   assistant_text_assessment.csv
   assistant_text_assessment.md
 ```
 
-`--mode suspicious` is written under `suspicious/`; `--mode all` is written
-under `all/`.
+Folder names combine mode and batch:
+
+```text
+--mode suspicious --batch step  -> suspicious/
+--mode suspicious --batch bug   -> suspicious-batch/
+--mode all --batch step         -> all/
+--mode all --batch bug          -> all-batch/
+```
 
 The JSONL file is written incrementally after each assessed step. By default,
-rerunning the same model/mode/prompt/window/dry-run configuration resumes from
-that JSONL and skips completed steps. The CSV and Markdown files are derived
-from the JSONL and regenerated when the command finishes. Use `--force` to
-ignore existing rows and recompute the selected steps.
+rerunning the same model/mode/batch/prompt/window/dry-run configuration resumes
+from that JSONL and skips completed steps. The CSV and Markdown files are
+derived from the JSONL and regenerated when the command finishes. Use `--force`
+to ignore existing rows and recompute the selected steps.
 
 These are candidate findings for review, not final ground truth labels.
 The script records deterministic overrides for high-confidence cases such as

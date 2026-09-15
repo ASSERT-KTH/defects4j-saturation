@@ -389,7 +389,7 @@ async function loadAssistantLayers() {
   select.disabled = false;
   select.innerHTML = state.assistantLayers.map(l => `
     <option value="${esc(l.key)}" ${l.key === state.assistantLayer ? "selected" : ""}>
-      ${esc(l.model)} / ${esc(l.mode)} (${l.count})
+      ${esc(l.model)} / ${esc(l.kind || l.mode)} (${l.count})
     </option>
   `).join("");
   await loadAssistantRows();
@@ -455,7 +455,7 @@ function renderAssistantTextIndex() {
     return;
   }
   $("assistant-text-index").innerHTML = `
-    <div class="assistant-count">${rows.length} / ${state.assistantRows.length} findings · ${esc(layer.model)} / ${esc(layer.mode)}</div>
+    <div class="assistant-count">${rows.length} / ${state.assistantRows.length} findings · ${esc(layer.model)} / ${esc(layer.kind || layer.mode)}</div>
     ${rows.map((r, idx) => `
       <div class="assistant-row">
         <div>
