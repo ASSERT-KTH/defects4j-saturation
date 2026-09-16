@@ -1,0 +1,408 @@
+# Memorisation audit: text the agent could not have read
+
+patches scanned: 1718
+  of which the agent's patch adds any prose at all: 587
+  flagged by stage 1 (prose shared with the developer fix, absent from the patch context): **93**
+
+- **Chart-19** [full] (PLAUSIBLE)
+    - `Null 'axis' argument.`
+- **Cli-39** [full] (PLAUSIBLE)
+    - `Unable to find file: `
+- **Cli-4** [full] (PLAUSIBLE)
+    - `Missing required option`
+- **Closure-151** [full] (PLAUSIBLE)
+    - `Closure Compiler (http://code.google.com/p/closure/compiler)\n`
+- **Closure-169** [full] (PLAUSIBLE)
+    - `Alternatively, the contents of this file may be used under the terms of`
+    - `MPL, indicate your decision by deleting the provisions above and replacing`
+    - `Netscape Communications Corporation.`
+    - `Portions created by the Initial Developer are Copyright (C) 1997-1999`
+    - `Software distributed under the License is distributed on an "AS IS" basis,`
+    - `The Initial Developer of the Original Code is`
+    - `The Original Code is Rhino code, released`
+    - `The contents of this file are subject to the Mozilla Public License Version`
+    - `WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License`
+    - `case the provisions of the GPL are applicable instead of those above. If`
+    - `file under either the MPL or the GPL.`
+    - `for the specific language governing rights and limitations under the`
+    - `not delete the provisions above, a recipient may use your version of this`
+    - `the GNU General Public License Version 2 or later (the "GPL"), in which`
+    - `the GPL and not to allow others to use your version of this file under the`
+    - `the Initial Developer. All Rights Reserved.`
+    - `the License. You may obtain a copy of the License at`
+    - `them with the notice and other provisions required by the GPL. If you do`
+    - `you wish to allow use of your version of this file only under the terms of`
+- **Closure-42** [full] (PLAUSIBLE)
+    - `unsupported language extension: for each`
+- **Closure-81** [full] (PLAUSIBLE)
+    - `unnamed function statement`
+- **Closure-84** [full] (PLAUSIBLE)
+    - `invalid assignment target`
+- **Collections-23** [full] (PLAUSIBLE)
+    - `safe to upcast`
+- **Compress-12** [full] (PLAUSIBLE)
+    - `Error detected parsing the header`
+- **Compress-28** [full] (PLAUSIBLE)
+    - `Truncated TAR archive`
+- **Compress-41** [full] (PLAUSIBLE)
+    - `Unexpected record signature: 0X%X`
+- **Compress-5** [full] (PLAUSIBLE)
+    - `Truncated ZIP file`
+- **Compress-8** [full] (PLAUSIBLE)
+    - ` must be at least 2`
+- **Csv-2** [full] (PLAUSIBLE)
+    - `Index for header '%s' is %d but CSVRecord only has %d values!`
+- **Gson-8** [full] (PLAUSIBLE)
+    - `Abstract class can't be instantiated! Class name: `
+    - `Interface can't be instantiated! Interface name: `
+- **JacksonCore-14** [full] (PLAUSIBLE)
+    - `Trying to release buffer smaller than original`
+- **JacksonCore-18** [full] (PLAUSIBLE)
+    - `Attempt to write plain `java.math.BigDecimal` (see JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) with illegal scale (%d): needs to be between [-%d, %d]`
+- **JacksonCore-20** [full] (PLAUSIBLE)
+    - `No native support for writing embedded objects of type `
+- **JacksonDatabind-47** [full] (PLAUSIBLE)
+    - `specialization, ok as well`
+- **JacksonDatabind-62** [full] (PLAUSIBLE)
+    - `: value instantiator (`
+    - `Invalid array-delegate-creator definition for `
+- **JacksonDatabind-77** [full] (PLAUSIBLE)
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-78** [full] (PLAUSIBLE)
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-88** [full] (PLAUSIBLE)
+    - `Class %s not subtype of %s`
+- **JacksonXml-6** [full] (PLAUSIBLE)
+    - ` bytes (out of `
+    - `Too few bytes available: missing `
+- **Jsoup-11** [full] (PLAUSIBLE)
+    - `:not(selector) subselect must not be empty`
+- **Jsoup-26** [full] (PLAUSIBLE)
+    - `frameset documents won't have a body. the clean doc will have empty body.`
+- **Jsoup-42** [full] (PLAUSIBLE)
+    - `skip disabled form inputs`
+- **Jsoup-56** [full] (PLAUSIBLE)
+    - `PUBLIC or SYSTEM`
+- **Jsoup-58** [full] (PLAUSIBLE)
+    - `because we only look at the body, but we start from a shell, make sure there's nothing in the head`
+- **Jsoup-7** [full] (PLAUSIBLE)
+    - `dupes, move contents to master`
+    - `will always be available as created above if not existent`
+- **Jsoup-91** [full] (PLAUSIBLE)
+    - `Input is binary and unsupported`
+- **Jsoup-93** [full] (PLAUSIBLE)
+    - `browsers don't submit these`
+- **Lang-11** [full] (PLAUSIBLE)
+    - `) must be greater than start (`
+    - `Parameter end (`
+- **Lang-12** [full] (PLAUSIBLE)
+    - `The chars array must not be empty`
+- **Lang-35** [full] (PLAUSIBLE)
+    - `Arguments cannot both be null`
+    - `Array and element cannot both be null`
+- **Lang-36** [full] (PLAUSIBLE)
+    - `two decimal points or dec in exponent`
+- **Lang-37** [full] (PLAUSIBLE)
+    - ` in an array of `
+    - `No, so rethrow original`
+- **Lang-64** [full] (PLAUSIBLE)
+    - `Different enum class '`
+    - `This should not happen`
+- **Lang-7** [full] (PLAUSIBLE)
+    - ` is not a valid number.`
+- **Lang-9** [full] (PLAUSIBLE)
+    - `Failed to parse \"`
+- **Time-15** [full] (PLAUSIBLE)
+    - `Multiplication overflows a long: `
+- **Time-8** [full] (PLAUSIBLE)
+    - `Positive hours must not have negative minutes: `
+- **Time-9** [full] (PLAUSIBLE)
+    - `Hours out of range: `
+- **Chart-19** [nofl] (PLAUSIBLE)
+    - `Null 'axis' argument.`
+- **Cli-30** [nofl] (PLAUSIBLE)
+    - `Default option wasn't defined`
+- **Cli-39** [nofl] (PLAUSIBLE)
+    - `Unable to find file: `
+- **Cli-4** [nofl] (PLAUSIBLE)
+    - `Missing required option`
+- **Closure-149** [nofl] (PLAUSIBLE)
+    - ` is not a valid charset name.`
+- **Closure-151** [nofl] (PLAUSIBLE)
+    - `Closure Compiler (http://code.google.com/p/closure/compiler)\n`
+    - `Prints the compiler version to stderr.`
+- **Closure-169** [nofl] (PLAUSIBLE)
+    - `Alternatively, the contents of this file may be used under the terms of`
+    - `MPL, indicate your decision by deleting the provisions above and replacing`
+    - `Netscape Communications Corporation.`
+    - `Portions created by the Initial Developer are Copyright (C) 1997-1999`
+    - `Software distributed under the License is distributed on an "AS IS" basis,`
+    - `The Initial Developer of the Original Code is`
+    - `The Original Code is Rhino code, released`
+    - `The contents of this file are subject to the Mozilla Public License Version`
+    - `WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License`
+    - `case the provisions of the GPL are applicable instead of those above. If`
+    - `file under either the MPL or the GPL.`
+    - `for the specific language governing rights and limitations under the`
+    - `not delete the provisions above, a recipient may use your version of this`
+    - `the GNU General Public License Version 2 or later (the "GPL"), in which`
+    - `the GPL and not to allow others to use your version of this file under the`
+    - `the Initial Developer. All Rights Reserved.`
+    - `the License. You may obtain a copy of the License at`
+    - `them with the notice and other provisions required by the GPL. If you do`
+    - `you wish to allow use of your version of this file only under the terms of`
+- **Closure-42** [nofl] (PLAUSIBLE)
+    - `unsupported language extension: for each`
+- **Closure-81** [nofl] (PLAUSIBLE)
+    - `unnamed function statement`
+- **Closure-84** [nofl] (PLAUSIBLE)
+    - `invalid assignment target`
+- **Collections-23** [nofl] (PLAUSIBLE)
+    - `safe to upcast`
+- **Compress-12** [nofl] (PLAUSIBLE)
+    - `Error detected parsing the header`
+- **Compress-28** [nofl] (PLAUSIBLE)
+    - `Truncated TAR archive`
+- **Compress-3** [nofl] (PLAUSIBLE)
+    - `This archives contains unclosed entries.`
+- **Compress-37** [nofl] (PLAUSIBLE)
+    - `blank line in header`
+- **Compress-41** [nofl] (PLAUSIBLE)
+    - `Unexpected record signature: 0X%X`
+- **Compress-5** [nofl] (PLAUSIBLE)
+    - `Truncated ZIP file`
+- **Compress-8** [nofl] (PLAUSIBLE)
+    - ` must be at least 2`
+- **Csv-2** [nofl] (PLAUSIBLE)
+    - `Index for header '%s' is %d but CSVRecord only has %d values!`
+- **Gson-8** [nofl] (PLAUSIBLE)
+    - `Abstract class can't be instantiated! Class name: `
+    - `Interface can't be instantiated! Interface name: `
+- **JacksonCore-14** [nofl] (PLAUSIBLE)
+    - `Trying to release buffer smaller than original`
+- **JacksonCore-18** [nofl] (PLAUSIBLE)
+    - `Attempt to write plain `java.math.BigDecimal` (see JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) with illegal scale (%d): needs to be between [-%d, %d]`
+- **JacksonCore-20** [nofl] (PLAUSIBLE)
+    - `No native support for writing embedded objects of type `
+- **JacksonDatabind-62** [nofl] (PLAUSIBLE)
+    - `: value instantiator (`
+    - `Invalid array-delegate-creator definition for `
+- **JacksonDatabind-77** [nofl] (PLAUSIBLE)
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-78** [nofl] (PLAUSIBLE)
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-88** [nofl] (PLAUSIBLE)
+    - `Class %s not subtype of %s`
+- **Jsoup-11** [nofl] (PLAUSIBLE)
+    - `:not(selector) subselect must not be empty`
+- **Jsoup-12** [nofl] (PLAUSIBLE)
+    - `support multi > childs`
+- **Jsoup-19** [nofl] (PLAUSIBLE)
+    - `if it could not be made abs, run as-is to allow custom unknown protocols`
+- **Jsoup-26** [nofl] (PLAUSIBLE)
+    - `frameset documents won't have a body. the clean doc will have empty body.`
+- **Jsoup-42** [nofl] (PLAUSIBLE)
+    - `skip disabled form inputs`
+- **Jsoup-58** [nofl] (PLAUSIBLE)
+    - `because we only look at the body, but we start from a shell, make sure there's nothing in the head`
+- **Jsoup-7** [nofl] (PLAUSIBLE)
+    - `dupes, move contents to master`
+- **Jsoup-83** [nofl] (PLAUSIBLE)
+    - `NOTE: out of spec, but clear (spec has this as a part of the attribute name)`
+- **Jsoup-91** [nofl] (PLAUSIBLE)
+    - `Input is binary and unsupported`
+- **Jsoup-93** [nofl] (PLAUSIBLE)
+    - `browsers don't submit these`
+- **Lang-11** [nofl] (PLAUSIBLE)
+    - `) must be greater than start (`
+    - `Parameter end (`
+- **Lang-12** [nofl] (PLAUSIBLE)
+    - `The chars array must not be empty`
+- **Lang-35** [nofl] (PLAUSIBLE)
+    - `Arguments cannot both be null`
+- **Lang-37** [nofl] (PLAUSIBLE)
+    - ` in an array of `
+    - `No, so rethrow original`
+- **Lang-64** [nofl] (PLAUSIBLE)
+    - `Different enum class '`
+    - `This should not happen`
+- **Lang-7** [nofl] (PLAUSIBLE)
+    - ` is not a valid number.`
+- **Lang-9** [nofl] (PLAUSIBLE)
+    - `Failed to parse \"`
+- **Time-15** [nofl] (PLAUSIBLE)
+    - `Multiplication overflows a long: `
+- **Time-8** [nofl] (PLAUSIBLE)
+    - `Positive hours must not have negative minutes: `
+- **Time-9** [nofl] (PLAUSIBLE)
+    - `Hours out of range: `
+- **JacksonCore-10** [M-r1] (PLAUSIBLE)
+    - `and bit more`
+    - `shuffle back a bit`
+- **JacksonCore-10** [M-r2] (PLAUSIBLE)
+    - `and bit more`
+    - `shuffle back a bit`
+
+## Stage 2 — confirmed absent from the whole buggy checkout
+
+- Chart-19: none confirmed (all present somewhere in the buggy tree)
+- **Cli-39** (PLAUSIBLE) — 1/1 confirmed:
+    - `Unable to find file: `
+- Cli-4: none confirmed (all present somewhere in the buggy tree)
+- Closure-151: none confirmed (all present somewhere in the buggy tree)
+- Closure-169: none confirmed (all present somewhere in the buggy tree)
+- Closure-42: none confirmed (all present somewhere in the buggy tree)
+- Closure-81: none confirmed (all present somewhere in the buggy tree)
+- Closure-84: none confirmed (all present somewhere in the buggy tree)
+- Collections-23: none confirmed (all present somewhere in the buggy tree)
+- **Compress-12** (PLAUSIBLE) — 1/1 confirmed:
+    - `Error detected parsing the header`
+- **Compress-28** (PLAUSIBLE) — 1/1 confirmed:
+    - `Truncated TAR archive`
+- **Compress-41** (PLAUSIBLE) — 1/1 confirmed:
+    - `Unexpected record signature: 0X%X`
+- Compress-5: none confirmed (all present somewhere in the buggy tree)
+- Compress-8: none confirmed (all present somewhere in the buggy tree)
+- **Csv-2** (PLAUSIBLE) — 1/1 confirmed:
+    - `Index for header '%s' is %d but CSVRecord only has %d values!`
+- **Gson-8** (PLAUSIBLE) — 2/2 confirmed:
+    - `Abstract class can't be instantiated! Class name: `
+    - `Interface can't be instantiated! Interface name: `
+- **JacksonCore-14** (PLAUSIBLE) — 1/1 confirmed:
+    - `Trying to release buffer smaller than original`
+- **JacksonCore-18** (PLAUSIBLE) — 1/1 confirmed:
+    - `Attempt to write plain `java.math.BigDecimal` (see JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) with illegal scale (%d): needs to be between [-%d, %d]`
+- **JacksonCore-20** (PLAUSIBLE) — 1/1 confirmed:
+    - `No native support for writing embedded objects of type `
+- JacksonDatabind-47: none confirmed (all present somewhere in the buggy tree)
+- JacksonDatabind-62: none confirmed (all present somewhere in the buggy tree)
+- **JacksonDatabind-77** (PLAUSIBLE) — 1/1 confirmed:
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-78** (PLAUSIBLE) — 1/1 confirmed:
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- JacksonDatabind-88: none confirmed (all present somewhere in the buggy tree)
+- **JacksonXml-6** (PLAUSIBLE) — 2/2 confirmed:
+    - ` bytes (out of `
+    - `Too few bytes available: missing `
+- **Jsoup-11** (PLAUSIBLE) — 1/1 confirmed:
+    - `:not(selector) subselect must not be empty`
+- **Jsoup-26** (PLAUSIBLE) — 1/1 confirmed:
+    - `frameset documents won't have a body. the clean doc will have empty body.`
+- **Jsoup-42** (PLAUSIBLE) — 1/1 confirmed:
+    - `skip disabled form inputs`
+- **Jsoup-56** (PLAUSIBLE) — 1/1 confirmed:
+    - `PUBLIC or SYSTEM`
+- **Jsoup-58** (PLAUSIBLE) — 1/1 confirmed:
+    - `because we only look at the body, but we start from a shell, make sure there's nothing in the head`
+- **Jsoup-7** (PLAUSIBLE) — 2/2 confirmed:
+    - `dupes, move contents to master`
+    - `will always be available as created above if not existent`
+- Jsoup-91: none confirmed (all present somewhere in the buggy tree)
+- **Jsoup-93** (PLAUSIBLE) — 1/1 confirmed:
+    - `browsers don't submit these`
+- **Lang-11** (PLAUSIBLE) — 2/2 confirmed:
+    - `) must be greater than start (`
+    - `Parameter end (`
+- **Lang-12** (PLAUSIBLE) — 1/1 confirmed:
+    - `The chars array must not be empty`
+- **Lang-35** (PLAUSIBLE) — 2/2 confirmed:
+    - `Arguments cannot both be null`
+    - `Array and element cannot both be null`
+- Lang-36: none confirmed (all present somewhere in the buggy tree)
+- **Lang-37** (PLAUSIBLE) — 2/2 confirmed:
+    - ` in an array of `
+    - `No, so rethrow original`
+- Lang-64: none confirmed (all present somewhere in the buggy tree)
+- Lang-7: none confirmed (all present somewhere in the buggy tree)
+- **Lang-9** (PLAUSIBLE) — 1/1 confirmed:
+    - `Failed to parse \"`
+- Time-15: none confirmed (all present somewhere in the buggy tree)
+- **Time-8** (PLAUSIBLE) — 1/1 confirmed:
+    - `Positive hours must not have negative minutes: `
+- **Time-9** (PLAUSIBLE) — 1/1 confirmed:
+    - `Hours out of range: `
+- Chart-19: none confirmed (all present somewhere in the buggy tree)
+- **Cli-30** (PLAUSIBLE) — 1/1 confirmed:
+    - `Default option wasn't defined`
+- **Cli-39** (PLAUSIBLE) — 1/1 confirmed:
+    - `Unable to find file: `
+- Cli-4: none confirmed (all present somewhere in the buggy tree)
+- Closure-149: none confirmed (all present somewhere in the buggy tree)
+- **Closure-151** (PLAUSIBLE) — 1/2 confirmed:
+    - `Prints the compiler version to stderr.`
+- Closure-169: none confirmed (all present somewhere in the buggy tree)
+- Closure-42: none confirmed (all present somewhere in the buggy tree)
+- Closure-81: none confirmed (all present somewhere in the buggy tree)
+- Closure-84: none confirmed (all present somewhere in the buggy tree)
+- Collections-23: none confirmed (all present somewhere in the buggy tree)
+- **Compress-12** (PLAUSIBLE) — 1/1 confirmed:
+    - `Error detected parsing the header`
+- **Compress-28** (PLAUSIBLE) — 1/1 confirmed:
+    - `Truncated TAR archive`
+- Compress-3: none confirmed (all present somewhere in the buggy tree)
+- **Compress-37** (PLAUSIBLE) — 1/1 confirmed:
+    - `blank line in header`
+- **Compress-41** (PLAUSIBLE) — 1/1 confirmed:
+    - `Unexpected record signature: 0X%X`
+- Compress-5: none confirmed (all present somewhere in the buggy tree)
+- Compress-8: none confirmed (all present somewhere in the buggy tree)
+- **Csv-2** (PLAUSIBLE) — 1/1 confirmed:
+    - `Index for header '%s' is %d but CSVRecord only has %d values!`
+- **Gson-8** (PLAUSIBLE) — 2/2 confirmed:
+    - `Abstract class can't be instantiated! Class name: `
+    - `Interface can't be instantiated! Interface name: `
+- **JacksonCore-14** (PLAUSIBLE) — 1/1 confirmed:
+    - `Trying to release buffer smaller than original`
+- **JacksonCore-18** (PLAUSIBLE) — 1/1 confirmed:
+    - `Attempt to write plain `java.math.BigDecimal` (see JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) with illegal scale (%d): needs to be between [-%d, %d]`
+- **JacksonCore-20** (PLAUSIBLE) — 1/1 confirmed:
+    - `No native support for writing embedded objects of type `
+- JacksonDatabind-62: none confirmed (all present somewhere in the buggy tree)
+- **JacksonDatabind-77** (PLAUSIBLE) — 1/1 confirmed:
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- **JacksonDatabind-78** (PLAUSIBLE) — 1/1 confirmed:
+    - `Illegal type (%s) to deserialize: prevented for security reasons`
+- JacksonDatabind-88: none confirmed (all present somewhere in the buggy tree)
+- **Jsoup-11** (PLAUSIBLE) — 1/1 confirmed:
+    - `:not(selector) subselect must not be empty`
+- Jsoup-12: none confirmed (all present somewhere in the buggy tree)
+- **Jsoup-19** (PLAUSIBLE) — 1/1 confirmed:
+    - `if it could not be made abs, run as-is to allow custom unknown protocols`
+- **Jsoup-26** (PLAUSIBLE) — 1/1 confirmed:
+    - `frameset documents won't have a body. the clean doc will have empty body.`
+- **Jsoup-42** (PLAUSIBLE) — 1/1 confirmed:
+    - `skip disabled form inputs`
+- **Jsoup-58** (PLAUSIBLE) — 1/1 confirmed:
+    - `because we only look at the body, but we start from a shell, make sure there's nothing in the head`
+- **Jsoup-7** (PLAUSIBLE) — 1/1 confirmed:
+    - `dupes, move contents to master`
+- **Jsoup-83** (PLAUSIBLE) — 1/1 confirmed:
+    - `NOTE: out of spec, but clear (spec has this as a part of the attribute name)`
+- Jsoup-91: none confirmed (all present somewhere in the buggy tree)
+- **Jsoup-93** (PLAUSIBLE) — 1/1 confirmed:
+    - `browsers don't submit these`
+- **Lang-11** (PLAUSIBLE) — 2/2 confirmed:
+    - `) must be greater than start (`
+    - `Parameter end (`
+- **Lang-12** (PLAUSIBLE) — 1/1 confirmed:
+    - `The chars array must not be empty`
+- **Lang-35** (PLAUSIBLE) — 1/1 confirmed:
+    - `Arguments cannot both be null`
+- **Lang-37** (PLAUSIBLE) — 2/2 confirmed:
+    - ` in an array of `
+    - `No, so rethrow original`
+- Lang-64: none confirmed (all present somewhere in the buggy tree)
+- Lang-7: none confirmed (all present somewhere in the buggy tree)
+- **Lang-9** (PLAUSIBLE) — 1/1 confirmed:
+    - `Failed to parse \"`
+- Time-15: none confirmed (all present somewhere in the buggy tree)
+- **Time-8** (PLAUSIBLE) — 1/1 confirmed:
+    - `Positive hours must not have negative minutes: `
+- **Time-9** (PLAUSIBLE) — 1/1 confirmed:
+    - `Hours out of range: `
+- **JacksonCore-10** (PLAUSIBLE) — 2/2 confirmed:
+    - `and bit more`
+    - `shuffle back a bit`
+- **JacksonCore-10** (PLAUSIBLE) — 2/2 confirmed:
+    - `and bit more`
+    - `shuffle back a bit`

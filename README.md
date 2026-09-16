@@ -29,9 +29,12 @@ is the same either way, and the interesting results only show up in the comparis
   developer's class unaided. Defects4J's triggering tests already point at the defect.
 - **Plausible is not correct.** 62% of accepted patches repair the same file a different way
   than the developer did.
-- **Memorisation is demonstrated, not merely possible.** On one bug the model reproduced the
-  developer's fix *and the developer's comments*, byte for byte, from a checkout containing
-  neither.
+- **Memorisation is demonstrated, not merely possible, and not a one-off.** On one bug the
+  model reproduced the developer's fix *and the developer's comments*, byte for byte, from a
+  checkout containing neither. A sweep of all 1,718 patches finds **at least 9 bugs** whose
+  patches contain developer text that appears nowhere the agent could read — and it is a
+  lower bound, since two thirds of patches add no prose to test at all
+  ([`results/memorisation.md`](results/memorisation.md)).
 - **The harness leaked, in a way five audited channels missed.** `~/.m2` holds released jars
   of these same projects, and a post-fix version is ground truth. One session decompiled pre-
   and post-fix bytecode of the class it was repairing; it is excluded. The agent now runs
@@ -48,6 +51,7 @@ is the same either way, and the interesting results only show up in the comparis
 |---|---|
 | [Evidence of memorisation](campaign/perfect-fault-localization/results/contamination-evidence.md) | the developer's comments reproduced verbatim, plus a negative control |
 | [**Leakage**](leakage.md) | all six channels, exhaustively: what was blocked, what was audited, what got through |
+| [**Memorisation, measured**](results/memorisation.md) | a three-stage sweep of all 1,718 patches for developer text the agent could not have read |
 | [The sixth leakage channel](campaign/no-fault-localization/results/contamination-own-artefact.md) | the project's own published jars, and the bug excluded for reading them |
 | [Agent self-certification](campaign/perfect-fault-localization/results/self-certification.md) | 852 assertions of success, one false, zero failure reports |
 | [The three unsolved bugs](campaign/perfect-fault-localization/results/remaining3.md) | varying wall-clock cap and model; none of four pre-registered predictions held |

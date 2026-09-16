@@ -1,0 +1,236 @@
+[
+  {
+    "bug": "Cli-30",
+    "phrase": "Default option wasn't defined",
+    "longest_readable": "Default option",
+    "fraction": 0.5
+  },
+  {
+    "bug": "Cli-39",
+    "phrase": "Unable to find file: ",
+    "longest_readable": "Unable to find",
+    "fraction": 0.75
+  },
+  {
+    "bug": "Closure-151",
+    "phrase": "Prints the compiler version to stderr.",
+    "longest_readable": "the compiler",
+    "fraction": 0.3333333333333333
+  },
+  {
+    "bug": "Compress-12",
+    "phrase": "Error detected parsing the header",
+    "longest_readable": "parsing the",
+    "fraction": 0.4
+  },
+  {
+    "bug": "Compress-28",
+    "phrase": "Truncated TAR archive",
+    "longest_readable": "TAR archive",
+    "fraction": 0.6666666666666666
+  },
+  {
+    "bug": "Compress-37",
+    "phrase": "blank line in header",
+    "longest_readable": "blank line",
+    "fraction": 0.5
+  },
+  {
+    "bug": "Compress-41",
+    "phrase": "Unexpected record signature: 0X%X",
+    "longest_readable": "Unexpected record",
+    "fraction": 0.5
+  },
+  {
+    "bug": "Csv-2",
+    "phrase": "Index for header '%s' is %d but CSVRecord only has %d values!",
+    "longest_readable": "header",
+    "fraction": 0.08333333333333333
+  },
+  {
+    "bug": "Gson-8",
+    "phrase": "Abstract class can't be instantiated! Class name: ",
+    "longest_readable": "Abstract",
+    "fraction": 0.14285714285714285
+  },
+  {
+    "bug": "Gson-8",
+    "phrase": "Interface can't be instantiated! Interface name: ",
+    "longest_readable": "Interface",
+    "fraction": 0.16666666666666666
+  },
+  {
+    "bug": "JacksonCore-10",
+    "phrase": "and bit more",
+    "longest_readable": "bit more",
+    "fraction": 0.6666666666666666
+  },
+  {
+    "bug": "JacksonCore-10",
+    "phrase": "shuffle back a bit",
+    "longest_readable": "back a",
+    "fraction": 0.5
+  },
+  {
+    "bug": "JacksonCore-14",
+    "phrase": "Trying to release buffer smaller than original",
+    "longest_readable": "Trying to release buffer",
+    "fraction": 0.5714285714285714
+  },
+  {
+    "bug": "JacksonCore-18",
+    "phrase": "Attempt to write plain `java.math.BigDecimal` (see JsonGenerator.Feature.WRITE_BIGDECIMAL_AS_PLAIN) with illegal scale (%d): needs to be between [-%d, %d]",
+    "longest_readable": "Attempt to write plain `java.math.BigDecimal`",
+    "fraction": 0.29411764705882354
+  },
+  {
+    "bug": "JacksonCore-20",
+    "phrase": "No native support for writing embedded objects of type ",
+    "longest_readable": "No native support for writing embedded objects",
+    "fraction": 0.7777777777777778
+  },
+  {
+    "bug": "JacksonDatabind-77",
+    "phrase": "Illegal type (%s) to deserialize: prevented for security reasons",
+    "longest_readable": "prevented for security reasons",
+    "fraction": 0.4444444444444444
+  },
+  {
+    "bug": "JacksonDatabind-78",
+    "phrase": "Illegal type (%s) to deserialize: prevented for security reasons",
+    "longest_readable": "prevented for security reasons",
+    "fraction": 0.4444444444444444
+  },
+  {
+    "bug": "JacksonXml-6",
+    "phrase": " bytes (out of ",
+    "longest_readable": "bytes",
+    "fraction": 0.3333333333333333
+  },
+  {
+    "bug": "JacksonXml-6",
+    "phrase": "Too few bytes available: missing ",
+    "longest_readable": "bytes",
+    "fraction": 0.2
+  },
+  {
+    "bug": "Jsoup-11",
+    "phrase": ":not(selector) subselect must not be empty",
+    "longest_readable": "subselect must not be empty",
+    "fraction": 0.8333333333333334
+  },
+  {
+    "bug": "Jsoup-19",
+    "phrase": "if it could not be made abs, run as-is to allow custom unknown protocols",
+    "longest_readable": "could not be made",
+    "fraction": 0.2857142857142857
+  },
+  {
+    "bug": "Jsoup-26",
+    "phrase": "frameset documents won't have a body. the clean doc will have empty body.",
+    "longest_readable": "have a",
+    "fraction": 0.15384615384615385
+  },
+  {
+    "bug": "Jsoup-42",
+    "phrase": "skip disabled form inputs",
+    "longest_readable": "skip",
+    "fraction": 0.25
+  },
+  {
+    "bug": "Jsoup-56",
+    "phrase": "PUBLIC or SYSTEM",
+    "longest_readable": "PUBLIC",
+    "fraction": 0.3333333333333333
+  },
+  {
+    "bug": "Jsoup-58",
+    "phrase": "because we only look at the body, but we start from a shell, make sure there's nothing in the head",
+    "longest_readable": "the body, but",
+    "fraction": 0.15
+  },
+  {
+    "bug": "Jsoup-7",
+    "phrase": "dupes, move contents to master",
+    "longest_readable": "contents to",
+    "fraction": 0.4
+  },
+  {
+    "bug": "Jsoup-7",
+    "phrase": "will always be available as created above if not existent",
+    "longest_readable": "will always be",
+    "fraction": 0.3
+  },
+  {
+    "bug": "Jsoup-83",
+    "phrase": "NOTE: out of spec, but clear (spec has this as a part of the attribute name)",
+    "longest_readable": "out of spec, but clear",
+    "fraction": 0.3125
+  },
+  {
+    "bug": "Jsoup-93",
+    "phrase": "browsers don't submit these",
+    "longest_readable": "don't submit",
+    "fraction": 0.5
+  },
+  {
+    "bug": "Lang-11",
+    "phrase": ") must be greater than start (",
+    "longest_readable": "must be greater than",
+    "fraction": 0.5714285714285714
+  },
+  {
+    "bug": "Lang-11",
+    "phrase": "Parameter end (",
+    "longest_readable": "end (",
+    "fraction": 0.6666666666666666
+  },
+  {
+    "bug": "Lang-12",
+    "phrase": "The chars array must not be empty",
+    "longest_readable": "array must not be empty",
+    "fraction": 0.7142857142857143
+  },
+  {
+    "bug": "Lang-35",
+    "phrase": "Arguments cannot both be null",
+    "longest_readable": "be null",
+    "fraction": 0.4
+  },
+  {
+    "bug": "Lang-35",
+    "phrase": "Array and element cannot both be null",
+    "longest_readable": "and element",
+    "fraction": 0.2857142857142857
+  },
+  {
+    "bug": "Lang-37",
+    "phrase": " in an array of ",
+    "longest_readable": "in an array",
+    "fraction": 0.75
+  },
+  {
+    "bug": "Lang-37",
+    "phrase": "No, so rethrow original",
+    "longest_readable": "original",
+    "fraction": 0.25
+  },
+  {
+    "bug": "Lang-9",
+    "phrase": "Failed to parse \\\"",
+    "longest_readable": "Failed to",
+    "fraction": 0.5
+  },
+  {
+    "bug": "Time-8",
+    "phrase": "Positive hours must not have negative minutes: ",
+    "longest_readable": "must not have",
+    "fraction": 0.42857142857142855
+  },
+  {
+    "bug": "Time-9",
+    "phrase": "Hours out of range: ",
+    "longest_readable": "out of range:",
+    "fraction": 0.75
+  }
+]

@@ -12,7 +12,7 @@ one that cannot be fenced off — the model's weights. Each of those is a channe
 
 | # | channel | kind | mitigation | read | located but not read |
 |---|---|---|---|---|---|
-| 0 | the model's training data | in-weights | **none possible** | **demonstrated** (1 bug) | n/a |
+| 0 | the model's training data | in-weights | **none possible** | **demonstrated** (>=9 bugs) | n/a |
 | 1 | `framework/projects/<P>/patches/<N>.src.patch` | on-host | audit only — 20 copies on this host, 8,650 patches | 0 | 1 (`Math-81`) |
 | 2 | `project_repos/<own project>.git` | on-host | audit | 0 | 0 |
 | 3 | the moved-aside `.gitorig` | on-host | moved out of the workspace, audit | 0 | 0 |
@@ -91,11 +91,20 @@ discriminates; it does not condemn everything.
 Full account:
 [`contamination-evidence.md`](campaign/perfect-fault-localization/results/contamination-evidence.md).
 
-**A test worth running at scale.** For every accepted patch, extract the comments
-and string literals it *adds* and check whether each appears anywhere in the buggy
-checkout. Text absent there but present in the developer fix is text the agent
-could not have read and did not need to invent. Costs no model spend; converts one
-demonstrated case into a rate. **Not yet run.**
+**Measured at scale.** [`results/memorisation.md`](results/memorisation.md) runs
+exactly that test over all 1,718 patches: extract the comments and string
+literals each patch *adds*, keep those that also appear in the developer's fix,
+discard anything findable anywhere in the buggy checkout, then discard anything
+assemblable from readable fragments.
+
+**At least 8 further bugs carry text the agent could not have read** — nine with
+`JacksonCore-10`. The strongest are informal developer comments of 10 to 20 words
+reproduced with two or three words of readable overlap, e.g. `Jsoup-26`'s
+`frameset documents won't have a body. the clean doc will have empty body.`
+
+It is a lower bound by construction: only 587 of 1,718 patches add any prose at
+all, so the other 1,131 are pure code and invisible to the test. A low count means
+rarely *detectable*, not rarely *happening*.
 
 ## Channel 1 — the reference patch
 
